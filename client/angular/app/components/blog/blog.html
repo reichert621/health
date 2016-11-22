@@ -1,0 +1,17 @@
+<h1>{{ $ctrl.name }}</h1>
+
+<input
+  type="text"
+  ng-model="$ctrl.message"
+  ng-keydown="$ctrl.handleKeydown($event)" />
+
+<button ng-click="$ctrl.add($ctrl.message)">
+  Add
+</button>
+
+<ul>
+  <entry
+    ng-repeat="msg in $ctrl.messages"
+    entry="msg"
+    on-remove="$ctrl.remove(msg._id)" />
+</ul>
