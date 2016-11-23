@@ -2,16 +2,16 @@
 
 <input
   type="text"
-  ng-model="$ctrl.message"
+  ng-model="$ctrl.entry"
   ng-keydown="$ctrl.handleKeydown($event)" />
 
-<button ng-click="$ctrl.add($ctrl.message)">
+<button ng-click="$ctrl.add($ctrl.entry)">
   Add
 </button>
 
 <ul>
   <entry
-    ng-repeat="msg in $ctrl.messages"
-    entry="msg"
-    on-remove="$ctrl.remove(msg._id)" />
+    ng-repeat="ent in $ctrl.entries"
+    entry="ent"
+    on-remove="$ctrl.remove(ent._id)" />
 </ul>

@@ -1,0 +1,16 @@
+{
+  "entries": [
+    {
+      "_id": 1,
+      "content": "Sample Entry #1"
+    },
+    {
+      "_id": 2,
+      "content": "Sample Entry #2"
+    },
+    {
+      "_id": 3,
+      "content": "Sample Entry #3"
+    }
+  ]
+}
