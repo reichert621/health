@@ -1,33 +1,25 @@
 const knex = require('../knex.js');
 const { first } = require('lodash');
 
-function Entries() {
-  return knex('entries');
-}
+const Entries = () => knex('entries');
 
-function fetch() {
-  return Entries()
-    .select();
-}
+const fetch = () => Entries().select();
 
-function findById(id) {
-  return fetch()
+const findById = (id) =>
+  fetch()
     .where({ id })
     .first();
-}
 
-function create(params) {
-  return Entries()
+const create = (params) =>
+  Entries()
     .returning('id')
     .insert(params)
     .then(first)
     .then(findById);
-}
 
-function destroy(id) {
-  return findById(id)
+const destroy = (id) =>
+  findById(id)
     .delete();
-}
 
 module.exports = {
   fetch,

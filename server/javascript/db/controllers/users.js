@@ -1,12 +1,8 @@
 const knex = require('../knex.js');
 
-function Users() {
-  return knex('users');
-}
+const Users = () => knex('users');
 
-function fetch() {
-  return Users().select();
-}
+const fetch = () => Users().select();
 
 module.exports = {
   fetch
