@@ -1,11 +1,11 @@
 const config = ($stateProvider, $urlRouterProvider) => {
   $stateProvider
     .state('blog', {
-      url: '/blog',
+      url: '/',
       template: '<blog></blog>'
     });
 
-  $urlRouterProvider.otherwise('/blog');
+  $urlRouterProvider.otherwise('/');
 };
 
 config.$inject = ['$stateProvider', '$urlRouterProvider'];

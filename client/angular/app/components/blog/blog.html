@@ -1,17 +1,33 @@
-<h1>{{ $ctrl.name }}</h1>
+<section>
+  <h1>{{ $ctrl.name }}</h1>
 
-<input
-  type="text"
-  ng-model="$ctrl.entry"
-  ng-keydown="$ctrl.handleKeydown($event)" />
+  <div>
+    <input
+      type="text"
+      placeholder="Title"
+      ng-model="$ctrl.entry.title" />
+  </div>
 
-<button ng-click="$ctrl.add($ctrl.entry)">
-  Add
-</button>
+  <div>
+    <textarea
+      type="text"
+      ng-model="$ctrl.entry.content" />
+    </textarea>
+  </div>
 
-<ul>
-  <entry
-    ng-repeat="ent in $ctrl.entries"
-    entry="ent"
-    on-remove="$ctrl.remove(ent._id)" />
-</ul>
+  <div>
+    <button ng-click="$ctrl.add($ctrl.entry)">
+      Add
+    </button>
+  </div>
+
+  <ul>
+    <li>
+      <entry
+        ng-repeat="ent in $ctrl.entries"
+        entry="ent"
+        on-remove="$ctrl.remove(ent.id)">
+      </entry>
+    </li>
+  </ul>
+</section>

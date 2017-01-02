@@ -1,6 +1,13 @@
-<li>
-  <span>{{ $ctrl.entry.content }}</span>
-  <button ng-click="$ctrl.onRemove()">
-    Remove
-  </button>
-</li>
+<div>
+  <h4>{{ $ctrl.entry.title }}</h4>
+  <div>{{ $ctrl.entry.content }}</div>
+  <small>
+    {{ $ctrl.entry.created_at | date: 'MMM dd, yyyy' }}
+  </small>
+
+  <div>
+    <button ng-click="$ctrl.onRemove()">
+      Remove
+    </button>
+  </div>
+</div>

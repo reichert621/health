@@ -4,7 +4,7 @@ const template = () => {
     <!doctype html>
     <html lang="en">
       <head>
-        <title>Blog Test</title>
+        <title>Blog - Home</title>
         <base href="/">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">

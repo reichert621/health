@@ -1,17 +1,20 @@
 function EntryService($http) {
   return {
-    list() {
-      return $http.get('/api/entries')
-        .then(res => {
-          const { entries = [] } = res.data;
+    list: () =>
+      $http.get('/api/entries')
+        .then(res => res.data.entries),
 
-          return entries;
-        });
-    },
+    findById: (id) =>
+      $http.get(`/api/entries/${id}`)
+        .then(res => res.data.entry),
 
-    create() {
-      return console.log('Create entry!');
-    }
+    create: (params) =>
+      $http.post('/api/entries', params)
+        .then(res => res.data.entry),
+
+    delete: (id) =>
+      $http.delete(`/api/entries/${id}`)
+        .then(res => res.data.entry)
   };
 };
 

@@ -6,45 +6,46 @@ class BlogController {
   constructor($log, EntryService) {
     this._log = $log;
     this.EntryService = EntryService;
-    this._id = 0;
+
     this.name = 'Blog';
-    this.entry = '';
+    this.entry = {};
     this.entries = [];
   }
 
   $onInit() {
+    return this.fetch();
+  }
+
+  fetch() {
     const { EntryService, _log } = this;
 
     return EntryService.list()
       .then(entries => {
         this.entries = entries;
-        this._id += entries.length;
       })
       .catch(_log.error);
   }
 
-  add(content) {
-    if (!content || !content.length) return;
+  add(entry) {
+    const { EntryService, _log } = this;
 
-    const _id = ++this._id;
-    const message = { _id, content };
-
-    this.entry = '';
-    this.entries = this.entries
-      .concat(message);
+    return EntryService.create(entry)
+      .then(ent => {
+        this.entry = {};
+        this.entries = this.entries.concat(ent);
+      })
+      .catch(_log.error);
   }
 
-  remove(_id) {
-    this.entries = this.entries
-      .filter(m => m._id !== _id);
-  }
+  remove(id) {
+    const { EntryService, _log } = this;
 
-  handleKeydown(e) {
-    if (isEnterKey(e)) {
-      const text = this.entry;
-
-      this.add(text);
-    }
+    return EntryService.delete(id)
+      .then(entry => {
+        this.entries = this.entries
+          .filter(e => e.id !== id);
+      })
+      .catch(_log.error);
   }
 }
 
