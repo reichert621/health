@@ -1,13 +1,21 @@
-<div>
-  <h4>{{ $ctrl.entry.title }}</h4>
-  <div>{{ $ctrl.entry.content }}</div>
+<div class="entry-container">
+
+  <h2 class="entry-title">
+    {{ $ctrl.entry.title }}
+  </h2>
+
+  <div class="entry-content">
+    {{ $ctrl.entry.content }}
+  </div>
+
   <small>
     {{ $ctrl.entry.created_at | date: 'MMM dd, yyyy' }}
   </small>
 
   <div>
-    <button ng-click="$ctrl.onRemove()">
-      Remove
-    </button>
+    <a ui-sref="show-entry({ id: $ctrl.entry.id })">
+      View
+    </a>
   </div>
+
 </div>

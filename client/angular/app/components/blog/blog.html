@@ -1,33 +1,15 @@
-<section>
-  <h1>{{ $ctrl.name }}</h1>
+<div class="blog-container">
+  <h1 class="blog-title">
+    Log
+  </h1>
 
-  <div>
-    <input
-      type="text"
-      placeholder="Title"
-      ng-model="$ctrl.entry.title" />
+  <a href="#" ui-sref="create-entry">New</a>
+
+  <div class="entry-list-container">
+    <entry
+      ng-repeat="ent in $ctrl.entries | orderBy:'-id'"
+      entry="ent"
+      on-remove="$ctrl.remove(ent.id)">
+    </entry>
   </div>
-
-  <div>
-    <textarea
-      type="text"
-      ng-model="$ctrl.entry.content" />
-    </textarea>
-  </div>
-
-  <div>
-    <button ng-click="$ctrl.add($ctrl.entry)">
-      Add
-    </button>
-  </div>
-
-  <ul>
-    <li>
-      <entry
-        ng-repeat="ent in $ctrl.entries"
-        entry="ent"
-        on-remove="$ctrl.remove(ent.id)">
-      </entry>
-    </li>
-  </ul>
-</section>
+</div>

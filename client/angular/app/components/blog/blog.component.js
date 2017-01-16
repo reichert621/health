@@ -3,8 +3,8 @@ import controller from './blog.controller.js';
 
 const component = {
   template,
-  restrict: 'E',
-  controller: controller
+  controller,
+  restrict: 'E'
 };
 
 export default component;
