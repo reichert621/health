@@ -17,6 +17,10 @@ const create = (params) =>
     .then(first)
     .then(findById);
 
+// TODO: handle update entry
+const update = (id, params) =>
+  findById(id) // ...
+
 const destroy = (id) =>
   findById(id)
     .delete();

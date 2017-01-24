@@ -1,8 +1,8 @@
 const config = ($stateProvider) => {
   $stateProvider
-    .state('blog', {
-      url: '/',
-      template: '<blog></blog>'
+    .state('show-entry', {
+      url: '/entry/:id',
+      template: '<show-entry></show-entry>'
     });
 };
 

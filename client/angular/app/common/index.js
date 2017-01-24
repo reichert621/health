@@ -1,6 +1,9 @@
 import angular from 'angular';
+import Auth from './auth';
 
-// Empty for now
-const common = angular.module('app.common', []);
+const common = angular
+  .module('app.common', [
+    Auth.name
+  ]);
 
 export default common;

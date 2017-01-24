@@ -13,6 +13,15 @@ const users = {
     Users.fetch()
       .then(users =>
         res.json({ users }))
+      .catch(err =>
+        res.status(500).send({ error: err.message })),
+
+  login: (req, res) =>
+    Users.authenticate(req.body)
+      .then(user =>
+        res.json({ user }))
+      .catch(err =>
+        res.status(500).send({ error: err.message }))
 };
 
 const entries = {
@@ -40,6 +49,7 @@ const entries = {
 api.get('/ping', pong);
 
 api.get('/users', users.fetch);
+api.post('/login', users.login);
 
 api.get('/entries', entries.fetch);
 api.get('/entries/:id', entries.findById);

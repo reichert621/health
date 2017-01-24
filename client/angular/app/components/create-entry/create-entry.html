@@ -3,23 +3,25 @@
 
   <a href="#" ui-sref="blog">Home</a>
 
-  <div>
-    <input
-      type="text"
-      placeholder="Title"
-      ng-model="$ctrl.entry.title" />
-  </div>
+  <form ng-submit="$ctrl.add($ctrl.entry)">
+    <div>
+      <input
+        type="text"
+        placeholder="Title"
+        ng-model="$ctrl.entry.title" />
+    </div>
 
-  <div>
-    <textarea
-      type="text"
-      ng-model="$ctrl.entry.content" />
-    </textarea>
-  </div>
+    <div>
+      <textarea
+        type="text"
+        ng-model="$ctrl.entry.content" />
+      </textarea>
+    </div>
 
-  <div>
-    <button ng-click="$ctrl.add($ctrl.entry)">
-      Add
-    </button>
-  </div>
+    <div>
+      <button type="submit">
+        Add
+      </button>
+    </div>
+  </form>
 </div>
