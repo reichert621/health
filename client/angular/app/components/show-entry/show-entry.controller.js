@@ -1,7 +1,7 @@
 class ShowEntryController {
   constructor($log, $stateParams, EntryService) {
     this._log = $log;
-    this.EntryService = EntryService;
+    this.Entry = EntryService;
 
     this.id = $stateParams.id;
     this.entry = {};
@@ -12,9 +12,9 @@ class ShowEntryController {
   }
 
   fetch() {
-    const { EntryService, _log, id } = this;
+    const { Entry, _log, id } = this;
 
-    return EntryService.findById(id)
+    return Entry.findById(id)
       .then(entry => {
         this.entry = entry;
       })
@@ -22,9 +22,9 @@ class ShowEntryController {
   }
 
   remove(id) {
-    const { EntryService, _log } = this;
+    const { Entry, _log } = this;
 
-    return EntryService.delete(id)
+    return Entry.delete(id)
       .then(_log.info)
       .catch(_log.error);
   }

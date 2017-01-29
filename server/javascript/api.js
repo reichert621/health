@@ -1,8 +1,15 @@
 const express = require('express');
+const passport = require('passport');
 const { Users, Entries } = require('./db');
+const { auth, isAuthenticated } = require('./passport');
 const { Router } = express;
 
 const api = Router();
+
+const logout = (req, res) => {
+  req.logout();
+  res.redirect('/');
+};
 
 // For testing
 const pong = (req, res) =>
@@ -49,11 +56,12 @@ const entries = {
 api.get('/ping', pong);
 
 api.get('/users', users.fetch);
-api.post('/login', users.login);
+api.post('/login', auth, users.login);
+api.all('/logout', logout);
 
-api.get('/entries', entries.fetch);
-api.get('/entries/:id', entries.findById);
-api.post('/entries', entries.create);
-api.delete('/entries/:id', entries.destroy);
+api.get('/entries', isAuthenticated, entries.fetch);
+api.get('/entries/:id', isAuthenticated, entries.findById);
+api.post('/entries', isAuthenticated, entries.create);
+api.delete('/entries/:id', isAuthenticated, entries.destroy);
 
 module.exports = api;

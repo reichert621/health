@@ -3,9 +3,11 @@ const ENTER = 'Enter';
 const isEnterKey = (e) => e.key === ENTER;
 
 class BlogController {
-  constructor($log, EntryService) {
-    this._log = $log;
-    this.EntryService = EntryService;
+  constructor($log, $state, EntryService, AuthService) {
+    this.log = $log;
+    this.state = $state;
+    this.Entry = EntryService;
+    this.Auth = AuthService;
 
     this.name = 'Blog';
     this.entry = {};
@@ -17,38 +19,51 @@ class BlogController {
   }
 
   fetch() {
-    const { EntryService, _log } = this;
+    const { Entry, log } = this;
 
-    return EntryService.list()
+    return Entry.list()
       .then(entries => {
         this.entries = entries;
       })
-      .catch(_log.error);
+      .catch(log.error);
   }
 
   add(entry) {
-    const { EntryService, _log } = this;
+    const { Entry, log } = this;
 
-    return EntryService.create(entry)
+    return Entry.create(entry)
       .then(ent => {
         this.entry = {};
         this.entries = this.entries.concat(ent);
       })
-      .catch(_log.error);
+      .catch(log.error);
   }
 
   remove(id) {
-    const { EntryService, _log } = this;
+    const { Entry, log } = this;
 
-    return EntryService.delete(id)
+    return Entry.delete(id)
       .then(entry => {
         this.entries = this.entries
           .filter(e => e.id !== id);
       })
-      .catch(_log.error);
+      .catch(log.error);
+  }
+
+  logout() {
+    const { Auth, state, log } = this;
+
+    return this.Auth.logout()
+      .then(() => state.go('login'))
+      .catch(log.error);
   }
 }
 
-BlogController.$inject = ['$log', 'EntryService'];
+BlogController.$inject = [
+  '$log',
+  '$state',
+  'EntryService',
+  'AuthService'
+];
 
 export default BlogController;

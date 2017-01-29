@@ -1,9 +1,11 @@
 function AuthService($http) {
   return {
-    login: (credentials) => {
-      return $http.post('/api/login', credentials)
-        .then(res => res.data.user);
-    }
+    login: (credentials) =>
+      $http.post('/api/login', credentials)
+        .then(res => res.data.user),
+
+    logout: () =>
+      $http.get('/api/logout')
   };
 };
 

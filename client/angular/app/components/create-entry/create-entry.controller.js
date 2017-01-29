@@ -1,16 +1,16 @@
 class CreateEntryController {
   constructor($log, EntryService) {
     this._log = $log;
-    this.EntryService = EntryService;
+    this.Entry = EntryService;
     this.entry = {};
   }
 
   $onInit() {}
 
   add(entry) {
-    const { EntryService, _log } = this;
+    const { Entry, _log } = this;
 
-    return EntryService.create(entry)
+    return Entry.create(entry)
       .then(ent => {
         this.entry = {};
         this.entries = this.entries.concat(ent);

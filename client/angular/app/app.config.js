@@ -1,14 +1,21 @@
-const interceptor = ($log) => {
+const interceptor = ($log, $injector) => {
   return {
     request(config) {
       $log.info('http config!', config);
 
       return config;
+    },
+
+    responseError(err) {
+      $log.error('http response error!', err);
+      $injector.get('$state').go('login');
+
+      return err;
     }
   }
 };
 
-interceptor.$inject = ['$log'];
+interceptor.$inject = ['$log', '$injector'];
 
 const config = ($locationProvider, $httpProvider) => {
   // @see: https://github.com/angular-ui/ui-router/wiki/Frequently-Asked-Questions

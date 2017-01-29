@@ -45,6 +45,17 @@ const sanitized = (params) => {
 
 const fetch = () => Users().select();
 
+const findOne = (where) =>
+  fetch()
+    .where(where)
+    .first();
+
+const findById = (id) =>
+  findOne({ id });
+
+const findByUsername = (username) =>
+  findOne({ username });
+
 const create = (params) =>
   Users()
     .returning('id')
@@ -61,6 +72,10 @@ const authenticate = ({ username, password }) =>
 
 module.exports = {
   fetch,
+  findOne,
+  findById,
+  findByUsername,
   create,
-  authenticate
+  authenticate,
+  verifyUser
 };
