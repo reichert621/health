@@ -1,6 +1,7 @@
 class CreateEntryController {
-  constructor($log, EntryService) {
-    this._log = $log;
+  constructor($log, $state, EntryService) {
+    this.log = $log;
+    this.go = $state.go;
     this.Entry = EntryService;
     this.entry = {};
   }
@@ -8,17 +9,15 @@ class CreateEntryController {
   $onInit() {}
 
   add(entry) {
-    const { Entry, _log } = this;
+    const { Entry, go, log } = this;
+    const next = 'show-entry';
 
     return Entry.create(entry)
-      .then(ent => {
-        this.entry = {};
-        this.entries = this.entries.concat(ent);
-      })
-      .catch(_log.error);
+      .then(ent => go(next, { id: ent.id }))
+      .catch(log.error);
   }
 }
 
-CreateEntryController.$inject = ['$log', 'EntryService'];
+CreateEntryController.$inject = ['$log', '$state', 'EntryService'];
 
 export default CreateEntryController;

@@ -1,6 +1,7 @@
 class ShowEntryController {
-  constructor($log, $stateParams, EntryService) {
-    this._log = $log;
+  constructor($log, $state, $stateParams, EntryService) {
+    this.log = $log;
+    this.go = $state.go;
     this.Entry = EntryService;
 
     this.id = $stateParams.id;
@@ -12,26 +13,27 @@ class ShowEntryController {
   }
 
   fetch() {
-    const { Entry, _log, id } = this;
+    const { Entry, log, id } = this;
 
     return Entry.findById(id)
       .then(entry => {
         this.entry = entry;
       })
-      .catch(_log.error);
+      .catch(log.error);
   }
 
-  remove(id) {
-    const { Entry, _log } = this;
+  remove() {
+    const { Entry, log, go, id } = this;
 
     return Entry.delete(id)
-      .then(_log.info)
-      .catch(_log.error);
+      .then(() => go('blog'))
+      .catch(log.error);
   }
 }
 
 ShowEntryController.$inject = [
   '$log',
+  '$state',
   '$stateParams',
   'EntryService'
 ];

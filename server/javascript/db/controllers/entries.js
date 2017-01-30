@@ -1,28 +1,36 @@
 const knex = require('../knex.js');
 const { first } = require('lodash');
 
+// TODO: move to models
 const Entries = () => knex('entries');
 
-const fetch = () => Entries().select();
+const merge = (x, y) => Object.assign({}, x, y);
 
-const findById = (id) =>
-  fetch()
-    .where({ id })
+const fetch = (where = {}, userId) =>
+  Entries()
+    .select()
+    .where(merge(where, { userId }));
+
+const findOne = (where, userId) =>
+  fetch(where, userId)
     .first();
 
-const create = (params) =>
+const findById = (id, userId) =>
+  findOne({ id }, userId);
+
+const create = (params, userId) =>
   Entries()
     .returning('id')
-    .insert(params)
+    .insert(merge(params, { userId }))
     .then(first)
-    .then(findById);
+    .then(id => findById(id, userId));
 
 // TODO: handle update entry
-const update = (id, params) =>
-  findById(id) // ...
+const update = (id, params, userId) =>
+  findById(id, userId) // ...
 
-const destroy = (id) =>
-  findById(id)
+const destroy = (id, userId) =>
+  findById(id, userId)
     .delete();
 
 module.exports = {

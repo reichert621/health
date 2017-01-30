@@ -2,8 +2,8 @@ const { create } = require('../controllers/users');
 
 exports.seed = (knex, Promise) => {
   const users = [
-    { email: 'alex@alex.com', username: 'alex', password: 'password' },
-    { email: 'test@test.com', username: 'test', password: 'asdfasdf' }
+    { id: 1, email: 'alex@alex.com', username: 'alex', password: 'password' },
+    { id: 2, email: 'test@test.com', username: 'test', password: 'asdfasdf' }
   ];
 
   const insert = (users) =>

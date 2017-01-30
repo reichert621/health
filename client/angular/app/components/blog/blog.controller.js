@@ -5,7 +5,7 @@ const isEnterKey = (e) => e.key === ENTER;
 class BlogController {
   constructor($log, $state, EntryService, AuthService) {
     this.log = $log;
-    this.state = $state;
+    this.go = $state.go;
     this.Entry = EntryService;
     this.Auth = AuthService;
 
@@ -51,10 +51,10 @@ class BlogController {
   }
 
   logout() {
-    const { Auth, state, log } = this;
+    const { Auth, go, log } = this;
 
-    return this.Auth.logout()
-      .then(() => state.go('login'))
+    return Auth.logout()
+      .then(() => go('login'))
       .catch(log.error);
   }
 }

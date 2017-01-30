@@ -2,6 +2,7 @@ const knex = require('../knex.js');
 const crypto = require('crypto');
 const { first } = require('lodash');
 
+// TODO: move to models
 const Users = () => knex('users');
 
 const makeSalt = (num = 20) =>
@@ -43,11 +44,13 @@ const sanitized = (params) => {
   });
 };
 
-const fetch = () => Users().select();
+const fetch = (where = {}) =>
+  Users()
+    .select()
+    .where(where);
 
 const findOne = (where) =>
-  fetch()
-    .where(where)
+  fetch(where)
     .first();
 
 const findById = (id) =>
@@ -64,9 +67,7 @@ const create = (params) =>
     .then(findById);
 
 const authenticate = ({ username, password }) =>
-  fetch()
-    .where({ username })
-    .first()
+  findByUsername(username)
     .then(user =>
       verifyUser(user, password));
 

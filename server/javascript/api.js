@@ -15,6 +15,7 @@ const logout = (req, res) => {
 const pong = (req, res) =>
   res.json({ message: 'pong' });
 
+// TODO: move to controllers
 const users = {
   fetch: (req, res) =>
     Users.fetch()
@@ -33,24 +34,32 @@ const users = {
 
 const entries = {
   fetch: (req, res) =>
-    Entries.fetch()
+    Entries.fetch({}, req.user.id)
       .then(entries =>
-        res.json({ entries })),
+        res.json({ entries }))
+      .catch(err =>
+        res.status(500).send({ error: err.message })),
 
   findById: (req, res) =>
-    Entries.findById(req.params.id)
-      .then(entry =>
-        res.json({ entry })),
-
-  create: (req, res) =>
-    Entries.create(req.body)
-      .then(entry =>
-        res.json({ entry })),
-
-  destroy: (req, res) =>
-    Entries.destroy(req.params.id)
+    Entries.findById(req.params.id, req.user.id)
       .then(entry =>
         res.json({ entry }))
+      .catch(err =>
+        res.status(500).send({ error: err.message })),
+
+  create: (req, res) =>
+    Entries.create(req.body, req.user.id)
+      .then(entry =>
+        res.json({ entry }))
+      .catch(err =>
+        res.status(500).send({ error: err.message })),
+
+  destroy: (req, res) =>
+    Entries.destroy(req.params.id, req.user.id)
+      .then(entry =>
+        res.json({ entry }))
+      .catch(err =>
+        res.status(500).send({ error: err.message }))
 };
 
 api.get('/ping', pong);

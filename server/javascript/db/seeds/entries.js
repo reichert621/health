@@ -1,8 +1,8 @@
 exports.seed = (knex, Promise) => {
   const entries = [
-    { title: 'Dec 1', content: 'Sample Entry #1' },
-    { title: 'Dec 2', content: 'Sample Entry #2' },
-    { title: 'Dec 3', content: 'Sample Entry #3' }
+    { id: 1, userId: 1, title: 'Dec 1', content: 'Sample Entry #1' },
+    { id: 2, userId: 1, title: 'Dec 2', content: 'Sample Entry #2' },
+    { id: 3, userId: 1, title: 'Dec 3', content: 'Sample Entry #3' }
   ];
 
   const addTimestamps = (entry) =>
