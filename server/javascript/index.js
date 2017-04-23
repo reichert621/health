@@ -9,7 +9,6 @@ const { template } = require('./helpers');
 const api = require('./api');
 
 const secret = 'secret';
-
 const app = express();
 
 app.use(express.static(build));

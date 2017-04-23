@@ -8,9 +8,9 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loaders: ['ng-annotate', 'babel'] },
-      { test: /\.html$/, loader: 'raw' },
-      { test: /\.css$/, loader: 'style!css' }
+      { test: /\.js$/, exclude: /node_modules/, loaders: ['ng-annotate-loader', 'babel-loader'] },
+      { test: /\.html$/, loader: 'raw-loader' },
+      { test: /\.css$/, loader: 'style-loader!css-loader' }
     ]
   }
 };

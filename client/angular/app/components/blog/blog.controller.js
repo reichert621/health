@@ -1,7 +1,5 @@
 const ENTER = 'Enter';
 
-const isEnterKey = (e) => e.key === ENTER;
-
 class BlogController {
   constructor($log, $state, EntryService, AuthService) {
     this.log = $log;
