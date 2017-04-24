@@ -2,10 +2,25 @@ import React, { PropTypes } from 'react';
 
 const Entry = ({ entry }) => {
   return (
-    <li>
-      <div>{entry.content}</div>
-      <small>Author: {entry.author}</small>
-    </li>
+    <div className="entry-container">
+      <h2 className="entry-title">
+        {entry.title}
+      </h2>
+
+      <div className="entry-content">
+        {entry.content}
+      </div>
+
+      <small>
+        {entry.created_at}
+      </small>
+
+      <div>
+        <a href="#">
+          View
+        </a>
+      </div>
+    </div>
   );
 };
 

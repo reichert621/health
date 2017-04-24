@@ -11,7 +11,7 @@ const template = () => {
       </head>
       <body ng-app="app" ng-strict-di ng-cloak>
         <app>
-          Loading...
+          <div id="app">Loading...</div>
         </app>
 
         <script

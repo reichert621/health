@@ -1,40 +1,55 @@
 import React, { PropTypes } from 'react';
-import Entry from './Entry'
+import Entry from './Entry';
+import { fetchEntries } from '../helpers/entries';
 
 class Home extends React.Component {
   static propTypes = {
     title: PropTypes.string.isRequired
   }
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      entries: []
+    };
+  }
+
+  componentDidMount() {
+    return fetchEntries()
+      .then(entries =>
+        this.setState({ entries }));
+  }
+
   renderEntries() {
-    return entries()
-      .map(entry => (
+    const { entries = [] } = this.state;
+
+    if (entries.length) {
+      return entries.map(entry => (
         <Entry
-          key={entry._id}
+          key={entry.id}
           entry={entry} />
       ));
+    } else {
+      return (
+        <div>Loading entries...</div>
+      );
+    }
   }
 
   render() {
     return (
-      <div className='container'>
-        <h1>{this.props.title}</h1>
+      <div className="blog-container">
+        <h1 className="blog-title">
+          Log
+        </h1>
 
-        <ul>{this.renderEntries()}</ul>
+        <div className="entry-list-container">
+          {this.renderEntries()}
+        </div>
       </div>
     );
   }
-}
-
-// Test data
-function entries() {
-  return [
-    { _id: 1, author: 'Alex', content: 'Test Entry #1' },
-    { _id: 2, author: 'Alex', content: 'Test Entry #2' },
-    { _id: 3, author: 'Alex', content: 'Test Entry #3' },
-    { _id: 4, author: 'Alex', content: 'Test Entry #4' },
-    { _id: 5, author: 'Alex', content: 'Test Entry #5' }
-  ];
 }
 
 export default Home;
