@@ -8,3 +8,8 @@ export const fetchEntries = () => {
     .then(() => get('/api/entries'))
     .then(res => res.entries);
 };
+
+export const fetchEntry = (id) => {
+  return get(`/api/entries/${id}`)
+    .then(res => res.entry);
+};

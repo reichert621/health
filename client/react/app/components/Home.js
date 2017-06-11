@@ -3,10 +3,6 @@ import Entry from './Entry';
 import { fetchEntries } from '../helpers/entries';
 
 class Home extends React.Component {
-  static propTypes = {
-    title: PropTypes.string.isRequired
-  }
-
   constructor(props) {
     super(props);
 
@@ -24,17 +20,18 @@ class Home extends React.Component {
   renderEntries() {
     const { entries = [] } = this.state;
 
-    if (entries.length) {
-      return entries.map(entry => (
-        <Entry
-          key={entry.id}
-          entry={entry} />
-      ));
-    } else {
+    if (!entries || !entries.length) {
       return (
         <div>Loading entries...</div>
       );
     }
+
+    return entries.map(entry => (
+      <Entry
+        key={entry.id}
+        isPreview={true}
+        entry={entry} />
+    ));
   }
 
   render() {
