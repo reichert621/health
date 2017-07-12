@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import Entry from './Entry';
 import { fetchEntry } from '../helpers/entries';
+import './Entry.css';
 
 class EntryContainer extends React.Component {
   constructor(props) {

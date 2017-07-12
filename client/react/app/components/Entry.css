@@ -1,0 +1,39 @@
+.entry-container {
+  margin-bottom: 80px;
+}
+
+.entry-content {
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: 0.2px;
+  margin-bottom: 20px;
+}
+
+.new-entry-title,
+.new-entry-content {
+  width: 100%;
+  border: 1px solid #d0d0d0;
+  border-radius: 2px;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 300;
+  letter-spacing: 0.4px;
+  margin-bottom: 20px;
+}
+
+button.new-entry-submit {
+  padding: 10px 18px;
+  border: 1px solid #d0d0d0;
+  color: #2b2b2b;
+  box-shadow: none;
+  background: transparent;
+}
+
+button.new-entry-submit:hover {
+  cursor: pointer;
+  background: #eee;
+}
+
+

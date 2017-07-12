@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
+import { Link } from 'react-router-dom';
 import Entry from './Entry';
 import { fetchEntries } from '../helpers/entries';
+import './Home.css';
 
 class Home extends React.Component {
   constructor(props) {
@@ -43,6 +45,12 @@ class Home extends React.Component {
 
         <div className="entry-list-container">
           {this.renderEntries()}
+        </div>
+
+        <hr />
+
+        <div className="">
+          <Link to="/create">New Entry</Link>
         </div>
       </div>
     );

@@ -37,7 +37,7 @@ app.use(passport.session());
 const home = (req, res) => res.send(template());
 
 app.use('/api', api);
-app.get('/', home);
+app.get('*', home);
 
 app.listen(port, () =>
   console.log(`Listening on port ${port}`));
