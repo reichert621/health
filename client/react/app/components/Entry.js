@@ -19,7 +19,9 @@ const Entry = ({ entry, isPreview }) => {
       </div>
 
       <small>{entry.created_at}</small>
-      <div>{link}</div>
+      <div>
+        <span>{link}</span>
+      </div>
     </div>
   );
 };

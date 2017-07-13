@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchEntry, updateEntry } from '../helpers/entries';
+import { fetchEntry, updateEntry, deleteEntry } from '../helpers/entries';
 
 class EditEntry extends React.Component {
   constructor(props) {
@@ -42,6 +42,18 @@ class EditEntry extends React.Component {
         history.push(`/entry/${entry.id}`));
   }
 
+  handleDelete(e) {
+    const confirmed = confirm('Are you sure?');
+
+    if (!confirmed) return console.log('Dismissed!');
+
+    const { id } = this.state;
+    const { history } = this.props;
+
+    return deleteEntry(id)
+      .then(() => history.push('/'));
+  }
+
   render() {
     const entry = this.state;
 
@@ -76,6 +88,12 @@ class EditEntry extends React.Component {
           className="new-entry-submit"
           onClick={this.handleSave.bind(this)}>
           Save
+        </button>
+
+        <button
+          className="new-entry-submit"
+          onClick={this.handleDelete.bind(this)}>
+          Delete
         </button>
       </div>
     );

@@ -36,3 +36,12 @@ export const put = (endpoint, body) => {
   return fetch(endpoint, config)
     .then(res => res.json());
 };
+
+export const del = (endpoint) => {
+  const config = getHttpConfig({
+    method: 'DELETE'
+  });
+
+  return fetch(endpoint, config)
+    .then(res => res.json());
+};

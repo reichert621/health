@@ -1,4 +1,4 @@
-import { get, post, put } from './http';
+import { get, post, put, del } from './http';
 import { login } from './auth';
 
 export const fetchEntries = () => {
@@ -21,5 +21,10 @@ export const createEntry = (params) => {
 
 export const updateEntry = (id, params) => {
   return put(`/api/entries/${id}`, params)
+    .then(res => res.entry);
+};
+
+export const deleteEntry = (id) => {
+  return del(`/api/entries/${id}`)
     .then(res => res.entry);
 };
