@@ -6,17 +6,22 @@ class NewEntry extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      title: '',
-      content: ''
-    };
+    this.state = { title: '', content: '' };
   }
 
   handleSubmit(e) {
-    const params = this.state;
+    const { title, content } = this.state;
     const { history } = this.props;
 
-    return createEntry(params)
+    if (!title) {
+      return console.log('Title is required!');
+    }
+
+    if (!content) {
+      return console.log('Content is required!');
+    }
+
+    return createEntry({ title, content })
       .then(entry =>
         history.push(`/entry/${entry.id}`));
   }
