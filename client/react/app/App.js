@@ -8,7 +8,7 @@ import Home from './components/Home';
 import EntryContainer from './components/EntryContainer';
 import NewEntry from './components/NewEntry';
 import EditEntry from './components/EditEntry';
-import './App.css';
+import './App.less';
 
 ReactDOM.render((
   <Router>

@@ -1,3 +1,7 @@
+@border-gray: #d0d0d0;
+@light-gray: #eee;
+@black: #2b2b2b;
+
 .entry-container {
   margin-bottom: 80px;
 }
@@ -14,7 +18,7 @@
 .new-entry-title,
 .new-entry-content {
   width: 100%;
-  border: 1px solid #d0d0d0;
+  border: 1px solid @border-gray;
   border-radius: 2px;
   padding: 12px 16px;
   font-size: 16px;
@@ -25,15 +29,13 @@
 
 button.new-entry-submit {
   padding: 10px 18px;
-  border: 1px solid #d0d0d0;
-  color: #2b2b2b;
+  border: 1px solid @border-gray;
+  color: @black;
   box-shadow: none;
   background: transparent;
 }
 
 button.new-entry-submit:hover {
   cursor: pointer;
-  background: #eee;
+  background: @light-gray;
 }
-
-

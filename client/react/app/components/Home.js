@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
 import Entry from './Entry';
 import { fetchEntries } from '../helpers/entries';
-import './Home.css';
+import './Home.less';
 
 class Home extends React.Component {
   constructor(props) {

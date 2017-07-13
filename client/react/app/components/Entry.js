@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
-import './Entry.css';
+import './Entry.less';
 
 const Entry = ({ entry, isPreview }) => {
   // Quick fix for link, a bit hacky
