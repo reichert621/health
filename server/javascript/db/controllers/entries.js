@@ -25,9 +25,11 @@ const create = (params, userId) =>
     .then(first)
     .then(id => findById(id, userId));
 
-// TODO: handle update entry
 const update = (id, params, userId) =>
-  findById(id, userId) // ...
+  findById(id, userId)
+    .update(params)
+    .then(count => (count > 0))
+    .then(success => findById(id, userId));
 
 const destroy = (id, userId) =>
   findById(id, userId)
@@ -37,5 +39,6 @@ module.exports = {
   fetch,
   findById,
   create,
+  update,
   destroy
 };

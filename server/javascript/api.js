@@ -54,6 +54,13 @@ const entries = {
       .catch(err =>
         res.status(500).send({ error: err.message })),
 
+  update: (req, res) =>
+    Entries.update(req.params.id, req.body, req.user.id)
+      .then(entry =>
+        res.json({ entry }))
+      .catch(err =>
+        res.status(500).send({ error: err.message })),
+
   destroy: (req, res) =>
     Entries.destroy(req.params.id, req.user.id)
       .then(entry =>
@@ -71,6 +78,7 @@ api.all('/logout', logout);
 api.get('/entries', isAuthenticated, entries.fetch);
 api.get('/entries/:id', isAuthenticated, entries.findById);
 api.post('/entries', isAuthenticated, entries.create);
+api.put('/entries/:id', isAuthenticated, entries.update);
 api.delete('/entries/:id', isAuthenticated, entries.destroy);
 
 module.exports = api;

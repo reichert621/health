@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Link } from 'react-router-dom';
 import Entry from './Entry';
 import { fetchEntry } from '../helpers/entries';
 import './Entry.css';
@@ -32,6 +33,10 @@ class EntryContainer extends React.Component {
 
     return (
       <div className="entry-container">
+        <Link to={`/edit/${entry.id}`}>
+          Edit
+        </Link>
+
         <Entry
           key={entry.id}
           isPreview={false}

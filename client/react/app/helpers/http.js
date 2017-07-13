@@ -25,3 +25,14 @@ export const post = (endpoint, body) => {
   return fetch(endpoint, config)
     .then(res => res.json());
 };
+
+
+export const put = (endpoint, body) => {
+  const config = getHttpConfig({
+    method: 'PUT',
+    body: JSON.stringify(body)
+  });
+
+  return fetch(endpoint, config)
+    .then(res => res.json());
+};

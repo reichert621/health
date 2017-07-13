@@ -7,6 +7,7 @@ import {
 import Home from './components/Home';
 import EntryContainer from './components/EntryContainer';
 import NewEntry from './components/NewEntry';
+import EditEntry from './components/EditEntry';
 import './App.css';
 
 ReactDOM.render((
@@ -15,6 +16,7 @@ ReactDOM.render((
       <Route exact path="/" component={Home} />
       <Route path="/create" component={NewEntry} />
       <Route path="/entry/:id" component={EntryContainer} />
+      <Route path="/edit/:id" component={EditEntry} />
     </div>
   </Router>
 ), document.getElementById('app'));
