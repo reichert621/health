@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
-import Entry from './Entry';
+import EntryPreview from './EntryPreview';
 import { fetchEntries } from '../helpers/entries';
 import './Home.less';
 
@@ -29,9 +29,8 @@ class Home extends React.Component {
     }
 
     return entries.map(entry => (
-      <Entry
+      <EntryPreview
         key={entry.id}
-        isPreview={true}
         entry={entry} />
     ));
   }
@@ -50,7 +49,7 @@ class Home extends React.Component {
         <hr />
 
         <div className="">
-          <Link to="/create">New Entry</Link>
+          <Link to="/new">New Entry</Link>
         </div>
       </div>
     );

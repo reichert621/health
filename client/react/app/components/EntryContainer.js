@@ -39,7 +39,6 @@ class EntryContainer extends React.Component {
 
         <Entry
           key={entry.id}
-          isPreview={false}
           entry={entry} />
       </div>
     );

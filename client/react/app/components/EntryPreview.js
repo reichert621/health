@@ -1,17 +1,13 @@
 import React, { PropTypes } from 'react';
+import { first } from 'lodash';
 import { Link } from 'react-router-dom';
 import './Entry.less';
 
-// Temporary fix for line breaks
-const formatContent = (content = '') =>
-  content
-    .split('\n')
-    .map((text, i) => (
-      <div key={i}>{text}<br /></div>
-    ));
+const getPreviewContent = (content = '') =>
+  first(content.split('\n'));
 
-const Entry = ({ entry }) => {
-  const { title, content, created_at } = entry;
+const EntryPreview = ({ entry }) => {
+  const { id, title, content, created_at } = entry;
 
   return (
     <div className="entry-container">
@@ -20,19 +16,19 @@ const Entry = ({ entry }) => {
       </h2>
 
       <div className="entry-content">
-        {content ? formatContent(content) : ''}
+        {content ? getPreviewContent(content) : ''}
       </div>
 
       <small>{created_at}</small>
       <div>
-        <Link to="/">Back</Link>
+        <Link to={`/entry/${id}`}>View</Link>
       </div>
     </div>
   );
 };
 
-Entry.propTypes = {
+EntryPreview.propTypes = {
   entry: PropTypes.object.isRequired
 };
 
-export default Entry;
+export default EntryPreview;

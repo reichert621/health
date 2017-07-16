@@ -14,7 +14,7 @@ ReactDOM.render((
   <Router>
     <div className="app">
       <Route exact path="/" component={Home} />
-      <Route path="/create" component={NewEntry} />
+      <Route path="/new" component={NewEntry} />
       <Route path="/entry/:id" component={EntryContainer} />
       <Route path="/edit/:id" component={EditEntry} />
     </div>
