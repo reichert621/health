@@ -28,11 +28,14 @@ class Home extends React.Component {
       );
     }
 
-    return entries.map(entry => (
-      <EntryPreview
-        key={entry.id}
-        entry={entry} />
-    ));
+    return entries
+      // sort by most recent id
+      .sort((x, y) => y.id - x.id)
+      .map(entry => (
+        <EntryPreview
+          key={entry.id}
+          entry={entry} />
+      ));
   }
 
   render() {

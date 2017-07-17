@@ -8,6 +8,8 @@ const template = () => {
         <base href="/">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- NB: syntax highlighting style can be changed at https://github.com/isagalaev/highlight.js/tree/master/src/styles -->
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
       </head>
       <body ng-app="app" ng-strict-di ng-cloak>
         <app>

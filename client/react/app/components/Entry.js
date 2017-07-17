@@ -1,14 +1,11 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
+import md from '../helpers/markdown';
 import './Entry.less';
 
-// Temporary fix for line breaks
-const formatContent = (content = '') =>
-  content
-    .split('\n')
-    .map((text, i) => (
-      <div key={i}>{text}<br /></div>
-    ));
+const formatHTML = (content = '') => {
+  return { __html: md(content) };
+};
 
 const Entry = ({ entry }) => {
   const { title, content, created_at } = entry;
@@ -19,8 +16,8 @@ const Entry = ({ entry }) => {
         {title}
       </h2>
 
-      <div className="entry-content">
-        {content ? formatContent(content) : ''}
+      <div className="entry-content"
+        dangerouslySetInnerHTML={formatHTML(content)}>
       </div>
 
       <small>{created_at}</small>

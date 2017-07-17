@@ -1,6 +1,12 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
 import { createEntry } from '../helpers/entries';
+import md from '../helpers/markdown';
+import './Entry.less';
+
+const formatHTML = (content = '') => {
+  return { __html: md(content) };
+};
 
 class NewEntry extends React.Component {
   constructor(props) {
@@ -61,6 +67,10 @@ class NewEntry extends React.Component {
           onClick={this.handleSubmit.bind(this)}>
           Submit
         </button>
+
+        <div className="entry-preview"
+          dangerouslySetInnerHTML={formatHTML(this.state.content)}>
+        </div>
       </div>
     );
   }
