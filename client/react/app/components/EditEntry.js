@@ -63,14 +63,14 @@ class EditEntry extends React.Component {
           <Link to={`/entry/${entry.id}`}>Back</Link>
         </div>
 
-        <h1 className="entry-title">
+        <h1>
           Edit Entry
         </h1>
 
         <input
           type="text"
           name="title"
-          className="new-entry-title"
+          className="input-default -wide -large"
           placeholder="Title"
           value={entry.title}
           onChange={this.handleInputChange.bind(this)} />
@@ -78,20 +78,20 @@ class EditEntry extends React.Component {
         <textarea
           rows="8"
           name="content"
-          className="new-entry-content"
+          className="input-default -wide -large"
           placeholder="Content..."
           value={entry.content}
           onChange={this.handleInputChange.bind(this)}>
         </textarea>
 
         <button
-          className="new-entry-submit"
+          className="button-default -large"
           onClick={this.handleSave.bind(this)}>
           Save
         </button>
 
         <button
-          className="new-entry-submit"
+          className="button-default -large"
           onClick={this.handleDelete.bind(this)}>
           Delete
         </button>

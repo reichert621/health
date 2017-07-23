@@ -14,9 +14,15 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
+    const { history } = this.props;
+
     return fetchEntries()
-      .then(entries =>
-        this.setState({ entries }));
+      .then(entries => this.setState({ entries }))
+      .catch(err => {
+        console.log('Error fetching entries!', err);
+
+        return history.push('/login')
+      });
   }
 
   renderEntries() {

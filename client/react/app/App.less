@@ -1,5 +1,13 @@
+/* Font */
 @font-serif: 'Tinos', serif;
 @font-san-serif: 'Helvetica Neue', Arial, san-serif;
+
+/* Color */
+@border-gray: #d0d0d0;
+@light-gray: #eee;
+@black: #2b2b2b;
+@red: #da2a54;
+
 
 * {
   box-sizing: border-box;
@@ -10,6 +18,7 @@ body,
 .app {
   height: 100%;
   font-family: @font-serif;
+  font-size: 14px;
 }
 
 .app {
@@ -25,4 +34,68 @@ h4 {
 
 h1 {
   font-weight: 100;
+}
+
+.button-default {
+  background: transparent;
+  border: 1px solid @border-gray;
+  border-radius: 2px;
+  box-shadow: none;
+  color: @black;
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: 0.4px;
+  margin-right: 20px;
+  padding: 8px 14px;
+
+  &.-large {
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+
+  &:hover {
+    background: @light-gray;
+    cursor: pointer;
+  }
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:active {
+    border-color: @black;
+  }
+}
+
+.input-default {
+  border: 1px solid @border-gray;
+  border-radius: 2px;
+  display: block;
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 0.4px;
+  margin-bottom: 20px;
+  padding: 6px 12px;
+
+  &.-large {
+    font-size: 16px;
+    padding: 12px 16px;
+  }
+
+  &.-wide {
+    width: 100%;
+  }
+
+  &.-inline {
+    display: inline-block;
+  }
+
+  &:focus {
+    border-color: @black;
+    outline: 0;
+  }
+}
+
+.text-red {
+  color: @red;
 }

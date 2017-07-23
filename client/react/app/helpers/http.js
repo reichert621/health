@@ -9,11 +9,19 @@ const getHttpConfig = (options = {}) => {
   }, options);
 };
 
+const validateResponse = (res) => {
+  if (res.status >= 400) {
+    throw new Error('Bad response from server');
+  }
+
+  return res.json();
+};
+
 export const get = (endpoint) => {
   const config = getHttpConfig();
 
   return fetch(endpoint, config)
-    .then(res => res.json());
+    .then(validateResponse);
 };
 
 export const post = (endpoint, body) => {
@@ -23,7 +31,7 @@ export const post = (endpoint, body) => {
   });
 
   return fetch(endpoint, config)
-    .then(res => res.json());
+    .then(validateResponse);
 };
 
 
@@ -34,7 +42,7 @@ export const put = (endpoint, body) => {
   });
 
   return fetch(endpoint, config)
-    .then(res => res.json());
+    .then(validateResponse);
 };
 
 export const del = (endpoint) => {
@@ -43,5 +51,5 @@ export const del = (endpoint) => {
   });
 
   return fetch(endpoint, config)
-    .then(res => res.json());
+    .then(validateResponse);
 };

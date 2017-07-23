@@ -19,20 +19,22 @@ const getHashed = (password, salt) =>
 const verifyPassword = (password, salt, hashed) =>
   getHashed(password, salt) === hashed;
 
-const verifyUser = (user, password) => {
-  if (!user) {
-    throw new Error('Invalid user!');
-  }
+const isValidUser = (user, password) => {
+  if (!user) throw new Error(`Invalid user ${user}!`);
 
   const { salt, password: hashed } = user;
   const isValid = verifyPassword(password, salt, hashed);
 
-  if (isValid) {
+  return isValid;
+};
+
+const verifyUser = (user, password) => {
+  if (isValidUser(user, password)) {
     return user;
   } else {
     throw new Error('Invalid password!');
   }
-}
+};
 
 const sanitized = (params) => {
   const { password } = params;

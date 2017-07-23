@@ -3,6 +3,7 @@ import highlight from 'highlight.js';
 
 const markdown = (content = '') => {
   const options = {
+    breaks: true,
     highlight(code, lang) {
       if (highlight.getLanguage(lang)) {
         return highlight.highlight(lang, code).value;

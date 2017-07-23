@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
 import { createEntry } from '../helpers/entries';
 import md from '../helpers/markdown';
-import './Entry.less';
+import '../App.less';
 
 const formatHTML = (content = '') => {
   return { __html: md(content) };
@@ -39,13 +39,13 @@ class NewEntry extends React.Component {
           <Link to="/">Back</Link>
         </div>
 
-        <h1 className="entry-title">
+        <h1>
           New Entry
         </h1>
 
         <input
           type="text"
-          className="new-entry-title"
+          className="input-default -wide -large"
           placeholder="Title"
           value={this.state.title}
           onChange={
@@ -53,8 +53,8 @@ class NewEntry extends React.Component {
           } />
 
         <textarea
-          rows="8"
-          className="new-entry-content"
+          rows="20"
+          className="input-default -wide -large"
           placeholder="Content..."
           value={this.state.content}
           onChange={
@@ -63,12 +63,12 @@ class NewEntry extends React.Component {
         </textarea>
 
         <button
-          className="new-entry-submit"
+          className="button-default -large"
           onClick={this.handleSubmit.bind(this)}>
           Submit
         </button>
 
-        <div className="entry-preview"
+        <div
           dangerouslySetInnerHTML={formatHTML(this.state.content)}>
         </div>
       </div>

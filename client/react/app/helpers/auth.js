@@ -1,11 +1,6 @@
 import { post } from './http';
 
-export const login = () => {
-  // Hard-coded for testing
-  const credentials = {
-    username: 'alex',
-    password: 'password',
-  };
-
-  return post('/api/login', credentials);
+export const login = (credentials) => {
+  return post('/api/login', credentials)
+    .then(res => res.user);
 };
