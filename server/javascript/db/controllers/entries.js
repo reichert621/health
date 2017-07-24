@@ -15,8 +15,8 @@ const findOne = (where, userId) =>
   fetch(where, userId)
     .first();
 
-const findById = (id, userId) =>
-  findOne({ id }, userId);
+const findById = (id, userId, where = {}) =>
+  findOne(merge(where, { id }), userId);
 
 const create = (params, userId) =>
   Entries()

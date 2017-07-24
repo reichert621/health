@@ -6,6 +6,11 @@ export const fetchEntries = () => {
     .then(res => res.entries);
 };
 
+export const fetchUserEntries = (username) => {
+  return get(`/api/users/${username}/entries`)
+    .then(res => res.entries);
+};
+
 export const fetchEntry = (id) => {
   return get(`/api/entries/${id}`)
     .then(res => res.entry);

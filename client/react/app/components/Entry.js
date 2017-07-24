@@ -7,8 +7,10 @@ const formatHTML = (content = '') => {
   return { __html: md(content) };
 };
 
+// TODO: figure out how to render entries differently
+// for public vs. private vs. vs. preview vs. editing
 const Entry = ({ entry }) => {
-  const { title, content, created_at } = entry;
+  const { title, content, created_at, isPrivate } = entry;
 
   return (
     <div className="entry-container">
@@ -20,10 +22,9 @@ const Entry = ({ entry }) => {
         dangerouslySetInnerHTML={formatHTML(content)}>
       </div>
 
-      <small>{created_at}</small>
-      <div>
-        <Link to="/">Back</Link>
-      </div>
+      <small>
+        {created_at} | {isPrivate ? 'Private' : 'Public'}
+      </small>
     </div>
   );
 };

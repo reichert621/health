@@ -33,13 +33,19 @@ class EntryContainer extends React.Component {
 
     return (
       <div className="entry-container">
-        <Link to={`/edit/${entry.id}`}>
-          Edit
-        </Link>
+        <div>
+          <Link to="/">Back</Link>
+        </div>
 
         <Entry
           key={entry.id}
           entry={entry} />
+
+        <div>
+          <Link to={`/edit/${entry.id}`}>
+            Edit
+          </Link>
+        </div>
       </div>
     );
   }

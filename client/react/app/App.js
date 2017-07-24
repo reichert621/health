@@ -9,6 +9,7 @@ import Login from './components/Login';
 import EntryContainer from './components/EntryContainer';
 import NewEntry from './components/NewEntry';
 import EditEntry from './components/EditEntry';
+import Profile from './components/Profile';
 import './App.less';
 
 ReactDOM.render((
@@ -19,6 +20,7 @@ ReactDOM.render((
       <Route path="/new" component={NewEntry} />
       <Route path="/entry/:id" component={EntryContainer} />
       <Route path="/edit/:id" component={EditEntry} />
+      <Route path="/@:username" component={Profile} />
     </div>
   </Router>
 ), document.getElementById('app'));

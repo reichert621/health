@@ -6,7 +6,12 @@ class EditEntry extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { id: null, title: '', content: '' };
+    this.state = {
+      id: null,
+      title: '',
+      content: '',
+      isPrivate: false
+    };
   }
 
   componentDidMount() {
@@ -14,20 +19,28 @@ class EditEntry extends React.Component {
     const { id } = match.params;
 
     return fetchEntry(id)
-      .then(({ title, content }) =>
-        this.setState({ id, title, content }));
+      .then(entry =>
+        this.setState(entry));
   }
 
   handleInputChange({ target }) {
-    // console.log(target.name, target.value);
     const { name, value } = target;
 
     this.setState({ [name]: value });
   }
 
+  togglePrivate() {
+    const { isPrivate } = this.state;
+
+    this.setState({
+      isPrivate: !isPrivate
+    })
+  }
+
   handleSave(e) {
-    const { id, title, content } = this.state;
+    const { id, title, content, isPrivate } = this.state;
     const { history } = this.props;
+    const updates = { title, content, isPrivate };
 
     if (!title) {
       return console.log('Title is required!');
@@ -37,7 +50,7 @@ class EditEntry extends React.Component {
       return console.log('Content is required!');
     }
 
-    return updateEntry(id, { title, content })
+    return updateEntry(id, updates)
       .then(entry =>
         history.push(`/entry/${entry.id}`));
   }
@@ -94,6 +107,12 @@ class EditEntry extends React.Component {
           className="button-default -large"
           onClick={this.handleDelete.bind(this)}>
           Delete
+        </button>
+
+        <button
+          className="button-default -large"
+          onClick={this.togglePrivate.bind(this)}>
+          Make {entry.isPrivate ? 'Public' : 'Private'}
         </button>
       </div>
     );

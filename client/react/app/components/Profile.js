@@ -1,27 +1,30 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
-import EntryPreview from './EntryPreview';
-import { fetchEntries } from '../helpers/entries';
+import Entry from './Entry';
+import { fetchUserEntries } from '../helpers/entries';
 import './Home.less';
 
-class Home extends React.Component {
+class Profile extends React.Component {
   constructor(props) {
     super(props);
 
+    const { match } = this.props;
+    const { username } = match.params;
+
     this.state = {
+      user: username,
       entries: []
     };
   }
 
   componentDidMount() {
-    const { history } = this.props;
+    const { match } = this.props;
+    const { username } = match.params;
 
-    return fetchEntries()
+    return fetchUserEntries(username)
       .then(entries => this.setState({ entries }))
       .catch(err => {
-        console.log('Error fetching entries!', err);
-
-        return history.push('/login');
+        console.log('Error fetching user entries!', err);
       });
   }
 
@@ -38,7 +41,7 @@ class Home extends React.Component {
       // sort by most recent id
       .sort((x, y) => y.id - x.id)
       .map(entry => (
-        <EntryPreview
+        <Entry
           key={entry.id}
           entry={entry} />
       ));
@@ -48,21 +51,15 @@ class Home extends React.Component {
     return (
       <div className="blog-container">
         <h1 className="blog-title">
-          Log
+          {this.state.user}
         </h1>
 
         <div className="entry-list-container">
           {this.renderEntries()}
-        </div>
-
-        <hr />
-
-        <div className="">
-          <Link to="/new">New Entry</Link>
         </div>
       </div>
     );
   }
 }
 
-export default Home;
+export default Profile;

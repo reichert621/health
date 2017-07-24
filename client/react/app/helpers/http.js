@@ -9,19 +9,31 @@ const getHttpConfig = (options = {}) => {
   }, options);
 };
 
-const validateResponse = (res) => {
-  if (res.status >= 400) {
-    throw new Error('Bad response from server');
+const isAuthorized = (res) => {
+  if (res.status === 401) {
+    throw new Error('Not authorized!');
   }
 
   return res.json();
 };
 
+const validate = (res) => {
+  if (res.error || res.status >= 400) {
+    throw new Error(res.error || res.status);
+  }
+
+  return res;
+};
+
+const request = (endpoint, config) =>
+  fetch(endpoint, config)
+    .then(isAuthorized)
+    .then(validate);
+
 export const get = (endpoint) => {
   const config = getHttpConfig();
 
-  return fetch(endpoint, config)
-    .then(validateResponse);
+  return request(endpoint, config);
 };
 
 export const post = (endpoint, body) => {
@@ -30,8 +42,7 @@ export const post = (endpoint, body) => {
     body: JSON.stringify(body)
   });
 
-  return fetch(endpoint, config)
-    .then(validateResponse);
+  return request(endpoint, config);
 };
 
 
@@ -41,8 +52,7 @@ export const put = (endpoint, body) => {
     body: JSON.stringify(body)
   });
 
-  return fetch(endpoint, config)
-    .then(validateResponse);
+  return request(endpoint, config);
 };
 
 export const del = (endpoint) => {
@@ -50,6 +60,5 @@ export const del = (endpoint) => {
     method: 'DELETE'
   });
 
-  return fetch(endpoint, config)
-    .then(validateResponse);
+  return request(endpoint, config);
 };

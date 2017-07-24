@@ -12,6 +12,15 @@ class Login extends React.Component {
       password: '',
       error: null
     };
+
+    this.onSubmit = this.handleSubmit.bind(this);
+    this.updateInput = this.onUpdateInput.bind(this);
+  }
+
+  onUpdateInput(e) {
+    return this.setState({
+      [e.target.name]: e.target.value
+    });
   }
 
   handleSubmit(e) {
@@ -35,16 +44,14 @@ class Login extends React.Component {
           Log in
         </h1>
 
-        <form onSubmit={this.handleSubmit.bind(this)}>
+        <form onSubmit={this.onSubmit}>
           <input
             type="text"
             className="input-default -large"
             placeholder="Username"
             name="username"
             value={this.state.username}
-            onChange={
-              (e) => this.setState({ username: e.target.value })
-            } />
+            onChange={this.updateInput} />
 
           <input
             type="password"
@@ -52,9 +59,7 @@ class Login extends React.Component {
             placeholder="Password"
             name="password"
             value={this.state.password}
-            onChange={
-              (e) => this.setState({ password: e.target.value })
-            } />
+            onChange={this.updateInput} />
 
           <button
             className="button-default -large"
