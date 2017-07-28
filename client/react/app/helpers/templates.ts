@@ -1,5 +1,5 @@
 // Testing entry templates
-export const basic = `
+export const basic: string = `
 
 ### Today:
 

@@ -33,6 +33,9 @@
     "react-router-dom": "^4.1.1"
   },
   "devDependencies": {
+    "@types/highlight.js": "^9.1.9",
+    "@types/lodash": "^4.14.71",
+    "@types/marked": "0.0.28",
     "babel-core": "^6.10.4",
     "babel-eslint": "^6.1.2",
     "babel-loader": "^6.2.4",
@@ -48,6 +51,8 @@
     "ng-annotate-loader": "^0.2.0",
     "raw-loader": "^0.5.1",
     "style-loader": "^0.13.1",
+    "ts-loader": "^2.3.2",
+    "typescript": "^2.4.2",
     "webpack": "^2.0.0",
     "webpack-dev-middleware": "1.5.1",
     "webpack-dev-server": "^1.14.1",

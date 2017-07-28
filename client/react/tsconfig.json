@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "outDir": "build",
+    "sourceMap": true,
+    "target": "es5"
+  },
+  "include": [
+    "app/**/*.ts*"
+  ]
+}
