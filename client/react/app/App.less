@@ -1,14 +1,20 @@
-/* Font */
+/* Fonts */
 @font-serif: 'Tinos', serif;
 @font-san-serif: 'Helvetica Neue', Arial, san-serif;
 
-/* Color */
+/* Colors */
 @border-gray: #d0d0d0;
 @light-gray: #eee;
 @black: #2b2b2b;
+@dark-green: #3e886b;
+@bright-green: #3db787;
 @red: #da2a54;
+@white: #fff;
 
+/* Spacing */
+@margin-default: 20px;
 
+/* Base CSS */
 * {
   box-sizing: border-box;
 }
@@ -30,10 +36,29 @@ h2,
 h3,
 h4 {
   font-family: @font-san-serif;
+  letter-spacing: 0.4px;
+  margin-top: 10px;
+  margin-bottom: @margin-default;
 }
 
 h1 {
+  font-size: 44px;
   font-weight: 100;
+}
+
+h2 {
+  font-size: 36px;
+  font-weight: 300;
+}
+
+h3 {
+  font-size: 28px;
+  font-weight: 400;
+}
+
+h4 {
+  font-size: 20px;
+  font-weight: 500;
 }
 
 .button-default {
@@ -45,7 +70,8 @@ h1 {
   font-size: 12px;
   font-weight: 300;
   letter-spacing: 0.4px;
-  margin-right: 20px;
+  margin-bottom: @margin-default;
+  margin-right: @margin-default;
   padding: 8px 14px;
 
   &.-large {
@@ -74,7 +100,7 @@ h1 {
   font-size: 14px;
   font-weight: 300;
   letter-spacing: 0.4px;
-  margin-bottom: 20px;
+  margin-bottom: @margin-default;
   padding: 6px 12px;
 
   &.-large {
@@ -88,12 +114,19 @@ h1 {
 
   &.-inline {
     display: inline-block;
+    margin-right: @margin-default;
   }
 
   &:focus {
     border-color: @black;
     outline: 0;
   }
+}
+
+.component-container {
+  border: 1px solid @border-gray;
+  padding: 10px 40px;
+  margin: @margin-default 0px;
 }
 
 .text-red {

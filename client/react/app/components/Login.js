@@ -39,7 +39,7 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div className="new-entry-container">
+      <div className="default-container">
         <h1 className="entry-title">
           Log in
         </h1>
