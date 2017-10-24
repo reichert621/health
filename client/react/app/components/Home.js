@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
 import EntryPreview from './EntryPreview';
 import { fetchEntries } from '../helpers/entries';
+import { logout } from '../helpers/auth';
 import './Home.less';
 
 class Home extends React.Component {
@@ -44,6 +45,18 @@ class Home extends React.Component {
       ));
   }
 
+  logout() {
+    const { history } = this.props;
+
+    return logout()
+      .then(res => {
+        return history.push('/login');
+      })
+      .catch(err => {
+        console.log('Error logging out!', err);
+      });
+  }
+
   render() {
     return (
       <div className="blog-container">
@@ -59,6 +72,10 @@ class Home extends React.Component {
 
         <div className="">
           <Link to="/new">New Entry</Link>
+          <span>/</span>
+          <Link to="/logout" onClick={this.logout.bind(this)}>
+            Logout
+          </Link>
         </div>
       </div>
     );

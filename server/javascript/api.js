@@ -17,7 +17,10 @@ const handleError = (res, err) => {
 
 const logout = (req, res) => {
   req.logout();
-  res.redirect('/');
+
+  return res
+    .status(200)
+    .send({ status: 200 });
 };
 
 // For testing
