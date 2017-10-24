@@ -60,6 +60,9 @@
   },
   "main": "server/javascript/index.js",
   "scripts": {
-    "start": "node server/javascript/index.js"
+    "start": "node server/javascript/index.js",
+    "build": "webpack",
+    "restart": "pm2 startOrRestart ecosystem.config.js",
+    "deploy": "pm2 deploy ecosystem.config.js production"
   }
 }
