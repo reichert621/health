@@ -11,6 +11,8 @@ import NewEntry from './components/NewEntry';
 import EditEntry from './components/EditEntry';
 import Profile from './components/Profile';
 import ScoreCard from './components/ScoreCard';
+import CheckList from './components/CheckList';
+import Reporting from './components/Reporting';
 import Library from './components/Library';
 import './App.less';
 
@@ -24,6 +26,8 @@ ReactDOM.render((
       <Route path="/edit/:id" component={EditEntry} />
       <Route path="/@:username" component={Profile} />
       <Route path="/scorecard" component={ScoreCard} />
+      <Route path="/checklist" component={CheckList} />
+      <Route path="/reporting" component={Reporting} />
       <Route path="/components" component={Library} />
     </div>
   </Router>

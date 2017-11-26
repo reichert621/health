@@ -97,11 +97,9 @@ class ScoreCard extends React.Component {
   handleCheckboxUpdate(task) {
     const { options } = this.state;
     const update = options.map(option => {
-      if (option.id === task.id) {
-        return { ...option, isComplete: !option.isComplete };
-      } else {
-        return option;
-      }
+      return (option.id === task.id) ?
+        { ...option, isComplete: !option.isComplete } :
+        option;
     });
 
     return this.setState({ options: update });
@@ -111,11 +109,7 @@ class ScoreCard extends React.Component {
     return tasks.reduce((score, task) => {
       const { isComplete, points } = task;
 
-      if (isComplete) {
-        return score + points;
-      } else {
-        return score;
-      }
+      return isComplete ? (score + points) : score;
     }, 0);
   }
 
@@ -155,11 +149,13 @@ class ScoreCard extends React.Component {
           Daily Score Card
         </h1>
 
-        <h2>Total Score: {this.calculateScore(options)}</h2>
-
         <div className="component-container">
           {this.renderCheckboxes()}
         </div>
+
+        <h2>
+          Total Score: {this.calculateScore(options)}
+        </h2>
       </div>
     );
   }
