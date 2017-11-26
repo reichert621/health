@@ -5,9 +5,33 @@ import '../App.less';
 class Library extends React.Component {
   constructor(props) {
     super(props);
+
+    // TODO: handle radio/checkbox inputs in separate components
+    this.state = {
+      selected: null,
+      checked: { one: false, two: false, three: false }
+    };
+  }
+
+  handleRadioUpdate(e) {
+    const option = e.target.value;
+
+    return this.setState({ selected: option });
+  }
+
+  handleCheckboxToggle(val) {
+    const { checked }  = this.state;
+    const update = {
+      ...checked,
+      [val]: !checked[val]
+    };
+
+    return this.setState({ checked: update });
   }
 
   render() {
+    const { selected, checked } = this.state;
+
     return (
       <div className="default-container">
         <h1>
@@ -89,6 +113,64 @@ class Library extends React.Component {
               className="input-default -wide -large"
               placeholder="textarea input-default -wide -large">
             </textarea>
+          </div>
+
+          <div>
+            <label>
+              <input
+                type="radio"
+                value="optionOne"
+                checked={selected === 'optionOne'}
+                onChange={this.handleRadioUpdate.bind(this)} />
+              Option #1
+            </label>
+
+            <label>
+              <input
+                type="radio"
+                value="optionTwo"
+                checked={selected === 'optionTwo'}
+                onChange={this.handleRadioUpdate.bind(this)} />
+              Option #2
+            </label>
+
+            <label>
+              <input
+                type="radio"
+                value="optionThree"
+                checked={selected === 'optionThree'}
+                onChange={this.handleRadioUpdate.bind(this)} />
+              Option #3
+            </label>
+          </div>
+
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                value="one"
+                checked={checked.one}
+                onChange={this.handleCheckboxToggle.bind(this, 'one')} />
+              Option #1
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                value="two"
+                checked={checked.two}
+                onChange={this.handleCheckboxToggle.bind(this, 'two')} />
+              Option #2
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                value="three"
+                checked={checked.three}
+                onChange={this.handleCheckboxToggle.bind(this, 'three')} />
+              Option #3
+            </label>
           </div>
         </div>
 

@@ -10,6 +10,7 @@ import EntryContainer from './components/EntryContainer';
 import NewEntry from './components/NewEntry';
 import EditEntry from './components/EditEntry';
 import Profile from './components/Profile';
+import ScoreCard from './components/ScoreCard';
 import Library from './components/Library';
 import './App.less';
 
@@ -22,6 +23,7 @@ ReactDOM.render((
       <Route path="/entry/:id" component={EntryContainer} />
       <Route path="/edit/:id" component={EditEntry} />
       <Route path="/@:username" component={Profile} />
+      <Route path="/scorecard" component={ScoreCard} />
       <Route path="/components" component={Library} />
     </div>
   </Router>
