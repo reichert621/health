@@ -31,6 +31,7 @@
     "passport-local": "^1.0.0",
     "pg": "^6.1.2",
     "react": "^15.4.1",
+    "react-datepicker": "^0.64.0",
     "react-dom": "^15.4.1",
     "react-highcharts": "^15.0.0",
     "react-router-dom": "^4.1.1"

@@ -1,36 +1,10 @@
 import React from 'react';
-import { groupBy, keys } from 'lodash';
+import { groupBy, keys, isNumber } from 'lodash';
+import moment from 'moment';
+import DatePicker from 'react-datepicker';
+import { fetchChecklist, updateChecklistScores } from '../helpers/checklist';
+import 'react-datepicker/dist/react-datepicker.css';
 import './CheckList.less';
-
-const getQuestions = () => {
-  return [
-    { id: 1, text: 'Feeling sad or down in the dumps', score: null },
-    { id: 2, text: 'Feeling unhappy or blue', score: null },
-    { id: 3, text: 'Crying spells or tearfulness', score: null },
-    { id: 4, text: 'Feeling discouraged', score: null },
-    { id: 5, text: 'Feeling hopeless', score: null },
-    { id: 6, text: 'Low self-esteem', score: null },
-    { id: 7, text: 'Feeling worthless or inadequate', score: null },
-    { id: 8, text: 'Guilt or shame', score: null },
-    { id: 9, text: 'Criticizing yourself or blaming yourself', score: null },
-    { id: 10, text: 'Difficulty making decisions', score: null },
-    { id: 11, text: 'Loss of interest in family, friends, or colleagues', score: null },
-    { id: 12, text: 'Loneliness', score: null },
-    { id: 13, text: 'Spending less time with family or friends', score: null },
-    { id: 14, text: 'Loss of motivation', score: null },
-    { id: 15, text: 'Loss of interest in work or other activities', score: null },
-    { id: 16, text: 'Avoiding work or other activities', score: null },
-    { id: 17, text: 'Loss of pleasure or satisfaction in life', score: null },
-    { id: 18, text: 'Feeling tired', score: null },
-    { id: 19, text: 'Difficulty sleeping or sleeping too much', score: null },
-    { id: 20, text: 'Decreased or increased appetite', score: null },
-    { id: 21, text: 'Loss of interest in sex', score: null },
-    { id: 22, text: 'Worrying about your health', score: null },
-    { id: 23, text: 'Do you have any suicidal thoughts?', score: null },
-    { id: 24, text: 'Would you like to end your life?', score: null },
-    { id: 25, text: 'Do you have a plan for harming yourself?', score: null }
-  ];
-};
 
 const getScoreOptions = () => {
   return [
@@ -77,8 +51,23 @@ class CheckList extends React.Component {
     super(props);
 
     this.state = {
-      questions: getQuestions()
+      checklist: {},
+      date: moment(),
+      questions: []
     };
+  }
+
+  componentDidMount() {
+    const { match } = this.props;
+    const { id } = match.params;
+
+    return fetchChecklist(id)
+      .then(checklist => {
+        const { questions, date } = checklist;
+
+        return this.setState({ checklist, questions,  date: moment(date) });
+      })
+      .catch(err => console.log('Error fetching checklist!!!', err));
   }
 
   handleScoreChange(question, score) {
@@ -94,14 +83,46 @@ class CheckList extends React.Component {
       question.score ? (score + question.score) : score, 0);
   }
 
+  handleDateChange(date) {
+    this.setState({ date });
+  }
+
+  submit() {
+    const { questions, date, checklist } = this.state;
+    const { id: checklistId } = checklist;
+
+    const scores = questions
+      .filter(q => isNumber(q.score))
+      .map(({ id, score, checklistScoreId }) => {
+        return {
+          score,
+          checklistId,
+          checklistScoreId,
+          checklistQuestionId: id
+        };
+      });
+
+    console.log('Submitting!', scores);
+
+    return updateChecklistScores(checklistId, { scores, date })
+      .then(res => {
+        console.log('Updated!', res);
+      })
+      .catch(err => console.log('ERROR updating scores!', err));
+  }
+
   render() {
-    const { questions } = this.state;
+    const { questions, date } = this.state;
 
     return (
       <div className="default-container">
         <h1>
           Depression Checklist
         </h1>
+
+        <DatePicker
+          selected={date}
+          onChange={this.handleDateChange.bind(this)} />
 
         <div className="component-container">
           {
@@ -115,6 +136,12 @@ class CheckList extends React.Component {
             })
           }
         </div>
+
+        <button
+          className="button-default"
+          onClick={this.submit.bind(this)}>
+          Submit
+        </button>
 
         <h2>
           Total Score: {this.calculateScore(questions)}

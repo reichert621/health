@@ -25,8 +25,8 @@ ReactDOM.render((
       <Route path="/entry/:id" component={EntryContainer} />
       <Route path="/edit/:id" component={EditEntry} />
       <Route path="/@:username" component={Profile} />
-      <Route path="/scorecard" component={ScoreCard} />
-      <Route path="/checklist" component={CheckList} />
+      <Route path="/scorecard/:id" component={ScoreCard} />
+      <Route path="/checklist/:id" component={CheckList} />
       <Route path="/reporting" component={Reporting} />
       <Route path="/components" component={Library} />
     </div>

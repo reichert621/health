@@ -15,8 +15,7 @@ exports.seed = (knex, Promise) => {
     Promise.all(
       entries
         .map(addTimestamps)
-        .map(entry =>
-          knex('entries').insert(entry))
+        .map(entry => knex('entries').insert(entry))
     );
 
   return knex('entries').del()

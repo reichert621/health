@@ -1,22 +1,48 @@
 import React from 'react';
 import Highcharts from 'react-highcharts';
+import _ from 'lodash';
+import moment from 'moment';
+import { fetchChecklistStats, fetchScorecardStats } from '../helpers/reporting';
 import './Reporting.less';
 
 class Reporting extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      scores: [],
+      stats: {}
+    };
+  }
+
+  componentDidMount() {
+    return Promise.all([
+      fetchChecklistStats(),
+      fetchScorecardStats()
+    ])
+      .then(([checklistStats, scorecardStats]) => {
+        const stats = {
+          checklist: checklistStats,
+          scorecard: scorecardStats
+        };
+
+        return this.setState({ stats });
+      })
+      .catch(err => {
+        console.log('Error fetching scores!', err);
+      });
   }
 
   render() {
-    // TODO: use real data
+    const { checklist, scorecard } = this.state.stats;
     const config = {
       title: { text: 'Reports' },
       xAxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        type: 'datetime'
       },
-      series: [{
-        data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 295.6, 454.4]
-      }]
+      series: [
+        { data: checklist }, { data: scorecard }
+      ]
     };
 
     return (

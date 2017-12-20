@@ -73,6 +73,12 @@ class Home extends React.Component {
         <div className="">
           <Link to="/new">New Entry</Link>
           <span>/</span>
+          <Link to="/scorecard/1">Score Card</Link>
+          <span>/</span>
+          <Link to="/checklist/1">Checklist</Link>
+          <span>/</span>
+          <Link to="/reporting">Reporting</Link>
+          <span>/</span>
           <Link to="/logout" onClick={this.logout.bind(this)}>
             Logout
           </Link>
