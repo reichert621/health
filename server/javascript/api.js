@@ -109,12 +109,26 @@ const entries = {
 };
 
 const scorecards = {
+  fetch: (req, res) => {
+    return ScoreCard.fetch({}, req.user.id)
+      .then(scorecards => res.json({ scorecards }))
+      .catch(err => handleError(res, err))
+  },
+
   findById: (req, res) => {
     return ScoreCard.findById(req.params.id, req.user.id)
       .then(scorecard =>
         res.json({ scorecard }))
       .catch(err =>
         handleError(res, err));
+  },
+
+  create: (req, res) => {
+    return ScoreCard.createWithScores(req.body, req.user.id)
+      .then(scorecard => {
+        return res.json({ scorecard });
+      })
+      .catch(err => handleError(res, err));
   },
 
   updateSelectedTasks: (req, res) => {
@@ -143,30 +157,37 @@ const tasks = {
 };
 
 const checklists = {
-  findById: (req, res) => {
-    return Checklist.findById(req.params.id, req.user.id)
+  fetch: (req, res) => {
+    return Checklist.fetch({}, req.user.id)
+      .then(checklists => res.json({ checklists }))
+      .catch(err => handleError(res, err))
+  },
+
+  create: (req, res) => {
+    return Checklist.createWithScores(req.body, req.user.id)
       .then(checklist => {
         return res.json({ checklist });
       })
+      .catch(err => handleError(res, err));
+  },
+
+  findById: (req, res) => {
+    return Checklist.findById(req.params.id, req.user.id)
+      .then(checklist => res.json({ checklist }))
       .catch(err =>
         handleError(res, err));
   },
 
   updateScores: (req, res) => {
     return Checklist.updateScores(req.params.id, req.body, req.user.id)
-      .then(updates =>
-        res.json({ updates }))
-      .catch(err =>
-        handleError(res, err));
+      .then(updates => res.json({ updates }))
+      .catch(err => handleError(res, err));
   },
 
   fetchStats: (req, res) => {
     return Checklist.fetchStats(req.user.id)
-      .then(stats => {
-        return res.json({ stats });
-      })
-      .catch(err =>
-        handleError(res, err));
+      .then(stats => res.json({ stats }))
+      .catch(err => handleError(res, err));
   }
 };
 
@@ -212,13 +233,17 @@ api.get('/users', users.fetch);
 api.get('/users/:username/entries', users.fetchEntries);
 api.get('/users/:username/entries/:id', users.fetchEntry);
 // Scorecards
+api.get('/scorecards', isAuthenticated, scorecards.fetch);
 api.get('/scorecards/:id', isAuthenticated, scorecards.findById);
+api.post('/scorecards/new', isAuthenticated, scorecards.create);
 api.post('/scorecards/:id/update-selected-tasks', isAuthenticated, scorecards.updateSelectedTasks);
 // Tasks
 api.get('/tasks', t.fetch);
 // Checklists
+api.get('/checklists', isAuthenticated, checklists.fetch);
 api.get('/checklists/:id', isAuthenticated, checklists.findById);
 api.post('/checklists/:id/update-scores', isAuthenticated, checklists.updateScores);
+api.post('/checklists/new', isAuthenticated, checklists.create);
 // Checklist Scores
 api.get('/checklist-scores', isAuthenticated, checklistScores.fetch);
 // Checklist Questions

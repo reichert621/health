@@ -43,12 +43,32 @@ const findById = (id, userId, where = {}) =>
        });
     });
 
-const create = (params, userId) =>
-  Checklist()
+const create = (params, userId) => {
+  return Checklist()
     .returning('id')
     .insert(merge(params, { userId }))
     .then(first)
     .then(id => findById(id, userId));
+};
+
+const createWithScores = async (params, userId) => {
+  const { date, scores } = params;
+  const checklist = await create({ date }, userId);
+  const { id: checklistId } = checklist;
+  const promises = scores.map(({ score, checklistQuestionId }) => {
+    const checklistScore = {
+      score,
+      checklistId,
+      checklistQuestionId
+    };
+
+    return ChecklistScore.create(checklistScore, userId);
+  });
+
+  await Promise.all(promises);
+
+  return checklist;
+};
 
 const update = (id, params, userId) =>
   findOne({ id }, userId)
@@ -112,6 +132,7 @@ module.exports = {
   fetch,
   findById,
   create,
+  createWithScores,
   update,
   updateScores,
   fetchStats,

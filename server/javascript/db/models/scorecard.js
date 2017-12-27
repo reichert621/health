@@ -83,6 +83,21 @@ const create = (params, userId) =>
     .then(first)
     .then(id => findById(id, userId));
 
+const createWithScores = async (params, userId) => {
+  const { date, selectedTasks } = params;
+  const scorecard = await create({ date }, userId);
+  const { id: scorecardId } = scorecard;
+  const promises = selectedTasks.map(({ taskId }) => {
+    const selectedTask = { taskId, scorecardId };
+
+    return ScoreCardSelectedTask.create(selectedTask, userId);
+  });
+
+  await Promise.all(promises);
+
+  return scorecard;
+};
+
 const update = (id, params, userId) =>
   findOne({ id }, userId)
     .update(params)
@@ -114,6 +129,7 @@ module.exports = {
   findById,
   fetchStats,
   create,
+  createWithScores,
   update,
   updateSelectedTasks,
   destroy

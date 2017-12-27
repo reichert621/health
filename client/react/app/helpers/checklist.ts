@@ -6,6 +6,11 @@ export interface Checklist {
   date: string;
 }
 
+export const fetchChecklists = (): Promise<Checklist[]> => {
+  return get('/api/checklists')
+    .then((res: HttpResponse) => res.checklists);
+};
+
 export const fetchChecklist = (id: number): Promise<Checklist> => {
   return get(`/api/checklists/${id}`)
     .then((res: HttpResponse) => res.checklist);
@@ -19,8 +24,13 @@ export const updateChecklistScores = (id: number, params: object): Promise<Check
 
 // TODO: returns object or array?
 export const fetchChecklistStats = (): Promise<Object> => {
-  return get(`/api/stats/checklists`)
+  return get('/api/stats/checklists')
     .then((res: HttpResponse) => res.stats);
+};
+
+export const createNewChecklist = (params: object): Promise<Checklist> => {
+  return post('/api/checklists/new', params)
+    .then((res: HttpResponse) => res.checklist);
 };
 
 export interface ChecklistScore {

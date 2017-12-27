@@ -60,6 +60,22 @@ class Home extends React.Component {
   render() {
     return (
       <div className="blog-container">
+        <div className="">
+          <Link to="/new">New Entry</Link>
+          <span>/</span>
+          <Link to="/scorecards">Scorecards</Link>
+          <span>/</span>
+          <Link to="/checklists">Checklists</Link>
+          <span>/</span>
+          <Link to="/reporting">Reporting</Link>
+          <span>/</span>
+          <Link to="/logout" onClick={this.logout.bind(this)}>
+            Logout
+          </Link>
+        </div>
+
+        <hr />
+
         <h1 className="blog-title">
           Log
         </h1>
@@ -73,9 +89,9 @@ class Home extends React.Component {
         <div className="">
           <Link to="/new">New Entry</Link>
           <span>/</span>
-          <Link to="/scorecard/1">Score Card</Link>
+          <Link to="/scorecards">Scorecards</Link>
           <span>/</span>
-          <Link to="/checklist/1">Checklist</Link>
+          <Link to="/checklists">Checklists</Link>
           <span>/</span>
           <Link to="/reporting">Reporting</Link>
           <span>/</span>

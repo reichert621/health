@@ -7,6 +7,11 @@ export interface Scorecard {
   title?: string;
 }
 
+export const fetchScorecards = (): Promise<Scorecard[]> => {
+  return get('/api/scorecards')
+    .then((res: HttpResponse) => res.scorecards);
+};
+
 export const fetchScorecard = (id: number): Promise<Scorecard> => {
   return get(`/api/scorecards/${id}`)
     .then((res: HttpResponse) => res.scorecard);
@@ -19,7 +24,12 @@ export const updateScoreCardSelectedTasks = (id: number, params: object): Promis
 };
 
 // TODO: returns object or array?
-export const fetchScorecardtStats = (): Promise<Object> => {
-  return get(`/api/stats/scorescards`)
+export const fetchScorecardStats = (): Promise<Object> => {
+  return get(`/api/stats/scorecards`)
     .then((res: HttpResponse) => res.stats);
+};
+
+export const createNewScorecard = (params: object): Promise<Scorecard> => {
+  return post('/api/scorecards/new', params)
+    .then((res: HttpResponse) => res.scorecard);
 };

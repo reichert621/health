@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Highcharts from 'react-highcharts';
 import _ from 'lodash';
 import moment from 'moment';
@@ -41,12 +42,22 @@ class Reporting extends React.Component {
         type: 'datetime'
       },
       series: [
-        { data: checklist }, { data: scorecard }
+        {
+          id: 'checklist',
+          name: 'Checklist',
+          data: checklist
+        }, {
+          id: 'scorecard',
+          name: 'Scorecard',
+          data: scorecard
+        }
       ]
     };
 
     return (
       <div className="default-container">
+        <Link to="/">Back</Link>
+
         <h1>Reporting</h1>
 
         <Highcharts config={config} />

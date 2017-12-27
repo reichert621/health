@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { groupBy, keys, isNumber } from 'lodash';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
-import { fetchChecklist, updateChecklistScores } from '../helpers/checklist';
+import { fetchChecklistQuestions, createNewChecklist } from '../helpers/checklist';
 import 'react-datepicker/dist/react-datepicker.css';
 import './CheckList.less';
 
@@ -47,26 +47,22 @@ const ChecklistQuestion = ({ question, onSelect }) => {
   );
 };
 
-class CheckList extends React.Component {
+// TODO: this component is extremely similar to the Checklist component,
+// might be worth DRYing up or distinguishing between the two better
+class NewCheckList extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      checklist: {},
       date: moment(),
       questions: []
     };
   }
 
   componentDidMount() {
-    const { match } = this.props;
-    const { id } = match.params;
-
-    return fetchChecklist(id)
-      .then(checklist => {
-        const { questions, date } = checklist;
-
-        return this.setState({ checklist, questions,  date: moment(date) });
+    return fetchChecklistQuestions()
+      .then(questions => {
+        return this.setState({ questions });
       })
       .catch(err => console.log('Error fetching checklist!', err));
   }
@@ -89,26 +85,24 @@ class CheckList extends React.Component {
   }
 
   submit() {
-    const { questions, date, checklist } = this.state;
-    const { id: checklistId } = checklist;
-
+    const { questions, date } = this.state;
+    const { history } = this.props;
     const scores = questions
       .filter(q => isNumber(q.score))
-      .map(({ id, score, checklistScoreId }) => {
+      .map(({ id, score }) => {
         return {
           score,
-          checklistId,
-          checklistScoreId,
           checklistQuestionId: id
         };
       });
 
     console.log('Submitting!', scores);
-    return updateChecklistScores(checklistId, { scores, date })
-      .then(res => {
-        console.log('Updated!', res);
+    return createNewChecklist({ date, scores })
+      .then(({ id }) => {
+        console.log('Created!', id);
+        return history.push(`/checklist/${id}`);
       })
-      .catch(err => console.log('Error updating scores!', err));
+      .catch(err => console.log('Error creating checklist!', err));
   }
 
   render() {
@@ -153,4 +147,4 @@ class CheckList extends React.Component {
   }
 }
 
-export default CheckList;
+export default NewCheckList;
