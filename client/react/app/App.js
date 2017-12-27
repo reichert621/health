@@ -5,20 +5,11 @@ import {
   Switch,
   Route
 } from 'react-router-dom';
-import Home from './components/Home';
-import Login from './components/Login';
-import EntryContainer from './components/EntryContainer';
-import NewEntry from './components/NewEntry';
-import EditEntry from './components/EditEntry';
-import Profile from './components/Profile';
-import ScoreCards from './components/ScoreCards';
-import ScoreCard from './components/ScoreCard';
-import NewScoreCard from './components/NewScoreCard';
-import CheckLists from './components/CheckLists';
-import CheckList from './components/CheckList';
-import NewCheckList from './components/NewCheckList';
-import Reporting from './components/Reporting';
-import Library from './components/Library';
+import { Home, Login, Profile, Library } from './components/home';
+import { EntryContainer, NewEntry, EditEntry } from './components/entry';
+import { ScoreCards, ScoreCard, NewScoreCard } from './components/scorecard';
+import { CheckLists, CheckList, NewCheckList } from './components/checklist';
+import { Reporting } from './components/reporting';
 import './App.less';
 
 ReactDOM.render((

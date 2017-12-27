@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
-import { login } from '../helpers/auth';
-import '../App.less';
+import { login } from '../../helpers/auth';
+import '../../App.less';
 
 class Login extends React.Component {
   constructor(props) {

@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
-import EntryPreview from './EntryPreview';
-import { fetchEntries } from '../helpers/entries';
-import { logout } from '../helpers/auth';
+import EntryPreview from '../entry/EntryPreview';
+import { fetchEntries } from '../../helpers/entries';
+import { logout } from '../../helpers/auth';
 import './Home.less';
 
 class Home extends React.Component {

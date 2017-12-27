@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
-import '../App.less';
+import '../../App.less';
 
 class Library extends React.Component {
   constructor(props) {

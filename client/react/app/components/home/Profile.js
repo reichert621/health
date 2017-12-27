@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
-import Entry from './Entry';
-import { fetchUserEntries } from '../helpers/entries';
+import Entry from '../entry/Entry';
+import { fetchUserEntries } from '../../helpers/entries';
 import './Home.less';
 
 class Profile extends React.Component {

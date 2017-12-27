@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
-import md from '../helpers/markdown';
+import md from '../../helpers/markdown';
 import './Entry.less';
 
 const formatHTML = (content = '') => {

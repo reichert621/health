@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { groupBy, keys, isNumber } from 'lodash';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
-import { fetchChecklist, updateChecklistScores } from '../helpers/checklist';
+import { fetchChecklist, updateChecklistScores } from '../../helpers/checklist';
 import 'react-datepicker/dist/react-datepicker.css';
 import './CheckList.less';
 

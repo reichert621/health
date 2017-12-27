@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchEntry, updateEntry, deleteEntry } from '../helpers/entries';
+import { fetchEntry, updateEntry, deleteEntry } from '../../helpers/entries';
 
 class EditEntry extends React.Component {
   constructor(props) {

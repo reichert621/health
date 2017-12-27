@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
 import Entry from './Entry';
-import { fetchEntry } from '../helpers/entries';
+import { fetchEntry } from '../../helpers/entries';
 import './Entry.less';
 
 class EntryContainer extends React.Component {

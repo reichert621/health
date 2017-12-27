@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import { fetchScorecards } from '../helpers/scorecard';
+import { fetchScorecards } from '../../helpers/scorecard';
 import './ScoreCard.less';
 
 class ScoreCards extends React.Component {

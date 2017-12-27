@@ -4,8 +4,8 @@ import { groupBy, keys } from 'lodash';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { fetchTasks } from '../helpers/tasks';
-import { fetchScorecard, createNewScorecard } from '../helpers/scorecard';
+import { fetchTasks } from '../../helpers/tasks';
+import { fetchScorecard, updateScoreCardSelectedTasks } from '../../helpers/scorecard';
 import './ScoreCard.less';
 
 const Checkbox = ({ task, onToggle }) => {
@@ -25,9 +25,7 @@ const Checkbox = ({ task, onToggle }) => {
   );
 };
 
-// TODO: this component is extremely similar to the ScoreCard component,
-// might be worth DRYing up or distinguishing between the two better
-class NewScoreCard extends React.Component {
+class ScoreCard extends React.Component {
   constructor(props) {
     super(props);
 
@@ -38,9 +36,14 @@ class NewScoreCard extends React.Component {
   }
 
   componentDidMount() {
-    return fetchTasks()
-      .then(tasks => {
-        return this.setState({ tasks });
+    const { match } = this.props;
+    const { id } = match.params;
+
+    return fetchScorecard(id)
+      .then(scorecard => {
+        const { tasks, date } = scorecard;
+
+        return this.setState({ scorecard, tasks, date: moment(date )});
       })
       .catch(err => console.log('Error fetching scorecard!', err));
   }
@@ -66,21 +69,22 @@ class NewScoreCard extends React.Component {
   }
 
   submit() {
-    const { tasks, date } = this.state;
-    const { history } = this.props;
+    const { tasks, date, scorecard } = this.state;
+    const { id: scorecardId } = scorecard;
+
     const selectedTasks = tasks
       .filter(t => t.isComplete)
       .map(({ id: taskId, description }) => {
-        return { taskId, description };
+        return { taskId, scorecardId, description };
       });
 
     console.log('Submitting!', selectedTasks);
-    return createNewScorecard({ date, selectedTasks })
-      .then(({ id }) => {
-        console.log('Created!', id);
-        return history.push(`/scorecard/${id}`);
+
+    return updateScoreCardSelectedTasks(scorecardId, { date, selectedTasks })
+      .then(res => {
+        console.log('Updated!', res);
       })
-      .catch(err => console.log('Error creating scorecard!', err));
+      .catch(err => console.log('ERROR updating scores!', err));
   }
 
   renderCheckboxes() {
@@ -143,4 +147,4 @@ class NewScoreCard extends React.Component {
   }
 }
 
-export default NewScoreCard;
+export default ScoreCard;

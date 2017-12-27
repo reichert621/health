@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router-dom';
-import { createEntry } from '../helpers/entries';
-import md from '../helpers/markdown';
-import '../App.less';
+import { createEntry } from '../../helpers/entries';
+import md from '../../helpers/markdown';
+import '../../App.less';
 
 const formatHTML = (content = '') => {
   return { __html: md(content) };

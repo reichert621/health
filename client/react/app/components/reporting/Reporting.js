@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Highcharts from 'react-highcharts';
 import _ from 'lodash';
 import moment from 'moment';
-import { fetchChecklistStats, fetchScorecardStats } from '../helpers/reporting';
+import { fetchChecklistStats, fetchScorecardStats } from '../../helpers/reporting';
 import './Reporting.less';
 
 class Reporting extends React.Component {
