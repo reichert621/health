@@ -43,7 +43,7 @@ class ScoreCard extends React.Component {
       .then(scorecard => {
         const { tasks, date } = scorecard;
 
-        return this.setState({ scorecard, tasks, date: moment(date )});
+        return this.setState({ scorecard, tasks, date: moment(date) });
       })
       .catch(err => console.log('Error fetching scorecard!', err));
   }
@@ -79,12 +79,11 @@ class ScoreCard extends React.Component {
       });
 
     console.log('Submitting!', selectedTasks);
-
     return updateScoreCardSelectedTasks(scorecardId, { date, selectedTasks })
       .then(res => {
         console.log('Updated!', res);
       })
-      .catch(err => console.log('ERROR updating scores!', err));
+      .catch(err => console.log('Error updating scores!', err));
   }
 
   renderCheckboxes() {
