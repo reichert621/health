@@ -1,5 +1,10 @@
 import { HttpResponse, get } from './http';
-import { all } from 'bluebird';
+import * as Bluebird from 'bluebird';
+
+export interface ReportingStats {
+  checklist: number[][];
+  scorecard: number[][];
+}
 
 // TODO: returns object or array?
 export const fetchChecklistStats = (): Promise<number[][]> => {
@@ -13,8 +18,8 @@ export const fetchScorecardStats = (): Promise<number[][]> => {
     .then((res: HttpResponse) => res.stats);
 };
 
-export const fetchStats = (): Promise<Object> => {
-  return all([
+export const fetchStats = (): Bluebird<ReportingStats> => {
+  return Bluebird.all([
     fetchChecklistStats(),
     fetchScorecardStats()
   ])

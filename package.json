@@ -67,7 +67,7 @@
   "main": "server/javascript/index.js",
   "scripts": {
     "start": "node server/javascript/index.js",
-    "build": "webpack",
+    "build:react": "webpack --config webpack.react.config.js",
     "restart": "pm2 startOrRestart ecosystem.config.js",
     "deploy": "pm2 deploy ecosystem.config.js production"
   }

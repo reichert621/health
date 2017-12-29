@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "jsx": "react",
+    "lib" : ["es2015", "es2015.iterable", "dom"],
     "moduleResolution": "node",
     "noImplicitAny": true,
     "outDir": "build",
