@@ -139,9 +139,30 @@ h5 {
 
 }
 
+.clearfix {
+  &::after {
+    display: block;
+    content: "";
+    clear: both;
+  }
+}
+
+.pull-left {
+  float: left;
+}
+
+.pull-right {
+  float: right;
+}
+
+.default-container {
+  max-width: 840px;
+  margin: 0 auto;
+}
+
 .component-container {
   border: 1px solid @border-gray;
-  padding: 10px 40px;
+  padding: 24px 40px;
   margin: @margin-default 0px;
 }
 

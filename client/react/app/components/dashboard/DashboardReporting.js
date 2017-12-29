@@ -1,13 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Highcharts from 'react-highcharts';
-import _ from 'lodash';
-import moment from 'moment';
-import ReportingChart from './ReportingChart';
-import { fetchChecklistStats, fetchScorecardStats, fetchStats } from '../../helpers/reporting';
-import './Reporting.less';
+import ReportingChart from '../reporting/ReportingChart';
+import { fetchStats } from '../../helpers/reporting';
+import '../reporting/Reporting.less';
 
-class Reporting extends React.Component {
+// TODO: DRY up (see Reporting)
+class DashboardReporting extends React.Component {
   constructor(props) {
     super(props);
 
@@ -28,13 +27,12 @@ class Reporting extends React.Component {
     const { stats } = this.state;
 
     return (
-      <div className="default-container">
-        <Link to="/">Back</Link>
-        <h1>Reporting</h1>
+      <div>
+        <h2>Reporting</h2>
         <ReportingChart stats={stats} />
       </div>
     );
   }
 }
 
-export default Reporting;
+export default DashboardReporting;

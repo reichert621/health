@@ -59,7 +59,7 @@ class Home extends React.Component {
 
   render() {
     return (
-      <div className="blog-container">
+      <div className="default-container">
         <div className="">
           <Link to="/new">New Entry</Link>
           <span>/</span>
@@ -68,6 +68,8 @@ class Home extends React.Component {
           <Link to="/checklists">Checklists</Link>
           <span>/</span>
           <Link to="/reporting">Reporting</Link>
+          <span>/</span>
+          <Link to="/dashboard">Dashboard</Link>
           <span>/</span>
           <Link to="/logout" onClick={this.logout.bind(this)}>
             Logout
@@ -94,6 +96,8 @@ class Home extends React.Component {
           <Link to="/checklists">Checklists</Link>
           <span>/</span>
           <Link to="/reporting">Reporting</Link>
+          <span>/</span>
+          <Link to="/dashboard">Dashboard</Link>
           <span>/</span>
           <Link to="/logout" onClick={this.logout.bind(this)}>
             Logout

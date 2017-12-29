@@ -70,6 +70,7 @@ class ScoreCard extends React.Component {
 
   submit() {
     const { tasks, date, scorecard } = this.state;
+    const { history } = this.props;
     const { id: scorecardId } = scorecard;
 
     const selectedTasks = tasks
@@ -82,6 +83,7 @@ class ScoreCard extends React.Component {
     return updateScoreCardSelectedTasks(scorecardId, { date, selectedTasks })
       .then(res => {
         console.log('Updated!', res);
+        return history.push('/scorecards');
       })
       .catch(err => console.log('Error updating scores!', err));
   }

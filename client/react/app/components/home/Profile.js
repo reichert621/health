@@ -49,7 +49,7 @@ class Profile extends React.Component {
 
   render() {
     return (
-      <div className="blog-container">
+      <div className="default-container">
         <h1 className="blog-title">
           {this.state.user}
         </h1>
