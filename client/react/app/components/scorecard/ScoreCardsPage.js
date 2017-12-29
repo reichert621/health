@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
 import ScoreCards from './ScoreCards';
 import { fetchScorecards } from '../../helpers/scorecard';
 import './ScoreCard.less';

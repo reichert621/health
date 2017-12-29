@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-// import { fetchChecklists } from '../../helpers/checklist';
 import './CheckList.less';
 
 const CheckLists = ({ checklists = [], limit = 40 }) => {

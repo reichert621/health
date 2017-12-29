@@ -4,26 +4,9 @@ import { groupBy, keys } from 'lodash';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { fetchTasks } from '../../helpers/tasks';
+import TaskCheckbox from './TaskCheckbox';
 import { fetchScorecard, updateScoreCardSelectedTasks } from '../../helpers/scorecard';
 import './ScoreCard.less';
-
-const Checkbox = ({ task, onToggle }) => {
-  const { id, description, points, isComplete = false } = task;
-
-  return (
-    <div className="checkbox-container">
-      <input
-        type="checkbox"
-        id={`task-${id}`}
-        value={description}
-        checked={isComplete}
-        onChange={onToggle} />
-      <label htmlFor={`task-${id}`}>{description}</label>
-      <span className="score-details">({points} points)</span>
-    </div>
-  );
-};
 
 class ScoreCard extends React.Component {
   constructor(props) {
@@ -106,7 +89,7 @@ class ScoreCard extends React.Component {
           {
             subtasks.map((task, key) => {
               return (
-                <Checkbox
+                <TaskCheckbox
                   key={key}
                   task={task}
                   onToggle={this.handleCheckboxUpdate.bind(this, task)} />

@@ -6,7 +6,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import TaskCheckbox from './TaskCheckbox';
 import { fetchTasks } from '../../helpers/tasks';
-import { fetchScorecard, createNewScorecard } from '../../helpers/scorecard';
+import { createNewScorecard } from '../../helpers/scorecard';
 import './ScoreCard.less';
 
 // TODO: this component is extremely similar to the ScoreCard component,

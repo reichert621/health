@@ -1,10 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Highcharts from 'react-highcharts';
-import _ from 'lodash';
-import moment from 'moment';
 import ReportingChart from './ReportingChart';
-import { fetchChecklistStats, fetchScorecardStats, fetchStats } from '../../helpers/reporting';
+import { fetchStats } from '../../helpers/reporting';
 import './Reporting.less';
 
 class Reporting extends React.Component {
