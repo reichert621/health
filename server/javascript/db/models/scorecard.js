@@ -113,6 +113,7 @@ const updateSelectedTasks = (id, params, userId) => {
       const promises = selectedTasks.map(selectedTask => {
         const { taskId, scorecardId } = selectedTask;
 
+        // FIXME: findOrCreate selected tasks to avoid dupes
         return ScoreCardSelectedTask.create({ taskId, scorecardId }, userId);
       });
 
