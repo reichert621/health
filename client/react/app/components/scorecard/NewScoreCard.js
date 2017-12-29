@@ -4,26 +4,10 @@ import { groupBy, keys } from 'lodash';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import TaskCheckbox from './TaskCheckbox';
 import { fetchTasks } from '../../helpers/tasks';
 import { fetchScorecard, createNewScorecard } from '../../helpers/scorecard';
 import './ScoreCard.less';
-
-const Checkbox = ({ task, onToggle }) => {
-  const { description, points, isComplete = false } = task;
-
-  return (
-    <div>
-      <label>
-        <input
-          type="checkbox"
-          value={description}
-          checked={isComplete}
-          onChange={onToggle} />
-        {description} ({points} points)
-      </label>
-    </div>
-  );
-};
 
 // TODO: this component is extremely similar to the ScoreCard component,
 // might be worth DRYing up or distinguishing between the two better
@@ -78,7 +62,7 @@ class NewScoreCard extends React.Component {
     return createNewScorecard({ date, selectedTasks })
       .then(({ id }) => {
         console.log('Created!', id);
-        return history.push(`/scorecard/${id}`);
+        return history.push('/scorecards');
       })
       .catch(err => console.log('Error creating scorecard!', err));
   }
@@ -94,11 +78,14 @@ class NewScoreCard extends React.Component {
 
       return (
         <div key={index}>
-          <label>{category} (score: {score})</label>
+          <h5 className="category-label">
+            <span>{category}</span>
+            <span className="score-details">(score: {score})</span>
+          </h5>
           {
             subtasks.map((task, key) => {
               return (
-                <Checkbox
+                <TaskCheckbox
                   key={key}
                   task={task}
                   onToggle={this.handleCheckboxUpdate.bind(this, task)} />
@@ -118,7 +105,7 @@ class NewScoreCard extends React.Component {
         <Link to="/scorecards">Back</Link>
 
         <h1>
-          Daily Score Card
+          New Scorecard
         </h1>
 
         <DatePicker

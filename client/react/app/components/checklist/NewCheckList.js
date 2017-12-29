@@ -1,51 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { groupBy, keys, isNumber } from 'lodash';
+import { extend, groupBy, keys, isNumber } from 'lodash';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
+import CheckListQuestion from './CheckListQuestion';
 import { fetchChecklistQuestions, createNewChecklist } from '../../helpers/checklist';
 import 'react-datepicker/dist/react-datepicker.css';
 import './CheckList.less';
-
-const getScoreOptions = () => {
-  return [
-    { value: 'zero', score: 0 },
-    { value: 'one', score: 1 },
-    { value: 'two', score: 2 },
-    { value: 'three', score: 3 },
-    { value: 'four', score: 4 }
-  ];
-};
-
-const ChecklistQuestion = ({ question, onSelect }) => {
-  const options = getScoreOptions();
-  const style = {
-    marginRight: 10
-  };
-
-  return (
-    <div>
-      <span style={style}>{question.text}</span>
-      <span style={style}>
-        {
-          options.map((option, key) => {
-            const { value, score } = option;
-
-            return (
-              <label key={key}>
-                <input
-                  type="radio"
-                  value={value}
-                  checked={question.score === score}
-                  onChange={(e) => onSelect(score)} />
-              </label>
-            )
-          })
-        }
-      </span>
-    </div>
-  );
-};
 
 // TODO: this component is extremely similar to the Checklist component,
 // might be worth DRYing up or distinguishing between the two better
@@ -62,7 +23,9 @@ class NewCheckList extends React.Component {
   componentDidMount() {
     return fetchChecklistQuestions()
       .then(questions => {
-        return this.setState({ questions });
+        return this.setState({
+          questions: questions.map(question => extend(question, { score: 0 }))
+        });
       })
       .catch(err => console.log('Error fetching checklist!', err));
   }
@@ -100,7 +63,7 @@ class NewCheckList extends React.Component {
     return createNewChecklist({ date, scores })
       .then(({ id }) => {
         console.log('Created!', id);
-        return history.push(`/checklist/${id}`);
+        return history.push('/checklists');
       })
       .catch(err => console.log('Error creating checklist!', err));
   }
@@ -121,16 +84,20 @@ class NewCheckList extends React.Component {
           onChange={this.handleDateChange.bind(this)} />
 
         <div className="component-container">
-          {
-            questions.map((question, key) => {
-              return (
-                <ChecklistQuestion
-                  key={key}
-                  question={question}
-                  onSelect={this.handleScoreChange.bind(this, question)} />
-              );
-            })
-          }
+          <table>
+            <tbody>
+            {
+              questions.map((question, key) => {
+                return (
+                  <CheckListQuestion
+                    key={key}
+                    question={question}
+                    onSelect={this.handleScoreChange.bind(this, question)} />
+                );
+              })
+            }
+            </tbody>
+          </table>
         </div>
 
         <button

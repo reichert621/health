@@ -9,18 +9,18 @@ import { fetchScorecard, updateScoreCardSelectedTasks } from '../../helpers/scor
 import './ScoreCard.less';
 
 const Checkbox = ({ task, onToggle }) => {
-  const { description, points, isComplete = false } = task;
+  const { id, description, points, isComplete = false } = task;
 
   return (
-    <div>
-      <label>
-        <input
-          type="checkbox"
-          value={description}
-          checked={isComplete}
-          onChange={onToggle} />
-        {description} ({points} points)
-      </label>
+    <div className="checkbox-container">
+      <input
+        type="checkbox"
+        id={`task-${id}`}
+        value={description}
+        checked={isComplete}
+        onChange={onToggle} />
+      <label htmlFor={`task-${id}`}>{description}</label>
+      <span className="score-details">({points} points)</span>
     </div>
   );
 };
@@ -97,7 +97,10 @@ class ScoreCard extends React.Component {
 
       return (
         <div key={index}>
-          <label>{category} (score: {score})</label>
+          <h5 className="category-label">
+            <span>{category}</span>
+            <span className="score-details">(score: {score})</span>
+          </h5>
           {
             subtasks.map((task, key) => {
               return (
@@ -121,7 +124,7 @@ class ScoreCard extends React.Component {
         <Link to="/scorecards">Back</Link>
 
         <h1>
-          Daily Score Card
+          Scorecard
         </h1>
 
         <DatePicker

@@ -37,18 +37,23 @@ class Reporting extends React.Component {
   render() {
     const { checklist, scorecard } = this.state.stats;
     const config = {
-      title: { text: 'Reports' },
+      title: { text: '' },
       xAxis: {
         type: 'datetime'
+      },
+      yAxis: {
+        title: {
+          text: 'Points'
+        }
       },
       series: [
         {
           id: 'checklist',
-          name: 'Checklist',
+          name: 'Depression',
           data: checklist
         }, {
           id: 'scorecard',
-          name: 'Scorecard',
+          name: 'Productivity',
           data: scorecard
         }
       ]
