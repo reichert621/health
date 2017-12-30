@@ -80,7 +80,7 @@
     "tslint:react": "./node_modules/.bin/tslint 'client/react/app/**/*.ts'",
     "lint:react": "npm run tslint:react && npm run eslint:react",
     "lint:api": "./node_modules/.bin/eslint 'server/javascript/**/*.js'",
-    "build:react": "webpack --config webpack.react.config.js",
+    "build:react": "./node_modules/.bin/webpack --config webpack.react.config.js",
     "restart": "pm2 startOrRestart ecosystem.config.js",
     "deploy": "pm2 deploy ecosystem.config.js production"
   }
