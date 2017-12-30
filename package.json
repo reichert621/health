@@ -75,9 +75,8 @@
   },
   "main": "server/javascript/index.js",
   "scripts": {
-    "prestart": "npm run build:react",
+    "prestart": "npm run db:migrate && npm run db:seed && npm run build:react",
     "start": "node server/javascript/index.js",
-    "poststart": "npm run db:migrate",
     "eslint:react": "./node_modules/.bin/eslint 'client/react/app/**/*.js'",
     "tslint:react": "./node_modules/.bin/tslint 'client/react/app/**/*.ts'",
     "lint:react": "npm run tslint:react && npm run eslint:react",
