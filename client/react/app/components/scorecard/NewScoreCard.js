@@ -5,7 +5,7 @@ import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import TaskCheckbox from './TaskCheckbox';
-import { fetchTasks } from '../../helpers/tasks';
+import { fetchTasks, calculateScore } from '../../helpers/tasks';
 import { createNewScorecard } from '../../helpers/scorecard';
 import './ScoreCard.less';
 
@@ -37,14 +37,6 @@ class NewScoreCard extends React.Component {
     return this.setState({ tasks: update });
   }
 
-  calculateScore(tasks) {
-    return tasks.reduce((score, task) => {
-      const { isComplete, points } = task;
-
-      return isComplete ? (score + points) : score;
-    }, 0);
-  }
-
   handleDateChange(date) {
     this.setState({ date });
   }
@@ -74,7 +66,7 @@ class NewScoreCard extends React.Component {
 
     return categories.map((category, index) => {
       const subtasks = grouped[category];
-      const score = this.calculateScore(subtasks);
+      const score = calculateScore(subtasks);
 
       return (
         <div key={index}>
@@ -123,7 +115,7 @@ class NewScoreCard extends React.Component {
         </button>
 
         <h2>
-          Total Score: {this.calculateScore(tasks)}
+          Total Score: {calculateScore(tasks)}
         </h2>
       </div>
     );
