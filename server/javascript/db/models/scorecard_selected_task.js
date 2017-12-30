@@ -37,11 +37,17 @@ const destroy = (id, userId) =>
   findById(id, userId)
     .delete();
 
+const destroyByScorecardId = (scorecardId, userId) =>
+  ScoreCardSelectedTask()
+    .where({ scorecardId, userId })
+    .del();
+
 module.exports = {
   fetch,
   fetchByScorecardId,
   findById,
   create,
   update,
-  destroy
+  destroy,
+  destroyByScorecardId
 };

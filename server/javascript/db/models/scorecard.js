@@ -136,13 +136,14 @@ const update = (id, params, userId) =>
 const updateSelectedTasks = (id, params, userId) => {
   const { date, selectedTasks } = params;
 
-  return update(id, { date }, userId)
-    .then(scorecard => {
-      // FIXME: remove de-selected tasks
+  return Promise.all([
+    update(id, { date }, userId),
+    ScoreCardSelectedTask.destroyByScorecardId(id, userId)
+  ])
+    .then(([scorecard, removed]) => {
       const promises = selectedTasks.map(selectedTask => {
         const { taskId, scorecardId } = selectedTask;
 
-        // FIXME: findOrCreate selected tasks to avoid dupes
         return ScoreCardSelectedTask.create({ taskId, scorecardId }, userId);
       });
 
