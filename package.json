@@ -75,7 +75,7 @@
   },
   "main": "server/javascript/index.js",
   "scripts": {
-    "start": "npm run build:react && node server/javascript/index.js",
+    "start": "node server/javascript/index.js",
     "eslint:react": "./node_modules/.bin/eslint 'client/react/app/**/*.js'",
     "tslint:react": "./node_modules/.bin/tslint 'client/react/app/**/*.ts'",
     "lint:react": "npm run tslint:react && npm run eslint:react",
