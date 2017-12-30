@@ -36,6 +36,35 @@ const findById = (id, userId, where = {}) => {
     });
 };
 
+const fetchWithPoints = (where = {}, userId) => {
+  return Promise.all([
+    fetch(where, userId),
+    Task.fetch()
+  ])
+    .then(([scorecards, tasks]) => {
+      const taskScores = tasks.reduce((map, { id: taskId, points }) => {
+        return merge(map, { [taskId]: Number(points) });
+      }, {});
+
+      const promises = scorecards.map(scorecard => {
+        const { id } = scorecard;
+
+        return ScoreCardSelectedTask.fetchByScorecardId(id, userId)
+          .then(selectedTasks => {
+            const points = selectedTasks.reduce((total, { taskId }) => {
+              const score = taskScores[taskId] || 0;
+
+              return isNumber(score) ? total + score : total;
+            }, 0);
+
+            return merge(scorecard, { points });
+          });
+      });
+
+      return Promise.all(promises);
+    });
+};
+
 const fetchStats = (userId) => {
   return Promise.all([
     fetch({}, userId),
@@ -128,6 +157,7 @@ const destroy = (id, userId) =>
 module.exports = {
   fetch,
   findById,
+  fetchWithPoints,
   fetchStats,
   create,
   createWithScores,

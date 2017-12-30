@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { extend, groupBy, keys, isNumber } from 'lodash';
+import { extend, isNumber } from 'lodash';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import CheckListQuestion from './CheckListQuestion';
 import { fetchChecklistQuestions, createNewChecklist } from '../../helpers/checklist';
-import 'react-datepicker/dist/react-datepicker.css';
 import './CheckList.less';
 
 // TODO: this component is extremely similar to the Checklist component,
@@ -86,16 +86,16 @@ class NewCheckList extends React.Component {
         <div className="component-container">
           <table>
             <tbody>
-            {
-              questions.map((question, key) => {
-                return (
-                  <CheckListQuestion
-                    key={key}
-                    question={question}
-                    onSelect={this.handleScoreChange.bind(this, question)} />
-                );
-              })
-            }
+              {
+                questions.map((question, key) => {
+                  return (
+                    <CheckListQuestion
+                      key={key}
+                      question={question}
+                      onSelect={this.handleScoreChange.bind(this, question)} />
+                  );
+                })
+              }
             </tbody>
           </table>
         </div>

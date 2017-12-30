@@ -30,7 +30,7 @@ const CheckListQuestion = ({ question, onSelect }) => {
                   onChange={(e) => onSelect(score)} />
               </label>
             </td>
-          )
+          );
         })
       }
     </tr>

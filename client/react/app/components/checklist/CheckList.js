@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { groupBy, keys, isNumber } from 'lodash';
+import { isNumber } from 'lodash';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import CheckListQuestion from './CheckListQuestion';
 import { fetchChecklist, updateChecklistScores } from '../../helpers/checklist';
-import 'react-datepicker/dist/react-datepicker.css';
 import './CheckList.less';
 
 class CheckList extends React.Component {
@@ -27,7 +27,7 @@ class CheckList extends React.Component {
       .then(checklist => {
         const { questions, date } = checklist;
 
-        return this.setState({ checklist, questions,  date: moment(date) });
+        return this.setState({ checklist, questions, date: moment(date) });
       })
       .catch(err => console.log('Error fetching checklist!', err));
   }
@@ -92,16 +92,16 @@ class CheckList extends React.Component {
         <div className="component-container">
           <table>
             <tbody>
-            {
-              questions.map((question, key) => {
-                return (
-                  <CheckListQuestion
-                    key={key}
-                    question={question}
-                    onSelect={this.handleScoreChange.bind(this, question)} />
-                );
-              })
-            }
+              {
+                questions.map((question, key) => {
+                  return (
+                    <CheckListQuestion
+                      key={key}
+                      question={question}
+                      onSelect={this.handleScoreChange.bind(this, question)} />
+                  );
+                })
+              }
             </tbody>
           </table>
         </div>

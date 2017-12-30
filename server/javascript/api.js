@@ -110,7 +110,7 @@ const entries = {
 
 const scorecards = {
   fetch: (req, res) => {
-    return ScoreCard.fetch({}, req.user.id)
+    return ScoreCard.fetchWithPoints({}, req.user.id)
       .then(scorecards => res.json({ scorecards }))
       .catch(err => handleError(res, err))
   },
@@ -158,7 +158,7 @@ const tasks = {
 
 const checklists = {
   fetch: (req, res) => {
-    return Checklist.fetch({}, req.user.id)
+    return Checklist.fetchWithPoints({}, req.user.id)
       .then(checklists => res.json({ checklists }))
       .catch(err => handleError(res, err))
   },

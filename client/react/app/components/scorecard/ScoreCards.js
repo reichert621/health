@@ -12,7 +12,7 @@ const ScoreCards = ({ scorecards = [], limit = 40 }) => {
             return Number(new Date(y.date)) - Number(new Date(x.date));
           })
           .slice(0, limit)
-          .map(({ id, date }, key) => {
+          .map(({ id, date, points }, key) => {
             return (
               <li key={key}>
                 <Link to={`/scorecard/${id}`}>
@@ -21,6 +21,9 @@ const ScoreCards = ({ scorecards = [], limit = 40 }) => {
                 <span>
                   {moment().isSame(moment(date), 'day') ? ' (Today)' : ''}
                 </span>
+                <div>
+                  <small>({points} points)</small>
+                </div>
               </li>
             );
           })

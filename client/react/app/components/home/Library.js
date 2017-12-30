@@ -20,7 +20,7 @@ class Library extends React.Component {
   }
 
   handleCheckboxToggle(val) {
-    const { checked }  = this.state;
+    const { checked } = this.state;
     const update = {
       ...checked,
       [val]: !checked[val]

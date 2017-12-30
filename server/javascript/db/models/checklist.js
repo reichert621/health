@@ -95,6 +95,26 @@ const updateScores = (id, params, userId) => {
     });
 };
 
+const fetchWithPoints = (where = {}, userId) => {
+  return fetch(where, userId)
+    .then(checklists => {
+      const promises = checklists.map(checklist => {
+        const { id } = checklist;
+
+        return ChecklistScore.fetchByChecklistId(id, userId)
+          .then(checklistScores => {
+            const points = checklistScores.reduce((total, { score }) => {
+              return isNumber(score) ? total + score : total;
+            }, 0);
+
+            return merge(checklist, { points });
+          });
+      });
+
+      return Promise.all(promises);
+    });
+};
+
 const fetchStats = (userId) => {
   return fetch({}, userId)
     .then(checklists => {
@@ -135,6 +155,7 @@ module.exports = {
   createWithScores,
   update,
   updateScores,
+  fetchWithPoints,
   fetchStats,
   destroy
 };

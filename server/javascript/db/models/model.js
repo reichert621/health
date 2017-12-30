@@ -3,7 +3,8 @@ const { first } = require('lodash');
 
 const merge = (x, y) => Object.assign({}, x, y);
 
-// TODO: don't use class syntax, just export functions
+// TODO: don't use class syntax, just export functions...
+// Favor composition over inheritance!
 // TODO: DRY up all these model classes!
 class BaseModel {
   constructor(table) {
