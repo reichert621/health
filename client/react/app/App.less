@@ -32,7 +32,7 @@ body,
 }
 
 .app {
-  padding: 70px 140px;
+  padding: 80px;
 }
 
 h1,
@@ -69,6 +69,11 @@ h4 {
 h5 {
   font-size: 16px;
   font-weight: 400;
+}
+
+a {
+  color: @bright-blue;
+  text-decoration: none;
 }
 
 .button-default {
@@ -176,7 +181,7 @@ h5 {
 
     &.on {
       color: @bright-blue;
-      // font-weight: 500;
+      font-weight: 400;
       transition: all ease 0.2s;
       -webkit-transition: all ease 0.2s;
     }
@@ -212,7 +217,7 @@ h5 {
 }
 
 .default-container {
-  max-width: 840px;
+  max-width: 1080px;
   margin: 0 auto;
 }
 
@@ -224,4 +229,15 @@ h5 {
 
 .text-red {
   color: @red;
+}
+
+.text-active {
+  color: @bright-blue;
+  font-weight: 400;
+}
+
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

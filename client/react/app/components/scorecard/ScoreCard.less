@@ -3,7 +3,41 @@
 .scorecard-container {
   border-top: 1px solid @scorecard-gray;
   margin-bottom: 40px;
-  width: 60%;
+  min-width: 360px;
+  width: 52%;
+}
+
+.scorecard-overview-container {
+  margin-left: 24px;
+  min-width: 360px;
+  width: 40%;
+}
+
+.scorecard-overview {
+  border: 1px solid @scorecard-gray;
+  font-size: 18px;
+  line-height: 20px;
+  margin-bottom: 24px;
+}
+
+.scorecard-overview-total-container {
+  border-bottom: 1px solid @scorecard-gray;
+  padding: 24px;
+  text-align: center;
+}
+
+.scorecard-overview-details-container {
+  padding: 32px;
+}
+
+.scorecard-overview-category-label {
+  font-weight: 500;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.scorecard-overview-completed-task {
+  margin-bottom: 8px;
 }
 
 .scorecard-date {
@@ -13,4 +47,16 @@
 .category-label {
   margin-top: 32px;
   margin-bottom: 16px;
+}
+
+@media (max-width: 1080px) {
+  .scorecard-container {
+    width: 80%;
+  }
+
+  .scorecard-overview-container {
+    float: left;
+    margin-left: 0px;
+    width: 80%;
+  }
 }

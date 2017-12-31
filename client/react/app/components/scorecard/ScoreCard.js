@@ -5,6 +5,7 @@ import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import TaskCheckbox from './TaskCheckbox';
+import ScoreCardOverview from './ScoreCardOverview';
 import { calculateScore } from '../../helpers/tasks';
 import {
   fetchScorecard,
@@ -103,6 +104,7 @@ class ScoreCard extends React.Component {
 
   render() {
     const { tasks, date } = this.state;
+    const completed = tasks.filter(t => t.isComplete);
 
     return (
       <div className="default-container">
@@ -122,13 +124,15 @@ class ScoreCard extends React.Component {
             onChange={this.handleDateChange.bind(this)} />
         </div>
 
-        <div className="scorecard-container">
-          {this.renderCheckboxes()}
-        </div>
+        <div className="clearfix">
+          <div className="scorecard-container pull-left">
+            {this.renderCheckboxes()}
+          </div>
 
-        <h2>
-          Total Score: {calculateScore(tasks)}
-        </h2>
+          <div className="scorecard-overview-container pull-right">
+            <ScoreCardOverview tasks={completed} />
+          </div>
+        </div>
       </div>
     );
   }

@@ -19,7 +19,7 @@ const TaskCheckbox = ({ task, onToggle }) => {
       </span>
       <span
         className={`checkbox-label pull-right ${isComplete ? 'on' : 'off'}`}>
-        {points} points
+        {points} {points === 1 ? 'point' : 'points'}
       </span>
     </label>
   );
