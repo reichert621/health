@@ -82,10 +82,10 @@ class ScoreCard extends React.Component {
 
       return (
         <div key={index}>
-          <h5 className="category-label">
+          <h4 className="category-label">
             <span>{category}</span>
-            <span className="score-details">(score: {score})</span>
-          </h5>
+            <span className="score-details hidden">(score: {score})</span>
+          </h4>
           {
             subtasks.map((task, key) => {
               return (
@@ -112,11 +112,17 @@ class ScoreCard extends React.Component {
           Scorecard
         </h1>
 
-        <DatePicker
-          selected={date}
-          onChange={this.handleDateChange.bind(this)} />
+        <h3 className="scorecard-date">
+          {date.format('dddd MMMM DD, YYYY')}
+        </h3>
 
-        <div className="component-container">
+        <div className="hidden">
+          <DatePicker
+            selected={date}
+            onChange={this.handleDateChange.bind(this)} />
+        </div>
+
+        <div className="scorecard-container">
           {this.renderCheckboxes()}
         </div>
 
