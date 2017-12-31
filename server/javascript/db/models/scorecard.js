@@ -133,6 +133,18 @@ const update = (id, params, userId) =>
     .then(count => (count > 0))
     .then(success => findById(id, userId));
 
+const selectTask = (id, taskId, userId) => {
+  const params = { scorecardId: id, taskId, userId };
+
+  return ScoreCardSelectedTask.findOrCreate(params, userId);
+};
+
+const deselectTask = (id, taskId, userId) => {
+  const params = { scorecardId: id, taskId, userId };
+
+  return ScoreCardSelectedTask.destroyWhere(params, userId);
+};
+
 const updateSelectedTasks = (id, params, userId) => {
   const { date, selectedTasks } = params;
 
@@ -163,6 +175,8 @@ module.exports = {
   create,
   createWithScores,
   update,
+  selectTask,
+  deselectTask,
   updateSelectedTasks,
   destroy
 };

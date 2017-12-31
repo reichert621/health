@@ -74,7 +74,7 @@ export const get = (endpoint: string): Promise<HttpResponse> => {
 /**
  * Make an HTTP POST request
  */
-export const post = (endpoint: string, body: object): Promise<HttpResponse> => {
+export const post = (endpoint: string, body: object = {}): Promise<HttpResponse> => {
   const config = getHttpConfig({
     method: POST,
     body: JSON.stringify(body)

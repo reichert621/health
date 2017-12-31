@@ -1,4 +1,4 @@
-import { HttpResponse, get, post } from './http';
+import { HttpResponse, get, post, put, del } from './http';
 
 export interface Scorecard {
   id: number;
@@ -17,10 +17,35 @@ export const fetchScorecard = (id: number): Promise<Scorecard> => {
     .then((res: HttpResponse) => res.scorecard);
 };
 
+export const updateScoreCard = (id: number, params: object): Promise<Scorecard> => {
+  return put(`/api/scorecards/${id}`, params)
+    .then((res: HttpResponse) => res.scorecard);
+};
+
 // TODO: don't use `any`!
 export const updateScoreCardSelectedTasks = (id: number, params: object): Promise<any> => {
   return post(`/api/scorecards/${id}/update-selected-tasks`, params)
     .then((res: HttpResponse) => res.updates);
+};
+
+export const selectScorecardTask = (id: number, taskId: number): Promise<boolean> => {
+  return post(`/api/scorecards/${id}/select-task/${taskId}`)
+    .then((res: HttpResponse) => res.success);
+};
+
+export const deselectScorecardTask = (id: number, taskId: number): Promise<boolean> => {
+  return del(`/api/scorecards/${id}/deselect-task/${taskId}`)
+    .then((res: HttpResponse) => res.success);
+};
+
+export const toggleScorecardTask = (
+  id: number,
+  taskId: number,
+  isComplete: boolean
+): Promise<boolean> => {
+  return isComplete ?
+    selectScorecardTask(id, taskId) :
+    deselectScorecardTask(id, taskId);
 };
 
 // TODO: returns object or array?

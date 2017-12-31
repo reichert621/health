@@ -1,5 +1,5 @@
 const knex = require('../knex.js');
-const { first, groupBy, isNumber } = require('lodash');
+const { first, isObject, isEmpty } = require('lodash');
 
 const ScoreCardSelectedTask = () => knex('scorecard_selected_tasks');
 
@@ -27,27 +27,49 @@ const create = (params, userId) =>
     .then(first)
     .then(id => findById(id, userId));
 
+const findOrCreate = (params, userId) => {
+  return findOne(params, userId)
+    .then(selectedTask => {
+      if (selectedTask) {
+        return selectedTask;
+      }
+
+      return create(params, userId);
+    });
+};
+
 const update = (id, params, userId) =>
   findOne({ id }, userId)
     .update(params)
     .then(count => (count > 0))
     .then(success => findById(id, userId));
 
-const destroy = (id, userId) =>
+const destroyById = (id, userId) =>
   findById(id, userId)
     .delete();
 
-const destroyByScorecardId = (scorecardId, userId) =>
-  ScoreCardSelectedTask()
-    .where({ scorecardId, userId })
+const destroyWhere = (where = {}, userId) => {
+  if (!userId) return Promise.reject(new Error('A userId is required!'));
+  if (!isObject(where) || isEmpty(where)) {
+    return Promise.reject(new Error('A valid where filter is required!'));
+  }
+
+  return ScoreCardSelectedTask()
+    .where(where)
     .del();
+};
+
+const destroyByScorecardId = (scorecardId, userId) =>
+  destroyWhere({ scorecardId }, userId);
 
 module.exports = {
   fetch,
   fetchByScorecardId,
   findById,
   create,
+  findOrCreate,
   update,
-  destroy,
+  destroyById,
+  destroyWhere,
   destroyByScorecardId
 };

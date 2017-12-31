@@ -34,8 +34,9 @@ class CheckList extends React.Component {
 
   handleScoreChange(question, score) {
     const { questions } = this.state;
-    const update = questions.map(q =>
-      (q.id === question.id) ? { ...q, score } : q);
+    const update = questions.map(q => {
+      return (q.id === question.id) ? { ...q, score } : q;
+    });
 
     return this.setState({ questions: update });
   }

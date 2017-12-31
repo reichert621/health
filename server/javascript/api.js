@@ -131,6 +131,40 @@ const scorecards = {
       .catch(err => handleError(res, err));
   },
 
+  selectTask: (req, res) => {
+    const { id, taskId } = req.params;
+
+    return ScoreCard.selectTask(id, taskId, req.user.id)
+      .then(selectedTask => {
+        return res.json({ success: !!selectedTask });
+      })
+      .catch(err => {
+        return handleError(res, err);
+      });
+  },
+
+  deselectTask: (req, res) => {
+    const { id, taskId } = req.params;
+
+    return ScoreCard.deselectTask(id, taskId, req.user.id)
+      .then(removed => {
+        return res.json({ success: removed > 0 });
+      })
+      .catch(err => {
+        return handleError(res, err);
+      });
+  },
+
+  update: (req, res) => {
+    return ScoreCard.update(req.params.id, req.body, req.user.id)
+      .then(scorecard => {
+        return res.json({ scorecard });
+      })
+      .catch(err => {
+        return handleError(res, err);
+      });
+  },
+
   updateSelectedTasks: (req, res) => {
     return ScoreCard.updateSelectedTasks(req.params.id, req.body, req.user.id)
       .then(updates =>
@@ -236,7 +270,9 @@ api.get('/users/:username/entries/:id', users.fetchEntry);
 api.get('/scorecards', isAuthenticated, scorecards.fetch);
 api.get('/scorecards/:id', isAuthenticated, scorecards.findById);
 api.post('/scorecards/new', isAuthenticated, scorecards.create);
-api.post('/scorecards/:id/update-selected-tasks', isAuthenticated, scorecards.updateSelectedTasks);
+api.put('/scorecards/:id', isAuthenticated, scorecards.update);
+api.post('/scorecards/:id/select-task/:taskId', isAuthenticated, scorecards.selectTask);
+api.delete('/scorecards/:id/deselect-task/:taskId', isAuthenticated, scorecards.deselectTask);
 // Tasks
 api.get('/tasks', t.fetch);
 // Checklists

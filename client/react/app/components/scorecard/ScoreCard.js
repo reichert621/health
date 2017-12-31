@@ -5,7 +5,12 @@ import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import TaskCheckbox from './TaskCheckbox';
-import { fetchScorecard, updateScoreCardSelectedTasks } from '../../helpers/scorecard';
+import { calculateScore } from '../../helpers/tasks';
+import {
+  fetchScorecard,
+  updateScoreCard,
+  toggleScorecardTask
+} from '../../helpers/scorecard';
 import './ScoreCard.less';
 
 class ScoreCard extends React.Component {
@@ -13,6 +18,7 @@ class ScoreCard extends React.Component {
     super(props);
 
     this.state = {
+      scorecard: {},
       date: moment(),
       tasks: []
     };
@@ -28,47 +34,41 @@ class ScoreCard extends React.Component {
 
         return this.setState({ scorecard, tasks, date: moment(date) });
       })
-      .catch(err => console.log('Error fetching scorecard!', err));
+      .catch(err => {
+        console.log('Error fetching scorecard!', err);
+      });
   }
 
   handleCheckboxUpdate(task) {
-    const { tasks } = this.state;
-    const update = tasks.map(t =>
-      (t.id === task.id) ? { ...t, isComplete: !t.isComplete } : t);
+    const { tasks, scorecard } = this.state;
+    const { id: scorecardId } = scorecard;
+    const { id: taskId, isComplete: isCurrentlyComplete = false } = task;
+    const isComplete = !isCurrentlyComplete;
 
-    return this.setState({ tasks: update });
-  }
+    return toggleScorecardTask(scorecardId, taskId, isComplete)
+      .then(() => {
+        const update = tasks.map(t => {
+          return (t.id === taskId) ? { ...t, isComplete } : t;
+        });
 
-  calculateScore(tasks) {
-    return tasks.reduce((score, task) => {
-      const { isComplete, points } = task;
-
-      return isComplete ? (score + points) : score;
-    }, 0);
+        return this.setState({ tasks: update });
+      })
+      .catch(err => {
+        console.log('Error toggling task checkbox!', err);
+      });
   }
 
   handleDateChange(date) {
-    this.setState({ date });
-  }
-
-  submit() {
-    const { tasks, date, scorecard } = this.state;
-    const { history } = this.props;
+    const { scorecard } = this.state;
     const { id: scorecardId } = scorecard;
 
-    const selectedTasks = tasks
-      .filter(t => t.isComplete)
-      .map(({ id: taskId, description }) => {
-        return { taskId, scorecardId, description };
-      });
-
-    console.log('Submitting!', selectedTasks);
-    return updateScoreCardSelectedTasks(scorecardId, { date, selectedTasks })
-      .then(res => {
-        console.log('Updated!', res);
-        return history.push('/scorecards');
+    return updateScoreCard(scorecardId, { date })
+      .then(scorecard => {
+        this.setState({ date });
       })
-      .catch(err => console.log('Error updating scores!', err));
+      .catch(err => {
+        console.log('Error updating date!', err);
+      });
   }
 
   renderCheckboxes() {
@@ -78,7 +78,7 @@ class ScoreCard extends React.Component {
 
     return categories.map((category, index) => {
       const subtasks = grouped[category];
-      const score = this.calculateScore(subtasks);
+      const score = calculateScore(subtasks);
 
       return (
         <div key={index}>
@@ -120,14 +120,8 @@ class ScoreCard extends React.Component {
           {this.renderCheckboxes()}
         </div>
 
-        <button
-          className="button-default"
-          onClick={this.submit.bind(this)}>
-          Submit
-        </button>
-
         <h2>
-          Total Score: {this.calculateScore(tasks)}
+          Total Score: {calculateScore(tasks)}
         </h2>
       </div>
     );
