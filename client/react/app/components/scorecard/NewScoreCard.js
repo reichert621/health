@@ -5,6 +5,7 @@ import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import TaskCheckbox from './TaskCheckbox';
+import ScoreCardOverview from './ScoreCardOverview';
 import { fetchTasks, calculateScore } from '../../helpers/tasks';
 import { createNewScorecard } from '../../helpers/scorecard';
 import './ScoreCard.less';
@@ -70,10 +71,10 @@ class NewScoreCard extends React.Component {
 
       return (
         <div key={index}>
-          <h5 className="category-label">
+          <h4 className="category-label">
             <span>{category}</span>
-            <span className="score-details">(score: {score})</span>
-          </h5>
+            <span className="score-details hidden">(score: {score})</span>
+          </h4>
           {
             subtasks.map((task, key) => {
               return (
@@ -91,21 +92,32 @@ class NewScoreCard extends React.Component {
 
   render() {
     const { tasks, date } = this.state;
+    const completed = tasks.filter(t => t.isComplete);
 
     return (
       <div className="default-container">
         <Link to="/scorecards">Back</Link>
 
         <h1>
-          New Scorecard
+          Scorecard
         </h1>
 
         <DatePicker
           selected={date}
           onChange={this.handleDateChange.bind(this)} />
 
-        <div className="component-container">
-          {this.renderCheckboxes()}
+        <h3 className="scorecard-date">
+          {date.format('dddd MMMM DD, YYYY')}
+        </h3>
+
+        <div className="clearfix">
+          <div className="scorecard-container pull-left">
+            {this.renderCheckboxes()}
+          </div>
+
+          <div className="scorecard-overview-container pull-right">
+            <ScoreCardOverview tasks={completed} />
+          </div>
         </div>
 
         <button
@@ -113,10 +125,6 @@ class NewScoreCard extends React.Component {
           onClick={this.submit.bind(this)}>
           Submit
         </button>
-
-        <h2>
-          Total Score: {calculateScore(tasks)}
-        </h2>
       </div>
     );
   }
