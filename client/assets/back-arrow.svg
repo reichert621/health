@@ -1,0 +1,11 @@
+<svg width="14" height="26" viewBox="0 0 14 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<title>Back Arrow</title>
+<g id="Canvas" transform="translate(-1124 76)">
+<g id="Path 2">
+<use xlink:href="#path0_stroke" transform="translate(1125 -75)" fill="#33A2CC"/>
+</g>
+</g>
+<defs>
+<path id="path0_stroke" d="M 0 12L -0.353553 11.6464L -0.707107 12L -0.353553 12.3536L 0 12ZM 11.6464 -0.353553L -0.353553 11.6464L 0.353553 12.3536L 12.3536 0.353553L 11.6464 -0.353553ZM -0.353553 12.3536L 11.6464 24.3536L 12.3536 23.6464L 0.353553 11.6464L -0.353553 12.3536Z"/>
+</defs>
+</svg>

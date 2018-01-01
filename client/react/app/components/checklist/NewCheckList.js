@@ -73,42 +73,45 @@ class NewCheckList extends React.Component {
 
     return (
       <div className="default-container">
-        <Link to="/checklists">Back</Link>
+        <div className="checklist-header-container clearfix">
+          <div className="checklist-header pull-left">
+            <h1>
+              <Link to="/checklists">
+                <img className="back-icon" src="assets/back-arrow.svg" />
+              </Link>
+              Check-in
+            </h1>
 
-        <h1>
-          Depression Checklist
-        </h1>
+            <DatePicker
+              selected={date}
+              onChange={this.handleDateChange.bind(this)} />
 
-        <DatePicker
-          selected={date}
-          onChange={this.handleDateChange.bind(this)} />
-
-        <div className="component-container">
-          <table>
-            <tbody>
-              {
-                questions.map((question, key) => {
-                  return (
-                    <CheckListQuestion
-                      key={key}
-                      question={question}
-                      onSelect={this.handleScoreChange.bind(this, question)} />
-                  );
-                })
-              }
-            </tbody>
-          </table>
+            <h3 className="text-light">
+              {date.format('dddd MMMM DD, YYYY')}
+            </h3>
+          </div>
         </div>
 
-        <button
-          className="button-default"
-          onClick={this.submit.bind(this)}>
-          Submit
-        </button>
+        <div className="checklist-container">
+          {
+            questions.map((question, key) => {
+              return (
+                <CheckListQuestion
+                  key={key}
+                  question={question}
+                  onSelect={this.handleScoreChange.bind(this, question)} />
+              );
+            })
+          }
+        </div>
 
-        <h2>
-          Total Score: {this.calculateScore(questions)}
-        </h2>
+        <div className="clearfix">
+          <button
+            className="btn-default pull-right"
+            onClick={this.submit.bind(this)}>
+            Submit
+          </button>
+        </div>
       </div>
     );
   }

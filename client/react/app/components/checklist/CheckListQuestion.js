@@ -1,4 +1,5 @@
 import React from 'react';
+import CheckListOptionsSvg from './CheckListOptionsSvg';
 
 const getScoreOptions = () => {
   return [
@@ -14,26 +15,14 @@ const CheckListQuestion = ({ question, onSelect }) => {
   const options = getScoreOptions();
 
   return (
-    <tr>
-      <td>{question.text}</td>
-      {
-        options.map((option, key) => {
-          const { value, score } = option;
-
-          return (
-            <td key={key}>
-              <label>
-                <input
-                  type="radio"
-                  value={value}
-                  checked={question.score === score}
-                  onChange={(e) => onSelect(score)} />
-              </label>
-            </td>
-          );
-        })
-      }
-    </tr>
+    <div className="checklist-question clearfix">
+      <span className="pull-left">{question.text}</span>
+      <span className="pull-right">
+        <CheckListOptionsSvg
+          num={question.score}
+          handleSelect={onSelect} />
+      </span>
+    </div>
   );
 };
 

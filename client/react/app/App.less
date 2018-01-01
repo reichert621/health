@@ -6,7 +6,9 @@
 @border-gray: #d0d0d0;
 @light-gray: #eee;
 @light-gray-2: #D8D8D8;
+@light-gray-3: #eaeaea;
 @gray: #979797;
+@dark-gray: #5E5E5E;
 @black: #2b2b2b;
 @dark-green: #3e886b;
 @bright-green: #3db787;
@@ -27,7 +29,7 @@ body,
 .app {
   height: 100%;
   font-family: @font-san-serif;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 300;
 }
 
@@ -76,6 +78,38 @@ a {
   text-decoration: none;
 }
 
+.btn-default {
+  background: @light-gray-3;
+  border: 1px solid @light-gray-3;
+  border-radius: 2px;
+  box-shadow: none;
+  color: @dark-gray;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  margin-bottom: @margin-default;
+  padding: 16px 24px;
+
+  &.-large {
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+
+  &:hover {
+    background: @light-gray;
+    cursor: pointer;
+  }
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:active {
+    border-color: @light-gray;
+  }
+}
+
+// TODO: deprecate
 .button-default {
   background: transparent;
   border: 1px solid @border-gray;
@@ -227,6 +261,10 @@ a {
   margin: @margin-default 0px;
 }
 
+.text-light {
+  font-weight: 100;
+}
+
 .text-red {
   color: @red;
 }
@@ -240,4 +278,8 @@ a {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.back-icon {
+  margin-right: 24px;
 }
