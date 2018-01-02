@@ -20,7 +20,7 @@ class CheckList extends React.Component {
   }
 
   componentDidMount() {
-    const { match } = this.props;
+    const { match, history } = this.props;
     const { id } = match.params;
 
     return fetchChecklist(id)
@@ -29,7 +29,14 @@ class CheckList extends React.Component {
 
         return this.setState({ checklist, questions, date: moment(date) });
       })
-      .catch(err => console.log('Error fetching checklist!', err));
+      .catch(err => {
+        // TODO: handle this at a higher level
+        if (err.status === 401) {
+          return history.push('/login');
+        }
+
+        console.log('Error fetching checklist!', err);
+      });
   }
 
   handleScoreChange(question, score) {

@@ -37,7 +37,10 @@ const getHttpConfig = (options = {}): HttpConfig => {
  */
 const isAuthorized = (res: any): HttpResponse => {
   if (res.status === 401) {
-    throw new Error('Not authorized!');
+    // TODO: this might be a temporary hack to handle unauthorized access
+    const err = assign(new Error('Not authorized!'), { status: 401 });
+
+    throw err;
   }
 
   return res.json();

@@ -26,7 +26,7 @@ class ScoreCard extends React.Component {
   }
 
   componentDidMount() {
-    const { match } = this.props;
+    const { match, history } = this.props;
     const { id } = match.params;
 
     return fetchScorecard(id)
@@ -36,6 +36,11 @@ class ScoreCard extends React.Component {
         return this.setState({ scorecard, tasks, date: moment(date) });
       })
       .catch(err => {
+        // TODO: handle this at a higher level
+        if (err.status === 401) {
+          return history.push('/login');
+        }
+
         console.log('Error fetching scorecard!', err);
       });
   }
