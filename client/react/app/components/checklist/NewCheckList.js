@@ -23,24 +23,24 @@ class NewCheckList extends React.Component {
   componentDidMount() {
     return fetchChecklistQuestions()
       .then(questions => {
-        return this.setState({
-          questions: questions.map(question => extend(question, { score: 0 }))
-        });
+        return this.setState({ questions });
       })
       .catch(err => console.log('Error fetching checklist!', err));
   }
 
   handleScoreChange(question, score) {
     const { questions } = this.state;
-    const update = questions.map(q =>
-      (q.id === question.id) ? { ...q, score } : q);
+    const update = questions.map(q => {
+      return (q.id === question.id) ? { ...q, score } : q;
+    });
 
     return this.setState({ questions: update });
   }
 
   calculateScore(questions) {
-    return questions.reduce((score, question) =>
-      question.score ? (score + question.score) : score, 0);
+    return questions.reduce((score, question) => {
+      return question.score ? (score + question.score) : score;
+    }, 0);
   }
 
   handleDateChange(date) {

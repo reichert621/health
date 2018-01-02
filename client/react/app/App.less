@@ -1,6 +1,8 @@
+@import url('https://fonts.googleapis.com/css?family=Covered+By+Your+Grace');
 /* Fonts */
 @font-serif: 'Tinos', serif;
 @font-san-serif: 'Helvetica Neue', Arial, san-serif;
+@font-handwritten: 'Covered By Your Grace', cursive;
 
 /* Colors */
 @border-gray: #d0d0d0;
@@ -8,6 +10,7 @@
 @light-gray-2: #D8D8D8;
 @light-gray-3: #eaeaea;
 @gray: #979797;
+@gray-2: #bbbbbb;
 @dark-gray: #5E5E5E;
 @black: #2b2b2b;
 @dark-green: #3e886b;
@@ -261,6 +264,10 @@ a {
   margin: @margin-default 0px;
 }
 
+.text-handwritten {
+  font-family: @font-handwritten;
+}
+
 .text-light {
   font-weight: 100;
 }
@@ -272,6 +279,10 @@ a {
 .text-active {
   color: @bright-blue;
   font-weight: 400;
+}
+
+.text-inactive {
+  color: @gray-2;
 }
 
 .text-ellipsis {
