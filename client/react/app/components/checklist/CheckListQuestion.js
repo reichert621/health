@@ -1,6 +1,8 @@
 import React from 'react';
+import CheckListOptionsSvg from './CheckListOptionsSvg';
 
-const getScoreOptions = () => {
+// TODO: update with descriptions (e.g. 0 = disagree, 1 = somewhat agree)
+const getScoreDescriptions = () => {
   return [
     { value: 'zero', score: 0 },
     { value: 'one', score: 1 },
@@ -11,29 +13,17 @@ const getScoreOptions = () => {
 };
 
 const CheckListQuestion = ({ question, onSelect }) => {
-  const options = getScoreOptions();
+  const options = getScoreDescriptions();
 
   return (
-    <tr>
-      <td>{question.text}</td>
-      {
-        options.map((option, key) => {
-          const { value, score } = option;
-
-          return (
-            <td key={key}>
-              <label>
-                <input
-                  type="radio"
-                  value={value}
-                  checked={question.score === score}
-                  onChange={(e) => onSelect(score)} />
-              </label>
-            </td>
-          );
-        })
-      }
-    </tr>
+    <div className="checklist-question clearfix">
+      <span className="pull-left">{question.text}</span>
+      <span className="pull-right">
+        <CheckListOptionsSvg
+          selected={question.score}
+          handleSelect={onSelect} />
+      </span>
+    </div>
   );
 };
 

@@ -1,4 +1,5 @@
-var path = require('path');
+const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './app/App.js',
@@ -29,5 +30,10 @@ module.exports = {
         loader: 'style-loader!css-loader!less-loader'
       }
     ]
-  }
+  },
+  plugins: [
+    new CopyWebpackPlugin([
+      { from: '../assets', to: 'assets' }
+    ])
+  ]
 };

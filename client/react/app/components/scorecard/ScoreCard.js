@@ -108,13 +108,14 @@ class ScoreCard extends React.Component {
 
     return (
       <div className="default-container">
-        <Link to="/scorecards">Back</Link>
-
         <h1>
+          <Link to="/scorecards">
+            <img className="back-icon" src="assets/back-arrow.svg" />
+          </Link>
           Scorecard
         </h1>
 
-        <h3 className="scorecard-date">
+        <h3 className="text-light">
           {date.format('dddd MMMM DD, YYYY')}
         </h3>
 
