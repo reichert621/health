@@ -49,8 +49,9 @@ class CheckList extends React.Component {
   }
 
   calculateScore(questions) {
-    return questions.reduce((score, question) =>
-      question.score ? (score + question.score) : score, 0);
+    return questions.reduce((score, question) => {
+      return question.score ? (score + question.score) : score;
+    }, 0);
   }
 
   handleDateChange(date) {

@@ -1,8 +1,9 @@
 @bright-blue: #33A2CC;
 @border-gray: #d3d3d3;
+@font-handwritten: 'Covered By Your Grace', cursive;
 
 .checklist-container {
-  margin-top: 40px;
+  margin-top: 32px;
   margin-bottom: 40px;
 }
 
@@ -19,8 +20,20 @@
   width: 48%;
 }
 
-.checklist-question {
+.checklist-question-container {
   margin-bottom: 8px;
+}
+
+.checklist-question,
+.checklist-answer {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 40px;
+  margin-right: 32px;
+}
+
+.checklist-answer {
+  font-family: @font-handwritten;
 }
 
 .checklist-options-svg {

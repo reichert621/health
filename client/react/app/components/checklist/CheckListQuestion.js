@@ -1,27 +1,33 @@
 import React from 'react';
+import { isNumber } from 'lodash';
 import CheckListOptionsSvg from './CheckListOptionsSvg';
 
-// TODO: update with descriptions (e.g. 0 = disagree, 1 = somewhat agree)
-const getScoreDescriptions = () => {
+const getScoreDescription = (score) => {
   return [
-    { value: 'zero', score: 0 },
-    { value: 'one', score: 1 },
-    { value: 'two', score: 2 },
-    { value: 'three', score: 3 },
-    { value: 'four', score: 4 }
-  ];
+    'disagree',
+    'somewhat agree',
+    'agree',
+    'strongly agree',
+    'very strongly agree'
+  ][score] || 'unanswered';
 };
 
 const CheckListQuestion = ({ question, onSelect }) => {
-  const options = getScoreDescriptions();
+  const { text, score } = question;
 
   return (
-    <div className="checklist-question clearfix">
-      <span className="pull-left">{question.text}</span>
+    <div className="checklist-question-container clearfix">
+      <span className="checklist-question pull-left">{text}</span>
       <span className="pull-right">
         <CheckListOptionsSvg
-          selected={question.score}
+          selected={score}
           handleSelect={onSelect} />
+      </span>
+      <span
+        className={`checklist-answer pull-right ${
+          isNumber(score) ? 'text-active' : 'text-inactive'
+        }`}>
+        {getScoreDescription(score)}
       </span>
     </div>
   );
