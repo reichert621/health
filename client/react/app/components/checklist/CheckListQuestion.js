@@ -1,7 +1,8 @@
 import React from 'react';
 import CheckListOptionsSvg from './CheckListOptionsSvg';
 
-const getScoreOptions = () => {
+// TODO: update with descriptions (e.g. 0 = disagree, 1 = somewhat agree)
+const getScoreDescriptions = () => {
   return [
     { value: 'zero', score: 0 },
     { value: 'one', score: 1 },
@@ -12,7 +13,7 @@ const getScoreOptions = () => {
 };
 
 const CheckListQuestion = ({ question, onSelect }) => {
-  const options = getScoreOptions();
+  const options = getScoreDescriptions();
 
   return (
     <div className="checklist-question clearfix">
