@@ -1,5 +1,4 @@
 const express = require('express');
-const passport = require('passport');
 const { auth, isAuthenticated } = require('./passport');
 
 const { Router } = express;
@@ -55,7 +54,7 @@ const users = {
   fetchEntries: (req, res) =>
     User.findByUsername(req.params.username)
       .then(({ id: userId }) =>
-        Entries.fetch({ isPrivate: false }, userId))
+        Entry.fetch({ isPrivate: false }, userId))
       .then(entries =>
         res.json({ entries }))
       .catch(err =>
@@ -64,7 +63,7 @@ const users = {
   fetchEntry: (req, res) =>
     User.findByUsername(req.params.username)
       .then(({ id: userId }) =>
-        Entries.findById(req.params.id, userId, { isPrivate: false }))
+        Entry.findById(req.params.id, userId, { isPrivate: false }))
       .then(entry =>
         res.json({ entry }))
       .catch(err =>
@@ -119,7 +118,7 @@ const scorecards = {
   fetch: (req, res) => {
     return ScoreCard.fetchWithPoints({}, req.user.id)
       .then(scorecards => res.json({ scorecards }))
-      .catch(err => handleError(res, err))
+      .catch(err => handleError(res, err));
   },
 
   findById: (req, res) => {
@@ -201,7 +200,7 @@ const checklists = {
   fetch: (req, res) => {
     return Checklist.fetchWithPoints({}, req.user.id)
       .then(checklists => res.json({ checklists }))
-      .catch(err => handleError(res, err))
+      .catch(err => handleError(res, err));
   },
 
   create: (req, res) => {
