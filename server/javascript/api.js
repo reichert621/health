@@ -1,10 +1,11 @@
 const express = require('express');
 const passport = require('passport');
 const { auth, isAuthenticated } = require('./passport');
+
 const { Router } = express;
 const {
-  Users,
-  Entries,
+  User,
+  Entry,
   ScoreCard,
   Task,
   Checklist,
@@ -37,8 +38,14 @@ const pong = (req, res) =>
 
 // TODO: move to controllers
 const users = {
+  isAuthenticated: (req, res) => {
+    const isLoggedIn = Boolean(req.user && req.user.id);
+
+    return res.json({ isAuthenticated: isLoggedIn });
+  },
+
   fetch: (req, res) =>
-    Users.fetch()
+    User.fetch()
       .then(users =>
         res.json({ users }))
       .catch(err =>
@@ -46,7 +53,7 @@ const users = {
 
   // TODO: figure out how to handle relations better
   fetchEntries: (req, res) =>
-    Users.findByUsername(req.params.username)
+    User.findByUsername(req.params.username)
       .then(({ id: userId }) =>
         Entries.fetch({ isPrivate: false }, userId))
       .then(entries =>
@@ -55,7 +62,7 @@ const users = {
         handleError(res, err)),
 
   fetchEntry: (req, res) =>
-    Users.findByUsername(req.params.username)
+    User.findByUsername(req.params.username)
       .then(({ id: userId }) =>
         Entries.findById(req.params.id, userId, { isPrivate: false }))
       .then(entry =>
@@ -64,7 +71,7 @@ const users = {
         handleError(res, err)),
 
   login: (req, res) =>
-    Users.authenticate(req.body)
+    User.authenticate(req.body)
       .then(user =>
         res.json({ user }))
       .catch(err =>
@@ -73,35 +80,35 @@ const users = {
 
 const entries = {
   fetch: (req, res) =>
-    Entries.fetch({}, req.user.id)
+    Entry.fetch({}, req.user.id)
       .then(entries =>
         res.json({ entries }))
       .catch(err =>
         handleError(res, err)),
 
   findById: (req, res) =>
-    Entries.findById(req.params.id, req.user.id)
+    Entry.findById(req.params.id, req.user.id)
       .then(entry =>
         res.json({ entry }))
       .catch(err =>
         handleError(res, err)),
 
   create: (req, res) =>
-    Entries.create(req.body, req.user.id)
+    Entry.create(req.body, req.user.id)
       .then(entry =>
         res.json({ entry }))
       .catch(err =>
         handleError(res, err)),
 
   update: (req, res) =>
-    Entries.update(req.params.id, req.body, req.user.id)
+    Entry.update(req.params.id, req.body, req.user.id)
       .then(entry =>
         res.json({ entry }))
       .catch(err =>
         handleError(res, err)),
 
   destroy: (req, res) =>
-    Entries.destroy(req.params.id, req.user.id)
+    Entry.destroy(req.params.id, req.user.id)
       .then(entry =>
         res.json({ entry }))
       .catch(err =>
@@ -264,6 +271,7 @@ api.put('/entries/:id', isAuthenticated, entries.update);
 api.delete('/entries/:id', isAuthenticated, entries.destroy);
 // Users
 api.get('/users', users.fetch);
+api.get('/is-authenticated', users.isAuthenticated);
 api.get('/users/:username/entries', users.fetchEntries);
 api.get('/users/:username/entries/:id', users.fetchEntry);
 // Scorecards

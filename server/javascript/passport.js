@@ -1,7 +1,8 @@
 const passport = require('passport');
 const { Strategy } = require('passport-local');
-const { Users } = require('./db');
-const { findByUsername, verifyUser, findById } = Users;
+const { User } = require('./db');
+
+const { findByUsername, verifyUser, findById } = User;
 
 const DEFAULT_REDIRECT = '/';
 
@@ -25,7 +26,7 @@ const serialize = (user, done) =>
 const deserialize = (id, done) =>
   findById(id)
     .then(user => done(null, user))
-    .catch(err => done(err))
+    .catch(err => done(err));
 
 const authenticate = (type = 'local') =>
   passport.authenticate(type, {

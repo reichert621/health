@@ -1,4 +1,4 @@
-const { create } = require('../controllers/users');
+const { create } = require('../models/user');
 
 exports.seed = (knex, Promise) => {
   const users = [
@@ -6,10 +6,7 @@ exports.seed = (knex, Promise) => {
     { id: 2, email: 'test@test.com', username: 'test', password: 'asdfasdf' }
   ];
 
-  const insert = (users) =>
-    Promise.all(
-      users.map(create)
-    );
+  const insert = (users) => Promise.all(users.map(create));
 
   return knex('users').del()
     .then(() => insert(users));
