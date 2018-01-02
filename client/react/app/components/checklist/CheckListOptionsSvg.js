@@ -62,7 +62,7 @@ const InnerOption = ({ value, color, isActive, transform, handleSelect }) => {
   );
 };
 
-const CheckListOptionsSvg = ({ num, handleSelect }) => {
+const CheckListOptionsSvg = ({ selected, handleSelect }) => {
   return (
     <svg width="142" height="38" className="checklist-options-svg" viewBox="0 0 142 38" version="1.1" xmlns="http://www.w3.org/2000/svg">
       <title>Rater</title>
@@ -71,35 +71,35 @@ const CheckListOptionsSvg = ({ num, handleSelect }) => {
         <LeftOption
           value={0}
           color="#B8DBE9"
-          isActive={num >= 0}
+          isActive={selected >= 0}
           transform="translate(3 2)"
           handleSelect={handleSelect} />
 
         <InnerOption
           value={1}
           color="#8BC9E1"
-          isActive={num >= 1}
+          isActive={selected >= 1}
           transform="translate(31 2)"
           handleSelect={handleSelect} />
 
         <InnerOption
           value={2}
           color="#72BFDB"
-          isActive={num >= 2}
+          isActive={selected >= 2}
           transform="translate(59 2)"
           handleSelect={handleSelect} />
 
         <InnerOption
           value={3}
           color="#4FAED1"
-          isActive={num >= 3}
+          isActive={selected >= 3}
           transform="translate(87 2)"
           handleSelect={handleSelect} />
 
         <RightOption
           value={4}
           color="#33A2CC"
-          isActive={num >= 4}
+          isActive={selected >= 4}
           transform="translate(115 2)"
           handleSelect={handleSelect} />
 

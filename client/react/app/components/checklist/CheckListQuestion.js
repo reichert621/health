@@ -20,7 +20,7 @@ const CheckListQuestion = ({ question, onSelect }) => {
       <span className="pull-left">{question.text}</span>
       <span className="pull-right">
         <CheckListOptionsSvg
-          num={question.score}
+          selected={question.score}
           handleSelect={onSelect} />
       </span>
     </div>
