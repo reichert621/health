@@ -91,7 +91,7 @@ class CheckList extends React.Component {
         <div className="checklist-header-container clearfix">
           <div className="checklist-header pull-left">
             <h1>
-              <Link to="/checklists">
+              <Link to="/dashboard">
                 <img className="back-icon" src="assets/back-arrow.svg" />
               </Link>
               Check-in

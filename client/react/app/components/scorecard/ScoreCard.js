@@ -114,7 +114,7 @@ class ScoreCard extends React.Component {
     return (
       <div className="default-container">
         <h1>
-          <Link to="/scorecards">
+          <Link to="/dashboard">
             <img className="back-icon" src="assets/back-arrow.svg" />
           </Link>
           Scorecard

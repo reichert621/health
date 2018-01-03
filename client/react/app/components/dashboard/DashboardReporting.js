@@ -28,7 +28,8 @@ class DashboardReporting extends React.Component {
 
     return (
       <div>
-        <h2>Reporting</h2>
+        <h3 className="text-light">Reporting</h3>
+
         <ReportingChart stats={stats} />
       </div>
     );

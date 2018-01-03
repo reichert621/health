@@ -1,0 +1,106 @@
+@white: #fff;
+@border-gray: #b4b4b4;
+@table-border-gray: #E9E9E9;
+@main-header-gray: #4A4A4A;
+@header-background-gray: #F3F3F3;
+@section-header-gray: #7A7A7A;
+@section-content-gray: #818181;
+
+.dashboard-preview-container {
+  width: 40%;
+}
+
+.dashboard-preview-header {
+  &.date-header {
+    color: @main-header-gray;
+    font-weight: 200;
+    margin-top: 0px;
+    margin-bottom: 32px;
+  }
+
+  &.section-header {
+    color: @section-header-gray;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+
+  .date-today {
+    font-weight: 500;
+  }
+}
+
+.dashboard-preview-points {
+  margin-top: 16px;
+  font-weight: 500;
+}
+
+.dashboard-list-container {
+  padding-left: 32px;
+  width: 60%;
+}
+
+.dashboard-preview-container {
+  border: 1px solid @border-gray;
+  border-radius: 4px;
+  color: @section-content-gray;
+  padding: 32px;
+}
+
+.dashboard-scorecard-preview {
+  border-bottom: 1px solid @border-gray;
+  padding-bottom: 32px;
+}
+
+// TODO: make this better
+.preview-link {
+  display: inline-block;
+  line-height: 32px;
+}
+
+.dashboard-checklist-preview {
+  padding-top: 24px;
+}
+
+.dashboard-preview-scorecard-overview {
+  .scorecard-overview-category-label,
+  .scorecard-overview-completed-task {
+    margin-bottom: 4px;
+  }
+}
+
+.dashboard-list-table {
+  width: 100%;
+  font-size: 14px;
+  border-bottom: 2px solid @table-border-gray;
+  border-spacing: 2px 0px;
+  margin-bottom: 40px;
+
+  th, td {
+    border-right: 2px solid @white;
+
+    &:last-child {
+      border-right: none;
+    }
+  }
+
+  th {
+    color: @main-header-gray;
+    background-color: @header-background-gray;
+    text-align: left;
+    font-weight: 500;
+    padding: 12px 16px 10px;
+  }
+
+  td {
+    border-top: 2px solid @table-border-gray;
+    padding: 12px 16px;
+  }
+
+  .dashboard-list-row {
+    cursor: pointer;
+
+    &:hover {
+      background-color: #F6FCFF;
+    }
+  }
+}
