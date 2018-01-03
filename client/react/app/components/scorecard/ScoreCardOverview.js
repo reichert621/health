@@ -1,6 +1,7 @@
 import React from 'react';
 import { groupBy, keys } from 'lodash';
 import { calculateScore } from '../../helpers/tasks';
+import { formatPoints } from '../../helpers/utils';
 
 const CategorySubtasks = ({ category, subtasks }) => {
   return (
@@ -10,13 +11,14 @@ const CategorySubtasks = ({ category, subtasks }) => {
       </div>
       {
         subtasks.map((task, key) => {
+          const { description, points } = task;
           return (
             <div
               key={key}
               className="scorecard-overview-completed-task clearfix">
-              <span className="pull-left">{task.description}</span>
+              <span className="pull-left">{description}</span>
               <span className="pull-right text-active">
-                {task.points} {task.points === 1 ? 'point' : 'points'}
+                {formatPoints(points)}
               </span>
             </div>
           );

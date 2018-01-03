@@ -5,7 +5,7 @@
 @font-handwritten: 'Covered By Your Grace', cursive;
 
 /* Colors */
-@border-gray: #d0d0d0;
+@border-gray: #b4b4b4;
 @light-gray: #eee;
 @light-gray-2: #D8D8D8;
 @light-gray-3: #eaeaea;
@@ -20,7 +20,7 @@
 @white: #fff;
 
 /* Spacing */
-@margin-default: 20px;
+@margin-default: 16px;
 
 /* Base CSS */
 * {
@@ -47,7 +47,7 @@ h4,
 h5 {
   font-family: @font-san-serif;
   letter-spacing: 0.4px;
-  margin-top: 10px;
+  margin-top: 8px;
   margin-bottom: @margin-default;
 }
 
@@ -90,7 +90,6 @@ a {
   font-size: 18px;
   font-weight: 500;
   letter-spacing: 0.4px;
-  margin-bottom: @margin-default;
   padding: 16px 24px;
 
   &.-large {
@@ -260,8 +259,9 @@ a {
 
 .component-container {
   border: 1px solid @border-gray;
-  padding: 24px 40px;
-  margin: @margin-default 0px;
+  border-radius: 4px;
+  padding: 32px;
+  margin: 24px 0px;
 }
 
 .text-handwritten {
@@ -274,6 +274,10 @@ a {
 
 .text-red {
   color: @red;
+}
+
+.text-blue {
+  color: @bright-blue;
 }
 
 .text-active {

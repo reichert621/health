@@ -106,7 +106,7 @@ class NewScoreCard extends React.Component {
           selected={date}
           onChange={this.handleDateChange.bind(this)} />
 
-        <h3 className="scorecard-date">
+        <h3 className="text-light">
           {date.format('dddd MMMM DD, YYYY')}
         </h3>
 

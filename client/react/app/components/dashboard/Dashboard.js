@@ -1,9 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import DashboardScoreCards from './DashboardScoreCards';
-import DashboardCheckLists from './DashboardCheckLists';
+import { times, extend } from 'lodash';
+import moment from 'moment';
+import { all } from 'bluebird';
 import DashboardReporting from './DashboardReporting';
-import { isAuthenticated } from '../../helpers/auth';
+import DashboardList from './DashboardList';
+import DashboardPreview from './DashboardPreview';
+import { fetchScorecards, fetchScorecard } from '../../helpers/scorecard';
+import { fetchChecklists } from '../../helpers/checklist';
+import { keyifyDate, mapByDate, getPastDates } from '../../helpers/utils';
 import './Dashboard.less';
 
 class Dashboard extends React.Component {
@@ -11,52 +15,90 @@ class Dashboard extends React.Component {
     super(props);
 
     this.state = {
-      isLoading: true
+      scorecards: [],
+      checklists: [],
+      selected: {}
     };
   }
 
   componentDidMount() {
     const { history } = this.props;
-    // TODO: handle this at higher level, don't want to validate
-    // that a user is authenticated in every protected component
-    return isAuthenticated()
-      .then(isLoggedIn => {
-        if (isLoggedIn) {
-          return this.setState({ isLoading: false });
-        } else {
-          return history.push('/login');
-        }
+
+    return all([
+      fetchScorecards(),
+      fetchChecklists()
+    ])
+      .then(([scorecards, checklists]) => {
+        return this.setState({
+          scorecards,
+          checklists,
+          scorecardsByDate: mapByDate(scorecards),
+          checklistsByDate: mapByDate(checklists)
+        });
+      })
+      .then(() => {
+        const today = moment();
+
+        return this.handleDateSelected(today);
       })
       .catch(err => {
-        console.log('Error authenticated user!', err);
+        if (err.status === 401) {
+          return history.push('/login');
+        }
+
+        console.log('Error fetching dashboard!', err);
+      });
+  }
+
+  handleDateSelected(date) {
+    const { scorecardsByDate, checklistsByDate } = this.state;
+    const key = keyifyDate(date);
+    const scorecard = scorecardsByDate[key];
+    const checklist = checklistsByDate[key];
+
+    if (!scorecard) {
+      return this.setState({
+        selected: {
+          date,
+          scorecard,
+          checklist
+        }
+      });
+    }
+
+    const { id: scorecardId } = scorecard;
+
+    return fetchScorecard(scorecardId)
+      .then(({ tasks = [] }) => {
+        return this.setState({
+          selected: {
+            date,
+            checklist,
+            scorecard: extend(scorecard, { tasks })
+          }
+        });
       });
   }
 
   render() {
-    const { isLoading } = this.state;
-    const limit = 5;
-    const style = {
-      display: 'inline-block',
-      width: '48%'
-    };
-
-    if (isLoading) {
-      return (
-        <div className="hidden">TODO: handle loading better</div>
-      );
-    }
+    const { scorecards, checklists, selected } = this.state;
+    const dates = getPastDates();
 
     return (
       <div className="default-container">
         <h1>Dashboard</h1>
 
         <div className="clearfix">
-          <div style={style} className="component-container pull-left">
-            <DashboardScoreCards limit={limit} />
+          <div className="dashboard-preview-container pull-left">
+            <DashboardPreview selected={selected} />
           </div>
 
-          <div style={style} className="component-container pull-right">
-            <DashboardCheckLists limit={limit} />
+          <div className="dashboard-list-container pull-right">
+            <DashboardList
+              dates={dates}
+              scorecards={scorecards}
+              checklists={checklists}
+              handleDateSelected={this.handleDateSelected.bind(this)} />
           </div>
         </div>
 
