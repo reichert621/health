@@ -1,0 +1,12 @@
+<svg width="15" height="15" viewBox="0 0 15 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<title>Pencil</title>
+<desc>Created using Figma</desc>
+<g id="Canvas" transform="translate(-695 -1979)">
+<g id="Pencil">
+<use xlink:href="#path0_fill" transform="translate(695 1979)" fill="#7A7A7A"/>
+</g>
+</g>
+<defs>
+<path id="path0_fill" fill-rule="evenodd" d="M 14.0031 5.0011L 10.0022 1.00024C 10.0022 1.00024 12.0026 -1.00024 14.0031 1.00024C 16.0035 3.00061 14.0031 5.0011 14.0031 5.0011ZM 9.00195 2.00049L 13.0029 6.00134L 6.00134 13.0029L 2.00043 9.00208L 9.00195 2.00049ZM 1.00024 10.0022L 5.0011 14.0031L 0 15L 1.00024 10.0022Z"/>
+</defs>
+</svg>

@@ -42,6 +42,11 @@ const DashboardScorecardPreview = ({ scorecard = {} }) => {
       <div className="clearfix">
         <h4 className="dashboard-preview-header section-header pull-left">
           Scorecard
+          {
+            scorecardId ?
+              <img className="preview-icon checkmark" src="assets/checkmark.svg" /> :
+              <img className="preview-icon" src="assets/pencil.svg" />
+          }
         </h4>
 
         <Link className="preview-link text-active pull-right"
@@ -80,6 +85,11 @@ const DashboardChecklistPreview = ({ checklist = {} }) => {
       <div className="clearfix">
         <h4 className="dashboard-preview-header section-header pull-left">
           Check-in
+          {
+            checklistId ?
+              <img className="preview-icon checkmark" src="assets/checkmark.svg" /> :
+              <img className="preview-icon" src="assets/pencil.svg" />
+          }
         </h4>
 
         <Link className="preview-link text-active pull-right"
