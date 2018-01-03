@@ -55,7 +55,7 @@ class NewScoreCard extends React.Component {
     return createNewScorecard({ date, selectedTasks })
       .then(({ id }) => {
         console.log('Created!', id);
-        return history.push('/scorecards');
+        return history.push('/dashboard');
       })
       .catch(err => console.log('Error creating scorecard!', err));
   }
@@ -121,7 +121,7 @@ class NewScoreCard extends React.Component {
         </div>
 
         <button
-          className="button-default"
+          className="btn-default"
           onClick={this.submit.bind(this)}>
           Submit
         </button>

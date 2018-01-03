@@ -22,6 +22,9 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
+    // TODO: this is a temporary hack to make sure this page scrolls
+    // to the top after a scorecard or a checklist is submitted
+    window.scrollTo(0, 0);
     const { history } = this.props;
 
     return all([

@@ -63,7 +63,7 @@ class NewCheckList extends React.Component {
     return createNewChecklist({ date, scores })
       .then(({ id }) => {
         console.log('Created!', id);
-        return history.push('/checklists');
+        return history.push('/dashboard');
       })
       .catch(err => console.log('Error creating checklist!', err));
   }
