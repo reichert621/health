@@ -1,12 +1,12 @@
 import React from 'react';
 import { times, extend } from 'lodash';
 import moment from 'moment';
-import { all } from 'bluebird';
+import { all, resolve } from 'bluebird';
 import DashboardReporting from './DashboardReporting';
 import DashboardList from './DashboardList';
 import DashboardPreview from './DashboardPreview';
-import { fetchScorecards, fetchScorecard } from '../../helpers/scorecard';
-import { fetchChecklists } from '../../helpers/checklist';
+import { fetchScorecards, fetchScorecard, createNewScorecard } from '../../helpers/scorecard';
+import { fetchChecklists, createNewChecklist } from '../../helpers/checklist';
 import { keyifyDate, mapByDate, getPastDates } from '../../helpers/utils';
 import './Dashboard.less';
 
@@ -83,8 +83,36 @@ class Dashboard extends React.Component {
       });
   }
 
+  createNewScorecard(scorecard, date) {
+    if (scorecard && scorecard.id) return resolve();
+
+    const { history } = this.props;
+    // TODO: temporary workaround to deal with timezone bug
+    const params = { date: moment(date).startOf('day') };
+
+    return createNewScorecard(params)
+      .then(({ id: scorecardId }) => {
+        console.log('Created scorecard!', scorecardId);
+        return history.push(`/scorecard/${scorecardId}`);
+      });
+  }
+
+  createNewChecklist(checklist, date) {
+    if (checklist && checklist.id) return resolve();
+
+    const { history } = this.props;
+    const params = { date: moment(date).startOf('day') };
+
+    return createNewChecklist(params)
+      .then(({ id: checklistId }) => {
+        console.log('Created checklist!', checklistId);
+        return history.push(`/checklist/${checklistId}`);
+      });
+  }
+
   render() {
-    const { scorecards, checklists, selected } = this.state;
+    const { scorecards = [], checklists = [], selected = {} } = this.state;
+    const { date: selectedDate } = selected;
     const dates = getPastDates();
 
     return (
@@ -93,7 +121,10 @@ class Dashboard extends React.Component {
 
         <div className="clearfix">
           <div className="dashboard-preview-container pull-left">
-            <DashboardPreview selected={selected} />
+            <DashboardPreview
+              selected={selected}
+              handleScorecardClicked={this.createNewScorecard.bind(this)}
+              handleChecklistClicked={this.createNewChecklist.bind(this)} />
           </div>
 
           <div className="dashboard-list-container pull-right">

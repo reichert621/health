@@ -6,6 +6,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CheckListQuestion from './CheckListQuestion';
 import { fetchChecklist, updateChecklistScores } from '../../helpers/checklist';
+import { formatPoints } from '../../helpers/utils';
 import './CheckList.less';
 
 class CheckList extends React.Component {
@@ -78,13 +79,14 @@ class CheckList extends React.Component {
     return updateChecklistScores(checklistId, { scores, date })
       .then(res => {
         console.log('Updated!', res);
-        return history.push('/checklists');
+        return history.push('/dashboard');
       })
       .catch(err => console.log('Error updating scores!', err));
   }
 
   render() {
     const { questions, date } = this.state;
+    const points = this.calculateScore(questions);
 
     return (
       <div className="default-container">
@@ -109,7 +111,7 @@ class CheckList extends React.Component {
           </div>
 
           <div className="checklist-overview text-active pull-right">
-            {this.calculateScore(questions)} points
+            {formatPoints(points)}
           </div>
         </div>
 
