@@ -31,7 +31,7 @@ const DashboardCategorySubtasks = ({ category, subtasks }) => {
 };
 
 // TODO: clean up these preview components
-const DashboardScorecardPreview = ({ scorecard = {} }) => {
+const DashboardScorecardPreview = ({ scorecard = {}, handleClick }) => {
   const { id: scorecardId, points, tasks = [] } = scorecard;
   const completed = tasks.filter(t => t.isComplete);
   const grouped = groupBy(completed, 'category');
@@ -50,7 +50,8 @@ const DashboardScorecardPreview = ({ scorecard = {} }) => {
         </h4>
 
         <Link className="preview-link text-active pull-right"
-          to={scorecardId ? `/scorecard/${scorecardId}` : '/scorecard/new'}>
+          to={scorecardId ? `/scorecard/${scorecardId}` : '#'}
+          onClick={handleClick}>
           {scorecardId ? 'View' : 'Start'}
         </Link>
       </div>
@@ -77,7 +78,7 @@ const DashboardScorecardPreview = ({ scorecard = {} }) => {
   );
 };
 
-const DashboardChecklistPreview = ({ checklist = {} }) => {
+const DashboardChecklistPreview = ({ checklist = {}, handleClick }) => {
   const { id: checklistId, points } = checklist;
 
   return (
@@ -93,7 +94,8 @@ const DashboardChecklistPreview = ({ checklist = {} }) => {
         </h4>
 
         <Link className="preview-link text-active pull-right"
-          to={checklistId ? `/checklist/${checklistId}` : '/checklist/new'}>
+          to={checklistId ? `/checklist/${checklistId}` : '#'}
+          onClick={handleClick}>
           {checklistId ? 'View' : 'Start'}
         </Link>
       </div>
@@ -107,7 +109,11 @@ const DashboardChecklistPreview = ({ checklist = {} }) => {
 
 class DashboardPreview extends React.Component {
   render() {
-    const { selected = {} } = this.props;
+    const {
+      selected = {},
+      handleScorecardClicked,
+      handleChecklistClicked
+    } = this.props;
     const { scorecard, checklist, date = moment() } = selected;
     const isToday = moment(date).isSame(moment(), 'day');
 
@@ -120,8 +126,14 @@ class DashboardPreview extends React.Component {
           <div className="date-subheader">{date.format('MMMM DD, YYYY')}</div>
         </h4>
 
-        <DashboardScorecardPreview scorecard={scorecard} />
-        <DashboardChecklistPreview checklist={checklist} />
+        <DashboardScorecardPreview
+          scorecard={scorecard}
+          date={date}
+          handleClick={() => handleScorecardClicked(scorecard, date)} />
+
+        <DashboardChecklistPreview
+          checklist={checklist}
+          handleClick={() => handleChecklistClicked(checklist, date)} />
       </div>
     );
   }

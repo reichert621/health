@@ -1,5 +1,5 @@
 const knex = require('../knex.js');
-const { first, groupBy, isNumber } = require('lodash');
+const { first, isNumber } = require('lodash');
 const ChecklistQuestion = require('./checklist_question');
 const ChecklistScore = require('./checklist_score');
 
@@ -35,12 +35,12 @@ const findById = (id, userId, where = {}) =>
           const s = scoresByQuestion[question.id];
 
           if (s && isNumber(s.score)) {
-            return merge(question, { score: s.score, checklistScoreId: s.id })
+            return merge(question, { score: s.score, checklistScoreId: s.id });
           } else {
             return question;
           }
         })
-       });
+      });
     });
 
 const create = (params, userId) => {
@@ -52,7 +52,7 @@ const create = (params, userId) => {
 };
 
 const createWithScores = async (params, userId) => {
-  const { date, scores } = params;
+  const { date, scores = [] } = params;
   const checklist = await create({ date }, userId);
   const { id: checklistId } = checklist;
   const promises = scores.map(({ score, checklistQuestionId }) => {

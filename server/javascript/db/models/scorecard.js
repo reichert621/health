@@ -113,7 +113,7 @@ const create = (params, userId) =>
     .then(id => findById(id, userId));
 
 const createWithScores = async (params, userId) => {
-  const { date, selectedTasks } = params;
+  const { date, selectedTasks = [] } = params;
   const scorecard = await create({ date }, userId);
   const { id: scorecardId } = scorecard;
   const promises = selectedTasks.map(({ taskId }) => {
