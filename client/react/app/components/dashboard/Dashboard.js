@@ -87,8 +87,8 @@ class Dashboard extends React.Component {
     if (scorecard && scorecard.id) return resolve();
 
     const { history } = this.props;
-    // TODO: temporary workaround to deal with timezone bug
-    const params = { date: moment(date).startOf('day') };
+    // TODO: deal with timezone bug (inconsistency with db and client)
+    const params = { date };
 
     return createNewScorecard(params)
       .then(({ id: scorecardId }) => {
@@ -101,7 +101,7 @@ class Dashboard extends React.Component {
     if (checklist && checklist.id) return resolve();
 
     const { history } = this.props;
-    const params = { date: moment(date).startOf('day') };
+    const params = { date };
 
     return createNewChecklist(params)
       .then(({ id: checklistId }) => {
