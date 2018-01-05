@@ -10,6 +10,7 @@ import { Dashboard } from './components/dashboard';
 import { EntryContainer, NewEntry, EditEntry } from './components/entry';
 import { ScoreCardsPage, ScoreCard, NewScoreCard } from './components/scorecard';
 import { CheckListsPage, CheckList, NewCheckList } from './components/checklist';
+import TaskList from './components/tasks';
 import { Reporting } from './components/reporting';
 // import 'normalize.css'; // TODO: figure out if necessary
 import './App.less';
@@ -23,6 +24,7 @@ ReactDOM.render(
           <Route path="/login" component={Login} />
           <Route path="/home" component={Home} />
           <Route path="/dashboard" component={Dashboard} />
+          <Route path="/tasks" component={TaskList} />
           <Route path="/new" component={NewEntry} />
           <Route path="/entry/:id" component={EntryContainer} />
           <Route path="/edit/:id" component={EditEntry} />

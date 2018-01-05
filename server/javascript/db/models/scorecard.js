@@ -21,7 +21,7 @@ const findById = (id, userId, where = {}) => {
   return Promise.all([
     findOne(merge(where, { id }), userId),
     ScoreCardSelectedTask.fetchByScorecardId(id, userId),
-    Task.fetch()
+    Task.fetch({}, userId)
   ])
     .then(([scorecard, selectedTasks, tasks]) => {
       const isComplete = selectedTasks.reduce((map, { taskId }) => {
@@ -39,7 +39,7 @@ const findById = (id, userId, where = {}) => {
 const fetchWithPoints = (where = {}, userId) => {
   return Promise.all([
     fetch(where, userId),
-    Task.fetch()
+    Task.fetch({}, userId)
   ])
     .then(([scorecards, tasks]) => {
       const taskScores = tasks.reduce((map, { id: taskId, points }) => {
@@ -68,7 +68,7 @@ const fetchWithPoints = (where = {}, userId) => {
 const fetchStats = (userId) => {
   return Promise.all([
     fetch({}, userId),
-    Task.fetch()
+    Task.fetch({}, userId)
   ])
     .then(([scorecards, tasks]) => {
       const taskScores = tasks.reduce((map, { id: taskId, points }) => {

@@ -6,6 +6,7 @@ const {
   User,
   Entry,
   ScoreCard,
+  Category,
   Task,
   Checklist,
   ChecklistScore,
@@ -189,11 +190,34 @@ const scorecards = {
   }
 };
 
+const categories = {
+  fetch: (req, res) =>
+    Category.fetch({}, req.user.id)
+      .then(categories => res.json({ categories }))
+      .catch(err => handleError(res, err)),
+
+  create: (req, res) => {
+    return Category.create(req.body, req.user.id)
+      .then(category => {
+        return res.json({ category });
+      })
+      .catch(err => handleError(res, err));
+  }
+};
+
 const tasks = {
   fetch: (req, res) =>
     Task.fetch()
       .then(tasks => res.json({ tasks }))
-      .catch(err => handleError(res, err))
+      .catch(err => handleError(res, err)),
+
+  create: (req, res) => {
+    return Task.create(req.body, req.user.id)
+      .then(task => {
+        return res.json({ task });
+      })
+      .catch(err => handleError(res, err));
+  }
 };
 
 const checklists = {
@@ -249,9 +273,22 @@ const checklistQuestions = {
 const t = {
   async fetch(req, res) {
     try {
-      const tasks = await Task.fetch();
+      const userId = req.user.id;
+      const tasks = await Task.fetch({}, userId);
 
       return res.json({ tasks });
+    } catch (err) {
+      return handleError(res, err);
+    }
+  },
+
+  async create(req, res) {
+    try {
+      const params = req.body;
+      const userId = req.user.id;
+      const task = await Task.create(params, userId);
+
+      return res.json({ task });
     } catch (err) {
       return handleError(res, err);
     }
@@ -280,8 +317,12 @@ api.post('/scorecards/new', isAuthenticated, scorecards.create);
 api.put('/scorecards/:id', isAuthenticated, scorecards.update);
 api.post('/scorecards/:id/select-task/:taskId', isAuthenticated, scorecards.selectTask);
 api.delete('/scorecards/:id/deselect-task/:taskId', isAuthenticated, scorecards.deselectTask);
+// Categories
+api.get('/categories', isAuthenticated, categories.fetch);
+api.post('/categories', isAuthenticated, categories.create);
 // Tasks
-api.get('/tasks', t.fetch);
+api.get('/tasks', isAuthenticated, t.fetch);
+api.post('/tasks', isAuthenticated, t.create);
 // Checklists
 api.get('/checklists', isAuthenticated, checklists.fetch);
 api.get('/checklists/:id', isAuthenticated, checklists.findById);
