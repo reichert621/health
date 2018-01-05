@@ -1,25 +1,23 @@
 const knex = require('../knex.js');
 const { first } = require('lodash');
 
-const Tasks = () => knex('tasks');
+const Categories = () => knex('categories');
 
 const merge = (x, y) => Object.assign({}, x, y);
 
 const fetch = (where = {}, userId) =>
-  Tasks()
-    .select('tasks.*', 'categories.name as category')
-    .innerJoin('categories', 'tasks.categoryId', 'categories.id')
-    .where(merge(where, { 'tasks.userId': userId }))
-    .orderBy('tasks.id', 'asc');
+  Categories()
+    .select()
+    .where(merge(where, { userId }));
 
 const findOne = (where = {}, userId) =>
   fetch(where, userId).first();
 
 const findById = (id, userId, where = {}) =>
-  findOne(merge(where, { 'tasks.id': id }), userId);
+  findOne(merge(where, { id }), userId);
 
 const create = (params = {}, userId) =>
-  Tasks()
+  Categories()
     .returning('id')
     .insert(merge(params, { userId }))
     .then(first)
