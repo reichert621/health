@@ -139,6 +139,7 @@ class Dashboard extends React.Component {
                 dates={dates}
                 scorecards={scorecards}
                 checklists={checklists}
+                selected={selected}
                 handleDateSelected={this.handleDateSelected.bind(this)} />
             </div>
           </div>

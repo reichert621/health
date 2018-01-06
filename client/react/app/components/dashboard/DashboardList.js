@@ -5,10 +5,13 @@ const DashboardList = ({
   dates = [],
   scorecards = [],
   checklists = [],
+  selected = {},
   handleDateSelected
 }) => {
   const scorecardsByDate = mapByDate(scorecards);
   const checklistsByDate = mapByDate(checklists);
+  const { date: selectedDate } = selected;
+  const selectedKey = keyifyDate(selectedDate);
 
   return (
     <table className="dashboard-list-table">
@@ -23,12 +26,13 @@ const DashboardList = ({
         {
           dates.map(date => {
             const key = keyifyDate(date);
+            const isSelected = (key === selectedKey);
             const scorecard = scorecardsByDate[key];
             const checklist = checklistsByDate[key];
 
             return (
               <tr key={key}
-                className="dashboard-list-row"
+                className={`dashboard-list-row ${isSelected && 'selected'}`}
                 onClick={() => handleDateSelected(date)}>
                 <td className="text-blue">
                   <span className="dashboard-list-date">

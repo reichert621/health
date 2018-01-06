@@ -140,6 +140,12 @@ class ScoreCard extends React.Component {
               <ScoreCardOverview tasks={completed} />
             </div>
           </div>
+
+          <Link to="/dashboard">
+            <button className="btn-default">
+              Done
+            </button>
+          </Link>
         </div>
       </div>
     );

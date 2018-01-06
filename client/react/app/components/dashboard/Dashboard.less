@@ -5,6 +5,8 @@
 @header-background-gray: #F3F3F3;
 @section-header-gray: #7A7A7A;
 @section-content-gray: #818181;
+@light-blue-hover: #F6FCFF;
+@light-blue-selected: #eaf8ff;
 
 .dashboard-preview-container {
   width: 40%;
@@ -108,7 +110,11 @@
     cursor: pointer;
 
     &:hover {
-      background-color: #F6FCFF;
+      background-color: @light-blue-hover;
+    }
+
+    &.selected {
+      background-color: @light-blue-selected;
     }
   }
 }
