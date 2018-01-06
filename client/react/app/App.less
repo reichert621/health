@@ -34,10 +34,11 @@ body,
   font-family: @font-san-serif;
   font-size: 18px;
   font-weight: 300;
+  margin: 0;
 }
 
 .app {
-  padding: 80px;
+  // padding: 80px;
 }
 
 h1,
@@ -92,9 +93,9 @@ a {
   letter-spacing: 0.4px;
   padding: 16px 24px;
 
-  &.-large {
-    font-size: 14px;
-    padding: 10px 16px;
+  &.btn-sm {
+    font-size: 16px;
+    padding: 12px 16px;
   }
 
   &:hover {
@@ -252,9 +253,30 @@ a {
   float: right;
 }
 
-.default-container {
+.nav-container {
+  border-bottom: 1px solid @light-gray-2;
+}
+
+.nav-content {
   max-width: 1080px;
   margin: 0 auto;
+  padding: 0px 40px;
+}
+
+.nav-header {
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.logout-container {
+  margin-top: 48px;
+  font-size: 16px;
+}
+
+.default-container {
+  max-width: 1080px;
+  margin: 40px auto;
+  padding: 0px 40px;
 }
 
 .component-container {
@@ -301,6 +323,6 @@ a {
 
 @media (max-width: 880px) {
   .app {
-    padding: 40px;
+    // padding: 40px;
   }
 }

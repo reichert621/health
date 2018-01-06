@@ -1,7 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { times, extend } from 'lodash';
 import moment from 'moment';
 import { all, resolve } from 'bluebird';
+import NavBar from '../navbar';
 import DashboardReporting from './DashboardReporting';
 import DashboardList from './DashboardList';
 import DashboardPreview from './DashboardPreview';
@@ -112,32 +114,38 @@ class Dashboard extends React.Component {
 
   render() {
     const { scorecards = [], checklists = [], selected = {} } = this.state;
+    const { history } = this.props;
     const { date: selectedDate } = selected;
     const dates = getPastDates();
 
     return (
-      <div className="default-container">
-        <h1>Dashboard</h1>
+      <div>
+        <NavBar
+          title="Dashboard"
+          history={history} />
 
-        <div className="clearfix">
-          <div className="dashboard-preview-container pull-left">
-            <DashboardPreview
-              selected={selected}
-              handleScorecardClicked={this.createNewScorecard.bind(this)}
-              handleChecklistClicked={this.createNewChecklist.bind(this)} />
+        <div className="default-container">
+
+          <div className="clearfix">
+            <div className="dashboard-preview-container pull-left">
+              <DashboardPreview
+                selected={selected}
+                handleScorecardClicked={this.createNewScorecard.bind(this)}
+                handleChecklistClicked={this.createNewChecklist.bind(this)} />
+            </div>
+
+            <div className="dashboard-list-container pull-right">
+              <DashboardList
+                dates={dates}
+                scorecards={scorecards}
+                checklists={checklists}
+                handleDateSelected={this.handleDateSelected.bind(this)} />
+            </div>
           </div>
 
-          <div className="dashboard-list-container pull-right">
-            <DashboardList
-              dates={dates}
-              scorecards={scorecards}
-              checklists={checklists}
-              handleDateSelected={this.handleDateSelected.bind(this)} />
+          <div className="component-container">
+            <DashboardReporting />
           </div>
-        </div>
-
-        <div className="component-container">
-          <DashboardReporting />
         </div>
       </div>
     );
