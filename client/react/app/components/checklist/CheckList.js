@@ -4,6 +4,7 @@ import { isNumber } from 'lodash';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import NavBar from '../navbar';
 import CheckListQuestion from './CheckListQuestion';
 import { fetchChecklist, updateChecklistScores } from '../../helpers/checklist';
 import { formatPoints } from '../../helpers/utils';
@@ -86,54 +87,55 @@ class CheckList extends React.Component {
 
   render() {
     const { questions, date } = this.state;
+    const { history } = this.props;
     const points = this.calculateScore(questions);
 
     return (
-      <div className="default-container">
-        <div className="checklist-header-container clearfix">
-          <div className="checklist-header pull-left">
-            <h1>
-              <Link to="/dashboard">
-                <img className="back-icon" src="assets/back-arrow.svg" />
-              </Link>
-              Check-in
-            </h1>
+      <div>
+        <NavBar
+          title="Check-in"
+          linkTo="/dashboard"
+          history={history} />
 
-            <div className="hidden">
-              <DatePicker
-                selected={date}
-                onChange={this.handleDateChange.bind(this)} />
+        <div className="default-container -narrow">
+          <div className="checklist-header-container clearfix">
+            <div className="checklist-header pull-left">
+              <div className="hidden">
+                <DatePicker
+                  selected={date}
+                  onChange={this.handleDateChange.bind(this)} />
+              </div>
+
+              <h3 className="text-light">
+                {date.format('dddd MMMM DD, YYYY')}
+              </h3>
             </div>
 
-            <h3 className="text-light">
-              {date.format('dddd MMMM DD, YYYY')}
-            </h3>
+            <div className="checklist-overview text-active pull-right">
+              {formatPoints(points)}
+            </div>
           </div>
 
-          <div className="checklist-overview text-active pull-right">
-            {formatPoints(points)}
+          <div className="checklist-container">
+            {
+              questions.map((question, key) => {
+                return (
+                  <CheckListQuestion
+                    key={key}
+                    question={question}
+                    onSelect={this.handleScoreChange.bind(this, question)} />
+                );
+              })
+            }
           </div>
-        </div>
 
-        <div className="checklist-container">
-          {
-            questions.map((question, key) => {
-              return (
-                <CheckListQuestion
-                  key={key}
-                  question={question}
-                  onSelect={this.handleScoreChange.bind(this, question)} />
-              );
-            })
-          }
-        </div>
-
-        <div className="clearfix">
-          <button
-            className="btn-default pull-right"
-            onClick={this.submit.bind(this)}>
-            Submit
-          </button>
+          <div className="clearfix">
+            <button
+              className="btn-default pull-right"
+              onClick={this.submit.bind(this)}>
+              Submit
+            </button>
+          </div>
         </div>
       </div>
     );

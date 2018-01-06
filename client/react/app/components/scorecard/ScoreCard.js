@@ -4,6 +4,7 @@ import { groupBy, keys } from 'lodash';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import NavBar from '../navbar';
 import TaskCheckbox from './TaskCheckbox';
 import ScoreCardOverview from './ScoreCardOverview';
 import { calculateScore } from '../../helpers/tasks';
@@ -109,34 +110,35 @@ class ScoreCard extends React.Component {
 
   render() {
     const { tasks, date } = this.state;
+    const { history } = this.props;
     const completed = tasks.filter(t => t.isComplete);
 
     return (
-      <div className="default-container">
-        <h1>
-          <Link to="/dashboard">
-            <img className="back-icon" src="assets/back-arrow.svg" />
-          </Link>
-          Scorecard
-        </h1>
+      <div>
+        <NavBar
+          title="Scorecard"
+          linkTo="/dashboard"
+          history={history} />
 
-        <h3 className="text-light">
-          {date.format('dddd MMMM DD, YYYY')}
-        </h3>
+        <div className="default-container">
+          <h3 className="text-light">
+            {date.format('dddd MMMM DD, YYYY')}
+          </h3>
 
-        <div className="hidden">
-          <DatePicker
-            selected={date}
-            onChange={this.handleDateChange.bind(this)} />
-        </div>
-
-        <div className="clearfix">
-          <div className="scorecard-container pull-left">
-            {this.renderCheckboxes()}
+          <div className="hidden">
+            <DatePicker
+              selected={date}
+              onChange={this.handleDateChange.bind(this)} />
           </div>
 
-          <div className="scorecard-overview-container pull-right">
-            <ScoreCardOverview tasks={completed} />
+          <div className="clearfix">
+            <div className="scorecard-container pull-left">
+              {this.renderCheckboxes()}
+            </div>
+
+            <div className="scorecard-overview-container pull-right">
+              <ScoreCardOverview tasks={completed} />
+            </div>
           </div>
         </div>
       </div>

@@ -40,7 +40,7 @@ class Login extends React.Component {
   render() {
     return (
       <div className="default-container">
-        <h1 className="entry-title">
+        <h1 className="login-header">
           Log in
         </h1>
 
@@ -62,7 +62,7 @@ class Login extends React.Component {
             onChange={this.updateInput} />
 
           <button
-            className="button-default -large"
+            className="btn-default btn-sm"
             type="submit">
             Log in
           </button>

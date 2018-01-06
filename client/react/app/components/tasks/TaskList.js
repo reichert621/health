@@ -7,6 +7,7 @@ import {
   createTask,
   createCategory
 } from '../../helpers/tasks';
+import NavBar from '../navbar';
 
 class CategoryTasks extends React.Component {
   constructor(props) {
@@ -139,43 +140,49 @@ class TaskList extends React.Component {
 
   render() {
     const { tasks, categories, newCategory } = this.state;
+    const { history } = this.props;
     const tasksByCategory = groupBy(tasks, 'category');
 
     return (
       <div>
-        <h1>My tasks</h1>
+        <NavBar
+          title="My Tasks"
+          linkTo="/dashboard"
+          history={history} />
 
-        {
-          categories.map((category, key) => {
-            const { name } = category;
-            const categoryTasks = tasksByCategory[name];
+        <div className="default-container">
+          {
+            categories.map((category, key) => {
+              const { name } = category;
+              const categoryTasks = tasksByCategory[name];
 
-            return (
-              <CategoryTasks
-                key={key}
-                category={category}
-                tasks={categoryTasks} />
-            );
-          })
-        }
+              return (
+                <CategoryTasks
+                  key={key}
+                  category={category}
+                  tasks={categoryTasks} />
+              );
+            })
+          }
 
-        <hr />
+          <hr />
 
-        <form
-          style={{ marginTop: 16 }}
-          onSubmit={(e) => this.handleCreateCategory(e)}>
-          <input
-            type="text"
-            className="input-default -inline"
-            placeholder="Enter new category"
-            value={newCategory}
-            onChange={(e) => this.setState({ newCategory: e.target.value })} />
-          <button
-            type="submit"
-            className="button-default">
-            Create
-          </button>
-        </form>
+          <form
+            style={{ marginTop: 16 }}
+            onSubmit={(e) => this.handleCreateCategory(e)}>
+            <input
+              type="text"
+              className="input-default -inline"
+              placeholder="Enter new category"
+              value={newCategory}
+              onChange={(e) => this.setState({ newCategory: e.target.value })} />
+            <button
+              type="submit"
+              className="button-default">
+              Create
+            </button>
+          </form>
+        </div>
       </div>
     );
   }
