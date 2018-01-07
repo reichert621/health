@@ -5,7 +5,14 @@ import {
   Switch,
   Route
 } from 'react-router-dom';
-import { Home, Login, Profile, Library } from './components/home';
+import {
+  Home,
+  Login,
+  SignUp,
+  SignUpComplete,
+  Profile,
+  Library
+} from './components/home';
 import { Dashboard } from './components/dashboard';
 import { EntryContainer, NewEntry, EditEntry } from './components/entry';
 import { ScoreCardsPage, ScoreCard, NewScoreCard } from './components/scorecard';
@@ -22,6 +29,8 @@ ReactDOM.render(
         <Switch>
           <Route exact path="/" component={Dashboard} />
           <Route path="/login" component={Login} />
+          <Route path="/signup" component={SignUp} />
+          <Route path="/signup-complete" component={SignUpComplete} />
           <Route path="/home" component={Home} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/tasks" component={TaskList} />

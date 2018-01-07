@@ -48,6 +48,6 @@ exports.seed = (knex, Promise) => {
       tasks.map(task => knex('tasks').insert(task))
     );
 
-  return knex('tasks').del()
-    .then(() => insert(tasks));
+  // return knex('tasks').del()
+  //   .then(() => insert(tasks));
 };

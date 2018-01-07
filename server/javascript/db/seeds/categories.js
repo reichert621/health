@@ -16,6 +16,6 @@ exports.seed = (knex, Promise) => {
       categories.map(category => knex('categories').insert(category))
     );
 
-  return knex('categories').del()
-    .then(() => insert(categories));
+  // return knex('categories').del()
+  //   .then(() => insert(categories));
 };

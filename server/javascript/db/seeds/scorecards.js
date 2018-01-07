@@ -10,6 +10,6 @@ exports.seed = (knex, Promise) => {
       scorecards.map(scorecard => knex('scorecards').insert(scorecard))
     );
 
-  return knex('scorecards').del()
-    .then(() => insert(scorecards));
+  // return knex('scorecards').del()
+  //   .then(() => insert(scorecards));
 };
