@@ -42,6 +42,8 @@ const fetchWithPoints = (where = {}, userId) => {
     Task.fetch({}, userId)
   ])
     .then(([scorecards, tasks]) => {
+      console.log('Scorecards!', scorecards);
+
       const taskScores = tasks.reduce((map, { id: taskId, points }) => {
         return merge(map, { [taskId]: Number(points) });
       }, {});
@@ -105,12 +107,14 @@ const fetchStats = (userId) => {
     });
 };
 
-const create = (params, userId) =>
-  ScoreCard()
+const create = (params, userId) => {
+  console.log('Creating scorecard!', params, userId);
+  return ScoreCard()
     .returning('id')
     .insert(merge(params, { userId }))
     .then(first)
     .then(id => findById(id, userId));
+};
 
 const createWithScores = async (params, userId) => {
   const { date, selectedTasks = [] } = params;

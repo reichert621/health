@@ -35,6 +35,8 @@ class Dashboard extends React.Component {
       fetchChecklists()
     ])
       .then(([scorecards, checklists]) => {
+        console.log('Scorecards!', scorecards);
+        console.log('Checklists!', checklists);
         return this.setState({
           scorecards,
           checklists,
@@ -53,7 +55,7 @@ class Dashboard extends React.Component {
           return history.push('/login');
         }
 
-        console.log('Error fetching dashboard!', err);
+        return console.log('Error fetching dashboard!', err);
       });
   }
 
@@ -62,6 +64,7 @@ class Dashboard extends React.Component {
     const key = keyifyDate(date);
     const scorecard = scorecardsByDate[key];
     const checklist = checklistsByDate[key];
+    console.log('Date key!', key);
 
     if (!scorecard) {
       return this.setState({
@@ -93,6 +96,7 @@ class Dashboard extends React.Component {
     const { history } = this.props;
     // TODO: deal with timezone bug (inconsistency with db and client)
     const params = { date };
+    console.log('Creating scorecard!', params);
 
     return createNewScorecard(params)
       .then(({ id: scorecardId }) => {
@@ -106,6 +110,7 @@ class Dashboard extends React.Component {
 
     const { history } = this.props;
     const params = { date };
+    console.log('Creating checklist!', params);
 
     return createNewChecklist(params)
       .then(({ id: checklistId }) => {

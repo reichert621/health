@@ -44,6 +44,7 @@ const findById = (id, userId, where = {}) =>
     });
 
 const create = (params, userId) => {
+  console.log('Creating checklist!', params, userId);
   return Checklist()
     .returning('id')
     .insert(merge(params, { userId }))
@@ -98,6 +99,7 @@ const updateScores = (id, params, userId) => {
 const fetchWithPoints = (where = {}, userId) => {
   return fetch(where, userId)
     .then(checklists => {
+      console.log('Checklists!', checklists);
       const promises = checklists.map(checklist => {
         const { id } = checklist;
 
