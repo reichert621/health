@@ -19,7 +19,8 @@ class Dashboard extends React.Component {
     this.state = {
       scorecards: [],
       checklists: [],
-      selected: {}
+      selected: {},
+      isLoading: true
     };
   }
 
@@ -38,7 +39,8 @@ class Dashboard extends React.Component {
           scorecards,
           checklists,
           scorecardsByDate: mapByDate(scorecards),
-          checklistsByDate: mapByDate(checklists)
+          checklistsByDate: mapByDate(checklists),
+          isLoading: false
         });
       })
       .then(() => {
@@ -113,7 +115,18 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    const { scorecards = [], checklists = [], selected = {} } = this.state;
+    const {
+      scorecards = [],
+      checklists = [],
+      selected = {},
+      isLoading
+    } = this.state;
+
+    // TODO: create loading component
+    if (isLoading) {
+      return (<div>Loading...</div>)
+    }
+
     const { history } = this.props;
     const { date: selectedDate } = selected;
     const dates = getPastDates();
