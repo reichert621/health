@@ -6,6 +6,11 @@ export interface User {
   username: string;
 }
 
+export const signup = (params: object): Promise<User> => {
+  return post('/api/signup', params)
+    .then((res: HttpResponse) => res.user);
+};
+
 export const login = (credentials: object): Promise<User> => {
   return post('/api/login', credentials)
     .then((res: HttpResponse) => res.user);

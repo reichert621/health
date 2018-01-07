@@ -32,6 +32,6 @@ exports.seed = (knex, Promise) => {
       questions.map(question => knex('checklist_questions').insert(question))
     );
 
-  return knex('checklist_questions').del()
-    .then(() => insert(questions));
+  // return knex('checklist_questions').del()
+  //   .then(() => insert(questions));
 };

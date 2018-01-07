@@ -67,9 +67,16 @@ class Login extends React.Component {
             Log in
           </button>
 
-          <small className="text-red">
+          <small className="text-red"
+            style={{ marginLeft: 16 }}>
             {this.state.error || ''}
           </small>
+
+          <div style={{ marginTop: 16 }}>
+            <small>
+              Or click <Link to="signup">here</Link> to sign up!
+            </small>
+          </div>
         </form>
       </div>
     );

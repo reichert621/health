@@ -8,6 +8,6 @@ exports.seed = (knex, Promise) => {
 
   const insert = (users) => Promise.all(users.map(create));
 
-  return knex('users').del()
-    .then(() => insert(users));
+  // return knex('users').del()
+  //   .then(() => insert(users));
 };

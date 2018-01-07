@@ -75,7 +75,15 @@ const users = {
       .then(user =>
         res.json({ user }))
       .catch(err =>
-        handleError(res, err))
+        handleError(res, err)),
+
+  signup: (req, res) => {
+    return User.register(req.body)
+      .then(user =>
+        res.json({ user }))
+      .catch(err =>
+        handleError(res, err));
+  }
 };
 
 const entries = {
@@ -297,6 +305,7 @@ const t = {
 
 api.get('/ping', pong);
 // Auth
+api.post('/signup', users.signup);
 api.post('/login', auth, users.login);
 api.all('/logout', logout);
 // Entries

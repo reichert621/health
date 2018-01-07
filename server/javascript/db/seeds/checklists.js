@@ -10,6 +10,6 @@ exports.seed = (knex, Promise) => {
       checklists.map(list => knex('checklists').insert(list))
     );
 
-  return knex('checklists').del()
-    .then(() => insert(checklists));
+  // return knex('checklists').del()
+  //   .then(() => insert(checklists));
 };
