@@ -124,7 +124,7 @@ class Dashboard extends React.Component {
 
     // TODO: create loading component
     if (isLoading) {
-      return (<div>Loading...</div>)
+      return (<div>Loading...</div>);
     }
 
     const { history } = this.props;
