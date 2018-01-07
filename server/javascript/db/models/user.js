@@ -2,6 +2,8 @@ const knex = require('../knex.js');
 const crypto = require('crypto');
 const { first } = require('lodash');
 
+const reject = (msg) => Promise.reject(new Error(msg));
+
 // TODO: move to models
 const Users = () => knex('users');
 
@@ -61,12 +63,34 @@ const findById = (id) =>
 const findByUsername = (username) =>
   findOne({ username });
 
+const findByEmail = (email) =>
+  findOne({ email });
+
 const create = (params) =>
   Users()
     .returning('id')
     .insert(sanitized(params))
     .then(first)
     .then(findById);
+
+const register = (params) => {
+  const { username, email, password } = params;
+
+  if (!username) return reject('Username is required!');
+  if (!email) return reject('Email is required!');
+  if (!password) return reject('Password is required!');
+
+  return Promise.all([
+    findByUsername(username),
+    findByEmail(email)
+  ])
+    .then(([existingUsername, existingEmail]) => {
+      if (existingUsername) throw new Error('That username is taken!');
+      if (existingEmail) throw new Error('That email address is taken!');
+
+      return create(params);
+    });
+};
 
 const authenticate = ({ username, password }) =>
   findByUsername(username)
@@ -78,7 +102,9 @@ module.exports = {
   findOne,
   findById,
   findByUsername,
+  findByEmail,
   create,
+  register,
   authenticate,
   verifyUser
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import { get } from 'lodash';
 import { signup } from '../../helpers/auth';
 import '../../App.less';
 
@@ -26,14 +27,23 @@ class SignUp extends React.Component {
 
     const { history } = this.props;
     const { username, email, password, passwordConfirmation } = this.state;
-    const params = { username, email, password };
 
-    console.log(params);
-    return signup(params)
+    if (!username) {
+      return this.setState({ error: 'A valid username is required!' });
+    } else if (!email) {
+      return this.setState({ error: 'A valid email is required!' });
+    } else if (!password) {
+      return this.setState({ error: 'A password is required!' });
+    } else if (password !== passwordConfirmation) {
+      return this.setState({ error: 'Password does not match password confirmation!' });
+    }
+
+    return signup({ username, email, password })
       .then(() => history.push('/signup-complete'))
       .catch(err => {
-        console.log('Error signing up!', err);
-        this.setState({ error: 'Invalid user!' });
+        const error = get(err, 'message', 'Invalid credentials!');
+
+        this.setState({ error });
       });
   }
 
@@ -83,7 +93,8 @@ class SignUp extends React.Component {
             Sign Up
           </button>
 
-          <small className="text-red">
+          <small className="text-red"
+            style={{ marginLeft: 16 }}>
             {this.state.error || ''}
           </small>
         </form>

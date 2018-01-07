@@ -78,8 +78,7 @@ const users = {
         handleError(res, err)),
 
   signup: (req, res) => {
-    console.log('REQ', req.body);
-    return User.create(req.body)
+    return User.register(req.body)
       .then(user =>
         res.json({ user }))
       .catch(err =>
