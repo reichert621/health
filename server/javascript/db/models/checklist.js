@@ -139,7 +139,7 @@ const fetchStats = (userId) => {
     })
     .then(checklists => {
       const stats = checklists
-        .sort((x, y) => Number(x.date) - Number(y.date))
+        .sort((x, y) => Number(new Date(x.date)) - Number(new Date(y.date)))
         .map(checklist => {
           const { date, scores = [] } = checklist;
           const timestamp = Number(new Date(date));

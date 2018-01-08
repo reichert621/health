@@ -95,7 +95,7 @@ class Dashboard extends React.Component {
 
     const { history } = this.props;
     // TODO: deal with timezone bug (inconsistency with db and client)
-    const params = { date };
+    const params = { date: date.format('YYYY-MM-DD') };
     console.log('Creating scorecard!', params);
 
     return createNewScorecard(params)
@@ -109,7 +109,7 @@ class Dashboard extends React.Component {
     if (checklist && checklist.id) return resolve();
 
     const { history } = this.props;
-    const params = { date };
+    const params = { date: date.format('YYYY-MM-DD') };
     console.log('Creating checklist!', params);
 
     return createNewChecklist(params)
