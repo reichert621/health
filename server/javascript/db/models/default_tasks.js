@@ -22,9 +22,12 @@ const tasks = [
   { category: 'Eat Healthy', description: '8 glasses of water', points: 4 },
   // Socialize
   { category: 'Socialize', description: 'Organize a social event', points: 8 },
-  { category: 'Socialize', description: 'Get a meal with friends or family', points: 4 },
-  { category: 'Socialize', description: 'Contact a family member', points: 2 },
-  { category: 'Socialize', description: 'Contact a friend', points: 2 },
+  { category: 'Socialize', description: 'Hang out with friends or family', points: 4 },
+  { category: 'Socialize', description: 'Contact a friend or family member', points: 2 },
+  // Create
+  { category: 'Create', description: 'Artwork', points: 8 },
+  { category: 'Create', description: 'Music', points: 8 },
+  { category: 'Create', description: 'A personal project', points: 8 },
   // Meditate
   { category: 'Meditate', description: '10+ minutes', points: 4 },
   { category: 'Meditate', description: '1 - 10 minutes', points: 2 },
