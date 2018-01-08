@@ -1,5 +1,6 @@
 const knex = require('../knex.js');
 const { first, isNumber } = require('lodash');
+const moment = require('moment');
 const ChecklistQuestion = require('./checklist_question');
 const ChecklistScore = require('./checklist_score');
 
@@ -101,7 +102,8 @@ const fetchWithPoints = (where = {}, userId) => {
     .then(checklists => {
       console.log('Checklists!', checklists);
       const promises = checklists.map(checklist => {
-        const { id } = checklist;
+        const { id, date } = checklist;
+        const utc = moment.utc(date).format('YYYY-MM-DD');
 
         return ChecklistScore.fetchByChecklistId(id, userId)
           .then(checklistScores => {
@@ -109,7 +111,7 @@ const fetchWithPoints = (where = {}, userId) => {
               return isNumber(score) ? total + score : total;
             }, 0);
 
-            return merge(checklist, { points });
+            return merge(checklist, { points, date: utc, _date: date });
           });
       });
 

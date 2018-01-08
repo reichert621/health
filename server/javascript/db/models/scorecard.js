@@ -1,5 +1,6 @@
 const knex = require('../knex.js');
 const { first, groupBy, isNumber } = require('lodash');
+const moment = require('moment');
 const Task = require('./task');
 const ScoreCardSelectedTask = require('./scorecard_selected_task');
 
@@ -49,7 +50,8 @@ const fetchWithPoints = (where = {}, userId) => {
       }, {});
 
       const promises = scorecards.map(scorecard => {
-        const { id } = scorecard;
+        const { id, date } = scorecard;
+        const utc = moment.utc(date).format('YYYY-MM-DD');
 
         return ScoreCardSelectedTask.fetchByScorecardId(id, userId)
           .then(selectedTasks => {
@@ -59,7 +61,7 @@ const fetchWithPoints = (where = {}, userId) => {
               return isNumber(score) ? total + score : total;
             }, 0);
 
-            return merge(scorecard, { points });
+            return merge(scorecard, { points, date: utc, _date: date });
           });
       });
 
