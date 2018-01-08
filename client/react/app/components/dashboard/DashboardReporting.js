@@ -25,12 +25,13 @@ class DashboardReporting extends React.Component {
 
   render() {
     const { stats } = this.state;
+    const { onClickPoint } = this.props;
 
     return (
-      <div>
-        <h3 className="text-light">Reporting</h3>
-
-        <ReportingChart stats={stats} />
+      <div className="dashboard-chart-container">
+        <ReportingChart
+          stats={stats}
+          onClickPoint={onClickPoint} />
       </div>
     );
   }

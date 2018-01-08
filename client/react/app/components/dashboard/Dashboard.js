@@ -20,7 +20,8 @@ class Dashboard extends React.Component {
       scorecards: [],
       checklists: [],
       selected: {},
-      isLoading: true
+      isLoading: true,
+      showChart: false
     };
   }
 
@@ -89,6 +90,16 @@ class Dashboard extends React.Component {
       });
   }
 
+  handlePointClicked(timestamp) {
+    const date = moment(timestamp);
+
+    if (date.isValid()) {
+      return this.handleDateSelected(date);
+    } else {
+      return false;
+    }
+  }
+
   createNewScorecard(scorecard, date) {
     if (scorecard && scorecard.id) return resolve();
 
@@ -123,6 +134,7 @@ class Dashboard extends React.Component {
       scorecards = [],
       checklists = [],
       selected = {},
+      showChart = false,
       isLoading
     } = this.state;
 
@@ -140,7 +152,6 @@ class Dashboard extends React.Component {
           history={history} />
 
         <div className="default-container">
-
           <div className="clearfix">
             <div className="dashboard-preview-container pull-left">
               <DashboardPreview
@@ -150,17 +161,30 @@ class Dashboard extends React.Component {
             </div>
 
             <div className="dashboard-list-container pull-right">
-              <DashboardList
-                dates={dates}
-                scorecards={scorecards}
-                checklists={checklists}
-                selected={selected}
-                handleDateSelected={this.handleDateSelected.bind(this)} />
+              <div className="toggle-btn-container">
+                <button
+                  className={`btn-default btn-toggle ${showChart ? '' : 'active'}`}
+                  onClick={() => this.setState({ showChart: false })}>
+                  List
+                </button>
+                <button
+                  className={`btn-default btn-toggle ${showChart ? 'active' : ''}`}
+                  onClick={() => this.setState({ showChart: true })}>
+                  Chart
+                </button>
+              </div>
+              {
+                showChart ?
+                  <DashboardReporting
+                    onClickPoint={this.handlePointClicked.bind(this)}/> :
+                  <DashboardList
+                    dates={dates}
+                    scorecards={scorecards}
+                    checklists={checklists}
+                    selected={selected}
+                    handleDateSelected={this.handleDateSelected.bind(this)} />
+              }
             </div>
-          </div>
-
-          <div className="component-container">
-            <DashboardReporting />
           </div>
         </div>
       </div>

@@ -11,6 +11,7 @@
 @light-gray-3: #eaeaea;
 @gray: #979797;
 @gray-2: #bbbbbb;
+@toggle-gray: #9B9B9B;
 @dark-gray: #5E5E5E;
 @black: #2b2b2b;
 @dark-green: #3e886b;
@@ -142,6 +143,32 @@ a {
 
   &:active {
     border-color: @black;
+  }
+}
+
+.toggle-btn-container {
+  margin-bottom: 16px;
+
+  .btn-toggle {
+    background-color: @white;
+    color: @toggle-gray;
+    font-weight: 400;
+    min-width: 100px;
+    padding: 4px 32px;
+
+    &:first-child {
+      border-radius: 4px 0px 0px 4px;
+    }
+
+    &:last-child {
+      border-left: none;
+      border-radius: 0px 4px 4px 0px;
+    }
+
+    &.active {
+      color: @white;
+      background-color: @bright-blue;
+    }
   }
 }
 
