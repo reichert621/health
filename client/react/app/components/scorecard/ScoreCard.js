@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { groupBy, keys } from 'lodash';
+import { groupBy, keys, sortBy } from 'lodash';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -84,7 +84,7 @@ class ScoreCard extends React.Component {
     const categories = keys(grouped);
 
     return categories.map((category, index) => {
-      const subtasks = grouped[category];
+      const subtasks = sortBy(grouped[category], '-points');
       const score = calculateScore(subtasks);
 
       return (
