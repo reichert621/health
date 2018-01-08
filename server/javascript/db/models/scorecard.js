@@ -25,11 +25,15 @@ const findById = (id, userId, where = {}) => {
     Task.fetch({}, userId)
   ])
     .then(([scorecard, selectedTasks, tasks]) => {
+      const { date } = scorecard;
+      const utc = moment.utc(date).format('YYYY-MM-DD');
       const isComplete = selectedTasks.reduce((map, { taskId }) => {
         return merge(map, { [taskId]: true });
       }, {});
 
       return merge(scorecard, {
+        date: utc,
+        _date: date,
         tasks: tasks.map(t => {
           return merge(t, { isComplete: isComplete[t.id] });
         })
@@ -44,7 +48,6 @@ const fetchWithPoints = (where = {}, userId) => {
   ])
     .then(([scorecards, tasks]) => {
       console.log('Scorecards!', scorecards);
-
       const taskScores = tasks.reduce((map, { id: taskId, points }) => {
         return merge(map, { [taskId]: Number(points) });
       }, {});

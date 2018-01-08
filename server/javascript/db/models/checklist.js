@@ -25,6 +25,8 @@ const findById = (id, userId, where = {}) =>
     ChecklistScore.fetchByChecklistId(id, userId)
   ])
     .then(([checklist, questions, scores]) => {
+      const { date } = checklist;
+      const utc = moment.utc(date).format('YYYY-MM-DD');
       const scoresByQuestion = scores.reduce((map, score) => {
         const { checklistQuestionId: questionId } = score;
 
@@ -32,6 +34,8 @@ const findById = (id, userId, where = {}) =>
       }, {});
 
       return merge(checklist, {
+        date: utc,
+        _date: date,
         questions: questions.map(question => {
           const s = scoresByQuestion[question.id];
 
