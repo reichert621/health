@@ -7,14 +7,14 @@ const tasks = [
   { category: 'Read', description: '40 mins', points: 2 },
   { category: 'Read', description: '< 20 mins', points: 1 },
   // Write
-  { category: 'Write', description: 'Blog Entry', points: 8 },
-  { category: 'Write', description: 'Journal Entry', points: 4 },
+  { category: 'Write', description: 'Blog entry', points: 8 },
+  { category: 'Write', description: 'Journal entry', points: 4 },
   // Exercise
   { category: 'Exercise', description: 'Go to the gym', points: 8 },
   { category: 'Exercise', description: 'Play a sport', points: 8 },
   { category: 'Exercise', description: 'Do yoga', points: 4 },
   { category: 'Exercise', description: 'Bike', points: 2 },
-  { category: 'Exercise', description: 'Walk', points: 1 },
+  { category: 'Exercise', description: 'Go for a walk', points: 1 },
   { category: 'Exercise', description: 'Workout at home', points: 1 },
   // Eat Healthy
   { category: 'Eat Healthy', description: 'Vegetables', points: 8 },
