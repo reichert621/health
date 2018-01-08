@@ -84,7 +84,7 @@ class ScoreCard extends React.Component {
     const categories = keys(grouped);
 
     return categories.map((category, index) => {
-      const subtasks = sortBy(grouped[category], '-points');
+      const subtasks = sortBy(grouped[category], t => -t.points);
       const score = calculateScore(subtasks);
 
       return (
