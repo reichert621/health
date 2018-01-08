@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { get } from 'lodash';
 import { signup } from '../../helpers/auth';
 import '../../App.less';
@@ -51,6 +52,9 @@ class SignUp extends React.Component {
     return (
       <div className="default-container">
         <h1 className="login-header">
+          <Link to="/login">
+            <img className="back-icon" src="assets/back-arrow.svg" />
+          </Link>
           Sign up
         </h1>
 

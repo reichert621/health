@@ -83,22 +83,18 @@ const update = (id, params, userId) =>
     .then(success => findById(id, userId));
 
 const updateScores = (id, params, userId) => {
-  const { date, scores: checklistScores } = params;
+  const { scores: checklistScores } = params;
+  const promises = checklistScores.map(checklistScore => {
+    const { checklistScoreId, score } = checklistScore;
 
-  return update(id, { date }, userId)
-    .then(checklist => {
-      const promises = checklistScores.map(checklistScore => {
-        const { checklistScoreId, score } = checklistScore;
+    if (checklistScoreId) {
+      return ChecklistScore.update(checklistScoreId, { score }, userId);
+    } else {
+      return ChecklistScore.create(checklistScore, userId);
+    }
+  });
 
-        if (checklistScoreId) {
-          return ChecklistScore.update(checklistScoreId, { score }, userId);
-        } else {
-          return ChecklistScore.create(checklistScore, userId);
-        }
-      });
-
-      return Promise.all(promises);
-    });
+  return Promise.all(promises);
 };
 
 const fetchWithPoints = (where = {}, userId) => {
