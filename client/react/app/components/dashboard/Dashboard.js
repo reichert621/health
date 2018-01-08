@@ -64,7 +64,6 @@ class Dashboard extends React.Component {
     const key = keyifyDate(date);
     const scorecard = scorecardsByDate[key];
     const checklist = checklistsByDate[key];
-    console.log('Date key!', key);
 
     if (!scorecard) {
       return this.setState({
@@ -127,13 +126,11 @@ class Dashboard extends React.Component {
       isLoading
     } = this.state;
 
-    // TODO: create loading component
     if (isLoading) {
-      return (<div>Loading...</div>);
+      // TODO: handle loading state better
     }
 
     const { history } = this.props;
-    const { date: selectedDate } = selected;
     const dates = getPastDates();
 
     return (

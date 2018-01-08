@@ -100,7 +100,6 @@ const updateScores = (id, params, userId) => {
 const fetchWithPoints = (where = {}, userId) => {
   return fetch(where, userId)
     .then(checklists => {
-      console.log('Checklists!', checklists);
       const promises = checklists.map(checklist => {
         const { id, date } = checklist;
         const utc = moment.utc(date).format('YYYY-MM-DD');

@@ -47,7 +47,6 @@ const fetchWithPoints = (where = {}, userId) => {
     Task.fetch({}, userId)
   ])
     .then(([scorecards, tasks]) => {
-      console.log('Scorecards!', scorecards);
       const taskScores = tasks.reduce((map, { id: taskId, points }) => {
         return merge(map, { [taskId]: Number(points) });
       }, {});
