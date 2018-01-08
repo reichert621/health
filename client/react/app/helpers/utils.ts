@@ -27,5 +27,9 @@ export const mapByDate = (list: DatedItem[] = []): object => {
 };
 
 export const getPastDates = (days: number = 10): moment.Moment[] => {
-  return times(days).map(n => moment().subtract(n, 'days'));
+  return times(days).map(n => {
+    const formatted = moment().subtract(n, 'days').format('YYYY-MM-DD');
+
+    return moment(formatted);
+  });
 };
