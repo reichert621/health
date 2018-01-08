@@ -61,7 +61,7 @@ class CheckList extends React.Component {
   }
 
   submit() {
-    const { questions, date, checklist } = this.state;
+    const { questions, checklist } = this.state;
     const { history } = this.props;
     const { id: checklistId } = checklist;
 
@@ -77,7 +77,7 @@ class CheckList extends React.Component {
       });
 
     console.log('Submitting!', scores);
-    return updateChecklistScores(checklistId, { scores, date })
+    return updateChecklistScores(checklistId, { scores })
       .then(res => {
         console.log('Updated!', res);
         return history.push('/dashboard');
