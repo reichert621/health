@@ -1,0 +1,57 @@
+.task-sublist {
+  margin-top: 16px;
+  max-width: 800px;
+  padding-left: 0px;
+}
+
+.plus-icon {
+  cursor: pointer;
+  margin-left: 24px;
+  height: 20px;
+  vertical-align: -2px;
+}
+
+.task-item {
+  list-style: none;
+  padding: 12px 24px;
+
+  &:hover {
+    background-color: #E7FCFF;
+    border-radius: 4px;
+
+    .edit-icon {
+      visibility: visible;
+    }
+  }
+
+  .edit-icon {
+    cursor: pointer;
+    visibility: hidden;
+  }
+
+  .task-description,
+  .task-points {
+    display: inline-block;
+  }
+
+  .task-description {
+    width: 400px;
+  }
+
+  .task-points {
+    width: 240px;
+  }
+}
+
+.task-description-input,
+.new-category-input {
+  width: 385px;
+}
+
+.task-points-input {
+  width: 120px;
+}
+
+.new-category-form {
+  margin-top: 40px;
+}

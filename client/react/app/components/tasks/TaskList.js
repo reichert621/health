@@ -8,6 +8,7 @@ import {
   createCategory
 } from '../../helpers/tasks';
 import NavBar from '../navbar';
+import './Task.less';
 
 class CategoryTasks extends React.Component {
   constructor(props) {
@@ -18,8 +19,9 @@ class CategoryTasks extends React.Component {
     this.state = {
       category,
       tasks,
+      isCreating: false,
       newTask: '',
-      newPoints: 0
+      newPoints: null
     };
   }
 
@@ -49,6 +51,7 @@ class CategoryTasks extends React.Component {
 
   render() {
     const {
+      isCreating,
       category = {},
       tasks = [],
       newTask = '',
@@ -57,41 +60,53 @@ class CategoryTasks extends React.Component {
 
     return (
       <div>
-        <h3>{category.name}</h3>
-        <ul>
+        <h4 className="category-label">
+          {category.name}
+          <img
+            className={isCreating ? 'hidden' : 'plus-icon'}
+            src="assets/plus.svg"
+            onClick={() => this.setState({ isCreating: true })} />
+        </h4>
+        <ul className="task-sublist">
           {
             tasks.map((task, key) => {
               return (
-                <li key={key}>
-                  <span>{task.description}</span>
-                  <span> ({task.points} points)</span>
+                <li key={key}
+                  className="task-item">
+                  <span className="task-description">{task.description}</span>
+                  <span className="task-points">{task.points} points</span>
+                  <img className="edit-icon" src="assets/pencil.svg" />
                 </li>
               );
             })
           }
         </ul>
-        <form onSubmit={(e) => this.handleCreateTask(e, category)}>
+        <form
+          className={isCreating ? '' : 'hidden'}
+          onSubmit={(e) => this.handleCreateTask(e, category)}>
           <input
             type="text"
-            className="input-default -inline"
-            placeholder="Enter New task"
-            style={{ marginLeft: 24 }}
+            className="input-default -inline task-description-input"
+            placeholder="New task"
             value={newTask}
             onChange={(e) => this.setState({ newTask: e.target.value })} />
           {/* TODO: fix width and only allow 1, 2, 4, 8, 16 points */}
           <input
             type="number"
-            className="input-default -inline"
+            className="input-default -inline task-points-input"
             placeholder="0"
             min="0"
             value={newPoints}
-            style={{ width: 80 }}
             onChange={(e) => this.setState({ newPoints: e.target.value })} />
           <button
             type="submit"
-            className="button-default">
+            className="btn-primary">
             Create
           </button>
+          <a className="btn-link"
+            onClick={() => this.setState({ isCreating: false })}>
+            Cancel
+          </a>
         </form>
       </div>
     );
@@ -165,20 +180,18 @@ class TaskList extends React.Component {
             })
           }
 
-          <hr />
-
           <form
-            style={{ marginTop: 16 }}
+            className="new-category-form"
             onSubmit={(e) => this.handleCreateCategory(e)}>
             <input
               type="text"
-              className="input-default -inline"
-              placeholder="Enter new category"
+              className="input-default -inline new-category-input"
+              placeholder="New category"
               value={newCategory}
               onChange={(e) => this.setState({ newCategory: e.target.value })} />
             <button
               type="submit"
-              className="button-default">
+              className="btn-primary">
               Create
             </button>
           </form>
