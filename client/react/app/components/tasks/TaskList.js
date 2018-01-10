@@ -142,6 +142,9 @@ class TaskList extends React.Component {
   handleCreateCategory(e) {
     e.preventDefault();
     const { newCategory, categories } = this.state;
+
+    if (!newCategory) return resolve();
+
     const params = { name: newCategory, isActive: true };
 
     return createCategory(params)
@@ -195,7 +198,8 @@ class TaskList extends React.Component {
               onChange={(e) => this.setState({ newCategory: e.target.value })} />
             <button
               type="submit"
-              className="btn-primary">
+              className="btn-primary"
+              disabled={!newCategory}>
               Create
             </button>
           </form>
