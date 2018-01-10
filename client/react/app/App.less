@@ -100,6 +100,12 @@ a {
   &:focus {
     outline: 0;
   }
+
+  &:disabled {
+    border-color: @gray-2;
+    background-color: @gray-2;
+    cursor: not-allowed;
+  }
 }
 
 .btn-default {
@@ -130,7 +136,7 @@ a {
 .btn-link {
   background: transparent;
   border: none;
-  color: @dark-gray;
+  color: @gray-2;
 }
 
 // TODO: deprecate

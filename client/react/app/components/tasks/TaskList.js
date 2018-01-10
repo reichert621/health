@@ -1,5 +1,5 @@
 import React from 'react';
-import { all } from 'bluebird';
+import { all, resolve } from 'bluebird';
 import { groupBy } from 'lodash';
 import {
   fetchTasks,
@@ -21,13 +21,16 @@ class CategoryTasks extends React.Component {
       tasks,
       isCreating: false,
       newTask: '',
-      newPoints: null
+      newPoints: undefined
     };
   }
 
   handleCreateTask(e, category) {
     e.preventDefault();
     const { newTask, newPoints, tasks = [] } = this.state;
+
+    if (!newTask || !newPoints) return resolve();
+
     const { id: categoryId } = category;
     const params = {
       categoryId,
@@ -100,7 +103,8 @@ class CategoryTasks extends React.Component {
             onChange={(e) => this.setState({ newPoints: e.target.value })} />
           <button
             type="submit"
-            className="btn-primary">
+            className="btn-primary"
+            disabled={!newTask || !newPoints}>
             Create
           </button>
           <a className="btn-link"
