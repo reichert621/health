@@ -15,6 +15,11 @@ export const fetchTasks = (): Promise<Task[]> => {
     .then((res: HttpResponse) => res.tasks);
 };
 
+export const fetchTopTasks = (): Promise<any[]> => {
+  return get('/api/stats/top-tasks')
+    .then((res: HttpResponse) => res.stats);
+};
+
 export const createTask = (params: object): Promise<Task> => {
   return post('/api/tasks', params)
     .then((res: HttpResponse) => res.task);
