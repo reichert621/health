@@ -11,23 +11,9 @@
   vertical-align: -2px;
 }
 
-.task-item {
+.task-item-container {
   list-style: none;
-  padding: 12px 24px;
-
-  &:hover {
-    background-color: #E7FCFF;
-    border-radius: 4px;
-
-    .edit-icon {
-      visibility: visible;
-    }
-  }
-
-  .edit-icon {
-    cursor: pointer;
-    visibility: hidden;
-  }
+  padding: 0;
 
   .task-description,
   .task-points {
@@ -43,13 +29,33 @@
   }
 }
 
+.task-item {
+  padding: 12px 24px;
+
+  .edit-icon {
+    cursor: pointer;
+    visibility: hidden;
+  }
+
+  &:hover {
+    background-color: #E7FCFF;
+    border-radius: 4px;
+
+    .edit-icon {
+      visibility: visible;
+    }
+  }
+}
+
 .task-description-input,
 .new-category-input {
   width: 385px;
+  margin-bottom: 0px;
 }
 
 .task-points-input {
   width: 120px;
+  margin-bottom: 0px;
 }
 
 .new-category-form {

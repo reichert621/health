@@ -300,6 +300,19 @@ const t = {
     } catch (err) {
       return handleError(res, err);
     }
+  },
+
+  async update(req, res) {
+    try {
+      const taskId = req.params.id;
+      const userId = req.user.id;
+      const updates = req.body;
+      const task = await Task.update(taskId, userId, updates);
+
+      return res.json({ task });
+    } catch (err) {
+      return handleError(res, err);
+    }
   }
 };
 
@@ -332,6 +345,7 @@ api.post('/categories', isAuthenticated, categories.create);
 // Tasks
 api.get('/tasks', isAuthenticated, t.fetch);
 api.post('/tasks', isAuthenticated, t.create);
+api.put('/tasks/:id', isAuthenticated, t.update);
 // Checklists
 api.get('/checklists', isAuthenticated, checklists.fetch);
 api.get('/checklists/:id', isAuthenticated, checklists.findById);

@@ -5,6 +5,7 @@ const Tasks = () => knex('tasks');
 
 const merge = (x, y) => Object.assign({}, x, y);
 
+// TODO: clean this up or rename
 const fetch = (where = {}, userId) =>
   Tasks()
     .select('tasks.*', 'categories.name as category')
@@ -26,7 +27,7 @@ const create = (params = {}, userId) =>
     .then(id => findById(id, userId));
 
 const update = (id, userId, params = {}) =>
-  findById(id)
+  findById(id, userId)
     .update(params)
     .then(count => (count > 0))
     .then(success => findById(id, userId));

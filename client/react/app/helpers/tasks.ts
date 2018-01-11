@@ -1,4 +1,4 @@
-import { HttpResponse, get, post } from './http';
+import { HttpResponse, get, post, put } from './http';
 
 export interface Task {
   id: number;
@@ -17,6 +17,11 @@ export const fetchTasks = (): Promise<Task[]> => {
 
 export const createTask = (params: object): Promise<Task> => {
   return post('/api/tasks', params)
+    .then((res: HttpResponse) => res.task);
+};
+
+export const updateTask = (id: number, params: object): Promise<Task> => {
+  return put(`/api/tasks/${id}`, params)
     .then((res: HttpResponse) => res.task);
 };
 
