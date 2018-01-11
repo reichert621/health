@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { logout } from '../../helpers/auth';
+import './NavBar.less';
 
 class NavBar extends React.Component {
   logout() {
@@ -30,7 +31,13 @@ class NavBar extends React.Component {
           </h1>
 
           <div className="logout-container pull-right">
+            <Link to="/tasks"
+              className="nav-link">
+              Tasks
+            </Link>
+
             <Link to="#"
+              className="nav-link"
               onClick={this.logout.bind(this)}>
               Logout
             </Link>
