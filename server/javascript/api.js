@@ -290,6 +290,17 @@ const t = {
     }
   },
 
+  async fetchTopSelected(req, res) {
+    try {
+      const userId = req.user.id;
+      const stats = await Task.fetchTopSelected(userId);
+
+      return res.json({ stats });
+    } catch (err) {
+      return handleError(res, err);
+    }
+  },
+
   async create(req, res) {
     try {
       const params = req.body;
@@ -358,5 +369,6 @@ api.get('/checklist-questions', checklistQuestions.fetch);
 // Reporting Stats
 api.get('/stats/checklists', isAuthenticated, checklists.fetchStats);
 api.get('/stats/scorecards', isAuthenticated, scorecards.fetchStats);
+api.get('/stats/top-tasks', isAuthenticated, t.fetchTopSelected);
 
 module.exports = api;

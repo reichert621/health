@@ -13,6 +13,41 @@ const fetch = (where = {}, userId) =>
     .where(merge(where, { 'tasks.userId': userId }))
     .orderBy('tasks.id', 'asc');
 
+const fetchTopSelected = (userId) => {
+  return Tasks()
+    .select('tasks.description', 'tasks.points', 'categories.name as category')
+    .innerJoin(
+      'scorecard_selected_tasks',
+      'scorecard_selected_tasks.taskId',
+      'tasks.id'
+    )
+    .innerJoin('categories', 'tasks.categoryId', 'categories.id')
+    .where({ 'scorecard_selected_tasks.userId': userId })
+    .then(results => {
+      return results
+        .reduce((stats, { category, description, points }) => {
+          const key = `${category}: ${description}`;
+          const [count] = stats[key] || [0];
+
+          return Object.assign(stats, {
+            [key]: [count + 1, points] // store points as well for reference
+          });
+        }, {});
+    })
+    .then(mapped => {
+      return Object.keys(mapped)
+        .map(task => {
+          const [count, points] = mapped[task];
+
+          return { task, count, points };
+        })
+        .sort((x, y) => {
+          // Sort by count, taking points into account if counts are the same
+          return (y.count + (y.points / 10)) - (x.count + (x.points / 10));
+        });
+    });
+};
+
 const findOne = (where = {}, userId) =>
   fetch(where, userId).first();
 
@@ -37,6 +72,7 @@ const destroy = (id, userId) =>
 
 module.exports = {
   fetch,
+  fetchTopSelected,
   findById,
   create,
   update,
