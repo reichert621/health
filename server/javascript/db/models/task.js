@@ -30,7 +30,7 @@ const fetchTopSelected = (userId) => {
           const [count] = stats[key] || [0];
 
           return Object.assign(stats, {
-            [key]: [count + 1, points]
+            [key]: [count + 1, points] // store points as well for reference
           });
         }, {});
     })
@@ -42,6 +42,7 @@ const fetchTopSelected = (userId) => {
           return { task, count, points };
         })
         .sort((x, y) => {
+          // Sort by count, taking points into account if counts are the same
           return (y.count + (y.points / 10)) - (x.count + (x.points / 10));
         });
     });
