@@ -22,6 +22,15 @@ class CategoryTasks extends React.Component {
     };
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { isCreating } = this.state;
+    const { isCreating: wasCreating } = prevState;
+
+    if (!wasCreating && isCreating) {
+      this.refs.newTaskInput.focus();
+    }
+  }
+
   handleCreateTask(e, category) {
     e.preventDefault();
     const { newTask, newPoints, tasks = [] } = this.state;
@@ -67,7 +76,7 @@ class CategoryTasks extends React.Component {
       });
   }
 
-  renderNewCategoryForm() {
+  renderNewTaskForm() {
     const {
       isCreating,
       category = {},
@@ -82,6 +91,7 @@ class CategoryTasks extends React.Component {
         <input
           type="text"
           className="input-default -inline task-description-input"
+          ref="newTaskInput"
           placeholder="New task"
           value={newTask}
           onChange={(e) => this.setState({ newTask: e.target.value })} />
@@ -135,7 +145,7 @@ class CategoryTasks extends React.Component {
             })
           }
           <li className="task-item-container">
-            {this.renderNewCategoryForm()}
+            {this.renderNewTaskForm()}
           </li>
         </ul>
       </div>
