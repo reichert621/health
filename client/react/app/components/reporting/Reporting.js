@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ReportingChart from './ReportingChart';
-import TopTasks from '../tasks/TopTasks';
+import ReportingStreaks from './ReportingStreaks';
+import TopTasks from './TopTasks';
 import { fetchStats } from '../../helpers/reporting';
 import './Reporting.less';
 
@@ -24,7 +25,11 @@ class Reporting extends React.Component {
 
   render() {
     const { stats } = this.state;
-    const { topTasks = [] } = stats;
+    const {
+      topTasks = [],
+      completedChecklists = [],
+      completedScorecards = []
+    } = stats;
 
     return (
       <div className="default-container">
@@ -32,6 +37,11 @@ class Reporting extends React.Component {
 
         <h1>Top Tasks</h1>
         <TopTasks tasks={topTasks} />
+
+        <h1>Streaks</h1>
+        <ReportingStreaks
+          completedChecklists={completedChecklists}
+          completedScorecards={completedScorecards} />
 
         <h1>Reporting</h1>
         <ReportingChart stats={stats} />

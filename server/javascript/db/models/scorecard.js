@@ -71,6 +71,24 @@ const fetchWithPoints = (where = {}, userId) => {
     });
 };
 
+const fetchCompletedDays = (userId) => {
+  return ScoreCard()
+    .select('s.date')
+    .count('sst.*')
+    .from('scorecards as s')
+    .innerJoin('scorecard_selected_tasks as sst', 'sst.scorecardId', 's.id')
+    .where({ 's.userId': userId })
+    .groupBy('s.date')
+    .orderBy('s.date', 'desc')
+    .then(result => {
+      return result
+        .map(r => {
+          return merge(r, { count: Number(r.count) });
+        })
+        .filter(r => r.count > 0);
+    });
+};
+
 const fetchStats = (userId) => {
   return Promise.all([
     fetch({}, userId),
@@ -179,6 +197,7 @@ module.exports = {
   fetch,
   findById,
   fetchWithPoints,
+  fetchCompletedDays,
   fetchStats,
   create,
   createWithScores,

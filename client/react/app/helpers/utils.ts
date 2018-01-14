@@ -1,9 +1,22 @@
 import * as moment from 'moment';
-import { has, extend, times } from 'lodash';
+import { has, extend, times, first, isNumber } from 'lodash';
 
 export interface DatedItem {
   date?: moment.Moment|Date|string;
 }
+
+export const pluralize = (str: string, n?: number, customPlural?: string): string => {
+  const simplePlural = `${str}s`;
+
+  if (!str) return str;
+  if (!n) return simplePlural;
+
+  if (n === 1) {
+    return str;
+  } else {
+    return (customPlural && customPlural.length) ? customPlural : simplePlural;
+  }
+};
 
 export const formatPoints = (points: number = 0): string => {
   const label = points === 1 ? 'point' : 'points';
@@ -32,4 +45,24 @@ export const getPastDates = (days: number = 10): moment.Moment[] => {
 
     return moment(formatted);
   });
+};
+
+export const getStreakStats = (stats: DatedItem[]): number[] => {
+  if (!stats || !stats.length) return [];
+
+  return stats
+    .map(({ date }) => {
+      return moment().diff(date, 'days');
+    })
+    .reduce((streaks, current, index, list) => {
+      const prev = list[index - 1];
+
+      if (isNumber(prev) && current === prev + 1) {
+        streaks[streaks.length - 1] += 1;
+      } else {
+        streaks[streaks.length] = 1;
+      }
+
+      return streaks;
+    }, []);
 };

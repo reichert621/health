@@ -1,10 +1,7 @@
 import React from 'react';
 import { resolve } from 'bluebird';
 import { extend } from 'lodash';
-import {
-  createTask,
-  updateTask
-} from '../../helpers/tasks';
+import { createTask, updateTask } from '../../helpers/tasks';
 import TaskItem from './TaskItem';
 
 class CategoryTasks extends React.Component {

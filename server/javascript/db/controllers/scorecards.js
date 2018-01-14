@@ -52,5 +52,11 @@ module.exports = {
     return ScoreCard.fetchStats(req.user.id)
       .then(stats => res.json({ stats }))
       .catch(err => handleError(res, err));
+  },
+
+  fetchCompletedDays: (req, res) => {
+    return ScoreCard.fetchCompletedDays(req.user.id)
+      .then(stats => res.json({ stats }))
+      .catch(err => handleError(res, err));
   }
 };
