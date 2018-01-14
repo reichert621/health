@@ -30,5 +30,11 @@ module.exports = {
     return Checklist.fetchStats(req.user.id)
       .then(stats => res.json({ stats }))
       .catch(err => handleError(res, err));
+  },
+
+  fetchCompletedDays: (req, res) => {
+    return Checklist.fetchCompletedDays(req.user.id)
+      .then(stats => res.json({ stats }))
+      .catch(err => handleError(res, err));
   }
 };

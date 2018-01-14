@@ -23,14 +23,34 @@ export const fetchTopTasks = (): Promise<any[]> => {
     .then((res: HttpResponse) => res.stats);
 };
 
+export const fetchCompletedChecklists = (): Promise<any[]> => {
+  return get('/api/stats/completed-checklists')
+    .then((res: HttpResponse) => res.stats);
+};
+
+export const fetchCompletedScorecards = (): Promise<any[]> => {
+  return get('/api/stats/completed-scorecards')
+    .then((res: HttpResponse) => res.stats);
+};
+
 export const fetchStats = (): Bluebird<ReportingStats> => {
   return Bluebird.all([
     fetchChecklistStats(),
     fetchScorecardStats(),
+    fetchCompletedChecklists(),
+    fetchCompletedScorecards(),
     fetchTopTasks()
   ])
-    .then(([checklistStats, scorecardStats, taskStats]) => {
+    .then(([
+      checklistStats,
+      scorecardStats,
+      completedChecklists,
+      completedScorecards,
+      taskStats
+    ]) => {
       return {
+        completedChecklists,
+        completedScorecards,
         checklist: checklistStats,
         scorecard: scorecardStats,
         topTasks: taskStats

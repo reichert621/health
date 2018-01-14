@@ -118,6 +118,24 @@ const fetchWithPoints = (where = {}, userId) => {
     });
 };
 
+const fetchCompletedDays = (userId) => {
+  return Checklist()
+    .select('c.date')
+    .count('cs.*')
+    .from('checklists as c')
+    .innerJoin('checklist_scores as cs', 'cs.checklistId', 'c.id')
+    .where({ 'c.userId': userId })
+    .groupBy('c.date')
+    .orderBy('c.date', 'desc')
+    .then(result => {
+      return result
+        .map(r => {
+          return merge(r, { count: Number(r.count) });
+        })
+        .filter(r => r.count > 0);
+    });
+};
+
 const fetchStats = (userId) => {
   return fetch({}, userId)
     .then(checklists => {
@@ -159,6 +177,7 @@ module.exports = {
   update,
   updateScores,
   fetchWithPoints,
+  fetchCompletedDays,
   fetchStats,
   destroy
 };
