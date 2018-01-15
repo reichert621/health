@@ -78,7 +78,6 @@ On a more positive note, I've noticed some "micro" trends on a more day-to-day b
 If you have any feature requests, bug reports, or any general feedback, feel free to submit them [here](https://github.com/reichert621/blog/issues) or email me at [reichertjalex@gmail.com](mailto:reichertjalex@gmail.com).
 `;
 
-
 class About extends React.Component {
   constructor(props) {
     super(props);
