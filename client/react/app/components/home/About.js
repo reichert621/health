@@ -11,7 +11,9 @@ const formatHTML = (content = '') => {
 const content = `
 # Inspiration
 
-After reading [*Feeling Good* by Dr. David Burns](https://en.wikipedia.org/wiki/Feeling_Good:_The_New_Mood_Therapy), I wanted to see if there was any correlation between my daily productivity and levels of depression.
+After reading Dr. David Burns' [*Feeling Good*](https://www.amazon.com/Feeling-Good-New-Mood-Therapy/dp/0380810336), I wanted to see if there was any correlation between my productivity and my mood. To do this, I designed a personal "Daily Scorecard" to compare against Dr. Burns' "Depression Checklist" (a.k.a. my "Daily Check-in"). My goal is to try to identify which daily habits result in lower levels of depression.
+
+I was also struck by Nassim Taleb's point in [*Antifragile*](https://www.amazon.com/Antifragile-Things-That-Disorder-Incerto/dp/0812979680) that instead of focusing on "the pursuit of happiness," it would do us better to focus on "the avoidance of unhappiness."  This project is designed to figure out the best way to do that.
 
 # FAQ
 
@@ -29,11 +31,11 @@ Each task in your scorecard is given a specific score based on difficulty. By de
 
 Using the example above of learning Arabic, we could value tasks as such:
 - Write a blog post in Arabic: **16 points**
-  - This task requires the practical application of what you've learned, so it deserves the most credit
+  - This task requires the practical application of what you've learned, so it deserves the most credit.
 - Study vocabulary/grammar: **8 points**
-  - This is essential to learning a new language, but can feel like busywork, so it still gets a lot of points
+  - This is essential to learning a new language but can feel a bit like busywork, so it still gets a lot of points.
 - Watch a movie in Arabic: **4 points**
-  - Watching a movie is not particularly difficult, but it can be a fun and effective way to learn new words
+  - Watching a movie is not particularly difficult, but it can be a fun and effective way to learn new words and phrases.
 
 Please note that scores should be judged not only by physical difficulty, but by psychological difficulty as well. For example, going for a walk may not be all that physically strenuous, but if willing yourself to get out of bed is a struggle, give yourself extra points for it.
 
@@ -73,7 +75,7 @@ On a more positive note, I've noticed some "micro" trends on a more day-to-day b
 - Allow users to access historical data more easily
 - Build a mobile version of the app
 
-If you have any feature requests or bug reports, feel free to submit them [here](https://github.com/reichert621/blog/issues) or email me at reichertjalex@gmail.com.
+If you have any feature requests, bug reports, or any general feedback, feel free to submit them [here](https://github.com/reichert621/blog/issues) or email me at [reichertjalex@gmail.com](mailto:reichertjalex@gmail.com).
 `;
 
 

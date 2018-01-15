@@ -40,9 +40,8 @@ class NavBar extends React.Component {
               </Link>
             }
 
-            {/* TODO: unhide when content is ready */}
             <Link to="/about"
-              className="nav-link hidden">
+              className="nav-link">
               About
             </Link>
 
