@@ -1,6 +1,7 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { login } from '../../helpers/auth';
+import NavBar from '../navbar';
 import '../../App.less';
 
 class Login extends React.Component {
@@ -39,45 +40,45 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div className="default-container">
-        <h1 className="login-header">
-          Log in
-        </h1>
+      <div>
+        <NavBar title="Log in" />
 
-        <form onSubmit={this.onSubmit}>
-          <input
-            type="text"
-            className="input-default -large"
-            placeholder="Username"
-            name="username"
-            value={this.state.username}
-            onChange={this.updateInput} />
+        <div className="default-container">
+          <form onSubmit={this.onSubmit}>
+            <input
+              type="text"
+              className="input-default -large"
+              placeholder="Username"
+              name="username"
+              value={this.state.username}
+              onChange={this.updateInput} />
 
-          <input
-            type="password"
-            className="input-default -large"
-            placeholder="Password"
-            name="password"
-            value={this.state.password}
-            onChange={this.updateInput} />
+            <input
+              type="password"
+              className="input-default -large"
+              placeholder="Password"
+              name="password"
+              value={this.state.password}
+              onChange={this.updateInput} />
 
-          <button
-            className="btn-default btn-sm"
-            type="submit">
-            Log in
-          </button>
+            <button
+              className="btn-default btn-sm"
+              type="submit">
+              Log in
+            </button>
 
-          <small className="text-red"
-            style={{ marginLeft: 16 }}>
-            {this.state.error || ''}
-          </small>
-
-          <div style={{ marginTop: 16 }}>
-            <small>
-              Or click <Link to="signup">here</Link> to sign up!
+            <small className="text-red"
+              style={{ marginLeft: 16 }}>
+              {this.state.error || ''}
             </small>
-          </div>
-        </form>
+
+            <div style={{ marginTop: 16 }}>
+              <small>
+                Or click <Link to="signup">here</Link> to sign up!
+              </small>
+            </div>
+          </form>
+        </div>
       </div>
     );
   }

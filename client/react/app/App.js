@@ -11,6 +11,7 @@ import {
   SignUp,
   SignUpComplete,
   Profile,
+  About,
   Library
 } from './components/home';
 import { Dashboard } from './components/dashboard';
@@ -30,6 +31,7 @@ ReactDOM.render(
           <Route exact path="/" component={Dashboard} />
           <Route path="/login" component={Login} />
           <Route path="/signup" component={SignUp} />
+          <Route path="/about" component={About} />
           <Route path="/signup-complete" component={SignUpComplete} />
           <Route path="/home" component={Home} />
           <Route path="/dashboard" component={Dashboard} />

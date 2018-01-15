@@ -17,7 +17,7 @@ class NavBar extends React.Component {
   }
 
   render() {
-    const { title, linkTo } = this.props;
+    const { title, linkTo, history } = this.props;
 
     return (
       <div className="nav-container">
@@ -31,16 +31,29 @@ class NavBar extends React.Component {
           </h1>
 
           <div className="logout-container pull-right">
-            <Link to="/tasks"
+            {
+              /* TODO: this is a bit of a hack to know if user is logged in */
+              history &&
+              <Link to="/tasks"
+                className="nav-link">
+                Tasks
+              </Link>
+            }
+
+            <Link to="/about"
               className="nav-link">
-              Tasks
+              About
             </Link>
 
-            <Link to="#"
-              className="nav-link"
-              onClick={this.logout.bind(this)}>
-              Logout
-            </Link>
+            {
+              /* TODO: this is a bit of a hack to know if user is logged in */
+              history &&
+              <Link to="#"
+                className="nav-link"
+                onClick={this.logout.bind(this)}>
+                Logout
+              </Link>
+            }
           </div>
         </div>
       </div>
