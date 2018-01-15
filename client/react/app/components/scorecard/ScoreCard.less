@@ -15,6 +15,7 @@
 
 .scorecard-overview {
   border: 1px solid @border-gray;
+  border-radius: 4px;
   font-size: 18px;
   line-height: 20px;
   margin-bottom: 24px;
@@ -45,7 +46,7 @@
   margin-bottom: 16px;
 }
 
-@media (max-width: 1080px) {
+@media (max-width: 960px) {
   .scorecard-container {
     width: 80%;
   }
@@ -54,5 +55,15 @@
     float: left;
     margin-left: 0px;
     width: 80%;
+  }
+}
+
+@media (max-width: 560px) {
+  .scorecard-container {
+    width: 90%;
+  }
+
+  .scorecard-overview-container {
+    width: 90%;
   }
 }

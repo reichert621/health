@@ -18,7 +18,7 @@ const CheckListQuestion = ({ question, onSelect }) => {
   return (
     <div className="checklist-question-container clearfix">
       <span className="checklist-question pull-left">{text}</span>
-      <span className="pull-right">
+      <span className="checklist-selector pull-right">
         <CheckListOptionsSvg
           selected={score}
           handleSelect={onSelect} />

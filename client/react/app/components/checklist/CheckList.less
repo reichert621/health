@@ -25,7 +25,6 @@
 
 .checklist-question-container {
   margin-bottom: 8px;
-  min-width: 700px;
 }
 
 .checklist-question,
@@ -46,5 +45,31 @@
   .svg-option-box {
     transition: fill ease 0.2s;
     -webkit-transition: fill ease 0.2s;
+  }
+}
+
+@media (max-width: 720px) {
+  .checklist-overview {
+    display: none;
+  }
+
+  .checklist-header {
+    text-align: center;
+    width: 100%;
+  }
+
+  .checklist-question,
+  .checklist-selector,
+  .checklist-answer {
+    display: inline-block;
+    float: none;
+    margin-right: 0;
+    margin-left: 0;
+    text-align: center;
+    width: 100%;
+  }
+
+  .checklist-answer {
+    margin-bottom: 8px;
   }
 }

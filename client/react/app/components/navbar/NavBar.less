@@ -1,4 +1,25 @@
 @gray: #979797;
+@light-gray-2: #D8D8D8;
+
+.nav-container {
+  border-bottom: 1px solid @light-gray-2;
+}
+
+.nav-content {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0px 40px;
+}
+
+.nav-header {
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.logout-container {
+  margin-top: 48px;
+  font-size: 16px;
+}
 
 .nav-link {
   padding-left: 16px;
@@ -8,5 +29,17 @@
   &:last-child {
     border-right: none;
     padding-right: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .logout-container {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-content {
+    padding: 0px 16px;
   }
 }
