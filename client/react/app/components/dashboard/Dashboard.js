@@ -91,7 +91,7 @@ class Dashboard extends React.Component {
   }
 
   handlePointClicked(timestamp) {
-    const date = moment(timestamp);
+    const date = moment.utc(timestamp);
 
     if (date.isValid()) {
       return this.handleDateSelected(date);
