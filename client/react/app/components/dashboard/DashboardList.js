@@ -34,7 +34,7 @@ const DashboardList = ({
               <tr key={key}
                 className={`dashboard-list-row ${isSelected && 'selected'}`}
                 onClick={() => handleDateSelected(date)}>
-                <td className="text-blue">
+                <td className={isSelected ? '' : 'text-blue'}>
                   <span className="dashboard-list-date">
                     {date.format('ddd MM/DD')}
                   </span>
