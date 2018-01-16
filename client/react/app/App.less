@@ -108,6 +108,16 @@ a {
   }
 }
 
+.btn-saving {
+  min-width: 132px;
+  text-align: left;
+
+  &:hover {
+    background: @light-gray-3 !important; // TODO: not ideal
+    cursor: default;
+  }
+}
+
 .btn-default {
   background: @light-gray-3;
   border: 1px solid @light-gray-3;
@@ -115,11 +125,6 @@ a {
 
   &:hover {
     background: @light-gray;
-    cursor: pointer;
-  }
-
-  &:focus {
-    outline: 0;
   }
 
   &:active {
@@ -346,6 +351,10 @@ a {
 
 .back-icon {
   margin-right: 24px;
+}
+
+.saving-icon {
+  margin-left: 8px;
 }
 
 @media (max-width: 880px) {
