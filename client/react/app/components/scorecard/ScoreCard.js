@@ -47,6 +47,8 @@ class ScoreCard extends React.Component {
   }
 
   handleCheckboxUpdate(task) {
+    this.setState({ isSaving: true });
+
     const { tasks, scorecard } = this.state;
     const { id: scorecardId } = scorecard;
     const { id: taskId, isComplete: isCurrentlyComplete = false } = task;
@@ -59,6 +61,11 @@ class ScoreCard extends React.Component {
         });
 
         return this.setState({ tasks: update });
+      })
+      .then(() => {
+        const delay = 1400;
+
+        setTimeout(() => this.setState({ isSaving: false }), delay);
       })
       .catch(err => {
         console.log('Error toggling task checkbox!', err);
@@ -109,7 +116,7 @@ class ScoreCard extends React.Component {
   }
 
   render() {
-    const { tasks, date } = this.state;
+    const { tasks, date, isSaving } = this.state;
     const { history } = this.props;
     const completed = tasks.filter(t => t.isComplete);
 
@@ -141,11 +148,20 @@ class ScoreCard extends React.Component {
             </div>
           </div>
 
-          <Link to="/dashboard">
-            <button className="btn-default">
-              Done
+          <div className="scorecard-footer clearfix">
+            <Link to="/dashboard">
+              <button className="btn-default pull-left">
+                Done
+              </button>
+            </Link>
+
+            <button className="btn-default btn-saving pull-right">
+              {isSaving ? 'Saving...' : 'Saved'}
+              <img
+                className={`saving-icon ${isSaving ? 'hidden' : ''}`}
+                src="assets/check.svg" />
             </button>
-          </Link>
+          </div>
         </div>
       </div>
     );
