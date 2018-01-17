@@ -6,6 +6,7 @@ const tasks = require('./tasks');
 const checklists = require('./checklists');
 const checklistScores = require('./checklist_scores'); // TODO: undo snakecase?
 const checklistQuestions = require('./checklist_questions'); // TODO: undo snakecase?
+const reporting = require('./reporting');
 
 module.exports = {
   users,
@@ -15,5 +16,6 @@ module.exports = {
   tasks,
   checklists,
   checklistScores,
-  checklistQuestions
+  checklistQuestions,
+  reporting
 };

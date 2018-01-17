@@ -10,6 +10,7 @@ const {
   checklists,
   checklistQuestions,
   checklistScores,
+  reporting,
   tasks
 } = require('./db/controllers');
 
@@ -67,10 +68,15 @@ api.get('/checklist-scores', isAuthenticated, checklistScores.fetch);
 // Checklist Questions
 api.get('/checklist-questions', checklistQuestions.fetch);
 // Reporting Stats
+api.get('/stats/all', isAuthenticated, reporting.fetchAllStats);
 api.get('/stats/checklists', isAuthenticated, checklists.fetchStats);
 api.get('/stats/scorecards', isAuthenticated, scorecards.fetchStats);
 api.get('/stats/top-tasks', isAuthenticated, tasks.fetchTopSelected);
 api.get('/stats/completed-checklists', isAuthenticated, checklists.fetchCompletedDays);
 api.get('/stats/completed-scorecards', isAuthenticated, scorecards.fetchCompletedDays);
+api.get('/stats/checklist-scores-by-day', isAuthenticated, checklists.fetchScoresByDayOfWeek);
+api.get('/stats/scorecard-scores-by-day', isAuthenticated, scorecards.fetchScoresByDayOfWeek);
+api.get('/stats/depression-level-frequency', isAuthenticated, checklists.fetchScoreRangeFrequency);
+api.get('/stats/total-score-over-time', isAuthenticated, scorecards.fetchTotalScoreOverTime);
 
 module.exports = api;

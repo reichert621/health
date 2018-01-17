@@ -1,5 +1,5 @@
 const knex = require('../knex.js');
-const { first, groupBy, isNumber } = require('lodash');
+const { first, groupBy, isNumber, sum } = require('lodash');
 const moment = require('moment');
 const Task = require('./task');
 const ScoreCardSelectedTask = require('./scorecard_selected_task');
@@ -86,6 +86,53 @@ const fetchCompletedDays = (userId) => {
           return merge(r, { count: Number(r.count) });
         })
         .filter(r => r.count > 0);
+    });
+};
+
+const fetchScoresByDate = (userId) => {
+  return ScoreCard()
+    .select('s.date')
+    .sum('t.points as score')
+    .from('scorecards as s')
+    .innerJoin('scorecard_selected_tasks as sst', 'sst.scorecardId', 's.id')
+    .innerJoin('tasks as t', 'sst.taskId', 't.id')
+    .where({ 's.userId': userId })
+    .groupBy('s.date')
+    .orderBy('s.date', 'desc')
+    .then(result => {
+      return result.map(({ date, score }) => {
+        return { date, score: Number(score) };
+      });
+    });
+};
+
+const fetchScoresByDayOfWeek = (userId) => {
+  return fetchScoresByDate(userId)
+    .then(result => {
+      return result.reduce((map, { date, score }) => {
+        const day = moment(date).format('dddd');
+        const s = Number(score);
+
+        return merge(map, {
+          [day]: (map[day] || []).concat(s)
+        });
+      }, {});
+    });
+};
+
+const fetchTotalScoreOverTime = (userId) => {
+  return fetchScoresByDate(userId)
+    .then(result => {
+      return result
+        .sort((x, y) => Number(new Date(x.date)) - Number(new Date(y.date)))
+        .map(({ date, score }, index, list) => {
+          const timestamp = Number(new Date(date));
+          const past = list.slice(0, index);
+          // TODO: this is pretty inefficient
+          const total = past.reduce((acc, r) => acc + r.score, score);
+
+          return { timestamp, date, score, total };
+        });
     });
 };
 
@@ -198,6 +245,9 @@ module.exports = {
   findById,
   fetchWithPoints,
   fetchCompletedDays,
+  fetchScoresByDate,
+  fetchScoresByDayOfWeek,
+  fetchTotalScoreOverTime,
   fetchStats,
   create,
   createWithScores,

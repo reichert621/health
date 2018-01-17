@@ -58,5 +58,17 @@ module.exports = {
     return ScoreCard.fetchCompletedDays(req.user.id)
       .then(stats => res.json({ stats }))
       .catch(err => handleError(res, err));
+  },
+
+  fetchScoresByDayOfWeek: (req, res) => {
+    return ScoreCard.fetchScoresByDayOfWeek(req.user.id)
+      .then(stats => res.json({ stats }))
+      .catch(err => handleError(res, err));
+  },
+
+  fetchTotalScoreOverTime: (req, res) => {
+    return ScoreCard.fetchTotalScoreOverTime(req.user.id)
+      .then(stats => res.json({ stats }))
+      .catch(err => handleError(res, err));
   }
 };

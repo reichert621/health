@@ -136,6 +136,61 @@ const fetchCompletedDays = (userId) => {
     });
 };
 
+const fetchScoresByDate = (userId) => {
+  return Checklist()
+    .select('c.date')
+    .sum('cs.score as score')
+    .from('checklists as c')
+    .innerJoin('checklist_scores as cs', 'cs.checklistId', 'c.id')
+    .where({ 'c.userId': userId })
+    .groupBy('c.date')
+    .orderBy('c.date', 'desc');
+};
+
+const fetchScoresByDayOfWeek = (userId) => {
+  return fetchScoresByDate(userId)
+    .then(result => {
+      return result.reduce((map, { date, score }) => {
+        const day = moment(date).format('dddd');
+        const s = Number(score);
+
+        return merge(map, {
+          [day]: (map[day] || []).concat(s)
+        });
+      }, {});
+    });
+};
+
+const getDepressionLevelByScore = (score) => {
+  if (score <= 5) {
+    return 'No depression';
+  } else if (score >= 6 && score <= 10) {
+    return 'Normal but unhappy';
+  } else if (score >= 11 && score <= 25) {
+    return 'Mild depression';
+  } else if (score >= 26 && score <= 50) {
+    return 'Moderate depression';
+  } else if (score >= 51 && score <= 75) {
+    return 'Severe depression';
+  } else {
+    return 'Extreme depression';
+  }
+};
+
+const fetchScoreRangeFrequency = (userId) => {
+  return fetchScoresByDate(userId)
+    .then(results => {
+      return results.reduce((map, { score }) => {
+        const s = Number(score);
+        const level = getDepressionLevelByScore(s);
+
+        return merge(map, {
+          [level]: (map[level] || 0) + 1
+        });
+      }, {});
+    });
+};
+
 const fetchStats = (userId) => {
   return fetch({}, userId)
     .then(checklists => {
@@ -178,6 +233,9 @@ module.exports = {
   updateScores,
   fetchWithPoints,
   fetchCompletedDays,
+  fetchScoresByDate,
+  fetchScoresByDayOfWeek,
+  fetchScoreRangeFrequency,
   fetchStats,
   destroy
 };

@@ -27,7 +27,14 @@ class ReportingChart extends React.Component {
 
   render() {
     const { stats = {}, onClickPoint } = this.props;
-    const { checklist, scorecard } = stats;
+    const { checklist, scorecard, totalScoreOverTime = [] } = stats;
+    // TODO: find a place for this, or determine if we even want to show it
+    const totals = totalScoreOverTime.map(({ timestamp, total }) => {
+      return [timestamp, total];
+    });
+
+    console.log('Totals:', totals);
+
     const config = {
       title: { text: '' },
       chart: {
