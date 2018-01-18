@@ -16,8 +16,52 @@ class NavBar extends React.Component {
       });
   }
 
+  renderLoggedInNav() {
+    return (
+      <div>
+        <Link to="/tasks"
+          className="nav-link">
+          Tasks
+        </Link>
+
+        <Link to="/about"
+          className="nav-link">
+          About
+        </Link>
+
+        <Link to="#"
+          className="nav-link"
+          onClick={this.logout.bind(this)}>
+          Logout
+        </Link>
+      </div>
+    );
+  }
+
+  renderLoggedOutNav() {
+    return (
+      <div>
+        <Link to="/signup"
+          className="nav-link">
+          Sign up
+        </Link>
+
+        <Link to="/about"
+          className="nav-link">
+          About
+        </Link>
+
+        <Link to="/login"
+          className="nav-link">
+          Log in
+        </Link>
+      </div>
+    );
+  }
+
   render() {
     const { title, linkTo, history } = this.props;
+    const isLoggedIn = !!history;
 
     return (
       <div className="nav-container">
@@ -32,27 +76,9 @@ class NavBar extends React.Component {
 
           <div className="logout-container pull-right">
             {
-              /* TODO: this is a bit of a hack to know if user is logged in */
-              history &&
-              <Link to="/tasks"
-                className="nav-link">
-                Tasks
-              </Link>
-            }
-
-            <Link to="/about"
-              className="nav-link">
-              About
-            </Link>
-
-            {
-              /* TODO: this is a bit of a hack to know if user is logged in */
-              history &&
-              <Link to="#"
-                className="nav-link"
-                onClick={this.logout.bind(this)}>
-                Logout
-              </Link>
+              isLoggedIn ?
+                this.renderLoggedInNav() :
+                this.renderLoggedOutNav()
             }
           </div>
         </div>

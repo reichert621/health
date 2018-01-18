@@ -22,7 +22,19 @@ const template = () => {
       </head>
       <body ng-app="app" ng-strict-di ng-cloak>
         <app>
-          <div id="app">Loading...</div>
+          <div id="app">
+            <!-- Temporary improvement of "Loading" placeholder -->
+            <h1 style="
+              font-family: 'Helvetica Neue', Arial, san-serif;
+              font-size: 44px;
+              font-weight: 100;
+              letter-spacing: 0.4px;
+              margin-left: 40px;
+              margin-top: 24px;
+            ">
+              Loading...
+            </h1>
+          </div>
         </app>
 
         <script

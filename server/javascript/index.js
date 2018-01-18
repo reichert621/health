@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const passport = require('passport');
-const { Strategy } = require('passport-local');
 const { build, port } = require('./config');
 const { template } = require('./helpers');
 const api = require('./api');
@@ -16,7 +15,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
-  secret: secret,
+  secret,
   resave: false,
   saveUninitialized: false
 }));
@@ -39,5 +38,4 @@ const home = (req, res) => res.send(template());
 app.use('/api', api);
 app.get('*', home);
 
-app.listen(port, () =>
-  console.log(`Listening on port ${port}`));
+app.listen(port, () => console.log(`Listening on port ${port}`));

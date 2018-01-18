@@ -19,6 +19,8 @@ I was also struck by Nassim Taleb's point in [*Antifragile*](https://www.amazon.
 
 **What is my "Daily Scorecard"?**
 
+<img src="/assets/scorecard-screenshot.png" class="screenshot-image" />
+
 Your scorecard is a list of tasks you'd like to incorporate into your daily routine as much as possible. By default, these tasks include activities related to health, reading, creativity, meditation, and socializing.
 
 The goal of the scorecard is to remind yourself on a daily basis which habits you aspire to form. For example, if one of my goals is to get in better shape and I'm marking my scorecard on a daily basis, I'm constantly reminded of the exercise options I have. If I'm really struggling to get moving, I could just do 20 push-ups at home, or I could go for a walk. Doing either of those is better than doing nothing, and is usually a great way to alleviate the self-loathing that often accompanies laziness in neurotics like myself.
@@ -41,9 +43,13 @@ Please note that scores should be judged not only by physical difficulty, but by
 
 **How do I edit my scorecard tasks and scores?**
 
+<img src="/assets/task-management-screenshot.png" class="screenshot-image" />
+
 You can create and edit tasks in the *Tasks* link in the navigation bar (in the upper right-hand corner) after logging in.
 
 **What is the "Daily Check-in"?**
+
+<img src="/assets/check-in-screenshot.png" class="screenshot-image" />
 
 The Daily Check-in, also known as the *Depression Checklist*, was created by Dr. David Burns. It's meant to quickly assess:
 - thoughts and feelings, such as sadness or discouragement
