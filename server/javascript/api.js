@@ -40,7 +40,6 @@ api.post('/entries', isAuthenticated, entries.create);
 api.put('/entries/:id', isAuthenticated, entries.update);
 api.delete('/entries/:id', isAuthenticated, entries.destroy);
 // Users
-api.get('/users', users.fetch);
 api.get('/is-authenticated', users.isAuthenticated);
 api.get('/users/:username/entries', users.fetchEntries);
 api.get('/users/:username/entries/:id', users.fetchEntry);
