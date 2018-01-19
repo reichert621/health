@@ -68,6 +68,7 @@ api.get('/checklist-scores', isAuthenticated, checklistScores.fetch);
 // Checklist Questions
 api.get('/checklist-questions', checklistQuestions.fetch);
 // Reporting Stats
+// TODO: clean up these endpoints
 api.get('/stats/all', isAuthenticated, reporting.fetchAllStats);
 api.get('/stats/checklists', isAuthenticated, checklists.fetchStats);
 api.get('/stats/scorecards', isAuthenticated, scorecards.fetchStats);
@@ -78,5 +79,6 @@ api.get('/stats/checklist-scores-by-day', isAuthenticated, checklists.fetchScore
 api.get('/stats/scorecard-scores-by-day', isAuthenticated, scorecards.fetchScoresByDayOfWeek);
 api.get('/stats/depression-level-frequency', isAuthenticated, checklists.fetchScoreRangeFrequency);
 api.get('/stats/total-score-over-time', isAuthenticated, scorecards.fetchTotalScoreOverTime);
+api.get('/stats/task-category-totals', isAuthenticated, scorecards.fetchCategoryStats);
 
 module.exports = api;

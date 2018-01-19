@@ -136,6 +136,22 @@ const fetchTotalScoreOverTime = (userId) => {
     });
 };
 
+const fetchCategoryStats = (userId) => {
+  return ScoreCardSelectedTask.fetchSelectedTasksByCategory(userId)
+    .then(mappings => {
+      return Object.keys(mappings)
+        .reduce((result, category) => {
+          const tasks = mappings[category];
+          const count = tasks.length;
+          const score = tasks.reduce((sum, t) => sum + t.points, 0);
+
+          return merge(result, {
+            [category]: { count, score }
+          });
+        }, {});
+    });
+};
+
 const fetchStats = (userId) => {
   return Promise.all([
     fetch({}, userId),
@@ -248,6 +264,7 @@ module.exports = {
   fetchScoresByDate,
   fetchScoresByDayOfWeek,
   fetchTotalScoreOverTime,
+  fetchCategoryStats,
   fetchStats,
   create,
   createWithScores,

@@ -66,6 +66,12 @@ module.exports = {
       .catch(err => handleError(res, err));
   },
 
+  fetchCategoryStats: (req, res) => {
+    return ScoreCard.fetchCategoryStats(req.user.id)
+      .then(stats => res.json({ stats }))
+      .catch(err => handleError(res, err));
+  },
+
   fetchTotalScoreOverTime: (req, res) => {
     return ScoreCard.fetchTotalScoreOverTime(req.user.id)
       .then(stats => res.json({ stats }))

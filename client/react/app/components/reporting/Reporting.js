@@ -4,6 +4,7 @@ import ReportingChart from './ReportingChart';
 import ReportingStreaks from './ReportingStreaks';
 import TopTasks from './TopTasks';
 import ScoresByDay from './ScoresByDay';
+import ScoresByCategory from './ScoresByCategory';
 import { fetchAllStats } from '../../helpers/reporting';
 import './Reporting.less';
 
@@ -31,7 +32,8 @@ class Reporting extends React.Component {
       completedChecklists = [],
       completedScorecards = [],
       checklistScoresByDay = {},
-      scorecardScoresByDay = {}
+      scorecardScoresByDay = {},
+      taskCategoryStats = {}
     } = stats;
 
     return (
@@ -42,6 +44,10 @@ class Reporting extends React.Component {
         <ScoresByDay
           checklistScores={checklistScoresByDay}
           scorecardScores={scorecardScoresByDay} />
+
+        <h1>Scores By Category</h1>
+        <ScoresByCategory
+          categoryStats={taskCategoryStats} />
 
         <h1>Top Tasks</h1>
         <TopTasks tasks={topTasks} />

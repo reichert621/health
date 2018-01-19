@@ -10,6 +10,22 @@ const fetch = (where = {}, userId) =>
     .select()
     .where(merge(where, { userId }));
 
+const fetchSelectedTasksByCategory = (userId) => {
+  return ScoreCardSelectedTask()
+    .select('c.name', 't.description', 't.points')
+    .from('scorecard_selected_tasks as sst')
+    .innerJoin('tasks as t', 'sst.taskId', 't.id')
+    .innerJoin('categories as c', 't.categoryId', 'c.id')
+    .where({ 'sst.userId': userId })
+    .then(results => {
+      return results.reduce((map, { name, description, points }) => {
+        return merge(map, {
+          [name]: (map[name] || []).concat({ description, points })
+        });
+      }, {});
+    });
+};
+
 const fetchByScorecardId = (scorecardId, userId, where = {}) =>
   fetch(merge(where, { scorecardId }), userId);
 
@@ -64,6 +80,7 @@ const destroyByScorecardId = (scorecardId, userId) =>
 
 module.exports = {
   fetch,
+  fetchSelectedTasksByCategory,
   fetchByScorecardId,
   findById,
   create,

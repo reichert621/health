@@ -12,7 +12,7 @@ const ScoresByDay = ({ checklistScores, scorecardScores }) => {
           const scorecardAverage = calculateAverage(scorecardScore).toFixed(1);
 
           return (
-            <div key={key}>
+            <div key={key} style={{ marginBottom: 4 }}>
               <span className="text-active">{day}</span>
               <span> - {checklistAverage} mood / {scorecardAverage} tasks</span>
             </div>

@@ -15,6 +15,7 @@ module.exports = {
       ScoreCard.fetchCompletedDays(userId),
       ScoreCard.fetchScoresByDayOfWeek(userId),
       ScoreCard.fetchTotalScoreOverTime(userId),
+      ScoreCard.fetchCategoryStats(userId),
 
       Task.fetchTopSelected(userId)
     ])
@@ -30,6 +31,7 @@ module.exports = {
           completedScorecards,
           scorecardScoresByDay,
           totalScoreOverTime,
+          taskCategoryStats,
           // Task stats
           topTasks
         ] = result;
@@ -45,6 +47,7 @@ module.exports = {
           completedScorecards,
           scorecardScoresByDay,
           totalScoreOverTime,
+          taskCategoryStats,
           // Task stats
           topTasks
         };
