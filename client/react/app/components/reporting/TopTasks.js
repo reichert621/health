@@ -35,11 +35,15 @@ const TopTaskItem = ({ task, count, total }) => {
 
 const TopTasks = ({ tasks = [] }) => {
   const total = tasks.reduce((result, t) => result + t.count, 0);
+  const points = tasks.reduce((result, t) => result + t.points, 0);
 
   return (
     <div>
       <div>
-        Total completed: {total} tasks
+        Tasks completed to date: {total}
+      </div>
+      <div>
+        Points scored to date: {points}
       </div>
       <ul className="reporting-component-container">
         {

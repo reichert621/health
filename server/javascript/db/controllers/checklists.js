@@ -36,5 +36,17 @@ module.exports = {
     return Checklist.fetchCompletedDays(req.user.id)
       .then(stats => res.json({ stats }))
       .catch(err => handleError(res, err));
+  },
+
+  fetchScoresByDayOfWeek: (req, res) => {
+    return Checklist.fetchScoresByDayOfWeek(req.user.id)
+      .then(stats => res.json({ stats }))
+      .catch(err => handleError(res, err));
+  },
+
+  fetchScoreRangeFrequency: (req, res) => {
+    return Checklist.fetchScoreRangeFrequency(req.user.id)
+      .then(stats => res.json({ stats }))
+      .catch(err => handleError(res, err));
   }
 };

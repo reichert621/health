@@ -1,6 +1,16 @@
 import * as moment from 'moment';
 import { has, extend, times, first, isNumber } from 'lodash';
 
+export const DAYS_OF_WEEK = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday'
+];
+
 export interface DatedItem {
   date?: moment.Moment|Date|string;
 }
@@ -16,6 +26,15 @@ export const pluralize = (str: string, n?: number, customPlural?: string): strin
   } else {
     return (customPlural && customPlural.length) ? customPlural : simplePlural;
   }
+};
+
+export const calculateAverage = (nums: number[] = []): number => {
+  if (!nums || !nums.length) return 0;
+
+  const sum = nums.reduce((total, n) => total + n, 0);
+  const count = nums.length;
+
+  return sum / count;
 };
 
 export const formatPoints = (points: number = 0): string => {
