@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Highcharts from 'react-highcharts';
 import ReportingChart from '../reporting/ReportingChart';
-import { fetchStats } from '../../helpers/reporting';
+import { fetchAllStats } from '../../helpers/reporting';
 import '../reporting/Reporting.less';
 
 // TODO: DRY up (see Reporting)
@@ -16,7 +16,7 @@ class DashboardReporting extends React.Component {
   }
 
   componentDidMount() {
-    return fetchStats()
+    return fetchAllStats()
       .then(stats => this.setState({ stats }))
       .catch(err => {
         console.log('Error fetching stats!', err);
