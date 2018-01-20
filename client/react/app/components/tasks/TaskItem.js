@@ -49,12 +49,13 @@ class TaskItem extends React.Component {
   }
 
   renderStaticTask() {
-    const { task } = this.props;
+    const { task = {} } = this.props;
+    const { description, points, isActive } = task;
 
     return (
-      <div className="task-item">
-        <span className="task-description">{task.description}</span>
-        <span className="task-points">{task.points} points</span>
+      <div className={`task-item ${isActive ? 'active' : 'inactive'}`}>
+        <span className="task-description">{description}</span>
+        <span className="task-points">{points} points</span>
         <img className="edit-icon"
           src="assets/pencil.svg"
           onClick={() => this.setState({ isEditing: true })} />

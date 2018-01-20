@@ -48,5 +48,11 @@ module.exports = {
     return Checklist.fetchScoreRangeFrequency(req.user.id)
       .then(stats => res.json({ stats }))
       .catch(err => handleError(res, err));
+  },
+
+  fetchQuestionStats: (req, res) => {
+    return Checklist.fetchQuestionStats(req.user.id)
+      .then(stats => res.json({ stats }))
+      .catch(err => handleError(res, err));
   }
 };

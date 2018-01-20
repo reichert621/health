@@ -78,6 +78,7 @@ api.get('/stats/checklist-scores-by-day', isAuthenticated, checklists.fetchScore
 api.get('/stats/scorecard-scores-by-day', isAuthenticated, scorecards.fetchScoresByDayOfWeek);
 api.get('/stats/depression-level-frequency', isAuthenticated, checklists.fetchScoreRangeFrequency);
 api.get('/stats/total-score-over-time', isAuthenticated, scorecards.fetchTotalScoreOverTime);
+api.get('/stats/checklist-questions', isAuthenticated, checklists.fetchQuestionStats);
 api.get('/stats/task-category-totals', isAuthenticated, scorecards.fetchCategoryStats);
 
 module.exports = api;
