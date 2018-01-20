@@ -1,5 +1,5 @@
 const knex = require('../knex.js');
-const { first } = require('lodash');
+const { first, groupBy, map } = require('lodash');
 
 const ChecklistScore = () => knex('checklist_scores');
 
@@ -13,6 +13,40 @@ const fetch = (where = {}, userId) =>
 const findOne = (where, userId) =>
   fetch(where, userId)
     .first();
+
+const fetchScoresByCategory = (userId) => {
+  return ChecklistScore()
+    .select('c.date', 'cq.category', 'cs.score', 'cs.userId')
+    .from('checklist_scores as cs')
+    .innerJoin('checklists as c', 'cs.checklistId', 'c.id')
+    .innerJoin('checklist_questions as cq', 'cs.checklistQuestionId', 'cq.id')
+    .where({ 'cs.userId': userId })
+    .then(results => {
+      return groupBy(results, 'category');
+    });
+};
+
+const fetchScoresByQuestion = (userId) => {
+  return ChecklistScore()
+    .select('c.date', 'cq.text', 'cs.score', 'cs.userId')
+    .from('checklist_scores as cs')
+    .innerJoin('checklists as c', 'cs.checklistId', 'c.id')
+    .innerJoin('checklist_questions as cq', 'cs.checklistQuestionId', 'cq.id')
+    .where({ 'cs.userId': userId })
+    .then(results => groupBy(results, 'text'))
+    .then(scoresByQuestion => {
+      return Object.keys(scoresByQuestion)
+        .map(question => {
+          const scores = map(scoresByQuestion[question], 'score');
+          const count = scores.length;
+          const total = scores.reduce((sum, n) => sum + n, 0);
+          const average = (total / count);
+
+          return { question, scores, count, total, average };
+        })
+        .sort((x, y) => y.total - x.total);
+    });
+};
 
 const fetchByChecklistId = (checklistId, userId, where = {}) =>
   fetch(merge(where, { checklistId }), userId);
@@ -40,6 +74,8 @@ const destroy = (id, userId) =>
 module.exports = {
   fetch,
   findById,
+  fetchScoresByCategory,
+  fetchScoresByQuestion,
   fetchByChecklistId,
   create,
   update,

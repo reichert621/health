@@ -191,6 +191,14 @@ const fetchScoreRangeFrequency = (userId) => {
     });
 };
 
+const fetchQuestionStats = (userId) => {
+  return ChecklistScore.fetchScoresByQuestion(userId)
+    .then(statsPerQuestion => {
+      // TODO: figure out a use for this data
+      return statsPerQuestion;
+    });
+};
+
 const fetchStats = (userId) => {
   return fetch({}, userId)
     .then(checklists => {
@@ -236,6 +244,7 @@ module.exports = {
   fetchScoresByDate,
   fetchScoresByDayOfWeek,
   fetchScoreRangeFrequency,
+  fetchQuestionStats,
   fetchStats,
   destroy
 };
