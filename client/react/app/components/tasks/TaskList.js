@@ -67,17 +67,19 @@ class TaskList extends React.Component {
 
         <div className="default-container">
           {
-            categories.map((category, key) => {
-              const { name } = category;
-              const categoryTasks = tasksByCategory[name];
+            categories
+              .sort((x, y) => x.id - y.id)
+              .map((category, key) => {
+                const { name } = category;
+                const categoryTasks = tasksByCategory[name];
 
-              return (
-                <CategoryTasks
-                  key={key}
-                  category={category}
-                  tasks={categoryTasks} />
-              );
-            })
+                return (
+                  <CategoryTasks
+                    key={key}
+                    category={category}
+                    tasks={categoryTasks} />
+                );
+              })
           }
 
           <form

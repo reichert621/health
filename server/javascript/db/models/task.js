@@ -5,13 +5,17 @@ const Tasks = () => knex('tasks');
 
 const merge = (x, y) => Object.assign({}, x, y);
 
-// TODO: clean this up or rename
+// TODO: clean this up or rename to `fetchWithCategory`
 const fetch = (where = {}, userId) =>
   Tasks()
     .select('tasks.*', 'categories.name as category')
     .innerJoin('categories', 'tasks.categoryId', 'categories.id')
     .where(merge(where, { 'tasks.userId': userId }))
     .orderBy('tasks.id', 'asc');
+
+const fetchActive = (userId, taskIds = []) =>
+  fetch({ 'tasks.isActive': true }, userId)
+    .orWhereIn('tasks.id', taskIds);
 
 const fetchTopSelected = (userId) => {
   return Tasks()
@@ -72,6 +76,7 @@ const destroy = (id, userId) =>
 
 module.exports = {
   fetch,
+  fetchActive,
   fetchTopSelected,
   findById,
   create,
