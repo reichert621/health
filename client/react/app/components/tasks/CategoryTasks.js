@@ -73,6 +73,13 @@ class CategoryTasks extends React.Component {
       });
   }
 
+  handleToggleTaskActive(task) {
+    const { id, isActive } = task;
+    const updates = { isActive: !isActive };
+
+    return this.handleUpdateTask(id, updates);
+  }
+
   renderNewTaskForm() {
     const {
       isCreating,
@@ -137,7 +144,8 @@ class CategoryTasks extends React.Component {
                 <TaskItem
                   key={key}
                   task={task}
-                  onUpdateTask={this.handleUpdateTask.bind(this)} />
+                  onUpdateTask={this.handleUpdateTask.bind(this)}
+                  onToggleTaskActive={this.handleToggleTaskActive.bind(this)} />
               );
             })
           }
