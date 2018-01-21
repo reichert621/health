@@ -1,4 +1,5 @@
 @gray: #979797;
+@faded-gray: #b4b4b4;
 @border-gray: #b4b4b4;
 @bright-blue: #33A2CC;
 
@@ -35,21 +36,37 @@
 
 .task-item {
   padding: 12px 24px;
+  transition: color ease 0.4s, opacity ease 0.4s;
+  -webkit-transition: color ease 0.4s, opacity ease 0.4s;
 
-  .edit-icon {
+  .edit-icon,
+  .task-active-icon {
     cursor: pointer;
     visibility: hidden;
   }
 
+  .task-active-icon {
+    margin-left: 24px;
+    height: 16px;
+    transition: transform ease 0.4s;
+    -webkit-transition: transform ease 0.4s;
+
+    &.active {
+      transform: rotate(45deg);
+    }
+  }
+
   &.inactive {
-    color: @gray;
+    color: @faded-gray;
+    opacity: 0.9;
   }
 
   &:hover {
     background-color: #E7FCFF;
     border-radius: 4px;
 
-    .edit-icon {
+    .edit-icon,
+    .task-active-icon {
       visibility: visible;
     }
   }

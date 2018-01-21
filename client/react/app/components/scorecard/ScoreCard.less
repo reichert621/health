@@ -1,4 +1,5 @@
 @border-gray: #d3d3d3;
+@faded-gray: #b4b4b4;
 
 .scorecard-container {
   border-top: 1px solid @border-gray;
@@ -44,6 +45,13 @@
 .category-label {
   margin-top: 32px;
   margin-bottom: 16px;
+  transition: color ease 0.4s, opacity ease 0.4s;
+  -webkit-transition: color ease 0.4s, opacity ease 0.4s;
+
+  &.inactive {
+    color: @faded-gray;
+    opacity: 0.9;
+  }
 }
 
 @media (max-width: 960px) {

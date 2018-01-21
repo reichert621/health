@@ -45,7 +45,7 @@ Please note that scores should be judged not only by physical difficulty, but by
 
 <img src="/assets/task-management-screenshot.png" class="screenshot-image" />
 
-You can create and edit tasks in the *Tasks* link in the navigation bar (in the upper right-hand corner) after logging in.
+You can create, edit, and deactivate tasks in the *Tasks* link in the navigation bar (in the upper right-hand corner) after logging in. Deactivating a task will prevent it from showing up in future scorecards.
 
 **What is the "Daily Check-in"?**
 

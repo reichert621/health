@@ -18,27 +18,25 @@ const findOne = (where, userId) =>
     .first();
 
 // TODO: rename
-const findById = (id, userId, where = {}) => {
-  return Promise.all([
-    findOne(merge(where, { id }), userId),
-    ScoreCardSelectedTask.fetchByScorecardId(id, userId),
-    Task.fetch({}, userId)
-  ])
-    .then(([scorecard, selectedTasks, tasks]) => {
-      const { date } = scorecard;
-      const utc = moment.utc(date).format('YYYY-MM-DD');
-      const isComplete = selectedTasks.reduce((map, { taskId }) => {
-        return merge(map, { [taskId]: true });
-      }, {});
+const findById = async (id, userId, where = {}) => {
+  const scorecard = await findOne(merge(where, { id }), userId);
+  const selectedTasks = await ScoreCardSelectedTask.fetchByScorecardId(id, userId);
+  const selectedTaskIds = selectedTasks.map(({ taskId }) => taskId);
+  const tasks = await Task.fetchActive(userId, selectedTaskIds);
 
-      return merge(scorecard, {
-        date: utc,
-        _date: date,
-        tasks: tasks.map(t => {
-          return merge(t, { isComplete: isComplete[t.id] });
-        })
-      });
-    });
+  const { date } = scorecard;
+  const utc = moment.utc(date).format('YYYY-MM-DD');
+  const isComplete = selectedTasks.reduce((map, { taskId }) => {
+    return merge(map, { [taskId]: true });
+  }, {});
+
+  return merge(scorecard, {
+    date: utc,
+    _date: date,
+    tasks: tasks.map(t => {
+      return merge(t, { isComplete: isComplete[t.id] });
+    })
+  });
 };
 
 const fetchWithPoints = (where = {}, userId) => {

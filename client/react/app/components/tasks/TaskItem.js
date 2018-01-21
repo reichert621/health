@@ -49,7 +49,7 @@ class TaskItem extends React.Component {
   }
 
   renderStaticTask() {
-    const { task = {} } = this.props;
+    const { task = {}, onToggleTaskActive } = this.props;
     const { description, points, isActive } = task;
 
     return (
@@ -59,6 +59,10 @@ class TaskItem extends React.Component {
         <img className="edit-icon"
           src="assets/pencil.svg"
           onClick={() => this.setState({ isEditing: true })} />
+
+        <img className={`task-active-icon ${isActive ? 'active' : 'inactive'}`}
+          src="assets/plus-gray.svg"
+          onClick={() => onToggleTaskActive(task)} />
       </div>
     );
   }

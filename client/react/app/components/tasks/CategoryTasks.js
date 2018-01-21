@@ -73,6 +73,13 @@ class CategoryTasks extends React.Component {
       });
   }
 
+  handleToggleTaskActive(task) {
+    const { id, isActive } = task;
+    const updates = { isActive: !isActive };
+
+    return this.handleUpdateTask(id, updates);
+  }
+
   renderNewTaskForm() {
     const {
       isCreating,
@@ -120,10 +127,11 @@ class CategoryTasks extends React.Component {
       category = {},
       tasks = []
     } = this.state;
+    const isActive = tasks.some(t => t.isActive);
 
     return (
       <div>
-        <h4 className="category-label">
+        <h4 className={`category-label ${isActive ? 'active' : 'inactive'}`}>
           {category.name}
           <img
             className={isCreating ? 'hidden' : 'plus-icon'}
@@ -132,14 +140,17 @@ class CategoryTasks extends React.Component {
         </h4>
         <ul className="task-sublist">
           {
-            tasks.map((task, key) => {
-              return (
-                <TaskItem
-                  key={key}
-                  task={task}
-                  onUpdateTask={this.handleUpdateTask.bind(this)} />
-              );
-            })
+            tasks
+              .sort((x, y) => y.points - x.points)
+              .map((task, key) => {
+                return (
+                  <TaskItem
+                    key={key}
+                    task={task}
+                    onUpdateTask={this.handleUpdateTask.bind(this)}
+                    onToggleTaskActive={this.handleToggleTaskActive.bind(this)} />
+                );
+              })
           }
           <li className="task-item-container">
             {this.renderNewTaskForm()}
