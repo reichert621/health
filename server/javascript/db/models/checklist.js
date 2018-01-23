@@ -4,6 +4,16 @@ const moment = require('moment');
 const ChecklistQuestion = require('./checklist_question');
 const ChecklistScore = require('./checklist_score');
 
+// Depression levels
+const levels = {
+  NONE: 'No depression',
+  NORMAL: 'Normal but unhappy',
+  MILD: 'Mild depression',
+  MODERATE: 'Moderate depression',
+  SEVERE: 'Severe depression',
+  EXTREME: 'Extreme depression'
+};
+
 const Checklist = () => knex('checklists');
 
 const merge = (x, y) => Object.assign({}, x, y);
@@ -49,7 +59,6 @@ const findById = (id, userId, where = {}) =>
     });
 
 const create = (params, userId) => {
-  console.log('Creating checklist!', params, userId);
   return Checklist()
     .returning('id')
     .insert(merge(params, { userId }))
@@ -163,21 +172,30 @@ const fetchScoresByDayOfWeek = (userId) => {
 
 const getDepressionLevelByScore = (score) => {
   if (score <= 5) {
-    return 'No depression';
+    return levels.NONE;
   } else if (score >= 6 && score <= 10) {
-    return 'Normal but unhappy';
+    return levels.NORMAL;
   } else if (score >= 11 && score <= 25) {
-    return 'Mild depression';
+    return levels.MILD;
   } else if (score >= 26 && score <= 50) {
-    return 'Moderate depression';
+    return levels.MODERATE;
   } else if (score >= 51 && score <= 75) {
-    return 'Severe depression';
+    return levels.SEVERE;
   } else {
-    return 'Extreme depression';
+    return levels.EXTREME;
   }
 };
 
 const fetchScoreRangeFrequency = (userId) => {
+  const init = {
+    [levels.NONE]: 0,
+    [levels.NORMAL]: 0,
+    [levels.MILD]: 0,
+    [levels.MODERATE]: 0,
+    [levels.SEVERE]: 0,
+    [levels.EXTREME]: 0
+  };
+
   return fetchScoresByDate(userId)
     .then(results => {
       return results.reduce((map, { score }) => {
@@ -187,7 +205,7 @@ const fetchScoreRangeFrequency = (userId) => {
         return merge(map, {
           [level]: (map[level] || 0) + 1
         });
-      }, {});
+      }, init);
     });
 };
 

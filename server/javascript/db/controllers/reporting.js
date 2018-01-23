@@ -10,6 +10,7 @@ module.exports = {
       Checklist.fetchCompletedDays(userId),
       Checklist.fetchScoresByDayOfWeek(userId),
       Checklist.fetchScoreRangeFrequency(userId),
+      Checklist.fetchQuestionStats(userId),
 
       ScoreCard.fetchStats(userId),
       ScoreCard.fetchCompletedDays(userId),
@@ -26,6 +27,7 @@ module.exports = {
           completedChecklists,
           checklistScoresByDay,
           depressionLevelFrequency,
+          checklistQuestionStats,
           // Scorecard stats
           scorecardStats,
           completedScorecards,
@@ -42,6 +44,7 @@ module.exports = {
           completedChecklists,
           checklistScoresByDay,
           depressionLevelFrequency,
+          checklistQuestionStats,
           // Scorecard stats
           scorecardStats,
           completedScorecards,

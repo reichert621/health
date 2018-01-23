@@ -2,3 +2,6 @@ node_modules
 build
 target/
 .DS_Store
+
+# Ignore boilerplate for react native starter kit for now
+client/native-react/

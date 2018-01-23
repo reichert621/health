@@ -1,20 +1,10 @@
 import React from 'react';
+import { getFormattedPercentage } from '../../helpers/utils';
 
-const getPercentage = (n, total) => {
-  const decimal = n / total;
-
-  return decimal * 100;
-};
-
-const getFormattedPercentage = (n, total) => {
-  const percentage = getPercentage(n, total);
-
-  return percentage.toFixed(1);
-};
-
+// TODO: DRY this up (see MoodFrequency)
 const TopTaskItem = ({ task, count, total }) => {
   return (
-    <li className="top-task-item">
+    <li className="reporting-percentage-item">
       <div className="percentage-bar-container">
         <div className="percentage-bar"
           style={{
@@ -35,7 +25,9 @@ const TopTaskItem = ({ task, count, total }) => {
 
 const TopTasks = ({ tasks = [] }) => {
   const total = tasks.reduce((result, t) => result + t.count, 0);
-  const points = tasks.reduce((result, t) => result + t.points, 0);
+  const points = tasks.reduce((result, t) => {
+    return result + (t.points * t.count);
+  }, 0);
 
   return (
     <div>
