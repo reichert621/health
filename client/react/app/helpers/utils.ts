@@ -37,6 +37,18 @@ export const calculateAverage = (nums: number[] = []): number => {
   return sum / count;
 };
 
+export const getPercentage = (n: number, total: number): number => {
+  const decimal = n / total;
+
+  return decimal * 100;
+};
+
+export const getFormattedPercentage = (n: number, total: number): string => {
+  const percentage = getPercentage(n, total);
+
+  return percentage.toFixed(1);
+};
+
 export const formatPoints = (points: number = 0): string => {
   const label = points === 1 ? 'point' : 'points';
 

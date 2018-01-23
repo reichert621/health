@@ -4,30 +4,16 @@ import { get, noop } from 'lodash';
 import moment from 'moment';
 import './Reporting.less';
 
-class ReportingChart extends React.Component {
-  // Only re-render if stats length changes
-  shouldComponentUpdate({
-    checklistStats: nextChecklistStats = [],
-    scorecardStats: nextScorecardStats = []
-  }) {
-    const { checklistStats = [], scorecardStats = [] } = this.props;
-
-    if (
-      (checklistStats.length === nextChecklistStats.length) &&
-      (scorecardStats.length === nextScorecardStats.length)
-    ) {
-      return false;
-    }
-
-    return true;
-  }
-
+class TotalPointsChart extends React.Component {
   render() {
-    const {
-      checklistStats = [],
-      scorecardStats = [],
-      onClickPoint = noop
-    } = this.props;
+    const { stats = [], onClickPoint = noop } = this.props;
+    const totalScores = stats.map(({ timestamp, totalScore }) => {
+      return [timestamp, totalScore];
+    });
+
+    const completedTasks = stats.map(({ timestamp, totalTasks }) => {
+      return [timestamp, totalTasks];
+    });
 
     const config = {
       title: { text: '' },
@@ -75,15 +61,15 @@ class ReportingChart extends React.Component {
       credits: false,
       series: [
         {
-          id: 'checklist',
-          name: 'Depression',
-          color: '#5E5E5E',
-          data: checklistStats
-        }, {
-          id: 'scorecard',
-          name: 'Productivity',
+          id: 'total',
+          name: 'Scores',
           color: '#33A2CC',
-          data: scorecardStats
+          data: totalScores
+        }, {
+          id: 'tasks',
+          name: 'Tasks',
+          color: '#5E5E5E',
+          data: completedTasks
         }
       ]
     };
@@ -96,4 +82,4 @@ class ReportingChart extends React.Component {
   }
 }
 
-export default ReportingChart;
+export default TotalPointsChart;

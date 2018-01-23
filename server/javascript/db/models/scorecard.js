@@ -91,6 +91,7 @@ const fetchScoresByDate = (userId) => {
   return ScoreCard()
     .select('s.date')
     .sum('t.points as score')
+    .count('t.* as completedTasks')
     .from('scorecards as s')
     .innerJoin('scorecard_selected_tasks as sst', 'sst.scorecardId', 's.id')
     .innerJoin('tasks as t', 'sst.taskId', 't.id')
@@ -98,8 +99,12 @@ const fetchScoresByDate = (userId) => {
     .groupBy('s.date')
     .orderBy('s.date', 'desc')
     .then(result => {
-      return result.map(({ date, score }) => {
-        return { date, score: Number(score) };
+      return result.map(({ date, completedTasks, score }) => {
+        return {
+          date,
+          completedTasks: Number(completedTasks),
+          score: Number(score)
+        };
       });
     });
 };
@@ -123,13 +128,23 @@ const fetchTotalScoreOverTime = (userId) => {
     .then(result => {
       return result
         .sort((x, y) => Number(new Date(x.date)) - Number(new Date(y.date)))
-        .map(({ date, score }, index, list) => {
+        .map((r, index, list) => {
+          const { date, score, completedTasks } = r;
           const timestamp = Number(new Date(date));
           const past = list.slice(0, index);
           // TODO: this is pretty inefficient
-          const total = past.reduce((acc, r) => acc + r.score, score);
+          const totalScore = past.reduce((acc, r) => acc + r.score, score);
+          const totalTasks = past.reduce((acc, r) =>
+            acc + r.completedTasks, completedTasks);
 
-          return { timestamp, date, score, total };
+          return {
+            timestamp,
+            date,
+            score,
+            totalScore,
+            completedTasks,
+            totalTasks
+          };
         });
     });
 };

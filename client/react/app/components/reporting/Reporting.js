@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import ReportingChart from './ReportingChart';
 import ReportingStreaks from './ReportingStreaks';
 import TopTasks from './TopTasks';
+import MoodFrequency from './MoodFrequency';
 import ScoresByDay from './ScoresByDay';
 import ScoresByCategory from './ScoresByCategory';
+import TotalPointsChart from './TotalPointsChart';
 import { fetchAllStats } from '../../helpers/reporting';
 import './Reporting.less';
 
@@ -28,13 +30,23 @@ class Reporting extends React.Component {
   render() {
     const { stats } = this.state;
     const {
-      topTasks = [],
+      // Checklist stats
+      checklistStats = [],
       completedChecklists = [],
-      completedScorecards = [],
       checklistScoresByDay = {},
+      depressionLevelFrequency = {},
+      checklistQuestionStats = [],
+      // Scorecard stats
+      scorecardStats = [],
+      completedScorecards = [],
       scorecardScoresByDay = {},
-      taskCategoryStats = {}
+      totalScoreOverTime = [],
+      taskCategoryStats = {},
+      // Task stats
+      topTasks = []
     } = stats;
+
+    console.log('stats!', stats);
 
     return (
       <div className="default-container">
@@ -52,13 +64,23 @@ class Reporting extends React.Component {
         <h1>Top Tasks</h1>
         <TopTasks tasks={topTasks} />
 
+        <h1>Mood Frequency</h1>
+        <MoodFrequency stats={depressionLevelFrequency} />
+
         <h1>Streaks</h1>
         <ReportingStreaks
           completedChecklists={completedChecklists}
           completedScorecards={completedScorecards} />
 
         <h1>Reporting</h1>
-        <ReportingChart stats={stats} />
+        <ReportingChart
+          checklistStats={checklistStats}
+          scorecardStats={scorecardStats} />
+
+        <h1>Total Points</h1>
+        <div style={{ width: '50%' }}>
+          <TotalPointsChart stats={totalScoreOverTime} />
+        </div>
       </div>
     );
   }
