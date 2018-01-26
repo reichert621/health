@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { groupBy, keys, sortBy } from 'lodash';
 import * as moment from 'moment';
 import DatePicker from 'react-datepicker';
@@ -9,29 +10,47 @@ import TaskCheckbox from './TaskCheckbox';
 import ScorecardOverview from './ScorecardOverview';
 import { Task, calculateScore } from '../../helpers/tasks';
 import {
+  IScorecard,
   fetchScorecard,
   updateScoreCard,
   toggleScorecardTask
 } from '../../helpers/scorecard';
+import { AppState, keyifyDate } from '../../helpers/utils';
 import './ScoreCard.less';
 
-interface ScorecardState {
-  scorecard: any;
+interface ScorecardProps {
   date: moment.Moment;
-  tasks: any[];
+  scorecard: IScorecard;
+}
+
+interface ScorecardState {
+  scorecard: IScorecard;
+  date: moment.Moment;
+  tasks: Task[];
   isSaving: boolean;
 }
 
+const mapStateToProps = (state: AppState) => {
+  const { selected } = state;
+  const { date, scorecard } = selected;
+
+  return { date, scorecard };
+};
+
 class ScoreCard extends React.Component<
-  RouteComponentProps<{ id: number }>,
+  ScorecardProps & RouteComponentProps<{ id: number }>,
   ScorecardState
 > {
-  constructor(props: RouteComponentProps<{ id: number }>) {
+  constructor(props: ScorecardProps & RouteComponentProps<{ id: number }>) {
     super(props);
+    const {
+      scorecard = {} as IScorecard,
+      date = moment()
+    } = this.props;
 
     this.state = {
-      scorecard: {},
-      date: moment(),
+      scorecard,
+      date,
       tasks: [],
       isSaving: false
     };
@@ -128,7 +147,7 @@ class ScoreCard extends React.Component<
 
   render() {
     const { tasks, date, isSaving } = this.state;
-    const { history } = this.props;
+    const { history, scorecard } = this.props;
     const completed = tasks.filter(t => t.isComplete);
 
     return (
@@ -179,4 +198,4 @@ class ScoreCard extends React.Component<
   }
 }
 
-export default ScoreCard;
+export default connect(mapStateToProps)(ScoreCard);

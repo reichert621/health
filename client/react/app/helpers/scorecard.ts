@@ -1,7 +1,7 @@
 import { HttpResponse, get, post, put, del } from './http';
 import { Task } from './tasks';
 
-export interface Scorecard {
+export interface IScorecard {
   id: number;
   userId: number;
   date: string;
@@ -9,17 +9,17 @@ export interface Scorecard {
   tasks?: Task[];
 }
 
-export const fetchScorecards = (): Promise<Scorecard[]> => {
+export const fetchScorecards = (): Promise<IScorecard[]> => {
   return get('/api/scorecards')
     .then((res: HttpResponse) => res.scorecards);
 };
 
-export const fetchScorecard = (id: number): Promise<Scorecard> => {
+export const fetchScorecard = (id: number): Promise<IScorecard> => {
   return get(`/api/scorecards/${id}`)
     .then((res: HttpResponse) => res.scorecard);
 };
 
-export const updateScoreCard = (id: number, params: object): Promise<Scorecard> => {
+export const updateScoreCard = (id: number, params: object): Promise<IScorecard> => {
   return put(`/api/scorecards/${id}`, params)
     .then((res: HttpResponse) => res.scorecard);
 };
@@ -56,7 +56,7 @@ export const fetchScorecardStats = (): Promise<Object> => {
     .then((res: HttpResponse) => res.stats);
 };
 
-export const createNewScorecard = (params: object): Promise<Scorecard> => {
+export const createNewScorecard = (params: object): Promise<IScorecard> => {
   return post('/api/scorecards/new', params)
     .then((res: HttpResponse) => res.scorecard);
 };

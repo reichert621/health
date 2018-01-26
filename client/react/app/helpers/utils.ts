@@ -1,5 +1,36 @@
 import * as moment from 'moment';
 import { has, extend, times, first, isNumber } from 'lodash';
+import { User } from './auth';
+import { IChecklist } from './checklist';
+import { IScorecard } from './scorecard';
+import { ReportingStats } from './reporting';
+
+export interface AppState {
+  currentUser?: User;
+  currentView: string;
+  checklists: {
+    items: IChecklist[],
+    byDate: {
+      [date: string]: IChecklist[];
+    }
+  };
+  scorecards: {
+    items: IScorecard[],
+    byDate: {
+      [date: string]: IScorecard[];
+    }
+  };
+  selected: {
+    date?: moment.Moment;
+    checklist: IChecklist;
+    scorecard: IScorecard;
+  };
+  stats: ReportingStats;
+}
+
+export interface DatedItem {
+  date?: moment.Moment|Date|string;
+}
 
 export const DAYS_OF_WEEK = [
   'Monday',
@@ -10,10 +41,6 @@ export const DAYS_OF_WEEK = [
   'Saturday',
   'Sunday'
 ];
-
-export interface DatedItem {
-  date?: moment.Moment|Date|string;
-}
 
 export const pluralize = (str: string, n?: number, customPlural?: string): string => {
   const simplePlural = `${str}s`;
