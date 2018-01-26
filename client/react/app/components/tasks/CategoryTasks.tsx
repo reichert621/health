@@ -1,11 +1,24 @@
-import React from 'react';
+import * as React from 'react';
 import { resolve } from 'bluebird';
 import { extend } from 'lodash';
-import { createTask, updateTask } from '../../helpers/tasks';
+import { Task, Category, createTask, updateTask } from '../../helpers/tasks';
 import TaskItem from './TaskItem';
 
-class CategoryTasks extends React.Component {
-  constructor(props) {
+interface CategoryProps {
+  category: Category;
+  tasks: Task[];
+}
+
+interface CategoryState {
+  category: Category;
+  tasks: Task[];
+  isCreating: boolean;
+  newTask: string;
+  newPoints?: number;
+}
+
+class CategoryTasks extends React.Component<CategoryProps, CategoryState> {
+  constructor(props: CategoryProps) {
     super(props);
 
     const { category, tasks } = props;
@@ -19,16 +32,18 @@ class CategoryTasks extends React.Component {
     };
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps: CategoryProps, prevState: CategoryState) {
     const { isCreating } = this.state;
     const { isCreating: wasCreating } = prevState;
 
     if (!wasCreating && isCreating) {
-      this.refs.newTaskInput.focus();
+      const el = (this.refs.newTaskInput as HTMLInputElement);
+
+      el.focus();
     }
   }
 
-  handleCreateTask(e, category) {
+  handleCreateTask(e: React.FormEvent<HTMLFormElement>, category: Category) {
     e.preventDefault();
     const { newTask, newPoints, tasks = [] } = this.state;
 
@@ -43,7 +58,6 @@ class CategoryTasks extends React.Component {
 
     return createTask(params)
       .then(task => {
-        console.log('Created task!', task);
         return this.setState({
           tasks: tasks.concat(task),
           newTask: '',
@@ -56,12 +70,11 @@ class CategoryTasks extends React.Component {
       });
   }
 
-  handleUpdateTask(taskId, updates) {
+  handleUpdateTask(taskId: number, updates: object) {
     const { tasks = [] } = this.state;
 
     return updateTask(taskId, updates)
       .then(task => {
-        console.log('Updated task!', task);
         return this.setState({
           tasks: tasks.map(t => {
             return t.id === task.id ? extend(t, task) : t;
@@ -73,7 +86,7 @@ class CategoryTasks extends React.Component {
       });
   }
 
-  handleToggleTaskActive(task) {
+  handleToggleTaskActive(task: Task) {
     const { id, isActive } = task;
     const updates = { isActive: !isActive };
 
@@ -83,7 +96,7 @@ class CategoryTasks extends React.Component {
   renderNewTaskForm() {
     const {
       isCreating,
-      category = {},
+      category = {} as Category,
       newTask = '',
       newPoints = 0
     } = this.state;
@@ -93,27 +106,27 @@ class CategoryTasks extends React.Component {
         className={isCreating ? '' : 'hidden'}
         onSubmit={(e) => this.handleCreateTask(e, category)}>
         <input
-          type="text"
-          className="input-default -inline task-description-input"
-          ref="newTaskInput"
-          placeholder="New task"
+          type='text'
+          className='input-default -inline task-description-input'
+          ref='newTaskInput'
+          placeholder='New task'
           value={newTask}
           onChange={(e) => this.setState({ newTask: e.target.value })} />
         {/* TODO: fix width and only allow 1, 2, 4, 8, 16 points */}
         <input
-          type="number"
-          className="input-default -inline task-points-input"
-          placeholder="0"
-          min="0"
+          type='number'
+          className='input-default -inline task-points-input'
+          placeholder='0'
+          min='0'
           value={newPoints}
-          onChange={(e) => this.setState({ newPoints: e.target.value })} />
+          onChange={(e) => this.setState({ newPoints: Number(e.target.value) })} />
         <button
-          type="submit"
-          className="btn-primary"
+          type='submit'
+          className='btn-primary'
           disabled={!newTask || !newPoints}>
           Create
         </button>
-        <a className="btn-link"
+        <a className='btn-link'
           onClick={() => this.setState({ isCreating: false })}>
           Cancel
         </a>
@@ -124,21 +137,22 @@ class CategoryTasks extends React.Component {
   render() {
     const {
       isCreating,
-      category = {},
+      category = {} as Category,
       tasks = []
     } = this.state;
+    const { name: categoryName } = category;
     const isActive = tasks.some(t => t.isActive);
 
     return (
       <div>
         <h4 className={`category-label ${isActive ? 'active' : 'inactive'}`}>
-          {category.name}
+          {categoryName}
           <img
             className={isCreating ? 'hidden' : 'plus-icon'}
-            src="assets/plus.svg"
+            src='assets/plus.svg'
             onClick={() => this.setState({ isCreating: true })} />
         </h4>
-        <ul className="task-sublist">
+        <ul className='task-sublist'>
           {
             tasks
               .sort((x, y) => y.points - x.points)
@@ -152,7 +166,7 @@ class CategoryTasks extends React.Component {
                 );
               })
           }
-          <li className="task-item-container">
+          <li className='task-item-container'>
             {this.renderNewTaskForm()}
           </li>
         </ul>

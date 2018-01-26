@@ -1,7 +1,10 @@
-import React from 'react';
+import * as React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import { all, resolve } from 'bluebird';
 import { groupBy } from 'lodash';
 import {
+  Task,
+  Category,
   fetchTasks,
   fetchCategories,
   createCategory
@@ -10,8 +13,14 @@ import NavBar from '../navbar';
 import CategoryTasks from './CategoryTasks';
 import './Task.less';
 
-class TaskList extends React.Component {
-  constructor(props) {
+interface TaskListState {
+  tasks: Task[];
+  categories: Category[];
+  newCategory: string;
+}
+
+class TaskList extends React.Component<RouteComponentProps<{}>, TaskListState> {
+  constructor(props: RouteComponentProps<{}>) {
     super(props);
 
     this.state = {
@@ -32,7 +41,7 @@ class TaskList extends React.Component {
       });
   }
 
-  handleCreateCategory(e) {
+  handleCreateCategory(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const { newCategory, categories } = this.state;
 
@@ -42,7 +51,6 @@ class TaskList extends React.Component {
 
     return createCategory(params)
       .then(category => {
-        console.log('Created category!', category);
         this.setState({
           categories: categories.concat(category),
           newCategory: ''
@@ -61,11 +69,11 @@ class TaskList extends React.Component {
     return (
       <div>
         <NavBar
-          title="My Tasks"
-          linkTo="/dashboard"
+          title='My Tasks'
+          linkTo='/dashboard'
           history={history} />
 
-        <div className="default-container">
+        <div className='default-container'>
           {
             categories
               .sort((x, y) => x.id - y.id)
@@ -83,17 +91,17 @@ class TaskList extends React.Component {
           }
 
           <form
-            className="new-category-form"
+            className='new-category-form'
             onSubmit={(e) => this.handleCreateCategory(e)}>
             <input
-              type="text"
-              className="input-default -inline new-category-input"
-              placeholder="New category"
+              type='text'
+              className='input-default -inline new-category-input'
+              placeholder='New category'
               value={newCategory}
               onChange={(e) => this.setState({ newCategory: e.target.value })} />
             <button
-              type="submit"
-              className="btn-primary"
+              type='submit'
+              className='btn-primary'
               disabled={!newCategory}>
               Create
             </button>

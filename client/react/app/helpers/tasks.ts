@@ -41,7 +41,7 @@ export const fetchCategories = (): Promise<Category[]> => {
     .then((res: HttpResponse) => res.categories);
 };
 
-export const createCategory = (params: object): Promise<Task> => {
+export const createCategory = (params: object): Promise<Category> => {
   return post('/api/categories', params)
     .then((res: HttpResponse) => res.category);
 };

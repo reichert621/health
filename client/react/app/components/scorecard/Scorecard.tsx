@@ -1,13 +1,13 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import * as React from 'react';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { groupBy, keys, sortBy } from 'lodash';
-import moment from 'moment';
+import * as moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import NavBar from '../navbar';
 import TaskCheckbox from './TaskCheckbox';
-import ScoreCardOverview from './ScoreCardOverview';
-import { calculateScore } from '../../helpers/tasks';
+import ScorecardOverview from './ScorecardOverview';
+import { Task, calculateScore } from '../../helpers/tasks';
 import {
   fetchScorecard,
   updateScoreCard,
@@ -15,14 +15,25 @@ import {
 } from '../../helpers/scorecard';
 import './ScoreCard.less';
 
-class ScoreCard extends React.Component {
-  constructor(props) {
+interface ScorecardState {
+  scorecard: any;
+  date: moment.Moment;
+  tasks: any[];
+  isSaving: boolean;
+}
+
+class ScoreCard extends React.Component<
+  RouteComponentProps<{ id: number }>,
+  ScorecardState
+> {
+  constructor(props: RouteComponentProps<{ id: number }>) {
     super(props);
 
     this.state = {
       scorecard: {},
       date: moment(),
-      tasks: []
+      tasks: [],
+      isSaving: false
     };
   }
 
@@ -46,7 +57,7 @@ class ScoreCard extends React.Component {
       });
   }
 
-  handleCheckboxUpdate(task) {
+  handleCheckboxUpdate(task: Task) {
     this.setState({ isSaving: true });
 
     const { tasks, scorecard } = this.state;
@@ -72,7 +83,7 @@ class ScoreCard extends React.Component {
       });
   }
 
-  handleDateChange(date) {
+  handleDateChange(date: moment.Moment) {
     const { scorecard } = this.state;
     const { id: scorecardId } = scorecard;
 
@@ -96,9 +107,9 @@ class ScoreCard extends React.Component {
 
       return (
         <div key={index}>
-          <h4 className="category-label">
+          <h4 className='category-label'>
             <span>{category}</span>
-            <span className="score-details hidden">(score: {score})</span>
+            <span className='score-details hidden'>(score: {score})</span>
           </h4>
           {
             subtasks.map((task, key) => {
@@ -123,43 +134,43 @@ class ScoreCard extends React.Component {
     return (
       <div>
         <NavBar
-          title="Scorecard"
-          linkTo="/dashboard"
+          title='Scorecard'
+          linkTo='/dashboard'
           history={history} />
 
-        <div className="default-container">
-          <h3 className="text-light">
+        <div className='default-container'>
+          <h3 className='text-light'>
             {date.format('dddd MMMM DD, YYYY')}
           </h3>
 
-          <div className="hidden">
+          <div className='hidden'>
             <DatePicker
               selected={date}
               onChange={this.handleDateChange.bind(this)} />
           </div>
 
-          <div className="clearfix">
-            <div className="scorecard-container pull-left">
+          <div className='clearfix'>
+            <div className='scorecard-container pull-left'>
               {this.renderCheckboxes()}
             </div>
 
-            <div className="scorecard-overview-container pull-right">
-              <ScoreCardOverview tasks={completed} />
+            <div className='scorecard-overview-container pull-right'>
+              <ScorecardOverview tasks={completed} />
             </div>
           </div>
 
-          <div className="scorecard-footer clearfix">
-            <Link to="/dashboard">
-              <button className="btn-default pull-left">
+          <div className='scorecard-footer clearfix'>
+            <Link to='/dashboard'>
+              <button className='btn-default pull-left'>
                 Done
               </button>
             </Link>
 
-            <button className="btn-default btn-saving pull-right">
+            <button className='btn-default btn-saving pull-right'>
               {isSaving ? 'Saving...' : 'Saved'}
               <img
                 className={`saving-icon ${isSaving ? 'hidden' : ''}`}
-                src="assets/check.svg" />
+                src='assets/check.svg' />
             </button>
           </div>
         </div>

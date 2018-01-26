@@ -5,7 +5,7 @@ import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import TaskCheckbox from './TaskCheckbox';
-import ScoreCardOverview from './ScoreCardOverview';
+import ScorecardOverview from './ScorecardOverview';
 import { fetchTasks, calculateScore } from '../../helpers/tasks';
 import { createNewScorecard } from '../../helpers/scorecard';
 import './ScoreCard.less';
@@ -116,7 +116,7 @@ class NewScoreCard extends React.Component {
           </div>
 
           <div className="scorecard-overview-container pull-right">
-            <ScoreCardOverview tasks={completed} />
+            <ScorecardOverview tasks={completed} />
           </div>
         </div>
 

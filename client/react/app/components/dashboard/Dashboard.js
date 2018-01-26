@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { times, extend } from 'lodash';
+import { extend } from 'lodash';
 import moment from 'moment';
 import { all, resolve } from 'bluebird';
 import NavBar from '../navbar';
@@ -36,8 +35,6 @@ class Dashboard extends React.Component {
       fetchChecklists()
     ])
       .then(([scorecards, checklists]) => {
-        console.log('Scorecards!', scorecards);
-        console.log('Checklists!', checklists);
         return this.setState({
           scorecards,
           checklists,
