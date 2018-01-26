@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { groupBy, keys } from 'lodash';
-import { calculateScore } from '../../helpers/tasks';
+import { Task, calculateScore } from '../../helpers/tasks';
 import { formatPoints } from '../../helpers/utils';
 
 interface CategoryProps {
   category: string;
-  subtasks: any[]; // TODO
+  subtasks: Task[];
 }
 
 const CategorySubtasks = ({ category, subtasks }: CategoryProps) => {
@@ -34,7 +34,7 @@ const CategorySubtasks = ({ category, subtasks }: CategoryProps) => {
 };
 
 interface OverviewProps {
-  tasks: any[]; // TODO
+  tasks: Task[];
 }
 
 const ScoreCardOverview = ({ tasks }: OverviewProps) => {
