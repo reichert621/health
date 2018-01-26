@@ -4,7 +4,7 @@ import { extend, isNumber } from 'lodash';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import CheckListQuestion from './CheckListQuestion';
+import ChecklistQuestion from './ChecklistQuestion';
 import { fetchChecklistQuestions, createNewChecklist } from '../../helpers/checklist';
 import './CheckList.less';
 
@@ -96,7 +96,7 @@ class NewCheckList extends React.Component {
           {
             questions.map((question, key) => {
               return (
-                <CheckListQuestion
+                <ChecklistQuestion
                   key={key}
                   question={question}
                   onSelect={this.handleScoreChange.bind(this, question)} />

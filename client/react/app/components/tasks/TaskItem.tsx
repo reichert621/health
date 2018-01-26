@@ -1,9 +1,21 @@
-import React from 'react';
+import * as React from 'react';
 import { resolve } from 'bluebird';
 import { extend } from 'lodash';
+import { Task } from '../../helpers/tasks';
 
-class TaskItem extends React.Component {
-  constructor(props) {
+interface TaskItemProps {
+  task: Task;
+  onUpdateTask: (id: number, updates: object) => Promise<Task>;
+  onToggleTaskActive: (task: Task) => void;
+}
+
+interface TaskItemState {
+  updatedTask: Task;
+  isEditing: boolean;
+}
+
+class TaskItem extends React.Component<TaskItemProps, TaskItemState> {
+  constructor(props: TaskItemProps) {
     super(props);
 
     const { task } = props;
@@ -14,7 +26,7 @@ class TaskItem extends React.Component {
     };
   }
 
-  updateTask(e) {
+  updateTask(e: any) {
     const { name, value } = e.target;
     const { updatedTask } = this.state;
 
@@ -23,7 +35,7 @@ class TaskItem extends React.Component {
     });
   }
 
-  saveUpdatedTask(e) {
+  saveUpdatedTask(e: React.FormEvent<HTMLInputElement>) {
     e.preventDefault();
 
     const { updatedTask } = this.state;
@@ -49,19 +61,19 @@ class TaskItem extends React.Component {
   }
 
   renderStaticTask() {
-    const { task = {}, onToggleTaskActive } = this.props;
+    const { task, onToggleTaskActive } = this.props;
     const { description, points, isActive } = task;
 
     return (
       <div className={`task-item ${isActive ? 'active' : 'inactive'}`}>
-        <span className="task-description">{description}</span>
-        <span className="task-points">{points} points</span>
-        <img className="edit-icon"
-          src="assets/pencil.svg"
+        <span className='task-description'>{description}</span>
+        <span className='task-points'>{points} points</span>
+        <img className='edit-icon'
+          src='assets/pencil.svg'
           onClick={() => this.setState({ isEditing: true })} />
 
         <img className={`task-active-icon ${isActive ? 'active' : 'inactive'}`}
-          src="assets/plus-gray.svg"
+          src='assets/plus-gray.svg'
           onClick={() => onToggleTaskActive(task)} />
       </div>
     );
@@ -74,27 +86,27 @@ class TaskItem extends React.Component {
     return (
       <form onSubmit={this.saveUpdatedTask.bind(this)}>
         <input
-          type="text"
-          name="description"
-          className="input-default -inline task-description-input"
-          placeholder="Task"
+          type='text'
+          name='description'
+          className='input-default -inline task-description-input'
+          placeholder='Task'
           value={description}
           onChange={this.updateTask.bind(this)} />
         {/* TODO: fix width and only allow 1, 2, 4, 8, 16 points */}
         <input
-          type="number"
-          name="points"
-          className="input-default -inline task-points-input"
-          placeholder="0"
-          min="0"
+          type='number'
+          name='points'
+          className='input-default -inline task-points-input'
+          placeholder='0'
+          min='0'
           value={points}
           onChange={this.updateTask.bind(this)} />
         <button
-          type="submit"
-          className="btn-primary">
+          type='submit'
+          className='btn-primary'>
           Save
         </button>
-        <a className="btn-link"
+        <a className='btn-link'
           onClick={this.handleCancel.bind(this)}>
           Cancel
         </a>
@@ -106,7 +118,7 @@ class TaskItem extends React.Component {
     const { isEditing } = this.state;
 
     return (
-      <li className="task-item-container">
+      <li className='task-item-container'>
         {
           isEditing ?
             this.renderEditableTask() :

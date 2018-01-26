@@ -15,7 +15,6 @@
   },
   "homepage": "https://github.com/reichert621/blog#readme",
   "dependencies": {
-    "@types/bluebird": "^3.5.19",
     "angular": "^1.5.8",
     "angular-ui-router": "^0.3.2",
     "bluebird": "^3.5.1",
@@ -37,12 +36,20 @@
     "react-datepicker": "^0.64.0",
     "react-dom": "^15.4.1",
     "react-highcharts": "^15.0.0",
-    "react-router-dom": "^4.1.1"
+    "react-redux": "^5.0.6",
+    "react-router-dom": "^4.1.1",
+    "redux": "^3.7.2"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.19",
     "@types/highlight.js": "^9.1.9",
     "@types/lodash": "^4.14.71",
     "@types/marked": "0.0.28",
+    "@types/react": "^16.0.35",
+    "@types/react-datepicker": "^1.0.0",
+    "@types/react-dom": "^16.0.3",
+    "@types/react-redux": "^5.0.14",
+    "@types/react-router-dom": "^4.2.3",
     "babel-core": "^6.10.4",
     "babel-eslint": "^6.1.2",
     "babel-loader": "^6.2.4",

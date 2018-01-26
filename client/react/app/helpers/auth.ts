@@ -16,7 +16,7 @@ export const login = (credentials: object): Promise<User> => {
     .then((res: HttpResponse) => res.user);
 };
 
-export const isAuthenticated = (): Promise<HttpResponse> => {
+export const isAuthenticated = (): Promise<boolean> => {
   return get('/api/is-authenticated')
     .then((res: HttpResponse) => res.isAuthenticated);
 };

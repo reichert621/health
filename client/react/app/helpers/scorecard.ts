@@ -1,10 +1,12 @@
 import { HttpResponse, get, post, put, del } from './http';
+import { Task } from './tasks';
 
 export interface Scorecard {
   id: number;
   userId: number;
   date: string;
   title?: string;
+  tasks?: Task[];
 }
 
 export const fetchScorecards = (): Promise<Scorecard[]> => {

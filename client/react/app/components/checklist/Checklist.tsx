@@ -1,21 +1,32 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import * as React from 'react';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { isNumber } from 'lodash';
-import moment from 'moment';
+import * as moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import NavBar from '../navbar';
-import CheckListQuestion from './CheckListQuestion';
-import { fetchChecklist, updateChecklistScores } from '../../helpers/checklist';
+import ChecklistQuestion from './ChecklistQuestion';
+import {
+  IChecklist,
+  IQuestion,
+  fetchChecklist,
+  updateChecklistScores
+} from '../../helpers/checklist';
 import { formatPoints } from '../../helpers/utils';
 import './CheckList.less';
 
-class CheckList extends React.Component {
-  constructor(props) {
+interface ChecklistState {
+  checklist: IChecklist;
+  date: moment.Moment;
+  questions: IQuestion[];
+}
+
+class Checklist extends React.Component<RouteComponentProps<{ id: number }>, ChecklistState> {
+  constructor(props: RouteComponentProps<{ id: number }>) {
     super(props);
 
     this.state = {
-      checklist: {},
+      checklist: null,
       date: moment(),
       questions: []
     };
@@ -41,7 +52,7 @@ class CheckList extends React.Component {
       });
   }
 
-  handleScoreChange(question, score) {
+  handleScoreChange(question: IQuestion, score: number) {
     const { questions } = this.state;
     const update = questions.map(q => {
       return (q.id === question.id) ? { ...q, score } : q;
@@ -50,13 +61,13 @@ class CheckList extends React.Component {
     return this.setState({ questions: update });
   }
 
-  calculateScore(questions) {
-    return questions.reduce((score, question) => {
+  calculateScore(questions: IQuestion[]) {
+    return questions.reduce((score: number, question: IQuestion) => {
       return question.score ? (score + question.score) : score;
     }, 0);
   }
 
-  handleDateChange(date) {
+  handleDateChange(date: moment.Moment) {
     this.setState({ date });
   }
 
@@ -93,34 +104,34 @@ class CheckList extends React.Component {
     return (
       <div>
         <NavBar
-          title="Check-in"
-          linkTo="/dashboard"
+          title='Check-in'
+          linkTo='/dashboard'
           history={history} />
 
-        <div className="default-container -narrow">
-          <div className="checklist-header-container clearfix">
-            <div className="checklist-header pull-left">
-              <div className="hidden">
+        <div className='default-container -narrow'>
+          <div className='checklist-header-container clearfix'>
+            <div className='checklist-header pull-left'>
+              <div className='hidden'>
                 <DatePicker
                   selected={date}
                   onChange={this.handleDateChange.bind(this)} />
               </div>
 
-              <h3 className="text-light">
+              <h3 className='text-light'>
                 {date.format('dddd MMMM DD, YYYY')}
               </h3>
             </div>
 
-            <div className="checklist-overview text-active pull-right">
+            <div className='checklist-overview text-active pull-right'>
               {formatPoints(points)}
             </div>
           </div>
 
-          <div className="checklist-container">
+          <div className='checklist-container'>
             {
               questions.map((question, key) => {
                 return (
-                  <CheckListQuestion
+                  <ChecklistQuestion
                     key={key}
                     question={question}
                     onSelect={this.handleScoreChange.bind(this, question)} />
@@ -129,9 +140,9 @@ class CheckList extends React.Component {
             }
           </div>
 
-          <div className="clearfix">
+          <div className='clearfix'>
             <button
-              className="btn-default pull-right"
+              className='btn-default pull-right'
               onClick={this.submit.bind(this)}>
               Submit
             </button>
@@ -142,4 +153,4 @@ class CheckList extends React.Component {
   }
 }
 
-export default CheckList;
+export default Checklist;

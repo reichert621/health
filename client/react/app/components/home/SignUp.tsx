@@ -1,11 +1,20 @@
-import React from 'react';
+import * as React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import { get } from 'lodash';
 import { signup } from '../../helpers/auth';
 import NavBar from '../navbar';
 import '../../App.less';
 
-class SignUp extends React.Component {
-  constructor(props) {
+interface SignUpState {
+  username: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+  error?: string;
+}
+
+class SignUp extends React.Component<RouteComponentProps<{}>, SignUpState> {
+  constructor(props: RouteComponentProps<{}>) {
     super(props);
 
     this.state = {
@@ -17,13 +26,13 @@ class SignUp extends React.Component {
     };
   }
 
-  onUpdateInput(e) {
+  onUpdateInput(e: any) {
     return this.setState({
       [e.target.name]: e.target.value
     });
   }
 
-  handleSubmit(e) {
+  handleSubmit(e: React.FormEvent<HTMLInputElement>) {
     e.preventDefault();
 
     const { history } = this.props;
@@ -52,50 +61,50 @@ class SignUp extends React.Component {
     return (
       <div>
         <NavBar
-          title="Sign up"
-          linkTo="/login" />
+          title='Sign up'
+          linkTo='/login' />
 
-        <div className="default-container">
+        <div className='default-container'>
           <form onSubmit={this.handleSubmit.bind(this)}>
             <input
-              type="text"
-              className="input-default -large"
-              placeholder="Username"
-              name="username"
+              type='text'
+              className='input-default -large'
+              placeholder='Username'
+              name='username'
               value={this.state.username}
               onChange={this.onUpdateInput.bind(this)} />
 
             <input
-              type="email"
-              className="input-default -large"
-              placeholder="Email"
-              name="email"
+              type='email'
+              className='input-default -large'
+              placeholder='Email'
+              name='email'
               value={this.state.email}
               onChange={this.onUpdateInput.bind(this)} />
 
             <input
-              type="password"
-              className="input-default -large"
-              placeholder="Password"
-              name="password"
+              type='password'
+              className='input-default -large'
+              placeholder='Password'
+              name='password'
               value={this.state.password}
               onChange={this.onUpdateInput.bind(this)} />
 
             <input
-              type="password"
-              className="input-default -large"
-              placeholder="Confirm Password"
-              name="passwordConfirmation"
+              type='password'
+              className='input-default -large'
+              placeholder='Confirm Password'
+              name='passwordConfirmation'
               value={this.state.passwordConfirmation}
               onChange={this.onUpdateInput.bind(this)} />
 
             <button
-              className="btn-default btn-sm"
-              type="submit">
+              className='btn-default btn-sm'
+              type='submit'>
               Sign Up
             </button>
 
-            <small className="text-red"
+            <small className='text-red'
               style={{ marginLeft: 16 }}>
               {this.state.error || ''}
             </small>

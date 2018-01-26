@@ -13,7 +13,7 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.ts$/,
+        test: /\.tsx?$/,
         loaders: ['ts-loader']
       },
       {

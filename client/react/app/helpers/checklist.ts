@@ -1,23 +1,31 @@
 import { HttpResponse, get, post } from './http';
 
-export interface Checklist {
+export interface IChecklist {
   id: number;
   userId: number;
   date: string;
+  questions: IQuestion[];
 }
 
-export const fetchChecklists = (): Promise<Checklist[]> => {
+export interface IQuestion {
+  id: number;
+  checklistScoreId: number;
+  text: string;
+  score: number;
+}
+
+export const fetchChecklists = (): Promise<IChecklist[]> => {
   return get('/api/checklists')
     .then((res: HttpResponse) => res.checklists);
 };
 
-export const fetchChecklist = (id: number): Promise<Checklist> => {
+export const fetchChecklist = (id: number): Promise<IChecklist> => {
   return get(`/api/checklists/${id}`)
     .then((res: HttpResponse) => res.checklist);
 };
 
 // TODO: don't use `any`!
-export const updateChecklistScores = (id: number, params: object): Promise<Checklist> => {
+export const updateChecklistScores = (id: number, params: object): Promise<IChecklist> => {
   return post(`/api/checklists/${id}/update-scores`, params)
     .then((res: HttpResponse) => res.updates);
 };
@@ -28,7 +36,7 @@ export const fetchChecklistStats = (): Promise<Object> => {
     .then((res: HttpResponse) => res.stats);
 };
 
-export const createNewChecklist = (params: object): Promise<Checklist> => {
+export const createNewChecklist = (params: object): Promise<IChecklist> => {
   return post('/api/checklists/new', params)
     .then((res: HttpResponse) => res.checklist);
 };
@@ -46,13 +54,13 @@ export const fetchChecklistScores = (): Promise<ChecklistScore[]> => {
     .then((res: HttpResponse) => res.scores);
 };
 
-export interface ChecklistQuestion {
+export interface IChecklistQuestion {
   id: number;
   text: string;
   category?: string;
 }
 
-export const fetchChecklistQuestions = (): Promise<ChecklistQuestion[]> => {
+export const fetchChecklistQuestions = (): Promise<IChecklistQuestion[]> => {
   return get('/api/checklist-questions')
     .then((res: HttpResponse) => res.questions);
 };

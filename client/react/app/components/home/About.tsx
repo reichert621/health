@@ -1,4 +1,5 @@
-import React from 'react';
+import * as React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import NavBar from '../navbar';
 import md from '../../helpers/markdown';
 import { isAuthenticated } from '../../helpers/auth';
@@ -84,8 +85,12 @@ On a more positive note, I've noticed some "micro" trends on a more day-to-day b
 If you have any feature requests, bug reports, or any general feedback, feel free to submit them [here](https://github.com/reichert621/blog/issues) or email me at [reichertjalex@gmail.com](mailto:reichertjalex@gmail.com).
 `;
 
-class About extends React.Component {
-  constructor(props) {
+interface AboutState {
+  isLoggedIn: boolean;
+}
+
+class About extends React.Component<RouteComponentProps<{}>, AboutState> {
+  constructor(props: RouteComponentProps<{}>) {
     super(props);
 
     this.state = { isLoggedIn: false };
@@ -106,12 +111,12 @@ class About extends React.Component {
       <div>
         {/* TODO: handle navbar states better */}
         <NavBar
-          title="About"
+          title='About'
           linkTo={isLoggedIn ? '/dashboard' : '/login'}
           history={isLoggedIn && history} />
 
-        <div className="default-container">
-          <div className="about-content"
+        <div className='default-container'>
+          <div className='about-content'
             dangerouslySetInnerHTML={formatHTML(content)}>
           </div>
         </div>

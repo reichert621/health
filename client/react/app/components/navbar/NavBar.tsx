@@ -1,9 +1,15 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import * as React from 'react';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { logout } from '../../helpers/auth';
 import './NavBar.less';
 
-class NavBar extends React.Component {
+interface NavBarProps {
+  title: string;
+  history?: any;
+  linkTo?: string;
+}
+
+class NavBar extends React.Component<NavBarProps> {
   logout() {
     const { history } = this.props;
 
@@ -19,18 +25,18 @@ class NavBar extends React.Component {
   renderLoggedInNav() {
     return (
       <div>
-        <Link to="/tasks"
-          className="nav-link">
+        <Link to='/tasks'
+          className='nav-link'>
           Tasks
         </Link>
 
-        <Link to="/about"
-          className="nav-link">
+        <Link to='/about'
+          className='nav-link'>
           About
         </Link>
 
-        <Link to="#"
-          className="nav-link"
+        <Link to='#'
+          className='nav-link'
           onClick={this.logout.bind(this)}>
           Logout
         </Link>
@@ -41,18 +47,18 @@ class NavBar extends React.Component {
   renderLoggedOutNav() {
     return (
       <div>
-        <Link to="/signup"
-          className="nav-link">
+        <Link to='/signup'
+          className='nav-link'>
           Sign up
         </Link>
 
-        <Link to="/about"
-          className="nav-link">
+        <Link to='/about'
+          className='nav-link'>
           About
         </Link>
 
-        <Link to="/login"
-          className="nav-link">
+        <Link to='/login'
+          className='nav-link'>
           Log in
         </Link>
       </div>
@@ -64,17 +70,17 @@ class NavBar extends React.Component {
     const isLoggedIn = !!history;
 
     return (
-      <div className="nav-container">
-        <div className="nav-content clearfix">
-          <h1 className="nav-header pull-left">
+      <div className='nav-container'>
+        <div className='nav-content clearfix'>
+          <h1 className='nav-header pull-left'>
             <Link to={linkTo || '#'}
               className={linkTo ? '' : 'hidden'}>
-              <img className="back-icon" src="assets/back-arrow.svg" />
+              <img className='back-icon' src='assets/back-arrow.svg' />
             </Link>
             {title}
           </h1>
 
-          <div className="logout-container pull-right">
+          <div className='logout-container pull-right'>
             {
               isLoggedIn ?
                 this.renderLoggedInNav() :

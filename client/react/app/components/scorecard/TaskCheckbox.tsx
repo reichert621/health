@@ -1,20 +1,25 @@
-import React from 'react';
+import * as React from 'react';
+import { Task } from '../../helpers/tasks';
 
-const TaskCheckbox = ({ task, onToggle }) => {
+interface CheckboxProps {
+  task: Task;
+  onToggle: () => void;
+}
+
+const TaskCheckbox = ({ task, onToggle }: CheckboxProps) => {
   const { id, description, points, isComplete = false } = task;
 
   return (
-    <label className="checkbox-container unselectable clearfix">
+    <label className='checkbox-container unselectable clearfix'>
       <input
-        type="checkbox"
+        type='checkbox'
         id={`task-${id}`}
         value={description}
         checked={isComplete}
         onChange={onToggle} />
       <div className={`checkbox-indicator ${isComplete ? 'on' : 'off'}`} />
       <span
-        className={`checkbox-label pull-left ${isComplete ? 'on' : 'off'}`}
-        htmlFor={`task-${id}`}>
+        className={`checkbox-label pull-left ${isComplete ? 'on' : 'off'}`}>
         {description}
       </span>
       <span
