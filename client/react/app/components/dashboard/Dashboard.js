@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { extend } from 'lodash';
 import moment from 'moment';
 import { all, resolve } from 'bluebird';
@@ -6,19 +7,39 @@ import NavBar from '../navbar';
 import DashboardReporting from './DashboardReporting';
 import DashboardList from './DashboardList';
 import DashboardPreview from './DashboardPreview';
-import { fetchScorecards, fetchScorecard, createNewScorecard } from '../../helpers/scorecard';
-import { fetchChecklists, createNewChecklist } from '../../helpers/checklist';
-import { keyifyDate, mapByDate, getPastDates } from '../../helpers/utils';
+import { fetchScorecard, createNewScorecard } from '../../helpers/scorecard';
+import { createNewChecklist } from '../../helpers/checklist';
+import { keyifyDate, getPastDates } from '../../helpers/utils';
+import {
+  LIST_VIEW,
+  CHART_VIEW,
+  UPDATE_VIEW,
+  getScorecards,
+  getChecklists,
+  selectDate
+} from '../../reducers';
 import './Dashboard.less';
+
+const mapStateToProps = (state) => {
+  const { currentView, selected, scorecards, checklists } = state;
+  const { items: scorecardItems, byDate: scorecardsByDate } = scorecards;
+  const { items: checklistItems, byDate: checklistsByDate } = checklists;
+
+  return {
+    currentView,
+    selected,
+    scorecardsByDate,
+    checklistsByDate,
+    scorecards: scorecardItems,
+    checklists: checklistItems
+  };
+};
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      scorecards: [],
-      checklists: [],
-      selected: {},
       isLoading: true,
       showChart: false
     };
@@ -28,26 +49,15 @@ class Dashboard extends React.Component {
     // TODO: this is a temporary hack to make sure this page scrolls
     // to the top after a scorecard or a checklist is submitted
     window.scrollTo(0, 0);
-    const { history } = this.props;
+    const { history, dispatch, selected = {} } = this.props;
+    const { date = moment() } = selected;
 
     return all([
-      fetchScorecards(),
-      fetchChecklists()
+      dispatch(getScorecards()),
+      dispatch(getChecklists())
     ])
-      .then(([scorecards, checklists]) => {
-        return this.setState({
-          scorecards,
-          checklists,
-          scorecardsByDate: mapByDate(scorecards),
-          checklistsByDate: mapByDate(checklists),
-          isLoading: false
-        });
-      })
-      .then(() => {
-        const today = moment();
-
-        return this.handleDateSelected(today);
-      })
+      .then(() => this.setState({ isLoading: false }))
+      .then(() => this.handleDateSelected(date))
       .catch(err => {
         if (err.status === 401) {
           return history.push('/login');
@@ -58,32 +68,29 @@ class Dashboard extends React.Component {
   }
 
   handleDateSelected(date) {
-    const { scorecardsByDate, checklistsByDate } = this.state;
+    const { scorecardsByDate, checklistsByDate } = this.props;
+    const { dispatch } = this.props;
     const key = keyifyDate(date);
     const scorecard = scorecardsByDate[key];
     const checklist = checklistsByDate[key];
 
     if (!scorecard) {
-      return this.setState({
-        selected: {
-          date,
-          scorecard,
-          checklist
-        }
-      });
+      return dispatch(selectDate({
+        date,
+        scorecard,
+        checklist
+      }));
     }
 
     const { id: scorecardId } = scorecard;
 
     return fetchScorecard(scorecardId)
       .then(({ tasks = [] }) => {
-        return this.setState({
-          selected: {
-            date,
-            checklist,
-            scorecard: extend(scorecard, { tasks })
-          }
-        });
+        return dispatch(selectDate({
+          date,
+          checklist,
+          scorecard: extend(scorecard, { tasks })
+        }));
       });
   }
 
@@ -103,11 +110,9 @@ class Dashboard extends React.Component {
     const { history } = this.props;
     // TODO: deal with timezone bug (inconsistency with db and client)
     const params = { date: date.format('YYYY-MM-DD') };
-    console.log('Creating scorecard!', params);
 
     return createNewScorecard(params)
       .then(({ id: scorecardId }) => {
-        console.log('Created scorecard!', scorecardId);
         return history.push(`/scorecard/${scorecardId}`);
       });
   }
@@ -117,30 +122,34 @@ class Dashboard extends React.Component {
 
     const { history } = this.props;
     const params = { date: date.format('YYYY-MM-DD') };
-    console.log('Creating checklist!', params);
 
     return createNewChecklist(params)
       .then(({ id: checklistId }) => {
-        console.log('Created checklist!', checklistId);
         return history.push(`/checklist/${checklistId}`);
       });
   }
 
+  setCurrentView(view) {
+    const { dispatch } = this.props;
+
+    return dispatch({ view, type: UPDATE_VIEW });
+  }
+
   render() {
+    const dates = getPastDates();
+    const { isLoading } = this.state;
     const {
-      scorecards = [],
-      checklists = [],
+      history,
+      currentView,
       selected = {},
-      showChart = false,
-      isLoading
-    } = this.state;
+      scorecards = [],
+      checklists = []
+    } = this.props;
+    const showChart = (currentView === CHART_VIEW);
 
     if (isLoading) {
       // TODO: handle loading state better
     }
-
-    const { history } = this.props;
-    const dates = getPastDates();
 
     return (
       <div>
@@ -161,12 +170,12 @@ class Dashboard extends React.Component {
               <div className="toggle-btn-container">
                 <button
                   className={`btn-default btn-toggle ${showChart ? '' : 'active'}`}
-                  onClick={() => this.setState({ showChart: false })}>
+                  onClick={this.setCurrentView.bind(this, LIST_VIEW)}>
                   List
                 </button>
                 <button
                   className={`btn-default btn-toggle ${showChart ? 'active' : ''}`}
-                  onClick={() => this.setState({ showChart: true })}>
+                  onClick={this.setCurrentView.bind(this, CHART_VIEW)}>
                   Chart
                 </button>
               </div>
@@ -189,4 +198,4 @@ class Dashboard extends React.Component {
   }
 }
 
-export default Dashboard;
+export default connect(mapStateToProps)(Dashboard);
