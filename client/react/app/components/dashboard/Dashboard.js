@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { extend } from 'lodash';
+import { extend, values } from 'lodash';
 import moment from 'moment';
 import { all, resolve } from 'bluebird';
 import NavBar from '../navbar';
@@ -22,16 +22,16 @@ import './Dashboard.less';
 
 const mapStateToProps = (state) => {
   const { currentView, selected, scorecards, checklists } = state;
-  const { items: scorecardItems, byDate: scorecardsByDate } = scorecards;
-  const { items: checklistItems, byDate: checklistsByDate } = checklists;
+  const { byId: scorecardsById, byDate: scorecardsByDate } = scorecards;
+  const { byId: checklistsById, byDate: checklistsByDate } = checklists;
 
   return {
     currentView,
     selected,
     scorecardsByDate,
     checklistsByDate,
-    scorecards: scorecardItems,
-    checklists: checklistItems
+    scorecards: values(scorecardsById),
+    checklists: values(checklistsById)
   };
 };
 

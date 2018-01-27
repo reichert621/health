@@ -16,11 +16,14 @@ import {
   toggleScorecardTask
 } from '../../helpers/scorecard';
 import { AppState, keyifyDate } from '../../helpers/utils';
+import { getScorecard } from '../../reducers';
 import './ScoreCard.less';
 
 interface ScorecardProps {
   date: moment.Moment;
   scorecard: IScorecard;
+  tasks: Task[];
+  dispatch: (action: any) => any;
 }
 
 interface ScorecardState {
@@ -31,10 +34,18 @@ interface ScorecardState {
 }
 
 const mapStateToProps = (state: AppState) => {
-  const { selected } = state;
-  const { date, scorecard } = selected;
+  const { selected, scorecards } = state;
+  const { date, scorecard: selectedScorecard = {} as IScorecard } = selected;
+  const { byId: scorecardsById } = scorecards;
+  const { id: scorecardId } = selectedScorecard;
+  const scorecard = scorecardsById[scorecardId] || {} as IScorecard;
+  const { tasks } = scorecard;
 
-  return { date, scorecard };
+  return {
+    date,
+    scorecard,
+    tasks
+  };
 };
 
 class ScoreCard extends React.Component<
@@ -45,21 +56,25 @@ class ScoreCard extends React.Component<
     super(props);
     const {
       scorecard = {} as IScorecard,
-      date = moment()
+      date = moment(),
+      tasks = []
     } = this.props;
 
     this.state = {
       scorecard,
       date,
-      tasks: [],
+      tasks,
       isSaving: false
     };
   }
 
   componentDidMount() {
-    const { match, history } = this.props;
+    const { match, history, dispatch } = this.props;
     const { id } = match.params;
 
+    dispatch(getScorecard(id));
+    // In redux, cache only tasks where `isActive` is true,
+    // and sanitize irrelevant fields (like `isComplete`)
     return fetchScorecard(id)
       .then(scorecard => {
         const { tasks, date } = scorecard;
@@ -147,7 +162,7 @@ class ScoreCard extends React.Component<
 
   render() {
     const { tasks, date, isSaving } = this.state;
-    const { history, scorecard } = this.props;
+    const { history } = this.props;
     const completed = tasks.filter(t => t.isComplete);
 
     return (
