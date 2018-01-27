@@ -11,6 +11,7 @@ export interface IQuestion {
   id: number;
   checklistScoreId: number;
   text: string;
+  category: string;
   score: number;
 }
 

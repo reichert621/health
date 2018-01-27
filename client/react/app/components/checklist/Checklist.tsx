@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { isNumber } from 'lodash';
 import * as moment from 'moment';
 import DatePicker from 'react-datepicker';
@@ -12,8 +13,16 @@ import {
   fetchChecklist,
   updateChecklistScores
 } from '../../helpers/checklist';
-import { formatPoints } from '../../helpers/utils';
+import { AppState, formatPoints } from '../../helpers/utils';
+import { getChecklist } from '../../reducers';
 import './CheckList.less';
+
+interface ChecklistProps {
+  checklist: IChecklist;
+  date: moment.Moment;
+  questions: IQuestion[];
+  dispatch: (action: any) => any;
+}
 
 interface ChecklistState {
   checklist: IChecklist;
@@ -21,21 +30,47 @@ interface ChecklistState {
   questions: IQuestion[];
 }
 
-class Checklist extends React.Component<RouteComponentProps<{ id: number }>, ChecklistState> {
-  constructor(props: RouteComponentProps<{ id: number }>) {
+// TODO: clean this up a bit... just using for caching right now
+const mapStateToProps = (state: AppState) => {
+  const { selected, checklists, questions: defaultQuestions } = state;
+  const { date, checklist: selectedChecklist = {} as IChecklist } = selected;
+  const { byId: checklistsById } = checklists;
+  const { id: checklistId } = selectedChecklist;
+  const checklist = checklistsById[checklistId] || {} as IChecklist;
+  const { questions } = checklist;
+
+  return {
+    date,
+    checklist,
+    questions: questions || defaultQuestions
+  };
+};
+
+class Checklist extends React.Component<
+  ChecklistProps & RouteComponentProps<{ id: number }>,
+  ChecklistState
+> {
+  constructor(props: ChecklistProps & RouteComponentProps<{ id: number }>) {
     super(props);
+    const {
+      checklist = {} as IChecklist,
+      date = moment(),
+      questions = [] as IQuestion[]
+    } = this.props;
 
     this.state = {
-      checklist: null,
-      date: moment(),
-      questions: []
+      checklist,
+      date,
+      questions
     };
   }
 
   componentDidMount() {
-    const { match, history } = this.props;
+    const { match, history, dispatch } = this.props;
     const { id } = match.params;
 
+    dispatch(getChecklist(id));
+    // In redux, cache questions with `id`, `text`, and `category` fields
     return fetchChecklist(id)
       .then(checklist => {
         const { questions, date } = checklist;
@@ -67,10 +102,6 @@ class Checklist extends React.Component<RouteComponentProps<{ id: number }>, Che
     }, 0);
   }
 
-  handleDateChange(date: moment.Moment) {
-    this.setState({ date });
-  }
-
   submit() {
     const { questions, checklist } = this.state;
     const { history } = this.props;
@@ -87,10 +118,8 @@ class Checklist extends React.Component<RouteComponentProps<{ id: number }>, Che
         };
       });
 
-    console.log('Submitting!', scores);
     return updateChecklistScores(checklistId, { scores })
       .then(res => {
-        console.log('Updated!', res);
         return history.push('/dashboard');
       })
       .catch(err => console.log('Error updating scores!', err));
@@ -111,12 +140,6 @@ class Checklist extends React.Component<RouteComponentProps<{ id: number }>, Che
         <div className='default-container -narrow'>
           <div className='checklist-header-container clearfix'>
             <div className='checklist-header pull-left'>
-              <div className='hidden'>
-                <DatePicker
-                  selected={date}
-                  onChange={this.handleDateChange.bind(this)} />
-              </div>
-
               <h3 className='text-light'>
                 {date.format('dddd MMMM DD, YYYY')}
               </h3>
@@ -153,4 +176,4 @@ class Checklist extends React.Component<RouteComponentProps<{ id: number }>, Che
   }
 }
 
-export default Checklist;
+export default connect(mapStateToProps)(Checklist);

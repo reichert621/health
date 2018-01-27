@@ -1,35 +1,44 @@
 import * as moment from 'moment';
 import { has, extend, times, first, isNumber } from 'lodash';
 import { User } from './auth';
-import { IChecklist } from './checklist';
+import { IChecklist, IQuestion } from './checklist';
 import { IScorecard } from './scorecard';
+import { Task } from './tasks';
 import { ReportingStats } from './reporting';
+
+export interface SelectedState {
+  date?: moment.Moment;
+  checklist: IChecklist;
+  scorecard: IScorecard;
+}
+
+export interface MappedItems<T> {
+  items: number[];
+  byDate: {
+    [date: string]: T;
+  };
+  byId: {
+    [id: string]: T;
+  };
+}
 
 export interface AppState {
   currentUser?: User;
   currentView: string;
-  checklists: {
-    items: IChecklist[],
-    byDate: {
-      [date: string]: IChecklist[];
-    }
-  };
-  scorecards: {
-    items: IScorecard[],
-    byDate: {
-      [date: string]: IScorecard[];
-    }
-  };
-  selected: {
-    date?: moment.Moment;
-    checklist: IChecklist;
-    scorecard: IScorecard;
-  };
+  checklists: MappedItems<IChecklist>;
+  scorecards: MappedItems<IScorecard>;
+  questions: IQuestion[];
+  tasks: Task[];
+  selected: SelectedState;
   stats: ReportingStats;
 }
 
 export interface DatedItem {
   date?: moment.Moment|Date|string;
+}
+
+export interface ItemWithId {
+  id: number|string;
 }
 
 export const DAYS_OF_WEEK = [
@@ -84,6 +93,16 @@ export const formatPoints = (points: number = 0): string => {
 
 export const keyifyDate = (date: moment.Moment|Date|string): string => {
   return moment(date).format('MMDDYYYY');
+};
+
+export const mapById = (list: ItemWithId[] = []): object => {
+  return list.reduce((map, item) => {
+    if (!has(item, 'id')) return map;
+
+    const { id } = item;
+
+    return extend(map, { [id]: item });
+  }, {});
 };
 
 export const mapByDate = (list: DatedItem[] = []): object => {
