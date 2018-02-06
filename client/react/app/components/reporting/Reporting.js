@@ -1,12 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import NavBar from '../navbar';
 import ReportingChart from './ReportingChart';
+import ReportingOverview from './ReportingOverview';
 import ReportingStreaks from './ReportingStreaks';
 import TopTasks from './TopTasks';
 import MoodFrequency from './MoodFrequency';
 import ScoresByDay from './ScoresByDay';
-import ScoresByCategory from './ScoresByCategory';
-import TotalPointsChart from './TotalPointsChart';
 import { fetchAllStats } from '../../helpers/reporting';
 import './Reporting.less';
 
@@ -28,6 +27,7 @@ class Reporting extends React.Component {
   }
 
   render() {
+    const { history } = this.props;
     const { stats } = this.state;
     const {
       // Checklist stats
@@ -49,37 +49,56 @@ class Reporting extends React.Component {
     console.log('stats!', stats);
 
     return (
-      <div className="default-container">
-        <Link to="/">Back</Link>
+      <div>
+        <NavBar
+          title="Reporting"
+          linkTo="/"
+          history={history} />
 
-        <h1>Scores By Day</h1>
-        <ScoresByDay
-          checklistScores={checklistScoresByDay}
-          scorecardScores={scorecardScoresByDay} />
+        <div className="default-container">
+          <div className="reporting-header-container reporting-component">
+            <ReportingOverview
+              scorecards={completedScorecards}
+              tasks={topTasks} />
+          </div>
 
-        <h1>Scores By Category</h1>
-        <ScoresByCategory
-          categoryStats={taskCategoryStats} />
+          <div className="clearfix">
+            <div className="reporting-sidebar-container reporting-component pull-left">
+              <h4>Daily Averages</h4>
 
-        <h1>Top Tasks</h1>
-        <TopTasks tasks={topTasks} />
+              <ScoresByDay
+                checklistScores={checklistScoresByDay}
+                scorecardScores={scorecardScoresByDay} />
+            </div>
 
-        <h1>Mood Frequency</h1>
-        <MoodFrequency stats={depressionLevelFrequency} />
+            <div className="reporting-graph-container reporting-component pull-right">
+              <ReportingChart
+                checklistStats={checklistStats}
+                scorecardStats={scorecardStats} />
+            </div>
+          </div>
 
-        <h1>Streaks</h1>
-        <ReportingStreaks
-          completedChecklists={completedChecklists}
-          completedScorecards={completedScorecards} />
+          <div className="clearfix">
+            <div className="reporting-component-container reporting-component pull-left">
+              <h4>Streaks</h4>
 
-        <h1>Reporting</h1>
-        <ReportingChart
-          checklistStats={checklistStats}
-          scorecardStats={scorecardStats} />
+              <ReportingStreaks
+                completedChecklists={completedChecklists}
+                completedScorecards={completedScorecards} />
+            </div>
 
-        <h1>Total Points</h1>
-        <div style={{ width: '50%' }}>
-          <TotalPointsChart stats={totalScoreOverTime} />
+            <div className="reporting-component-container reporting-component pull-left">
+              <h4>Favorite Tasks</h4>
+
+              <TopTasks tasks={topTasks} />
+            </div>
+
+            <div className="reporting-component-container reporting-component pull-left">
+              <h4>Mood Frequency</h4>
+
+              <MoodFrequency stats={depressionLevelFrequency} />
+            </div>
+          </div>
         </div>
       </div>
     );

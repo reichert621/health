@@ -30,9 +30,9 @@ class NavBar extends React.Component<NavBarProps> {
           Tasks
         </Link>
 
-        <Link to='/about'
+        <Link to='/reporting'
           className='nav-link'>
-          About
+          Reporting
         </Link>
 
         <Link to='#'

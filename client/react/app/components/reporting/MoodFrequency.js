@@ -34,19 +34,17 @@ const MoodFrequency = ({ stats = {} }) => {
 
   return (
     <div>
-      <ul className="reporting-component-container">
+      <ul className="reporting-percentages-container">
         {
-          frequencies
-            .sort((x, y) => y.count - x.count)
-            .map(({ level, count }, key) => {
-              return (
-                <MoodItem
-                  key={key}
-                  level={level}
-                  count={count}
-                  total={total} />
-              );
-            })
+          frequencies.map(({ level, count }, key) => {
+            return (
+              <MoodItem
+                key={key}
+                level={level}
+                count={count}
+                total={total} />
+            );
+          })
         }
       </ul>
     </div>

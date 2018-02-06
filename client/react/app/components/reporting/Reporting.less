@@ -1,13 +1,52 @@
 @border-gray: #b4b4b4;
 @bright-blue: #33A2CC;
 
-.reporting-component-container {
+.reporting-component {
   border: 1px solid @border-gray;
   border-radius: 4px;
-  margin-bottom: 40px;
-  min-width: 360px;
-  padding: 20px 24px 16px 24px;
-  width: 40%;
+  font-size: 14px;
+  padding: 16px;
+  margin: 16px 0px;
+}
+
+.reporting-header-container {
+  width: 100%;
+}
+
+.reporting-header-stat {
+  display: inline-block;
+  margin-right: 40px;
+
+  .stat-value {
+    font-size: 32px;
+    margin-bottom: 4px;
+  }
+}
+
+.reporting-sidebar-container {
+  width: 32%;
+}
+
+.reporting-graph-container {
+  width: 66%;
+  border: none;
+  padding-bottom: 0;
+  padding-right: 0;
+  padding-top: 0;
+  min-height: 400px;
+}
+
+.reporting-component-container {
+  margin-right: 2%;
+  width: 32%;
+
+  &:last-child {
+    margin-right: 0px;
+  }
+}
+
+.reporting-percentages-container {
+  padding-left: 0px;
 }
 
 .reporting-label {
