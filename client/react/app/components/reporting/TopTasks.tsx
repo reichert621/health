@@ -1,12 +1,19 @@
-import React from 'react';
+import * as React from 'react';
+import { ReportingTask } from '../../helpers/reporting';
 import { getFormattedPercentage } from '../../helpers/utils';
 
+interface TopTaskProps {
+  task: string;
+  count: number;
+  total: number;
+}
+
 // TODO: DRY this up (see MoodFrequency)
-const TopTaskItem = ({ task, count, total }) => {
+const TopTaskItem = ({ task, count, total }: TopTaskProps) => {
   return (
-    <li className="reporting-percentage-item">
-      <div className="percentage-bar-container">
-        <div className="percentage-bar"
+    <li className='reporting-percentage-item'>
+      <div className='percentage-bar-container'>
+        <div className='percentage-bar'
           style={{
             width: `${getFormattedPercentage(count, total)}%`
           }}>
@@ -14,7 +21,7 @@ const TopTaskItem = ({ task, count, total }) => {
       </div>
 
       <div>
-        <span className="text-active">
+        <span className='text-active'>
           {getFormattedPercentage(count, total)}%
         </span>
         <span> / {task} - {count}</span>
@@ -23,13 +30,13 @@ const TopTaskItem = ({ task, count, total }) => {
   );
 };
 
-const TopTasks = ({ tasks = [] }) => {
+const TopTasks = ({ tasks = [] }: { tasks: ReportingTask[] }) => {
   const total = tasks.reduce((result, t) => result + t.count, 0);
   const topTasks = tasks.slice(0, 6);
 
   return (
     <div>
-      <ul className="reporting-percentages-container">
+      <ul className='reporting-percentages-container'>
         {
           topTasks.map((t, key) => {
             const { task, count } = t;
