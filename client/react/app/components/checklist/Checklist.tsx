@@ -129,6 +129,11 @@ class Checklist extends React.Component<
     const { questions, date } = this.state;
     const { history } = this.props;
     const points = this.calculateScore(questions);
+    const isComplete = questions.every(q => isNumber(q.score));
+
+    if (!questions || !questions.length) {
+      return <div>Loading...</div>;
+    }
 
     return (
       <div>
@@ -145,7 +150,9 @@ class Checklist extends React.Component<
               </h3>
             </div>
 
-            <div className='checklist-overview text-active pull-right'>
+            <div className={`checklist-overview text-active pull-right ${
+              isComplete ? '' : 'hidden'
+            }`}>
               {formatPoints(points)}
             </div>
           </div>

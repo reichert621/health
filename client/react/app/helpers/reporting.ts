@@ -13,11 +13,16 @@ export interface ReportingTask {
   points: number;
 }
 
+// TODO: name this better
+export interface ReportingDatedItem extends DatedItem {
+  count: number;
+}
+
 export interface ReportingStats {
   checklist: number[][];
   scorecard: number[][];
-  completedChecklists: DatedItem[];
-  completedScorecards: DatedItem[];
+  completedChecklists: ReportingDatedItem[];
+  completedScorecards: ReportingDatedItem[];
   checklistScoresByDay: ScoreByDay;
   scorecardScoresByDay: ScoreByDay;
   topTasks: ReportingTask[];

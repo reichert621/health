@@ -34,8 +34,12 @@ class Login extends React.Component<LoginProps & RouteComponentProps<{}>, LoginS
 
     const { history } = this.props;
     const { username, password } = this.state;
+    const credentials = {
+      password,
+      username: username.trim()
+    };
 
-    return login({ username, password })
+    return login(credentials)
       .then(() => history.push('/'))
       .catch(err => {
         console.log('Error logging in!', err);

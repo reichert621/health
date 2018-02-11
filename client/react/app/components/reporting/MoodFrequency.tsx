@@ -1,13 +1,19 @@
-import React from 'react';
+import * as React from 'react';
 import { keys } from 'lodash';
 import { getFormattedPercentage } from '../../helpers/utils';
 
+interface MoodItemProps {
+  level: string;
+  count: number;
+  total: number;
+}
+
 // TODO: DRY this up (see TopTasks)
-const MoodItem = ({ level, count, total }) => {
+const MoodItem = ({ level, count, total }: MoodItemProps) => {
   return (
-    <li className="reporting-percentage-item">
-      <div className="percentage-bar-container">
-        <div className="percentage-bar"
+    <li className='reporting-percentage-item'>
+      <div className='percentage-bar-container'>
+        <div className='percentage-bar'
           style={{
             width: `${getFormattedPercentage(count, total)}%`
           }}>
@@ -15,7 +21,7 @@ const MoodItem = ({ level, count, total }) => {
       </div>
 
       <div>
-        <span className="text-active">
+        <span className='text-active'>
           {getFormattedPercentage(count, total)}%
         </span>
         <span> / {level} - {count}</span>
@@ -24,7 +30,13 @@ const MoodItem = ({ level, count, total }) => {
   );
 };
 
-const MoodFrequency = ({ stats = {} }) => {
+interface MoodFrequencyProps {
+  stats: {
+    [level: string]: number;
+  };
+}
+
+const MoodFrequency = ({ stats = {} }: MoodFrequencyProps) => {
   const frequencies = keys(stats).map(level => {
     const count = stats[level];
 
@@ -34,7 +46,7 @@ const MoodFrequency = ({ stats = {} }) => {
 
   return (
     <div>
-      <ul className="reporting-percentages-container">
+      <ul className='reporting-percentages-container'>
         {
           frequencies.map(({ level, count }, key) => {
             return (
