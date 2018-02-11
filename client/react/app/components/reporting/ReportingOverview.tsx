@@ -9,7 +9,6 @@ interface ReportingOverviewProps {
 }
 
 const ReportingOverview = ({ scorecards, tasks }: ReportingOverviewProps) => {
-  console.log('scorecards!!!', scorecards);
   const scorecardStreak = getStreakStats(scorecards);
   const nonZeroDays = scorecards.filter(({ count }) => count > 0);
   const totalTasks = tasks.reduce((result, t) => result + t.count, 0);
