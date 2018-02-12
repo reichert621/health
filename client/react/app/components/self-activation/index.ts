@@ -1,3 +1,7 @@
 import SelfActivationMethods from './SelfActivationMethods';
+import CognitiveDistortions from './CognitiveDistortions';
 
-export default SelfActivationMethods;
+export {
+  SelfActivationMethods,
+  CognitiveDistortions
+};

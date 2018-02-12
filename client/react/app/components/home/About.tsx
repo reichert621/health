@@ -116,7 +116,7 @@ class About extends React.Component<RouteComponentProps<{}>, AboutState> {
           history={isLoggedIn && history} />
 
         <div className='default-container'>
-          <div className='about-content'
+          <div className='md-content'
             dangerouslySetInnerHTML={formatHTML(content)}>
           </div>
         </div>
