@@ -94,7 +94,7 @@
     "lint:api": "./node_modules/.bin/eslint 'server/javascript/**/*.js'",
     "db:migrate": "./node_modules/.bin/knex migrate:latest --knexfile server/javascript/db/knexfile.js",
     "db:seed": "./node_modules/.bin/knex seed:run --knexfile server/javascript/db/knexfile.js",
-    "build:react": "./node_modules/.bin/webpack --config webpack.react.config.js",
+    "build:react": "./node_modules/.bin/webpack --config webpack.react.config.js -p",
     "restart": "pm2 startOrRestart ecosystem.config.js",
     "deploy": "pm2 deploy ecosystem.config.js production"
   }
