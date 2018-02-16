@@ -2,74 +2,160 @@
 @border-gray: #d3d3d3;
 @font-handwritten: 'Covered By Your Grace', cursive;
 
-.checklist-wrapper {
-  width: 80%;
-}
-
-.checklist-container {
-  margin-top: 32px;
-  margin-bottom: 40px;
-}
-
-.checklist-header {
-  width: 50%;
-}
-
-.checklist-overview {
-  border: 1px solid @border-gray;
-  border-radius: 4px;
-  padding: 24px;
-  text-align: center;
-  width: 48%;
-}
-
-.checklist-question-container {
-  margin-bottom: 8px;
-}
-
-.checklist-question,
-.checklist-answer {
-  display: inline-block;
-  vertical-align: middle;
-  line-height: 40px;
-  margin-right: 32px;
-}
-
-.checklist-answer {
-  font-family: @font-handwritten;
-}
-
-.checklist-options-svg {
-  cursor: pointer;
-
-  .svg-option-box {
-    transition: fill ease 0.2s;
-    -webkit-transition: fill ease 0.2s;
+// TODO: DRY this up (see .checklist-v2)
+.checklist-v1 {
+  .checklist-wrapper {
+    width: 80%;
   }
-}
 
-@media (max-width: 720px) {
-  .checklist-overview {
-    display: none;
+  .checklist-container {
+    margin-top: 32px;
+    margin-bottom: 40px;
   }
 
   .checklist-header {
+    width: 50%;
+  }
+
+  .checklist-overview {
+    border: 1px solid @border-gray;
+    border-radius: 4px;
+    padding: 24px;
     text-align: center;
-    width: 100%;
+    width: 48%;
+  }
+
+  .checklist-question-container {
+    margin-bottom: 8px;
   }
 
   .checklist-question,
-  .checklist-selector,
   .checklist-answer {
     display: inline-block;
-    float: none;
-    margin-right: 0;
-    margin-left: 0;
-    text-align: center;
-    width: 100%;
+    vertical-align: middle;
+    line-height: 40px;
+    margin-right: 32px;
   }
 
   .checklist-answer {
+    font-family: @font-handwritten;
+  }
+
+  .checklist-options-svg {
+    cursor: pointer;
+
+    .svg-option-box {
+      transition: fill ease 0.2s;
+      -webkit-transition: fill ease 0.2s;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .checklist-overview {
+      display: none;
+    }
+
+    .checklist-header {
+      text-align: center;
+      width: 100%;
+    }
+
+    .checklist-question,
+    .checklist-selector,
+    .checklist-answer {
+      display: inline-block;
+      float: none;
+      margin-right: 0;
+      margin-left: 0;
+      text-align: center;
+      width: 100%;
+    }
+
+    .checklist-answer {
+      margin-bottom: 8px;
+    }
+  }
+}
+
+.checklist-v2 {
+  .checklist-wrapper {
+    width: 80%;
+  }
+
+  .checklist-container {
+    height: 120px;
+    margin-top: 32px;
+    margin-bottom: 40px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .checklist-header {
+    width: 50%;
+  }
+
+  .checklist-overview {
+    border: 1px solid @border-gray;
+    border-radius: 4px;
+    padding: 24px;
+    text-align: center;
+    width: 48%;
+  }
+
+  .checklist-question-container {
     margin-bottom: 8px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+
+    // animations
+    transition: all ease 0.4s;
+    -webkit-transition: all ease 0.4s;
+  }
+
+  .checklist-question,
+  .checklist-answer {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 40px;
+  }
+
+  .checklist-answer {
+    font-family: @font-handwritten;
+  }
+
+  .checklist-options-svg {
+    cursor: pointer;
+
+    .svg-option-box {
+      transition: fill ease 0.2s;
+      -webkit-transition: fill ease 0.2s;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .checklist-overview {
+      display: none;
+    }
+
+    .checklist-header {
+      text-align: center;
+      width: 100%;
+    }
+
+    .checklist-question,
+    .checklist-selector,
+    .checklist-answer {
+      display: inline-block;
+      float: none;
+      margin-right: 0;
+      margin-left: 0;
+      text-align: center;
+      width: 100%;
+    }
+
+    .checklist-answer {
+      margin-bottom: 8px;
+    }
   }
 }

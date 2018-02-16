@@ -1,10 +1,10 @@
-import Checklist from './Checklist';
+import ChecklistContainer from './ChecklistContainer';
 import NewCheckList from './NewCheckList';
 import CheckLists from './CheckLists';
 import CheckListsPage from './CheckListsPage';
 
 export {
-  Checklist,
+  ChecklistContainer,
   NewCheckList,
   CheckLists,
   CheckListsPage

@@ -19,7 +19,7 @@ import {
 import { Dashboard } from './components/dashboard';
 import { EntryContainer, NewEntry, EditEntry } from './components/entry';
 import { Scorecard } from './components/scorecard';
-import { Checklist } from './components/checklist';
+import { ChecklistContainer } from './components/checklist';
 import TaskList from './components/tasks';
 import { Reporting } from './components/reporting';
 import {
@@ -50,7 +50,7 @@ ReactDOM.render(
             <Route path="/edit/:id" component={EditEntry} />
             <Route path="/@:username" component={Profile} />
             <Route path="/scorecard/:id" component={Scorecard} />
-            <Route path="/checklist/:id" component={Checklist} />
+            <Route path="/checklist/:id" component={ChecklistContainer} />
             <Route path="/reporting" component={Reporting} />
             <Route path="/components" component={Library} />
           </Switch>
