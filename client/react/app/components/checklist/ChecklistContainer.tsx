@@ -3,12 +3,9 @@ import { Link, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { isNumber } from 'lodash';
 import * as moment from 'moment';
-// import DatePicker from 'react-datepicker';
-// import 'react-datepicker/dist/react-datepicker.css';
 import NavBar from '../navbar';
 import ChecklistOverview from './Checklist';
 import ChecklistFlow from './ChecklistFlow';
-// // import ChecklistQuestion from './ChecklistQuestion';
 import {
   IChecklist,
   IQuestion,
