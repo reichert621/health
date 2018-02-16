@@ -51,13 +51,15 @@ class ChecklistFlow extends React.Component<ChecklistProps, ChecklistState> {
 
   // TODO: update type
   onKeyDown(e: any) {
+    const { onSubmit } = this.props;
+
     switch (e.key) {
       case 'ArrowRight':
-      case 'Enter':
         return this.setNextQuestion();
       case 'ArrowLeft':
-      case 'Escape':
         return this.setPreviousQuestion();
+      case 'Enter':
+        return this.isLastIndex() ? onSubmit() : this.setNextQuestion();
       case '1':
       case '2':
       case '3':
@@ -67,6 +69,13 @@ class ChecklistFlow extends React.Component<ChecklistProps, ChecklistState> {
       default:
         return null;
     }
+  }
+
+  isLastIndex() {
+    const { currentIndex } = this.state;
+    const { questions } = this.props;
+
+    return currentIndex === questions.length - 1;
   }
 
   getNextIndex() {
@@ -99,7 +108,15 @@ class ChecklistFlow extends React.Component<ChecklistProps, ChecklistState> {
     const { questions, onScoreChange } = this.props;
     const question = questions[currentIndex];
 
-    return onScoreChange(question, score);
+    return this.handleScoreChange(question, score);
+  }
+
+  handleScoreChange(question: IQuestion, score: number) {
+    const { onScoreChange } = this.props;
+
+    onScoreChange(question, score);
+
+    setTimeout(() => this.setNextQuestion(), 200);
   }
 
   render() {
@@ -128,13 +145,13 @@ class ChecklistFlow extends React.Component<ChecklistProps, ChecklistState> {
         <div className='checklist-container clearfix'>
           {
             questions.map((question, key) => {
-              const offset = (key - currentIndex) * 50;
+              const offset = (key - currentIndex) * 60;
               return (
                 <ChecklistFlowQuestion
                   key={key}
                   question={question}
                   offset={offset}
-                  onSelect={score => onScoreChange(question, score)} />
+                  onSelect={score => this.handleScoreChange(question, score)} />
               );
             })
           }
