@@ -54,5 +54,11 @@ module.exports = {
     return Checklist.fetchQuestionStats(req.user.id)
       .then(stats => res.json({ stats }))
       .catch(err => handleError(res, err));
+  },
+
+  fetchScoresByTask: (req, res) => {
+    return Checklist.fetchScoresByTask(req.user.id)
+      .then(stats => res.json({ stats }))
+      .catch(err => handleError(res, err));
   }
 };

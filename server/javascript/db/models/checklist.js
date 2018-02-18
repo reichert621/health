@@ -3,6 +3,7 @@ const { first, isNumber } = require('lodash');
 const moment = require('moment');
 const ChecklistQuestion = require('./checklist_question');
 const ChecklistScore = require('./checklist_score');
+const ScorecardSelectedTask = require('./scorecard_selected_task');
 
 // Depression levels
 const levels = {
@@ -153,7 +154,10 @@ const fetchScoresByDate = (userId) => {
     .innerJoin('checklist_scores as cs', 'cs.checklistId', 'c.id')
     .where({ 'c.userId': userId })
     .groupBy('c.date')
-    .orderBy('c.date', 'desc');
+    .orderBy('c.date', 'desc')
+    .then(result => {
+      return result.map(r => merge(r, { score: Number(r.score) }));
+    });
 };
 
 const fetchScoresByDayOfWeek = (userId) => {
@@ -167,6 +171,37 @@ const fetchScoresByDayOfWeek = (userId) => {
           [day]: (map[day] || []).concat(s)
         });
       }, {});
+    });
+};
+
+// TODO: move to helpers/utils
+const calculateAverage = (nums = []) => {
+  if (!nums || !nums.length) return 0;
+
+  const sum = nums.reduce((total, n) => total + n, 0);
+  const count = nums.length;
+
+  return sum / count;
+};
+
+const fetchScoresByTask = (userId) => {
+  return Promise.all([
+    fetchScoresByDate(userId),
+    ScorecardSelectedTask.fetchWithDates(userId)
+  ])
+    .then(([scoresByDate, tasksByDate]) => {
+      const mappings = scoresByDate.reduce((map, { date, score }) => {
+        return merge(map, { [date]: score });
+      }, {});
+
+      return Object.keys(tasksByDate).map(task => {
+        const dates = tasksByDate[task];
+        const scores = dates
+          .filter(date => isNumber(mappings[date]))
+          .map(date => mappings[date]);
+
+        return { task, score: calculateAverage(scores) };
+      });
     });
 };
 
@@ -261,6 +296,7 @@ module.exports = {
   fetchCompletedDays,
   fetchScoresByDate,
   fetchScoresByDayOfWeek,
+  fetchScoresByTask,
   fetchScoreRangeFrequency,
   fetchQuestionStats,
   fetchStats,

@@ -24,21 +24,21 @@ const getTotalStreak = (
 
 // TODO: unit tests
 const calculateEarnings = (streaks: number[]): number => {
-  const DAY = 10;
-  const WEEK = 30;
-  const MONTH = 200;
-  const THREE_MONTH = 400;
-  const SIX_MONTH = 800;
-  const YEAR = 1200;
+  const DAILY_EARNINGS = 10;
+  const WEEKLY_EARNINGS = 30;
+  const MONTHLY_EARNINGS = 200;
+  const THREE_MONTH_BONUS = 400;
+  const SIX_MONTH_BONUS = 800;
+  const MAX_PER_YEAR = 100 * 100;
 
   return streaks.reduce((earnings, count) => {
     const n = count % 365;
-    const days = n * DAY;
-    const weeks = Math.floor(n / 7) * WEEK;
-    const months = Math.floor(n / 30) * MONTH;
-    const threeMonthBonus = n > (3 * 30) ? THREE_MONTH : 0;
-    const sixMonthBonus = n > (6 * 30) ? SIX_MONTH : 0;
-    const yearBonus = n > 365 ? YEAR : 0;
+    const days = n * DAILY_EARNINGS;
+    const weeks = Math.floor(n / 7) * WEEKLY_EARNINGS;
+    const months = Math.floor(n / 30) * MONTHLY_EARNINGS;
+    const threeMonthBonus = n >= (3 * 30) ? THREE_MONTH_BONUS : 0;
+    const sixMonthBonus = n >= (6 * 30) ? SIX_MONTH_BONUS : 0;
+    const yearBonus = count >= 365 ? MAX_PER_YEAR : 0;
     const base = days + weeks + months;
     const bonuses = threeMonthBonus + sixMonthBonus + yearBonus;
 

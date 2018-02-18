@@ -26,6 +26,25 @@ const fetchSelectedTasksByCategory = (userId) => {
     });
 };
 
+const fetchWithDates = (userId) => {
+  return ScoreCardSelectedTask()
+    .select('c.name', 't.description', 's.date')
+    .from('scorecard_selected_tasks as sst')
+    .innerJoin('scorecards as s', 'sst.scorecardId', 's.id')
+    .innerJoin('tasks as t', 'sst.taskId', 't.id')
+    .innerJoin('categories as c', 't.categoryId', 'c.id')
+    .where({ 'sst.userId': userId })
+    .then(results => {
+      return results.reduce((map, { name, description, date }) => {
+        const key = `${name}: ${description}`;
+
+        return merge(map, {
+          [key]: (map[key] || []).concat(date)
+        });
+      }, {});
+    });
+};
+
 const fetchByScorecardId = (scorecardId, userId, where = {}) =>
   fetch(merge(where, { scorecardId }), userId);
 
@@ -81,6 +100,7 @@ const destroyByScorecardId = (scorecardId, userId) =>
 module.exports = {
   fetch,
   fetchSelectedTasksByCategory,
+  fetchWithDates,
   fetchByScorecardId,
   findById,
   create,
