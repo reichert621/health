@@ -1,5 +1,5 @@
 const knex = require('../knex.js');
-const { first, isNumber } = require('lodash');
+const { first, isNumber, sortBy } = require('lodash');
 const moment = require('moment');
 const ChecklistQuestion = require('./checklist_question');
 const ChecklistScore = require('./checklist_score');
@@ -200,9 +200,17 @@ const fetchScoresByTask = (userId) => {
           .filter(date => isNumber(mappings[date]))
           .map(date => mappings[date]);
 
-        return { task, score: calculateAverage(scores) };
+        return {
+          task,
+          data: {
+            dates,
+            scores,
+            average: calculateAverage(scores)
+          }
+        };
       });
-    });
+    })
+    .then(stats => sortBy(stats, 'data.average'));
 };
 
 const getDepressionLevelByScore = (score) => {
