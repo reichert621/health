@@ -210,6 +210,13 @@ const fetchScoresByTask = (userId) => {
         };
       });
     })
+    .then(stats => {
+      return stats.filter(({ data = {} }) => {
+        const { scores = [] } = data;
+
+        return scores.length > 0;
+      });
+    })
     .then(stats => sortBy(stats, 'data.average'));
 };
 
