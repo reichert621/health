@@ -58,6 +58,7 @@ class Reporting extends React.Component {
         <div className="default-container">
           <div className="reporting-header-container reporting-component">
             <ReportingOverview
+              checklists={completedChecklists}
               scorecards={completedScorecards}
               tasks={topTasks} />
           </div>
