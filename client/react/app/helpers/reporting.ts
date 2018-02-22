@@ -1,4 +1,5 @@
 import * as Bluebird from 'bluebird';
+import * as moment from 'moment';
 import { keys, groupBy } from 'lodash';
 import { HttpResponse, get } from './http';
 import { fetchScorecard } from './scorecard';
@@ -19,6 +20,23 @@ export interface ReportingDatedItem extends DatedItem {
   count: number;
 }
 
+export interface ChecklistQuestionStats {
+  question: string;
+  scores: number[];
+  count: number;
+  total: number;
+  average: number;
+}
+
+export interface TaskImpactStats {
+  task: string;
+  data: {
+    average: number;
+    scores: number[];
+    dates: moment.Moment|Date|string[]
+  };
+}
+
 export interface ReportingStats {
   checklist: number[][];
   scorecard: number[][];
@@ -28,6 +46,8 @@ export interface ReportingStats {
   scorecardScoresByDay: ScoreByDay;
   topTasks: ReportingTask[];
   totalScoreOverTime: number[][];
+  checklistQuestionStats: ChecklistQuestionStats[];
+  checklistScoresByTask: TaskImpactStats[];
 }
 
 // TODO: unit test
