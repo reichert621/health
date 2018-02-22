@@ -2,8 +2,6 @@ import * as React from 'react';
 import { ChecklistQuestionStats } from '../../helpers/reporting';
 
 const TopMoods = ({ stats = [] }: { stats: ChecklistQuestionStats[] }) => {
-  console.log('Top mood stats!', stats);
-
   return (
     <div>
       {
