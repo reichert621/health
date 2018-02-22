@@ -6,6 +6,8 @@ import ReportingStreaks from './ReportingStreaks';
 import TopTasks from './TopTasks';
 import MoodFrequency from './MoodFrequency';
 import ScoresByDay from './ScoresByDay';
+import TopMoods from './TopMoods';
+import HighImpactTasks from './HighImpactTasks';
 import { fetchAllStats } from '../../helpers/reporting';
 import './Reporting.less';
 
@@ -36,6 +38,7 @@ class Reporting extends React.Component {
       checklistScoresByDay = {},
       depressionLevelFrequency = {},
       checklistQuestionStats = [],
+      checklistScoresByTask = [],
       // Scorecard stats
       scorecardStats = [],
       completedScorecards = [],
@@ -45,6 +48,9 @@ class Reporting extends React.Component {
       // Task stats
       topTasks = []
     } = stats;
+
+    const highImpactTasks = checklistScoresByTask.slice(0, 5);
+    const lowImpactTasks = checklistScoresByTask.slice(-5).reverse();
 
     console.log('stats!', stats);
 
@@ -98,6 +104,26 @@ class Reporting extends React.Component {
               <h4>Mood Frequency</h4>
 
               <MoodFrequency stats={depressionLevelFrequency} />
+            </div>
+          </div>
+
+          <div className="clearfix">
+            <div className="reporting-component-container reporting-component pull-left">
+              <h4>Top Moods</h4>
+
+              <TopMoods stats={checklistQuestionStats} />
+            </div>
+
+            <div className="reporting-component-container reporting-component pull-left">
+              <h4>High-Impact Tasks</h4>
+
+              <HighImpactTasks tasks={highImpactTasks} />
+            </div>
+
+            <div className="reporting-component-container reporting-component pull-left">
+              <h4>Low-Impact Tasks</h4>
+
+              <HighImpactTasks tasks={lowImpactTasks} />
             </div>
           </div>
         </div>
