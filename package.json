@@ -70,6 +70,7 @@
     "less-loader": "^4.0.5",
     "mocha": "^2.5.3",
     "ng-annotate-loader": "^0.2.0",
+    "nodemon": "^1.15.1",
     "raw-loader": "^0.5.1",
     "style-loader": "^0.13.1",
     "ts-loader": "^2.3.2",
@@ -87,7 +88,7 @@
   "scripts": {
     "prestart": "npm run db:migrate && npm run build:react",
     "start": "node server/javascript/index.js",
-    "dev": "node server/javascript/index.js",
+    "dev": "./node_modules/nodemon/bin/nodemon.js server/javascript/index.js",
     "eslint:react": "./node_modules/.bin/eslint 'client/react/app/**/*.js'",
     "tslint:react": "./node_modules/.bin/tslint 'client/react/app/**/*.ts'",
     "lint:react": "npm run tslint:react && npm run eslint:react",
@@ -95,6 +96,7 @@
     "db:migrate": "./node_modules/.bin/knex migrate:latest --knexfile server/javascript/db/knexfile.js",
     "db:seed": "./node_modules/.bin/knex seed:run --knexfile server/javascript/db/knexfile.js",
     "build:react": "./node_modules/.bin/webpack --config webpack.react.config.js",
+    "react:watch": "./node_modules/.bin/webpack --config webpack.react.config.js -w",
     "restart": "pm2 startOrRestart ecosystem.config.js",
     "deploy": "pm2 deploy ecosystem.config.js production"
   }
