@@ -9,6 +9,7 @@ import DashboardList from './DashboardList';
 import DashboardPreview from './DashboardPreview';
 import { fetchScorecard, createNewScorecard } from '../../helpers/scorecard';
 import { createNewChecklist } from '../../helpers/checklist';
+import { createEntry } from '../../helpers/entries';
 import { keyifyDate, getPastDates } from '../../helpers/utils';
 import {
   LIST_VIEW,
@@ -16,22 +17,26 @@ import {
   UPDATE_VIEW,
   getScorecards,
   getChecklists,
+  getEntries,
   selectDate
 } from '../../reducers';
 import './Dashboard.less';
 
 const mapStateToProps = (state) => {
-  const { currentView, selected, scorecards, checklists } = state;
+  const { currentView, selected, scorecards, checklists, entries } = state;
   const { byId: scorecardsById, byDate: scorecardsByDate } = scorecards;
   const { byId: checklistsById, byDate: checklistsByDate } = checklists;
+  const { byId: entriesById, byDate: entriesByDate } = entries;
 
   return {
     currentView,
     selected,
     scorecardsByDate,
     checklistsByDate,
+    entriesByDate,
     scorecards: values(scorecardsById),
-    checklists: values(checklistsById)
+    checklists: values(checklistsById),
+    entries: values(entriesById)
   };
 };
 
@@ -54,7 +59,8 @@ class Dashboard extends React.Component {
 
     return all([
       dispatch(getScorecards()),
-      dispatch(getChecklists())
+      dispatch(getChecklists()),
+      dispatch(getEntries())
     ])
       .then(() => this.setState({ isLoading: false }))
       .then(() => this.handleDateSelected(date))
@@ -68,17 +74,19 @@ class Dashboard extends React.Component {
   }
 
   handleDateSelected(date) {
-    const { scorecardsByDate, checklistsByDate } = this.props;
+    const { scorecardsByDate, checklistsByDate, entriesByDate } = this.props;
     const { dispatch } = this.props;
     const key = keyifyDate(date);
     const scorecard = scorecardsByDate[key];
     const checklist = checklistsByDate[key];
+    const entry = entriesByDate[key];
 
     if (!scorecard) {
       return dispatch(selectDate({
         date,
         scorecard,
-        checklist
+        checklist,
+        entry
       }));
     }
 
@@ -89,6 +97,7 @@ class Dashboard extends React.Component {
         return dispatch(selectDate({
           date,
           checklist,
+          entry,
           scorecard: extend(scorecard, { tasks })
         }));
       });
@@ -129,6 +138,22 @@ class Dashboard extends React.Component {
       });
   }
 
+  createNewEntry(entry, date) {
+    if (entry && entry.id) return resolve();
+
+    const { history } = this.props;
+    const params = {
+      date: date.format('YYYY-MM-DD'),
+      title: '',
+      content: ''
+    };
+
+    return createEntry(params)
+      .then(({ id: entryId }) => {
+        return history.push(`/entry/${entryId}`);
+      });
+  }
+
   setCurrentView(view) {
     const { dispatch } = this.props;
 
@@ -163,7 +188,8 @@ class Dashboard extends React.Component {
               <DashboardPreview
                 selected={selected}
                 handleScorecardClicked={this.createNewScorecard.bind(this)}
-                handleChecklistClicked={this.createNewChecklist.bind(this)} />
+                handleChecklistClicked={this.createNewChecklist.bind(this)}
+                handleEntryClicked={this.createNewEntry.bind(this)} />
             </div>
 
             <div className="dashboard-list-container pull-right">

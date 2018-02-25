@@ -1,5 +1,6 @@
-import React, { PropTypes } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import moment from 'moment';
+import NavBar from '../navbar';
 import EntryPreview from '../entry/EntryPreview';
 import { fetchEntries } from '../../helpers/entries';
 import { logout } from '../../helpers/auth';
@@ -30,19 +31,23 @@ class Home extends React.Component {
     const { entries = [] } = this.state;
 
     if (!entries || !entries.length) {
-      return (
-        <div>Loading entries...</div>
-      );
+      return null;
     }
 
     return entries
-      // sort by most recent id
-      .sort((x, y) => y.id - x.id)
-      .map(entry => (
-        <EntryPreview
-          key={entry.id}
-          entry={entry} />
-      ));
+      .sort((x, y) => {
+        return Number(new Date(y.date)) - Number(new Date(x.date));
+      })
+      .map(entry => {
+        const { id: key, date } = entry;
+        const formatted = { ...entry, date: moment(date) };
+
+        return (
+          <EntryPreview
+            key={key}
+            entry={formatted} />
+        );
+      });
   }
 
   logout() {
@@ -58,50 +63,18 @@ class Home extends React.Component {
   }
 
   render() {
+    const { history } = this.props;
+
     return (
-      <div className="default-container">
-        <div className="">
-          <Link to="/new">New Entry</Link>
-          <span>/</span>
-          <Link to="/scorecards">Scorecards</Link>
-          <span>/</span>
-          <Link to="/checklists">Checklists</Link>
-          <span>/</span>
-          <Link to="/reporting">Reporting</Link>
-          <span>/</span>
-          <Link to="/dashboard">Dashboard</Link>
-          <span>/</span>
-          <Link to="/logout" onClick={this.logout.bind(this)}>
-            Logout
-          </Link>
-        </div>
+      <div>
+        <NavBar
+          title='Blog'
+          history={history} />
 
-        <hr />
-
-        <h1 className="blog-title">
-          Log
-        </h1>
-
-        <div className="entry-list-container">
-          {this.renderEntries()}
-        </div>
-
-        <hr />
-
-        <div className="">
-          <Link to="/new">New Entry</Link>
-          <span>/</span>
-          <Link to="/scorecards">Scorecards</Link>
-          <span>/</span>
-          <Link to="/checklists">Checklists</Link>
-          <span>/</span>
-          <Link to="/reporting">Reporting</Link>
-          <span>/</span>
-          <Link to="/dashboard">Dashboard</Link>
-          <span>/</span>
-          <Link to="/logout" onClick={this.logout.bind(this)}>
-            Logout
-          </Link>
+        <div className='default-container'>
+          <div className='entry-list-container'>
+            {this.renderEntries()}
+          </div>
         </div>
       </div>
     );

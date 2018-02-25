@@ -56,7 +56,9 @@ const DashboardScorecardPreview = ({ scorecard = {}, handleClick }) => {
         </Link>
       </div>
 
-      <div className={`dashboard-preview-points ${!isNumber(points) && 'hidden'}`}>
+      <div className={`dashboard-preview-points ${
+        !isNumber(points) ? 'hidden' : ''
+      }`}>
         {points} productivity {points === 1 ? 'point' : 'points'}
       </div>
 
@@ -107,14 +109,40 @@ const DashboardChecklistPreview = ({ checklist = {}, handleClick }) => {
   );
 };
 
+const DashboardEntryPreview = ({ entry = {}, handleClick }) => {
+  const { id: entryId } = entry;
+
+  return (
+    <div className="dashboard-entry-preview">
+      <div className="clearfix">
+        <h4 className="dashboard-preview-header section-header pull-left">
+          Log
+          {
+            entryId ?
+              <img className="preview-icon checkmark" src="assets/checkmark.svg" /> :
+              <img className="preview-icon" src="assets/pencil.svg" />
+          }
+        </h4>
+
+        <Link className="preview-link text-active pull-right"
+          to={entryId ? `/entry/${entryId}` : '#'}
+          onClick={handleClick}>
+          {entryId ? 'View' : 'Start'}
+        </Link>
+      </div>
+    </div>
+  );
+};
+
 class DashboardPreview extends React.Component {
   render() {
     const {
       selected = {},
       handleScorecardClicked,
-      handleChecklistClicked
+      handleChecklistClicked,
+      handleEntryClicked
     } = this.props;
-    const { scorecard, checklist, date = moment() } = selected;
+    const { scorecard, checklist, entry, date = moment() } = selected;
     const isToday = moment(date).isSame(moment(), 'day');
 
     return (
@@ -134,6 +162,10 @@ class DashboardPreview extends React.Component {
         <DashboardChecklistPreview
           checklist={checklist}
           handleClick={() => handleChecklistClicked(checklist, date)} />
+
+        <DashboardEntryPreview
+          entry={entry}
+          handleClick={() => handleEntryClicked(entry, date)} />
       </div>
     );
   }

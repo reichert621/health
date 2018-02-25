@@ -1,17 +1,107 @@
-@border-gray: #d0d0d0;
-@light-gray: #eee;
+@border-gray: #d3d3d3;
+@faded-gray: #b4b4b4;
 @black: #2b2b2b;
 
-.entry-container {
-  margin-bottom: 80px;
-}
-
 .entry-content {
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  letter-spacing: 0.2px;
-  margin-bottom: 20px;
+  color: @black;
+  word-wrap: break-word;
+
+  p {
+    margin-top: 0;
+    margin-bottom: 28px;
+  }
 }
 
+.entry-container,
+.entry-preview-container {
+  line-height: 1.6;
+  margin-bottom: 40px;
+  min-width: 360px;
+  padding: 24px 0px;
+}
+
+.entry-container {
+  border-top: 1px solid @border-gray;
+  width: 52%;
+
+  .entry-content {
+    cursor: pointer;
+    min-height: 240px;
+  }
+}
+
+.entry-preview-container {
+  border-bottom: 1px solid @border-gray;
+  margin: 0 auto 24px;
+  width: 64%;
+
+  .entry-content {
+    min-height: 120px;
+  }
+}
+
+.entry-view-link-container {
+  font-size: 16px;
+  text-align: right;
+
+  .forward-icon {
+    margin-left: 16px;
+    height: 16px;
+    vertical-align: -2px;
+    transform: rotate(180deg);
+  }
+}
+
+.entry-prompts-container {
+  border: 1px solid @border-gray;
+  border-radius: 4px;
+  line-height: 1.6;
+  margin-left: 24px;
+  min-width: 360px;
+  padding: 24px;
+  width: 40%;
+}
+
+.edit-entry-textarea {
+  border: none;
+  // border-bottom: 1px solid @border-gray;
+  display: block;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  padding: 0;
+  resize: none;
+  width: 100%;
+
+  &:focus {
+    outline: 0;
+  }
+}
+
+.view-mode {
+  h3.text-light,
+  .entry-prompts-container {
+    opacity: 1;
+    transition: opacity ease 0.4s;
+    -webkit-transition: opacity ease 0.4s;
+  }
+}
+
+.edit-mode {
+  h3.text-light,
+  .entry-prompts-container {
+    opacity: 0.4;
+    transition: opacity ease 0.4s;
+    -webkit-transition: opacity ease 0.4s;
+  }
+}
+
+@media (max-width: 880px) {
+  .entry-container,
+  .entry-prompts-container {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
