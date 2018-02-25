@@ -40,15 +40,12 @@ ReactDOM.render(
             <Route path="/signup" component={SignUp} />
             <Route path="/about" component={About} />
             <Route path="/signup-complete" component={SignUpComplete} />
-            <Route path="/home" component={Home} />
+            <Route path="/blog" component={Home} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/tasks" component={TaskList} />
             <Route path="/self-activation" component={SelfActivationMethods} />
             <Route path="/cognitive-distortions" component={CognitiveDistortions} />
-            <Route path="/new" component={NewEntry} />
             <Route path="/entry/:id" component={EntryContainer} />
-            <Route path="/edit/:id" component={EditEntry} />
-            <Route path="/@:username" component={Profile} />
             <Route path="/scorecard/:id" component={Scorecard} />
             <Route path="/checklist/:id" component={ChecklistContainer} />
             <Route path="/reporting" component={Reporting} />
