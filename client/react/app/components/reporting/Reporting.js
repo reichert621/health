@@ -109,7 +109,7 @@ class Reporting extends React.Component {
 
           <div className="clearfix">
             <div className="reporting-component-container reporting-component pull-left">
-              <h4>Top Moods</h4>
+              <h4>Common Issues</h4>
 
               <TopMoods stats={checklistQuestionStats} />
             </div>

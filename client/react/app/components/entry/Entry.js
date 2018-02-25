@@ -23,7 +23,7 @@ const Entry = ({ entry }) => {
       </div>
 
       <small>
-        {created_at} | {isPrivate ? 'Private' : 'Public'}
+        {isPrivate ? 'Private' : 'Public'}
       </small>
     </div>
   );
