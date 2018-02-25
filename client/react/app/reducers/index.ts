@@ -290,7 +290,7 @@ const updateWithEntry = (state = {
   byId: {}
 } as MappedItems<Entry>, entry: Entry) => {
   const { byId, byDate, items } = state;
-  const { id: entryId, title: date } = entry; // TODO: fix title -> date
+  const { id: entryId, date } = entry;
   const existing = byId[entryId];
   const updated = extend({}, existing, entry);
 

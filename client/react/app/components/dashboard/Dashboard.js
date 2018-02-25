@@ -142,7 +142,11 @@ class Dashboard extends React.Component {
     if (entry && entry.id) return resolve();
 
     const { history } = this.props;
-    const params = { title: date.format('YYYY-MM-DD'), content: '' };
+    const params = {
+      date: date.format('YYYY-MM-DD'),
+      title: '',
+      content: ''
+    };
 
     return createEntry(params)
       .then(({ id: entryId }) => {

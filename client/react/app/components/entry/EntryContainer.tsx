@@ -10,6 +10,12 @@ const formatHTML = (content = '') => {
   return { __html: md(content) };
 };
 
+const estimateLinesOfContent = (content = ''): number => {
+  return content.split('\n')
+    .map((l: string) => Math.ceil((l.length + 1) / 65))
+    .reduce((total: number, count: number) => total + count, 1);
+};
+
 const EntryPrompts = () => {
   const styles = {
     container: { marginBottom: 16 },
@@ -60,7 +66,7 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
 
     return fetchEntry(id)
       .then(entry => {
-        const { title: date } = entry; // TODO: fix title -> date
+        const { date } = entry;
 
         return this.setState({ entry, date: moment(date) });
       })
@@ -94,6 +100,17 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
     });
   }
 
+  handleKeyDown(e: any) {
+    // Allow tab key or [ctrl/cmd + S] to exit edit mode and trigger save
+    const isTabbing = e.key === 'Tab';
+    const isTryingToSave = e.key === 's' && (e.metaKey || e.ctrlKey);
+
+    if (isTabbing || isTryingToSave) {
+      e.preventDefault();
+      this.saveEntryContent();
+    }
+  }
+
   saveEntryContent() {
     this.setState({ isSaving: true });
 
@@ -120,14 +137,7 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
     const { date, entry, isEditing, isSaving } = this.state;
     const { content = '' } = entry;
     const { history } = this.props;
-
-    // const width = this.refs.entryInput && this.refs.entryInput.clientWidth;
-    const lines = content.split('\n')
-      .map((l: string) => Math.ceil((l.length + 1) / 65))
-      .reduce((total: number, count: number) => total + count, 1);
-    const rows = Math.max(lines, 8);
-
-    console.log(rows);
+    const lines = estimateLinesOfContent(content);
 
     return (
       <div>
@@ -157,13 +167,14 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
               {
                 isEditing ?
                   <textarea
-                    rows={rows}
+                    rows={Math.max(lines, 8)}
                     name='content'
                     ref='entryInput'
                     className='edit-entry-textarea'
                     placeholder='Type here!'
                     value={content}
                     onChange={this.updateEntryContent.bind(this)}
+                    onKeyDown={this.handleKeyDown.bind(this)}
                     onBlur={this.saveEntryContent.bind(this)}>
                   </textarea> :
                   <div className='entry-content'
