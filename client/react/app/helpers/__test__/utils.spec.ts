@@ -75,7 +75,7 @@ describe('utils', () => {
       { id: 3, date: '2017-03-01' }
     ];
 
-    it('maps items by their respective dates', () => {
+    it('maps items by their respective ids', () => {
       const mappings = utils.mapById(items);
       const expected = {
         '1': { id: 1, date: '2017-01-01' },
