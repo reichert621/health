@@ -66,6 +66,7 @@ export const getTotalStreak = (
 
 // TODO: unit test
 export const calculateEarnings = (streaks: number[]): number => {
+  // Values are in cents (USD)
   const DAILY_EARNINGS = 10;
   const WEEKLY_EARNINGS = 30;
   const MONTHLY_EARNINGS = 200;

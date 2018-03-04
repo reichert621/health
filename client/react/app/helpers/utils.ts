@@ -127,6 +127,8 @@ export const getPastDates = (days: number = 10): moment.Moment[] => {
 export const getStreakStats = (stats: DatedItem[]): number[] => {
   if (!stats || !stats.length) return [];
 
+  // TODO: this currently assumes the stats are sorted in descending
+  // order by date, need to fix this to handle unsorted inputs
   return stats
     .map(({ date }) => {
       return moment().diff(date, 'days');
