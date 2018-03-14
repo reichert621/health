@@ -28,6 +28,10 @@
     cursor: pointer;
     min-height: 240px;
   }
+
+  &.full-width {
+    width: 100%;
+  }
 }
 
 .entry-preview-container {
@@ -60,6 +64,21 @@
   min-width: 360px;
   padding: 24px;
   width: 40%;
+}
+
+.entry-prompts {
+  .x-icon {
+    cursor: pointer;
+    transition: opacity ease 0.2s;
+    -webkit-transition: opacity ease 0.2s;
+    opacity: 0;
+  }
+
+  &:hover {
+    .x-icon {
+      opacity: 1;
+    }
+  }
 }
 
 .edit-entry-textarea {

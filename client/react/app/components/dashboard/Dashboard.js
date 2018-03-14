@@ -144,8 +144,9 @@ class Dashboard extends React.Component {
     const { history } = this.props;
     const params = {
       date: date.format('YYYY-MM-DD'),
-      title: '',
-      content: ''
+      title: date.format('YYYY-MM-DD'),
+      content: '',
+      isPrivate: true
     };
 
     return createEntry(params)

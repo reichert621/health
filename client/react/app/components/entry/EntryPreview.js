@@ -7,8 +7,8 @@ const getPreviewContent = (content = '') => {
   return first(content.split('\n'));
 };
 
-const EntryPreview = ({ entry }) => {
-  const { id, content, date } = entry;
+const EntryPreview = ({ entry, linkTo }) => {
+  const { content, date } = entry;
 
   return (
     <div className='entry-preview-container'>
@@ -21,7 +21,7 @@ const EntryPreview = ({ entry }) => {
       </div>
 
       <div className='entry-view-link-container'>
-        <Link to={`/entry/${id}`}>
+        <Link to={linkTo}>
           <span>View</span>
           <img className='forward-icon' src='assets/back-arrow.svg' />
         </Link>
