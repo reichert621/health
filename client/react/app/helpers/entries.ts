@@ -19,6 +19,11 @@ export const fetchUserEntries = (username: string): Promise<Entry> => {
     .then((res: HttpResponse) => res.entries);
 };
 
+export const fetchUserEntry = (username: string, entryId: number): Promise<Entry> => {
+  return get(`/api/users/${username}/entries/${entryId}`)
+    .then((res: HttpResponse) => res.entry);
+};
+
 export const fetchEntry = (id: number): Promise<Entry> => {
   return get(`/api/entries/${id}`)
     .then((res: HttpResponse) => res.entry);

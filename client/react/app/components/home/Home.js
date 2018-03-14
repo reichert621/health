@@ -39,13 +39,15 @@ class Home extends React.Component {
         return Number(new Date(y.date)) - Number(new Date(x.date));
       })
       .map(entry => {
-        const { id: key, date } = entry;
+        const { id, date } = entry;
         const formatted = { ...entry, date: moment(date) };
+        const linkTo = `/entry/${id}`;
 
         return (
           <EntryPreview
-            key={key}
-            entry={formatted} />
+            key={id}
+            entry={formatted}
+            linkTo={linkTo} />
         );
       });
   }

@@ -110,7 +110,8 @@ const DashboardChecklistPreview = ({ checklist = {}, handleClick }) => {
 };
 
 const DashboardEntryPreview = ({ entry = {}, handleClick }) => {
-  const { id: entryId } = entry;
+  const { id: entryId, content } = entry;
+  const hasContent = content && (content.length > 0);
 
   return (
     <div className="dashboard-entry-preview">
@@ -118,7 +119,7 @@ const DashboardEntryPreview = ({ entry = {}, handleClick }) => {
         <h4 className="dashboard-preview-header section-header pull-left">
           Log
           {
-            entryId ?
+            hasContent ?
               <img className="preview-icon checkmark" src="assets/checkmark.svg" /> :
               <img className="preview-icon" src="assets/pencil.svg" />
           }
@@ -127,7 +128,7 @@ const DashboardEntryPreview = ({ entry = {}, handleClick }) => {
         <Link className="preview-link text-active pull-right"
           to={entryId ? `/entry/${entryId}` : '#'}
           onClick={handleClick}>
-          {entryId ? 'View' : 'Start'}
+          {hasContent ? 'View' : 'Start'}
         </Link>
       </div>
     </div>

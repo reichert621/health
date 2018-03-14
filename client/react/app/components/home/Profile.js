@@ -1,6 +1,9 @@
-import React, { PropTypes } from 'react';
-import { Link } from 'react-router-dom';
-import Entry from '../entry/Entry';
+import React from 'react';
+import moment from 'moment';
+import { all } from 'bluebird';
+import NavBar from '../navbar';
+import EntryPreview from '../entry/EntryPreview';
+import { isAuthenticated } from '../../helpers/auth';
 import { fetchUserEntries } from '../../helpers/entries';
 import './Home.less';
 
@@ -12,50 +15,68 @@ class Profile extends React.Component {
     const { username } = match.params;
 
     this.state = {
-      user: username,
+      username,
+      isLoggedIn: false,
       entries: []
     };
   }
 
   componentDidMount() {
-    const { match } = this.props;
-    const { username } = match.params;
+    const { username } = this.state;
+    const { history } = this.props;
 
-    return fetchUserEntries(username)
-      .then(entries => this.setState({ entries }))
+    return all([
+      isAuthenticated(),
+      fetchUserEntries(username)
+    ])
+      .then(([isLoggedIn, entries]) => {
+        this.setState({ isLoggedIn, entries });
+      })
       .catch(err => {
         console.log('Error fetching user entries!', err);
+
+        return history.push('/login');
       });
   }
 
   renderEntries() {
-    const { entries = [] } = this.state;
+    const { username, entries = [] } = this.state;
 
     if (!entries || !entries.length) {
-      return (
-        <div>Loading entries...</div>
-      );
+      return null;
     }
 
     return entries
-      // sort by most recent id
-      .sort((x, y) => y.id - x.id)
-      .map(entry => (
-        <Entry
-          key={entry.id}
-          entry={entry} />
-      ));
+      .sort((x, y) => {
+        return Number(new Date(y.date)) - Number(new Date(x.date));
+      })
+      .map(entry => {
+        const { id, date } = entry;
+        const formatted = { ...entry, date: moment(date) };
+        const linkTo = `/@${username}/entry/${id}`;
+
+        return (
+          <EntryPreview
+            key={id}
+            entry={formatted}
+            linkTo={linkTo} />
+        );
+      });
   }
-
   render() {
-    return (
-      <div className="default-container">
-        <h1 className="blog-title">
-          {this.state.user}
-        </h1>
+    const { isLoggedIn, username } = this.state;
+    const { history } = this.props;
 
-        <div className="entry-list-container">
-          {this.renderEntries()}
+    return (
+      <div>
+        <NavBar
+          title={username}
+          history={isLoggedIn ? history : null} />
+
+        <div className='default-container'>
+          <div className='entry-list-container'>
+            {this.renderEntries()}
+          </div>
         </div>
       </div>
     );

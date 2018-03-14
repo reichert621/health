@@ -34,7 +34,11 @@ const findOne = (where = {}, userId) =>
 
 const findById = (id, userId, where = {}) =>
   findOne(merge(where, { id }), userId)
-    .then(formatWithUtc);
+    .then(entry => {
+      if (!entry) throw new Error('No entry found!');
+
+      return formatWithUtc(entry);
+    });
 
 const create = (params, userId) =>
   Entries()

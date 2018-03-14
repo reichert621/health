@@ -10,22 +10,30 @@ const formatHTML = (content = '') => {
   return { __html: md(content) };
 };
 
-const estimateLinesOfContent = (content = ''): number => {
+const estimateLinesOfContent = (content = '', n = 65): number => {
   return content.split('\n')
-    .map((l: string) => Math.ceil((l.length + 1) / 65))
+    .map((l: string) => Math.ceil((l.length + 1) / n))
     .reduce((total: number, count: number) => total + count, 1);
 };
 
-const EntryPrompts = () => {
+const EntryPrompts = ({ onClose }: { onClose: () => void }) => {
   const styles = {
     container: { marginBottom: 16 },
-    title: { marginBottom: 8 }
+    title: { marginBottom: 8 },
+    icon: { marginTop: 4 }
   };
 
   return (
-    <div style={styles.container}>
-      <div className='text-active' style={styles.title}>
-        Prompts
+    <div className='entry-prompts' style={styles.container}>
+      <div className='clearfix'>
+        <div className='text-active pull-left' style={styles.title}>
+          Prompts
+        </div>
+
+        <img className='x-icon pull-right'
+          style={styles.icon}
+          src='assets/plus-gray.svg'
+          onClick={() => onClose()} />
       </div>
 
       <div>What did you do today?</div>
@@ -44,6 +52,7 @@ interface EntryProps extends RouteComponentProps<{ id: number }> {
 interface EntryState {
   date: moment.Moment;
   entry: any;
+  isFullView: boolean;
   isEditing: boolean;
   isSaving: boolean;
 }
@@ -55,6 +64,7 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
     this.state = {
       date: moment(),
       entry: {},
+      isFullView: false,
       isEditing: false,
       isSaving: false
     };
@@ -111,13 +121,10 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
     }
   }
 
-  saveEntryContent() {
+  saveEntry(id: number, updates = {}) {
     this.setState({ isSaving: true });
 
-    const { entry } = this.state;
-    const { id, content = '' } = entry;
-
-    return updateEntry(id, { content: content.trim() })
+    return updateEntry(id, updates)
       .then(update => {
         this.setState({ entry: update, isEditing: false });
       })
@@ -133,11 +140,26 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
       });
   }
 
+  togglePrivateEntry() {
+    const { entry } = this.state;
+    const { id, isPrivate } = entry;
+
+    return this.saveEntry(id, { isPrivate: !isPrivate });
+  }
+
+  saveEntryContent() {
+    const { entry } = this.state;
+    const { id, content = '' } = entry;
+
+    return this.saveEntry(id, { content: content.trim() });
+  }
+
   render() {
-    const { date, entry, isEditing, isSaving } = this.state;
-    const { content = '' } = entry;
+    const { date, entry, isEditing, isSaving, isFullView } = this.state;
+    const { content = '', isPrivate } = entry;
     const { history } = this.props;
-    const lines = estimateLinesOfContent(content);
+    const chars = isFullView ? 120 : 65;
+    const lines = estimateLinesOfContent(content, chars);
 
     return (
       <div>
@@ -159,11 +181,22 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
                 src='assets/check.svg' />
             </button>
 
+            <button
+              style={{ marginRight: 8 }}
+              className={`pull-right ${
+                isPrivate ? 'btn-default' : 'btn-primary'
+              }`}
+              onClick={this.togglePrivateEntry.bind(this)}>
+              {isPrivate ? 'Private' : 'Public'}
+            </button>
+
             {/* TODO: edit button? */}
           </div>
 
           <div className='clearfix'>
-            <div className='entry-container pull-left'>
+            <div className={`entry-container pull-left ${
+              isFullView ? 'full-width' : ''}`
+            }>
               {
                 isEditing ?
                   <textarea
@@ -186,8 +219,11 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
               }
             </div>
 
-            <div className='entry-prompts-container pull-right'>
-              <EntryPrompts />
+            <div className={`entry-prompts-container pull-right ${
+              isFullView ? 'hidden' : ''}`
+            }>
+              <EntryPrompts
+                onClose={() => this.setState({ isFullView: true })} />
             </div>
           </div>
         </div>

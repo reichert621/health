@@ -17,7 +17,7 @@ import {
   Library
 } from './components/home';
 import { Dashboard } from './components/dashboard';
-import { EntryContainer, NewEntry, EditEntry } from './components/entry';
+import { EntryContainer, UserEntryContainer } from './components/entry';
 import { Scorecard } from './components/scorecard';
 import { ChecklistContainer } from './components/checklist';
 import TaskList from './components/tasks';
@@ -41,6 +41,8 @@ ReactDOM.render(
             <Route path="/about" component={About} />
             <Route path="/signup-complete" component={SignUpComplete} />
             <Route path="/blog" component={Home} />
+            <Route path="/@:username/entry/:id" component={UserEntryContainer} />
+            <Route path="/@:username" component={Profile} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/tasks" component={TaskList} />
             <Route path="/self-activation" component={SelfActivationMethods} />
