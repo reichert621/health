@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { first } from 'lodash';
 import { Link } from 'react-router-dom';
 import './Entry.less';
@@ -28,10 +28,6 @@ const EntryPreview = ({ entry, linkTo }) => {
       </div>
     </div>
   );
-};
-
-EntryPreview.propTypes = {
-  entry: PropTypes.object.isRequired
 };
 
 export default EntryPreview;
