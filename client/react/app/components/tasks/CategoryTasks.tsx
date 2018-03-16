@@ -156,7 +156,10 @@ class CategoryTasks extends React.Component<CategoryProps, CategoryState> {
           {
             tasks
               .sort((x, y) => y.points - x.points)
-              .map((task, key) => {
+              .map((task, index) => {
+                const { id: taskId } = task;
+                const key = taskId || index;
+
                 return (
                   <TaskItem
                     key={key}

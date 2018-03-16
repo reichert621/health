@@ -245,8 +245,9 @@ class ImperativeCategory extends React.Component<CategoryProps, CategoryState> {
           {
             items
               .sort((x, y) => x.id - y.id)
-              .map((item, key) => {
+              .map((item, index) => {
                 const { id: itemId } = item;
+                const key = itemId || index;
 
                 return (
                   <ImperativeItem
