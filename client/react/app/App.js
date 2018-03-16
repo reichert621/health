@@ -24,7 +24,8 @@ import TaskList from './components/tasks';
 import { Reporting } from './components/reporting';
 import {
   SelfActivationMethods,
-  CognitiveDistortions
+  CognitiveDistortions,
+  DailyImperatives
 } from './components/self-activation';
 // import 'normalize.css'; // TODO: figure out if necessary
 import './App.less';
@@ -47,6 +48,7 @@ ReactDOM.render(
             <Route path="/tasks" component={TaskList} />
             <Route path="/self-activation" component={SelfActivationMethods} />
             <Route path="/cognitive-distortions" component={CognitiveDistortions} />
+            <Route path="/dos-and-donts" component={DailyImperatives} />
             <Route path="/entry/:id" component={EntryContainer} />
             <Route path="/scorecard/:id" component={Scorecard} />
             <Route path="/checklist/:id" component={ChecklistContainer} />

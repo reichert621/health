@@ -10,6 +10,7 @@ const {
   checklists,
   checklistQuestions,
   checklistScores,
+  imperatives,
   reporting,
   tasks
 } = require('./db/controllers');
@@ -66,6 +67,11 @@ api.post('/checklists/new', isAuthenticated, checklists.create);
 api.get('/checklist-scores', isAuthenticated, checklistScores.fetch);
 // Checklist Questions
 api.get('/checklist-questions', checklistQuestions.fetch);
+// Imperatives
+api.get('/imperatives', isAuthenticated, imperatives.fetch);
+api.post('/imperatives', isAuthenticated, imperatives.create);
+api.put('/imperatives/:id', isAuthenticated, imperatives.update);
+api.delete('/imperatives/:id', isAuthenticated, imperatives.destroy);
 // Reporting Stats
 // TODO: clean up these endpoints
 api.get('/stats/all', isAuthenticated, reporting.fetchAllStats);

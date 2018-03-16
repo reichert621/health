@@ -1,5 +1,4 @@
-import React, { PropTypes } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
 import md from '../../helpers/markdown';
 import './Entry.less';
 
@@ -10,7 +9,7 @@ const formatHTML = (content = '') => {
 // TODO: figure out how to render entries differently
 // for public vs. private vs. vs. preview vs. editing
 const Entry = ({ entry }) => {
-  const { title, content, created_at, isPrivate } = entry;
+  const { title, content, isPrivate } = entry;
 
   return (
     <div className="entry-container">
@@ -27,10 +26,6 @@ const Entry = ({ entry }) => {
       </small>
     </div>
   );
-};
-
-Entry.propTypes = {
-  entry: PropTypes.object.isRequired
 };
 
 export default Entry;

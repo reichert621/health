@@ -116,6 +116,7 @@
     "tslint:react": "./node_modules/.bin/tslint 'client/react/app/**/*.ts'",
     "lint:react": "npm run tslint:react && npm run eslint:react",
     "lint:api": "./node_modules/.bin/eslint 'server/javascript/**/*.js'",
+    "lint": "./node_modules/.bin/eslint",
     "db:migrate": "./node_modules/.bin/knex migrate:latest --knexfile server/javascript/db/knexfile.js",
     "db:seed": "./node_modules/.bin/knex seed:run --knexfile server/javascript/db/knexfile.js",
     "build:react": "./node_modules/.bin/webpack --config webpack.react.config.js",
