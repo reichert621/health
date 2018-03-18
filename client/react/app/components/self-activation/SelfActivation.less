@@ -1,0 +1,55 @@
+@gray: #979797;
+@light-gray: #eaeaea;
+
+.gratitude-container {
+  width: 60%;
+}
+
+.gratitude-input {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-radius: 0px;
+  font-size: 32px;
+  padding-top: 0px;
+}
+
+.past-gratitudes-container {
+  font-size: 24px;
+  margin-top: 16px;
+  margin-bottom: 40px;
+}
+
+.past-gratitudes-label {
+  border-top: 1px solid @light-gray;
+  color: @gray;
+  font-size: 12px;
+  letter-spacing: 1.6px;
+  padding-bottom: 16px;
+  padding-top: 16px;
+  text-transform: uppercase;
+}
+
+.past-gratitude-item {
+  position: relative;
+  padding: 4px 24px;
+  margin-bottom: 8px;
+
+  .past-gratitude-date {
+    bottom: 24%;
+    color: @gray;
+    visibility: hidden;
+    font-size: 14px;
+    letter-spacing: 0.8px;
+    position: absolute;
+
+    &.left { left: -40px; }
+    &.right { right: -40px; }
+  }
+
+  &:hover {
+    .past-gratitude-date {
+      visibility: visible;
+    }
+  }
+}
