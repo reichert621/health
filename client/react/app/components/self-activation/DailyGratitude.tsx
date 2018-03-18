@@ -54,6 +54,8 @@ class DailyGratitude extends React.Component<RouteComponentProps<{}>, GratitudeS
   }
 
   componentDidMount() {
+    const { history } = this.props;
+
     return fetchGratitudes()
       .then(gratitudes => {
         const current = getTodaysGratitude(gratitudes);
@@ -63,6 +65,14 @@ class DailyGratitude extends React.Component<RouteComponentProps<{}>, GratitudeS
           historical: getRecentPastGratitudes(gratitudes, current),
           isEditing: !has(current, 'id')
         });
+      })
+      .catch(err => {
+        // TODO: handle this at a higher level
+        if (err.status === 401) {
+          return history.push('/login');
+        }
+
+        console.log('Error fetching gratitudes!', err);
       });
   }
 
