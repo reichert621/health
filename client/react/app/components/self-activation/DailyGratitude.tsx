@@ -187,7 +187,9 @@ class DailyGratitude extends React.Component<RouteComponentProps<{}>, GratitudeS
               onChange={this.handleTextChange.bind(this)} />
           </div>
 
-          <div className='past-gratitudes-container'>
+          <div className={`past-gratitudes-container ${
+            historical && historical.length > 0 ? '' : 'hidden'
+          }`}>
             <div className='past-gratitudes-label'>
               Other things I am grateful for...
             </div>
