@@ -98,6 +98,11 @@ a {
   letter-spacing: 0.4px;
   padding: 12px 24px;
 
+  &.-sm {
+    font-size: 16px;
+    font-weight: 300;
+  }
+
   &:hover {
     cursor: pointer;
   }
@@ -147,6 +152,10 @@ a {
   background: transparent;
   border: none;
   color: @gray-2;
+
+  &.-primary {
+    color: @bright-blue;
+  }
 }
 
 // TODO: deprecate
@@ -230,6 +239,10 @@ a {
   &.-inline {
     display: inline-block;
     margin-right: @margin-default;
+  }
+
+  &.-lg {
+    font-size: 24px;
   }
 
   &:focus {
@@ -352,6 +365,10 @@ a {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .back-icon {

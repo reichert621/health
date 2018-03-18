@@ -7,6 +7,7 @@ const Checklist = require('./models/checklist');
 const ChecklistScore = require('./models/checklist_score'); // TODO: undo snakecase?
 const ChecklistQuestion = require('./models/checklist_question'); // TODO: undo snakecase?
 const Imperative = require('./models/imperative');
+const Gratitude = require('./models/gratitude');
 
 module.exports = {
   User,
@@ -17,5 +18,6 @@ module.exports = {
   Checklist,
   ChecklistScore,
   ChecklistQuestion,
-  Imperative
+  Imperative,
+  Gratitude
 };

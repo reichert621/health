@@ -25,7 +25,8 @@ import { Reporting } from './components/reporting';
 import {
   SelfActivationMethods,
   CognitiveDistortions,
-  DailyImperatives
+  DailyImperatives,
+  DailyGratitude
 } from './components/self-activation';
 // import 'normalize.css'; // TODO: figure out if necessary
 import './App.less';
@@ -49,6 +50,7 @@ ReactDOM.render(
             <Route path="/self-activation" component={SelfActivationMethods} />
             <Route path="/cognitive-distortions" component={CognitiveDistortions} />
             <Route path="/dos-and-donts" component={DailyImperatives} />
+            <Route path="/gratitude" component={DailyGratitude} />
             <Route path="/entry/:id" component={EntryContainer} />
             <Route path="/scorecard/:id" component={Scorecard} />
             <Route path="/checklist/:id" component={ChecklistContainer} />
