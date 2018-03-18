@@ -92,28 +92,28 @@ class ScoreCard extends React.Component<
   }
 
   handleCheckboxUpdate(task: Task) {
-    this.setState({ isSaving: true });
-
     const { tasks, scorecard } = this.state;
     const { id: scorecardId } = scorecard;
     const { id: taskId, isComplete: isCurrentlyComplete = false } = task;
     const isComplete = !isCurrentlyComplete;
-
+    const update = tasks.map(t => {
+      return t.id === taskId ? { ...t, isComplete } : t;
+    });
+    this.setState({ isSaving: true, tasks: update });
     return toggleScorecardTask(scorecardId, taskId, isComplete)
-      .then(() => {
-        const update = tasks.map(t => {
-          return (t.id === taskId) ? { ...t, isComplete } : t;
-        });
-
-        return this.setState({ tasks: update });
-      })
       .then(() => {
         const delay = 1400;
 
         setTimeout(() => this.setState({ isSaving: false }), delay);
       })
       .catch(err => {
-        console.log('Error toggling task checkbox!', err);
+        console.log("Error toggling task checkbox!", err);
+        const revert = this.state.tasks.map(t => {
+          return t.id === taskId
+            ? { ...t, isComplete: isCurrentlyComplete }
+            : t;
+        });
+        this.setState({ tasks: revert });
       });
   }
 
