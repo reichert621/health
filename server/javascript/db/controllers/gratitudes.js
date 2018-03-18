@@ -3,7 +3,7 @@ const { handleError } = require('./utils');
 
 module.exports = {
   fetch: (req, res) =>
-    Gratitude.fetch({}, req.user.id)
+    Gratitude.fetchWithUtc({}, req.user.id)
       .then(gratitudes => res.json({ gratitudes }))
       .catch(err => handleError(res, err)),
 
