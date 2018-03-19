@@ -31,7 +31,8 @@
   }
 
   .imperative-description {
-    width: 80%;
+    cursor: pointer;
+    width: 90%;
   }
 
   .task-points {
@@ -44,10 +45,24 @@
   transition: color ease 0.4s, opacity ease 0.4s;
   -webkit-transition: color ease 0.4s, opacity ease 0.4s;
 
+  .number-label {
+    display: inline-block;
+    margin-right: 16px;
+  }
+
   .edit-icon,
   .task-active-icon {
     cursor: pointer;
     visibility: hidden;
+  }
+
+  .remove-icon {
+    cursor: pointer;
+    display: none;
+    height: 16px;
+    transform: rotate(45deg);
+    margin-right: 16px;
+    margin-top: 2px;
   }
 
   .task-active-icon {
@@ -74,6 +89,14 @@
     .task-active-icon {
       visibility: visible;
     }
+
+    .remove-icon {
+      display: inline-block;
+    }
+
+    .number-label {
+      display: none;
+    }
   }
 }
 
@@ -84,8 +107,9 @@
 }
 
 .imperative-description-input {
-  width: 560px;
+  width: 100%;
   margin-bottom: 0px;
+  padding-left: 44px;
 }
 
 .task-points-input {
