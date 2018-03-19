@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 import { has, extend, times, first, isNumber } from 'lodash';
-import { User } from './auth';
+import { IUser } from './auth';
 import { IChecklist, IQuestion } from './checklist';
 import { IScorecard } from './scorecard';
 import { Task } from './tasks';
@@ -23,7 +23,7 @@ export interface MappedItems<T> {
 }
 
 export interface AppState {
-  currentUser?: User;
+  currentUser?: IUser;
   currentView: string;
   checklists: MappedItems<IChecklist>;
   scorecards: MappedItems<IScorecard>;
