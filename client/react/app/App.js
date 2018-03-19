@@ -26,7 +26,16 @@ import {
   SelfActivationMethods,
   CognitiveDistortions,
   DailyImperatives,
-  DailyGratitude
+  DailyGratitude,
+  AntiProcrastinationSheet,
+  PleasurePredicting,
+  TripleColumnTechnique,
+  ButRebuttal,
+  SelfEndorsement,
+  TicTocTechnique,
+  MotivationWithoutCoercion,
+  CannotLoseSystem,
+  VisualizeSuccess
 } from './components/self-activation';
 // import 'normalize.css'; // TODO: figure out if necessary
 import './App.less';
@@ -48,6 +57,15 @@ ReactDOM.render(
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/tasks" component={TaskList} />
             <Route path="/self-activation" component={SelfActivationMethods} />
+            <Route path="/anti-procrastination" component={AntiProcrastinationSheet} />,
+            <Route path="/pleasure-predicting" component={PleasurePredicting} />,
+            <Route path="/triple-column" component={TripleColumnTechnique} />,
+            <Route path="/but-rebuttal" component={ButRebuttal} />,
+            <Route path="/self-endorsement" component={SelfEndorsement} />,
+            <Route path="/tic-toc" component={TicTocTechnique} />,
+            <Route path="/motivation-without-coercion" component={MotivationWithoutCoercion} />,
+            <Route path="/cannot-lose" component={CannotLoseSystem} />,
+            <Route path="/visualize-success" component={VisualizeSuccess} />,
             <Route path="/cognitive-distortions" component={CognitiveDistortions} />
             <Route path="/dos-and-donts" component={DailyImperatives} />
             <Route path="/gratitude" component={DailyGratitude} />
