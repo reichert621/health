@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import * as moment from 'moment';
 import { extend, merge } from 'lodash';
+import { IUser, fetchCurrentUser } from '../helpers/auth';
 import { IScorecard, fetchScorecards, fetchScorecard } from '../helpers/scorecard';
 import { IChecklist, IQuestion, fetchChecklists, fetchChecklist } from '../helpers/checklist';
 import { Entry, fetchEntries, fetchEntry } from '../helpers/entries';
@@ -25,6 +26,8 @@ export const REQUEST_ENTRIES = 'REQUEST_ENTRIES';
 export const RECEIVE_ENTRIES = 'RECEIVE_ENTRIES';
 export const REQUEST_ENTRY = 'REQUEST_ENTRY';
 export const RECEIVE_ENTRY = 'RECEIVE_ENTRY';
+export const REQUEST_CURRENT_USER = 'REQUEST_CURRENT_USER';
+export const RECEIVE_CURRENT_USER = 'RECEIVE_CURRENT_USER';
 
 // Actions
 
@@ -126,6 +129,20 @@ export const getEntry = (id: number) => {
   };
 };
 
+export const getCurrentUser = () => {
+  return (dispatch: any) => {
+    dispatch({ type: REQUEST_CURRENT_USER });
+
+    return fetchCurrentUser()
+      .then(user => {
+        return dispatch({
+          type: RECEIVE_CURRENT_USER,
+          payload: user
+        });
+      });
+  };
+};
+
 // Reducers
 
 interface IAction {
@@ -136,6 +153,15 @@ interface IAction {
 interface ViewAction extends IAction {
   view: string;
 }
+
+const currentUser = (state = null as IUser, action = {} as IAction) => {
+  switch (action.type) {
+    case RECEIVE_CURRENT_USER:
+      return action.payload;
+    default:
+      return state;
+  }
+};
 
 const currentView = (state = LIST_VIEW, action = {} as ViewAction) => {
   switch (action.type) {
@@ -367,6 +393,7 @@ const entries = (state = {
  */
 
 const rootReducer = combineReducers({
+  currentUser,
   currentView,
   selected,
   scorecards,

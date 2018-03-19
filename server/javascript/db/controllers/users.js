@@ -5,7 +5,10 @@ module.exports = {
   isAuthenticated: (req, res) => {
     const isLoggedIn = Boolean(req.user && req.user.id);
 
-    return res.json({ isAuthenticated: isLoggedIn });
+    return res.json({
+      isAuthenticated: isLoggedIn,
+      currentUser: req.user
+    });
   },
 
   fetch: (req, res) =>

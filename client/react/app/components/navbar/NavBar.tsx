@@ -1,15 +1,102 @@
 import * as React from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { logout } from '../../helpers/auth';
+import { connect } from 'react-redux';
+import { first } from 'lodash';
+import { IUser, logout } from '../../helpers/auth';
+import { AppState } from '../../helpers/utils';
+import { getCurrentUser } from '../../reducers';
 import './NavBar.less';
+
+interface NavDropdownProps {
+  user: IUser;
+  isOpen: boolean;
+  onToggle: () => void;
+  onLogOut: () => void;
+}
+
+const NavDropdown = ({ user, isOpen, onToggle, onLogOut }: NavDropdownProps) => {
+  if (!user) return null;
+
+  const { username = '' } = user;
+
+  return (
+    <div className={`dropdown ${isOpen ? 'open' : ''}`}>
+      <div className='dropdown-toggle'
+        onClick={onToggle}>
+        {first(username)}
+      </div>
+      <div className='dropdown-menu'>
+        <Link to='/reporting'>
+          <div className='dropdown-item'
+            style={{ marginTop: 8 }}>
+            Reporting
+          </div>
+        </Link>
+        <Link to='/gratitude'>
+          <div className='dropdown-item'>
+            Daily Gratitude
+          </div>
+        </Link>
+        <Link to='/dos-and-donts'>
+          <div className='dropdown-item'>
+            Dos and Don'ts
+          </div>
+        </Link>
+        <Link to='/self-activation'>
+          <div className='dropdown-item'>
+            Self-Activation
+          </div>
+        </Link>
+        <Link to='/tasks'>
+          <div className='dropdown-item'
+            style={{ marginBottom: 8 }}>
+            Task Settings
+          </div>
+        </Link>
+
+        <Link to='#'
+          onClick={onLogOut}>
+          <div className='dropdown-item last-item'
+            style={{ paddingTop: 16, paddingBottom: 16 }}>
+            Log Out
+          </div>
+        </Link>
+      </div>
+    </div>
+  );
+};
 
 interface NavBarProps {
   title: string;
   history?: any;
   linkTo?: string;
+  currentUser: IUser;
+  dispatch: (action: any) => any;
 }
 
-class NavBar extends React.Component<NavBarProps> {
+interface NavBarState {
+  isDropdownOpen: boolean;
+}
+
+const mapStateToProps = (state: AppState) => {
+  return { currentUser: state.currentUser };
+};
+
+class NavBar extends React.Component<NavBarProps, NavBarState> {
+  constructor(props: NavBarProps) {
+    super(props);
+
+    this.state = {
+      isDropdownOpen: false
+    };
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+
+    return dispatch(getCurrentUser());
+  }
+
   logout() {
     const { history } = this.props;
 
@@ -23,30 +110,21 @@ class NavBar extends React.Component<NavBarProps> {
   }
 
   renderLoggedInNav() {
+    const { isDropdownOpen } = this.state;
+    const { currentUser } = this.props;
+
     return (
-      <div>
-        <Link to='/tasks'
-          className='nav-link'>
-          Tasks
-        </Link>
-
-        <Link to='/reporting'
-          className='nav-link'>
-          Reporting
-        </Link>
-
-        <Link to='#'
-          className='nav-link'
-          onClick={this.logout.bind(this)}>
-          Logout
-        </Link>
-      </div>
+      <NavDropdown
+        user={currentUser}
+        isOpen={isDropdownOpen}
+        onToggle={() => this.setState({ isDropdownOpen: !isDropdownOpen })}
+        onLogOut={this.logout.bind(this)} />
     );
   }
 
   renderLoggedOutNav() {
     return (
-      <div>
+      <div style={{ marginTop: 16 }}>
         <Link to='/signup'
           className='nav-link'>
           Sign up
@@ -66,8 +144,9 @@ class NavBar extends React.Component<NavBarProps> {
   }
 
   render() {
-    const { title, linkTo, history } = this.props;
-    const isLoggedIn = !!history;
+    const { title, linkTo, history, currentUser } = this.props;
+    const { isDropdownOpen } = this.state;
+    const isLoggedIn = Boolean(currentUser && currentUser.id);
 
     return (
       <div className='nav-container'>
@@ -93,4 +172,4 @@ class NavBar extends React.Component<NavBarProps> {
   }
 }
 
-export default NavBar;
+export default connect(mapStateToProps)(NavBar);
