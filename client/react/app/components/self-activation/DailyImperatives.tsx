@@ -14,6 +14,7 @@ import NavBar from '../navbar';
 
 interface ItemProps {
   item: Imperative;
+  rank: number;
   onUpdate: (id: number, updates: any) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
 }
@@ -82,19 +83,20 @@ class ImperativeItem extends React.Component<ItemProps, ItemState> {
   }
 
   renderStaticItem() {
-    const { item, onDelete } = this.props;
+    const { item, rank, onDelete } = this.props;
     const { id: itemId, description } = item;
 
     return (
-      <div className={`task-item active`}>
-        <span className='imperative-description'>{description}</span>
-        <img className='edit-icon'
-          src='assets/pencil.svg'
-          onClick={() => this.setState({ isEditing: true })} />
-
-        <img className={`task-active-icon active`}
+      <div className='task-item'
+        style={{ paddingLeft: 16 }}>
+        <img className='remove-icon pull-left'
           src='assets/plus-gray.svg'
           onClick={() => onDelete(itemId)} />
+        <span className='number-label'>{rank}.</span>
+        <span className='imperative-description'
+          onClick={() => this.setState({ isEditing: true })}>
+          {description}
+        </span>
       </div>
     );
   }
@@ -112,16 +114,8 @@ class ImperativeItem extends React.Component<ItemProps, ItemState> {
           ref='editImperativeInput'
           placeholder='Task'
           value={description}
-          onChange={this.updateItem.bind(this)} />
-        <button
-          type='submit'
-          className='btn-primary'>
-          Save
-        </button>
-        <a className='btn-link'
-          onClick={this.handleCancel.bind(this)}>
-          Cancel
-        </a>
+          onChange={this.updateItem.bind(this)}
+          onBlur={this.save.bind(this)} />
       </form>
     );
   }
@@ -180,7 +174,12 @@ class ImperativeCategory extends React.Component<CategoryProps, CategoryState> {
     const { newImperative: description } = this.state;
     const { type, items = [], handleCreateItem } = this.props;
 
-    if (!description) return resolve();
+    if (!description) {
+      return this.setState({
+        newImperative: '',
+        isCreating: false
+      });
+    }
 
     return handleCreateItem({ description })
       .then(() => {
@@ -203,22 +202,12 @@ class ImperativeCategory extends React.Component<CategoryProps, CategoryState> {
         onSubmit={(e) => this.handleCreate(e)}>
         <input
           type='text'
-          className='input-default -inline task-description-input'
+          className='input-default -inline imperative-description-input'
           ref='newImperativeInput'
           placeholder='New item...'
           value={newImperative}
-          onChange={(e) => this.setState({ newImperative: e.target.value })} />
-        <button
-          type='submit'
-          className='btn-primary'
-          tabIndex={0}
-          disabled={!newImperative}>
-          Create
-        </button>
-        <a className='btn-link'
-          onClick={() => this.setState({ isCreating: false })}>
-          Cancel
-        </a>
+          onChange={(e) => this.setState({ newImperative: e.target.value })}
+          onBlur={this.handleCreate.bind(this)}/>
       </form>
     );
   }
@@ -234,7 +223,8 @@ class ImperativeCategory extends React.Component<CategoryProps, CategoryState> {
 
     return (
       <div>
-        <h4 className={`category-label active`}>
+        <h4 className='category-label'
+          style={{ marginLeft: 16 }}>
           {type}
           <img
             className={false ? 'hidden' : 'plus-icon'}
@@ -253,6 +243,7 @@ class ImperativeCategory extends React.Component<CategoryProps, CategoryState> {
                   <ImperativeItem
                     key={key}
                     item={item}
+                    rank={index + 1}
                     onUpdate={handleUpdateItem}
                     onDelete={handleDeleteItem} />
                 );
@@ -346,6 +337,7 @@ class DailyImperatives extends React.Component<
     const { imperatives } = this.state;
     const { DO: dos, DONT: donts } = groupBy(imperatives, 'type');
     const { history } = this.props;
+    const style = { width: '50%', minWidth: 400, paddingRight: 24 };
 
     return (
       <div>
@@ -355,19 +347,25 @@ class DailyImperatives extends React.Component<
           history={history} />
 
         <div className='default-container'>
-          <ImperativeCategory
-            type='Dos'
-            items={dos}
-            handleCreateItem={this.handleCreateImperative.bind(this, DO)}
-            handleDeleteItem={this.handleDeleteImperative.bind(this)}
-            handleUpdateItem={this.handleUpdateImperative.bind(this)} />
+          <div className='clearfix'>
+            <div className='pull-left' style={style}>
+              <ImperativeCategory
+                type='Dos'
+                items={dos}
+                handleCreateItem={this.handleCreateImperative.bind(this, DO)}
+                handleDeleteItem={this.handleDeleteImperative.bind(this)}
+                handleUpdateItem={this.handleUpdateImperative.bind(this)} />
+            </div>
 
-          <ImperativeCategory
-            type={`Don'ts`}
-            items={donts}
-            handleCreateItem={this.handleCreateImperative.bind(this, DONT)}
-            handleDeleteItem={this.handleDeleteImperative.bind(this)}
-            handleUpdateItem={this.handleUpdateImperative.bind(this)} />
+            <div className='pull-left' style={style}>
+              <ImperativeCategory
+                type={`Don'ts`}
+                items={donts}
+                handleCreateItem={this.handleCreateImperative.bind(this, DONT)}
+                handleDeleteItem={this.handleDeleteImperative.bind(this)}
+                handleUpdateItem={this.handleUpdateImperative.bind(this)} />
+            </div>
+          </div>
         </div>
       </div>
     );
