@@ -3,7 +3,7 @@ const METHODS = [
     symptoms: 'You feel disorganized. You have nothing to do. You get lonely and bored on weekends.',
     technique: 'Daily Activity Schedule',
     purpose: 'Plan things one hour at a time and record the amount of master and pleasure. Virtually any activity will make you feel better than lying in bed and will undercut your sense of inadequacy.',
-    href: '#'
+    href: '#' // TODO
   },
   {
     symptoms: 'You procrastinate because tasks seem too difficult and unrewarding.',
@@ -15,7 +15,7 @@ const METHODS = [
     symptoms: 'You feel overwhelmed by the urge to do nothing.',
     technique: 'Daily Record of Dysfunctional Thoughts',
     purpose: 'You expose the illogical thoughts that paralyze you. You learn that motivation follows action, not vice versa.',
-    href: '#'
+    href: '#' // TODO
   },
   {
     symptoms: 'You feel like there\'s no point in doing anything when you\'re alone.',
@@ -45,7 +45,7 @@ const METHODS = [
     symptoms: 'You feel overwhelmed by the magnitude of everything you have to do.',
     technique: 'Little Steps for Little Feet',
     purpose: 'Break the task down into its tiny component parts, and do these one step at a time.',
-    href: '#'
+    href: '#' // TODO
   },
   {
     symptoms: 'You feel guilty, oppressed, obliged, and duty-bound.',
@@ -57,7 +57,7 @@ const METHODS = [
     symptoms: 'Someone else nags and harangues you. You feel pressured and resentful, so you refuse to do anything at all.',
     technique: 'Disarming Technique',
     purpose: 'You assertively agree with them and remind them that you are capable of doing your own thinking.',
-    href: '#'
+    href: '#' // TODO
   },
   {
     symptoms: 'You have difficult modifying a habit such as smoking.',
@@ -69,13 +69,13 @@ const METHODS = [
     symptoms: 'You feel unable to do anything on your own initiative because you see yourself as "a procrastinator."',
     technique: 'Count What Counts',
     purpose: 'You count the things you do each day on your own initiative, using a wrist counter. This helps you overcome your bad habit of constantly dwelling on your inadequacies.',
-    href: '#'
+    href: '#' // TODO
   },
   {
     symptoms: 'You feel inadequate and incompetent because you say, "I can\'t."',
     technique: 'Test Your Can\'ts',
     purpose: 'You set up an experiment in which you challenge and disprove your negative predictions.',
-    href: '#'
+    href: '#' // TODO
   },
   {
     symptoms: 'You are afraid to fail, so you risk nothing.',
