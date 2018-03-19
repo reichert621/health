@@ -14,57 +14,90 @@ interface NavDropdownProps {
   onLogOut: () => void;
 }
 
-const NavDropdown = ({ user, isOpen, onToggle, onLogOut }: NavDropdownProps) => {
-  if (!user) return null;
+class NavDropdown extends React.Component<NavDropdownProps> {
+  handleClickOutside: (e: any) => void;
 
-  const { username = '' } = user;
+  constructor(props: NavDropdownProps) {
+    super(props);
 
-  return (
-    <div className={`dropdown ${isOpen ? 'open' : ''}`}>
-      <div className='dropdown-toggle'
-        onClick={onToggle}>
-        {first(username)}
+    this.handleClickOutside = this.onClickOutside.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleClickOutside);
+  }
+
+  onClickOutside(e: any) {
+    const { isOpen, onToggle } = this.props;
+    const el = (this.refs.dropdownMenu as HTMLElement);
+    const isClickedOutside = !el.contains(e.target);
+
+    if (isOpen && isClickedOutside) {
+      onToggle();
+    }
+  }
+
+  render() {
+    if (!this.props.user) return null;
+
+    const { user, isOpen, onToggle, onLogOut } = this.props;
+    const { username = '' } = user;
+
+    return (
+      <div
+        className={`dropdown ${isOpen ? 'open' : ''}`}
+        ref='dropdownMenu'>
+        <div
+          className='dropdown-toggle'
+          onClick={onToggle}>
+          {first(username)}
+        </div>
+        <div className='dropdown-menu'>
+          <Link to='/reporting'>
+            <div className='dropdown-item'
+              style={{ marginTop: 8 }}>
+              Reporting
+          </div>
+          </Link>
+          <Link to='/gratitude'>
+            <div className='dropdown-item'>
+              Daily Gratitude
+          </div>
+          </Link>
+          <Link to='/dos-and-donts'>
+            <div className='dropdown-item'>
+              Dos and Don'ts
+          </div>
+          </Link>
+          <Link to='/self-activation'>
+            <div className='dropdown-item'>
+              Self-Activation
+          </div>
+          </Link>
+          <Link to='/tasks'>
+            <div className='dropdown-item'
+              style={{ marginBottom: 8 }}>
+              Task Settings
+          </div>
+          </Link>
+
+          <Link to='#'
+            onClick={onLogOut}>
+            <div
+              className='dropdown-item last-item'
+              style={{ paddingTop: 16, paddingBottom: 16 }}>
+              Log Out
+          </div>
+          </Link>
+        </div>
       </div>
-      <div className='dropdown-menu'>
-        <Link to='/reporting'>
-          <div className='dropdown-item'
-            style={{ marginTop: 8 }}>
-            Reporting
-          </div>
-        </Link>
-        <Link to='/gratitude'>
-          <div className='dropdown-item'>
-            Daily Gratitude
-          </div>
-        </Link>
-        <Link to='/dos-and-donts'>
-          <div className='dropdown-item'>
-            Dos and Don'ts
-          </div>
-        </Link>
-        <Link to='/self-activation'>
-          <div className='dropdown-item'>
-            Self-Activation
-          </div>
-        </Link>
-        <Link to='/tasks'>
-          <div className='dropdown-item'
-            style={{ marginBottom: 8 }}>
-            Task Settings
-          </div>
-        </Link>
-
-        <Link to='#'
-          onClick={onLogOut}>
-          <div className='dropdown-item last-item'
-            style={{ paddingTop: 16, paddingBottom: 16 }}>
-            Log Out
-          </div>
-        </Link>
-      </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 interface NavBarProps {
   title: string;
