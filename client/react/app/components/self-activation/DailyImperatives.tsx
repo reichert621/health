@@ -92,7 +92,7 @@ class ImperativeItem extends React.Component<ItemProps, ItemState> {
         <img className='remove-icon pull-left'
           src='assets/plus-gray.svg'
           onClick={() => onDelete(itemId)} />
-        <span className='number-label'>{rank}.</span>
+        <span className='number-label pull-left'>{rank}.</span>
         <span className='imperative-description'
           onClick={() => this.setState({ isEditing: true })}>
           {description}
