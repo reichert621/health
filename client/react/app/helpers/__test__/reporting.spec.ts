@@ -61,42 +61,42 @@ describe('reporting', () => {
     it('calculates earnings for a five-day streak', () => {
       const streaks = [5];
 
-      expect(reporting.calculateEarnings(streaks)).toBe(50);
+      expect(reporting.calculateEarnings(streaks)).toBe(500);
     });
 
     it('calculates earnings for a week-long streak', () => {
       const streaks = [7];
 
-      expect(reporting.calculateEarnings(streaks)).toBe(100);
+      expect(reporting.calculateEarnings(streaks)).toBe(1000);
     });
 
     it('calculates earnings for a month-long streak', () => {
       const streaks = [30];
 
-      expect(reporting.calculateEarnings(streaks)).toBe(620);
+      expect(reporting.calculateEarnings(streaks)).toBe(6200);
     });
 
     it('calculates earnings for a three month-long streak', () => {
       const streaks = [90];
 
-      expect(reporting.calculateEarnings(streaks)).toBe(2260);
+      expect(reporting.calculateEarnings(streaks)).toBe(22600);
     });
 
     it('calculates earnings for a six month-long streak', () => {
       const streaks = [180];
 
-      expect(reporting.calculateEarnings(streaks)).toBe(4950);
+      expect(reporting.calculateEarnings(streaks)).toBe(49500);
     });
 
     it('calculates earnings for a year-long streak', () => {
       const streaks = [365];
 
-      expect(reporting.calculateEarnings(streaks)).toBe(10000);
+      expect(reporting.calculateEarnings(streaks)).toBe(100000);
     });
 
     it('calculates earnings for multiple streaks', () => {
       const streaks = [5, 7, 1, 30];
-      const expected = 50 + 100 + 10 + 620;
+      const expected = 500 + 1000 + 100 + 6200;
 
       expect(reporting.calculateEarnings(streaks)).toBe(expected);
     });

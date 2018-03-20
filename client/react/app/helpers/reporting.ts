@@ -67,12 +67,12 @@ export const getTotalStreak = (
 // TODO: unit test
 export const calculateEarnings = (streaks: number[]): number => {
   // Values are in cents (USD)
-  const DAILY_EARNINGS = 10;
-  const WEEKLY_EARNINGS = 30;
-  const MONTHLY_EARNINGS = 200;
-  const THREE_MONTH_BONUS = 400;
-  const SIX_MONTH_BONUS = 800;
-  const MAX_PER_YEAR = 100 * 100;
+  const DAILY_EARNINGS = 100;
+  const WEEKLY_EARNINGS = 300;
+  const MONTHLY_EARNINGS = 2000;
+  const THREE_MONTH_BONUS = 4000;
+  const SIX_MONTH_BONUS = 8000;
+  const MAX_PER_YEAR = 1000 * 100;
 
   return streaks.reduce((earnings, count) => {
     const n = count % 365;
