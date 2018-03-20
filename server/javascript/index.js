@@ -2,12 +2,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const KnexSessionStore = require('connect-session-knex')(session);
 const passport = require('passport');
-const { build, port } = require('./config');
+const { build, port, secret } = require('./config');
 const { template } = require('./helpers');
+const knex = require('./db/knex');
 const api = require('./api');
 
-const secret = 'secret';
 const app = express();
 
 app.use(express.static(build));
@@ -17,7 +18,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
   secret,
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 5 * 24 * 60 * 60 * 1000 // 5 days
+  },
+  // TODO: look into Redis connector
+  store: new KnexSessionStore({ knex })
 }));
 
 const {
