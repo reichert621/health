@@ -61,28 +61,33 @@ class NavDropdown extends React.Component<NavDropdownProps> {
             <div className='dropdown-item'
               style={{ marginTop: 8 }}>
               Reporting
-          </div>
+            </div>
           </Link>
           <Link to='/gratitude'>
             <div className='dropdown-item'>
               Daily Gratitude
-          </div>
+            </div>
           </Link>
           <Link to='/dos-and-donts'>
             <div className='dropdown-item'>
               Dos and Don'ts
-          </div>
+            </div>
           </Link>
           <Link to='/self-activation'>
             <div className='dropdown-item'>
               Self-Activation
-          </div>
+            </div>
           </Link>
           <Link to='/tasks'>
+            <div className='dropdown-item'>
+              Task Settings
+            </div>
+          </Link>
+          <Link to='/blog'>
             <div className='dropdown-item'
               style={{ marginBottom: 8 }}>
-              Task Settings
-          </div>
+              Personal Blog
+            </div>
           </Link>
 
           <Link to='#'
@@ -91,7 +96,7 @@ class NavDropdown extends React.Component<NavDropdownProps> {
               className='dropdown-item last-item'
               style={{ paddingTop: 16, paddingBottom: 16 }}>
               Log Out
-          </div>
+            </div>
           </Link>
         </div>
       </div>

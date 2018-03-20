@@ -71,6 +71,7 @@ class Home extends React.Component {
       <div>
         <NavBar
           title='Blog'
+          linkTo='/'
           history={history} />
 
         <div className='default-container'>

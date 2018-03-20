@@ -2,7 +2,7 @@ const METHODS = [
   {
     symptoms: 'You feel disorganized. You have nothing to do. You get lonely and bored on weekends.',
     technique: 'Daily Activity Schedule',
-    purpose: 'Plan things one hour at a time and record the amount of master and pleasure. Virtually any activity will make you feel better than lying in bed and will undercut your sense of inadequacy.',
+    purpose: 'Plan things one hour at a time and record the amount of mastery and pleasure. Virtually any activity will make you feel better than lying in bed and will undercut your sense of inadequacy.',
     href: '#' // TODO
   },
   {
