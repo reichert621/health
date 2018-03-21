@@ -74,9 +74,9 @@ export const calculateAverage = (nums: number[] = []): number => {
 };
 
 export const getPercentage = (n: number, total: number): number => {
-  const decimal = n / total;
+  if (total === 0) return 0;
 
-  return decimal * 100;
+  return (n / total) * 100;
 };
 
 export const getFormattedPercentage = (n: number, total: number): string => {

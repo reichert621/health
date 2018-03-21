@@ -35,7 +35,7 @@ const ReportingOverview = ({
       <div className='pull-left'>
         <div className='reporting-header-stat'>
           <div className='stat-value'>
-            <span>{first(scorecardStreak)}</span>
+            <span>{first(scorecardStreak) || 0}</span>
             <span style={{ fontSize: 16, marginLeft: 4 }}>days</span>
           </div>
           <div className='stat-label text-active'>Current Streak</div>

@@ -15,19 +15,19 @@ const ReportingStreaks = ({ completedChecklists, completedScorecards }: Reportin
 
   return (
     <div>
-      <div className='text-active' style={style}>{first(scorecardStreak)} days</div>
+      <div className='text-active' style={style}>{first(scorecardStreak) || 0} days</div>
       <div className='reporting-label'>Latest Productivity Streak</div>
 
-      <div className='text-active' style={style}>{first(checklistStreak)} days</div>
+      <div className='text-active' style={style}>{first(checklistStreak) || 0} days</div>
       <div className='reporting-label'>Latest Check-in Streak</div>
 
-      <div className='text-active' style={style}>{max(scorecardStreak)} days</div>
+      <div className='text-active' style={style}>{max(scorecardStreak) || 0} days</div>
       <div className='reporting-label'>Longest Productivity Streak</div>
 
-      <div className='text-active' style={style}>{max(checklistStreak)} days</div>
+      <div className='text-active' style={style}>{max(checklistStreak) || 0} days</div>
       <div className='reporting-label'>Longest Check-in Streak</div>
 
-      <div className='text-active' style={style}>{size(completedScorecards)} days</div>
+      <div className='text-active' style={style}>{size(completedScorecards) || 0} days</div>
       <div className='reporting-label'>Non-Zero Days</div>
 
       {/* <div className='text-active' style={style}>{size(completedChecklists)} days</div>

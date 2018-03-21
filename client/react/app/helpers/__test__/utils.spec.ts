@@ -39,6 +39,14 @@ describe('utils', () => {
       expect(utils.getFormattedPercentage(1, 3)).toBe('33.3');
       expect(utils.getFormattedPercentage(2, 7)).toBe('28.6');
     });
+
+    it('returns zero if the denominator is zero', () => {
+      expect(utils.getFormattedPercentage(10, 0)).toBe('0.0');
+      expect(utils.getFormattedPercentage(2, 0)).toBe('0.0');
+      expect(utils.getFormattedPercentage(3, 0)).toBe('0.0');
+      expect(utils.getFormattedPercentage(1, 0)).toBe('0.0');
+      expect(utils.getFormattedPercentage(2, 0)).toBe('0.0');
+    });
   });
 
   describe('keyifyDate', () => {
