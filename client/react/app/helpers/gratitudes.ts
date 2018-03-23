@@ -31,8 +31,10 @@ export const deleteGratitude = (id: number): Promise<IGratitude> => {
 };
 
 export const createOrUpdate = (gratitude: IGratitude): Promise<IGratitude> => {
-  const { id, ...rest } = gratitude;
-  const params = defaults(rest, { date: moment().format('YYYY-MM-DD') });
+  const { id, date, text } = gratitude;
+  const params = defaults({ date, text }, {
+    date: moment().format('YYYY-MM-DD')
+  });
 
   return id ? updateGratitude(id, params) : createGratitude(params);
 };
