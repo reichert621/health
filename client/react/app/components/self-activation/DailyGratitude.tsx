@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
+import * as Modal from 'react-modal';
 import { get, has, find } from 'lodash';
 import *  as moment from 'moment';
 import { resolve, reject } from 'bluebird';
@@ -14,6 +15,116 @@ import {
   deleteGratitude
 } from '../../helpers/gratitudes';
 import './SelfActivation.less';
+
+// Reference: http://reactcommunity.org/react-modal/accessibility/
+Modal.setAppElement('#app');
+
+interface TimerProps {
+  gratitude: string;
+  onClose: () => void;
+}
+
+interface TimerState {
+  progress: number;
+  timer?: number;
+}
+
+class GratitudeTimer extends React.Component<TimerProps, TimerState> {
+  constructor(props: TimerProps) {
+    super(props);
+
+    this.state = {
+      progress: 0,
+      timer: null
+    };
+  }
+
+  componentDidMount() {
+    return this.startTimer();
+  }
+
+  componentWillUnmount() {
+    const { timer } = this.state;
+
+    window.clearInterval(timer);
+  }
+
+  startTimer() {
+    const max = 60;
+    const timer = window.setInterval(() => {
+      const { progress } = this.state;
+
+      if (progress < max) {
+        this.setState({ progress: progress + 1 });
+      } else {
+        window.clearInterval(timer);
+
+        this.setState({ progress: max, timer: null });
+      }
+    }, 1000);
+
+    return this.setState({ timer });
+  }
+
+  render() {
+    const { progress } = this.state;
+    const { gratitude, onClose } = this.props;
+    const mins = Math.floor(progress / 60);
+    const secs = progress % 60;
+    const width = Math.min(100, ((progress + 1) / 60) * 100);
+    const isDone = (progress === 60);
+    const styles = {
+      header: { marginBottom: 24 },
+      text: { marginBottom: 8 },
+      progressBar: { marginTop: 32, marginBottom: 16 },
+      buttons: { marginTop: 40 }
+    };
+
+    return (
+      <div className='text-center'>
+        <h1 style={styles.header}>
+          Take a minute...
+        </h1>
+
+        <div style={styles.text}>
+          to sit up straight, focus on your breath,
+        </div>
+        <div style={styles.text}>
+          and think for a moment about why you're grateful.
+        </div>
+        <div style={styles.text}>
+          Today, you are grateful for: <strong>{gratitude}</strong>
+        </div>
+
+        <div className='progress-bar-container'
+          style={styles.progressBar}>
+          <div className='progress-bar'
+            style={{ width: `${width}%` }}>
+          </div>
+        </div>
+
+        <h1>
+          {mins}:{secs < 10 ? `0${secs}` : secs}
+        </h1>
+
+        <div className='clearfix'
+          style={styles.buttons}>
+          <button
+            className={`btn-link pull-left ${isDone ? 'hidden' : ''}`}
+            onClick={onClose}>
+            Skip
+          </button>
+          <button
+            className='btn-primary pull-right'
+            disabled={!isDone}
+            onClick={onClose}>
+            Done
+          </button>
+        </div>
+      </div>
+    );
+  }
+}
 
 interface GratitudeItemProps {
   gratitude: IGratitude;
@@ -40,6 +151,7 @@ interface GratitudeState {
   gratitude: IGratitude;
   historical: IGratitude[];
   isEditing: boolean;
+  isModalOpen: boolean;
 }
 
 class DailyGratitude extends React.Component<RouteComponentProps<{}>, GratitudeState> {
@@ -49,7 +161,8 @@ class DailyGratitude extends React.Component<RouteComponentProps<{}>, GratitudeS
     this.state = {
       gratitude: getDefaultGratitude(),
       historical: [],
-      isEditing: true
+      isEditing: true,
+      isModalOpen: false
     };
   }
 
@@ -95,7 +208,11 @@ class DailyGratitude extends React.Component<RouteComponentProps<{}>, GratitudeS
 
     return createOrUpdate(gratitude)
       .then(update => {
-        return this.setState({ gratitude: update, isEditing: false });
+        return this.setState({
+          gratitude: update,
+          isEditing: false,
+          isModalOpen: id ? false : true
+        });
       })
       .catch(err => {
         console.log('Error saving gratitude!', err);
@@ -141,12 +258,37 @@ class DailyGratitude extends React.Component<RouteComponentProps<{}>, GratitudeS
       });
   }
 
+  closeModal() {
+    return this.setState({ isModalOpen: false });
+  }
+
+  getModalCustomStyles() {
+    return {
+      overlay: {
+        backgroundColor: 'rgba(0, 0, 0, 0.6)'
+      },
+      content: {
+        position: 'relative',
+        width: '80%',
+        minWidth: 400,
+        maxWidth: 800,
+        margin: '40px auto',
+        padding: 24,
+        top: 'auto',
+        bottom: 'auto',
+        left: 'auto',
+        right: 'auto'
+      }
+    };
+  }
+
   render() {
     const { history } = this.props;
     const {
       gratitude,
       historical = [],
       isEditing,
+      isModalOpen
     } = this.state;
     const { text = '' } = gratitude;
 
@@ -158,6 +300,14 @@ class DailyGratitude extends React.Component<RouteComponentProps<{}>, GratitudeS
           history={history} />
 
         <div className='default-container gratitude-container text-center'>
+          <Modal
+            style={this.getModalCustomStyles()}
+            isOpen={isModalOpen}>
+            <GratitudeTimer
+              gratitude={text}
+              onClose={this.closeModal.bind(this)} />
+          </Modal>
+
           <h3 className=''>
             Today, I am grateful for...
           </h3>
