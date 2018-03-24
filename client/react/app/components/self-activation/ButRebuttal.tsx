@@ -6,11 +6,11 @@ const ButRebuttal = () => {
   const rows = [
     {
       column: 'I really should finish that task, but I\'m just not in the mood.',
-      rebuttal: 'I\'ll feel more like it once get started.When I\'m done I\'ll feel terrific.'
+      rebuttal: 'I\'ll feel more like it once get started. When I\'m done I\'ll feel terrific.'
     },
     {
       column: 'But there\'s so much to do, it would take forever.',
-      rebuttal: 'It won\'t take as long as I expect.I can always just do a part of it now.'
+      rebuttal: 'It won\'t take as long as I expect. I can always just do a part of it now.'
     },
     {
       column: 'But I\'m too tired.',

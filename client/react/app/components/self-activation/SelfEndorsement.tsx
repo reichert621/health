@@ -18,7 +18,7 @@ const SelfEndorsement = () => {
     },
     {
       selfDowning: 'It was just luck that my speech was successful.',
-      selfEndorsing: 'It wasn\'t a matter of luck.I prepared well and delivered my talk effectively.'
+      selfEndorsing: 'It wasn\'t a matter of luck. I prepared well and delivered my talk effectively.'
     },
     {
       selfDowning: 'I washed my car, but it still doesn\'t look as good as my friend\'s new car.',

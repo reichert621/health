@@ -10,7 +10,7 @@ const TicTocTechnique = () => {
     },
     {
       tic: 'My work isn\'t very important or exciting.',
-      toc: 'Disqualifying the positive. It may seem routine to me, but it\'s quite important to the people I work with.I get to be creative, and sometimes it can be very enjoyable.Maybe I could do something more exciting in my free time?'
+      toc: 'Disqualifying the positive. It may seem routine to me, but it\'s quite important to the people I work with. I get to be creative, and sometimes it can be very enjoyable. Maybe I could do something more exciting in my free time?'
     },
     {
       tic: 'Writing this paper is pointless.',
