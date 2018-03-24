@@ -11,6 +11,12 @@ import TicTocTechnique from './TicTocTechnique';
 import MotivationWithoutCoercion from './MotivationWithoutCoercion';
 import CannotLoseSystem from './CannotLoseSystem';
 import VisualizeSuccess from './VisualizeSuccess';
+import DailyActivitySchedule from './DailyActivitySchedule';
+import DysfunctionalThoughts from './DysfunctionalThoughts';
+import LittleSteps from './LittleSteps';
+import TestYourCannots from './TestYourCannots';
+import DisarmingTechnique from './DisarmingTechnique';
+import CountWhatCounts from './CountWhatCounts';
 
 export {
   SelfActivationMethods,
@@ -25,5 +31,11 @@ export {
   TicTocTechnique,
   MotivationWithoutCoercion,
   CannotLoseSystem,
-  VisualizeSuccess
+  VisualizeSuccess,
+  DailyActivitySchedule,
+  DysfunctionalThoughts,
+  LittleSteps,
+  TestYourCannots,
+  DisarmingTechnique,
+  CountWhatCounts
 };
