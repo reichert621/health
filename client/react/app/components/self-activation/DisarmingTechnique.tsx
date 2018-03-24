@@ -6,7 +6,7 @@ const DisarmingTechnique = () => {
   const rows = [
     {
       criticism: 'Why can\'t you get out of bed and do something productive?',
-      response: 'You\'re right. I\'ll feel better if I get up and go for a walk.'
+      response: 'You\'re right. I\'ll feel better if I get up and go for a walk and listen to some music.'
     },
     {
       criticism: 'Why don\'t you ever do the dishes?',

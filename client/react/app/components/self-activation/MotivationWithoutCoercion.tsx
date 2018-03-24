@@ -15,7 +15,7 @@ const MotivationWithoutCoercion = () => {
     },
     {
       advantage: 'I can sleep and escape.',
-      disadvantage: 'and escape.	I can\'t sleep forever, and I really don\'t need any more sleep since I have been sleeping nearly 16 hours a day. I will probably feel less fatigued if I get up and get my body moving.'
+      disadvantage: 'I can\'t sleep forever, and I really don\'t need any more sleep since I have been sleeping nearly 16 hours a day. I will probably feel less fatigued if I get up and get my body moving.'
     }
   ];
 
