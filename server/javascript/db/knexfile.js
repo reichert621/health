@@ -19,7 +19,7 @@ module.exports = {
       directory: __dirname + '/seeds'
     }
   },
-  prod: {
+  production: {
     client: 'postgresql',
     connection: process.env.DATABASE_URL ? process.env.DATABASE_URL : {
       port: process.env.BLOG_DB_PORT_PROD,
