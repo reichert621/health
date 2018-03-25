@@ -14,8 +14,6 @@ const content = `
 
 After reading Dr. David Burns' [*Feeling Good*](https://www.amazon.com/Feeling-Good-New-Mood-Therapy/dp/0380810336), I wanted to see if there was any correlation between my productivity and my mood. To do this, I designed a personal "Daily Scorecard" to compare against Dr. Burns' "Depression Checklist" (a.k.a. my "Daily Check-in"). My goal is to try to identify which daily habits result in lower levels of depression.
 
-I was also struck by Nassim Taleb's point in [*Antifragile*](https://www.amazon.com/Antifragile-Things-That-Disorder-Incerto/dp/0812979680) that instead of focusing on "the pursuit of happiness," it would do us better to focus on "the avoidance of unhappiness."  This project is designed to figure out the best way to do that.
-
 # FAQ
 
 **What is my "Daily Scorecard"?**
@@ -67,14 +65,6 @@ Scores reflect roughly the following levels of depression:
 - 76 - 10: Extreme depression
 
 If you're scoring in the severe-to-extreme level of depression, I would highly encourage reaching out for help.
-
-**Will this cure my depression?**
-
-This project is not so presumptuous as to imagine it could cure anybody's depression. The goal is to potentially help identify which habits are most effective in combating depressive tendencies.
-
-As a personal example, before I started this project, I was often scoring in the mild-to-moderate range of depression. Then, in my first week or so of working on this, my score shot down to the none-to-normal range. Since then, it's been steadily (though quite slowly) increasing. I attribute this trend to two things. First, when I began, I felt very mission-driven to build something that could help me and potentially others gain some insight into the correlation between habits and mood. The combination of motivation and creativity gave me a brief high. Secondly, I started this project while I was on vacation. Since then, I've returned to my day job, where I get comparatively less satisfaction from the things I work on.
-
-On a more positive note, I've noticed some "micro" trends on a more day-to-day basis. One thing I've discovered, which in retrospect seems fairly obvious, is that I get a lot of satisfaction out of intense workouts. Another thing is that I find I'm happiest on days that have a balance of personal growth (such as reading or practicing a musical instrument) and socializing. I've also found that I prefer deepening relationships with existing friends more than I enjoy meeting new people, though both give me a lot of satisfaction.
 
 # Upcoming Features
 - Overall design improvements
