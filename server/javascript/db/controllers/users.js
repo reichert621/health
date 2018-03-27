@@ -1,4 +1,4 @@
-const { User, Entry } = require('../index');
+const { User, Entry, ScoreCard, Checklist } = require('../index');
 const { handleError } = require('./utils');
 
 module.exports = {
@@ -39,6 +39,19 @@ module.exports = {
   signup: (req, res) => {
     return User.register(req.body)
       .then(user => res.json({ user }))
+      .catch(err => handleError(res, err));
+  },
+
+  feed: (req, res) => {
+    const userId = req.user.id;
+
+    return Promise.all([
+      ScoreCard.fetchFriendsCompleted(userId),
+      Checklist.fetchFriendsCompleted(userId)
+    ])
+      .then(([scorecards, checklists]) => {
+        return res.json({ scorecards, checklists });
+      })
       .catch(err => handleError(res, err));
   }
 };

@@ -22,6 +22,7 @@ import { Scorecard } from './components/scorecard';
 import { ChecklistContainer } from './components/checklist';
 import TaskList from './components/tasks';
 import { Reporting } from './components/reporting';
+import FriendFeed from './components/feed';
 import {
   SelfActivationMethods,
   CognitiveDistortions,
@@ -61,6 +62,7 @@ ReactDOM.render(
             <Route path="/@:username/entry/:id" component={UserEntryContainer} />
             <Route path="/@:username" component={Profile} />
             <Route path="/dashboard" component={Dashboard} />
+            <Route path="/feed" component={FriendFeed} />
             <Route path="/tasks" component={TaskList} />
             <Route path="/self-activation" component={SelfActivationMethods} />
             <Route path="/daily-activity-schedule" component={DailyActivitySchedule} />

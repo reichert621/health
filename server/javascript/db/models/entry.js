@@ -2,7 +2,6 @@ const knex = require('../knex.js');
 const moment = require('moment');
 const { first } = require('lodash');
 
-// TODO: move to models
 const Entries = () => knex('entries');
 
 const merge = (x, y) => Object.assign({}, x, y);
