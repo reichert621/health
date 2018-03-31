@@ -12,15 +12,32 @@ const fetch = (where = {}, userId) =>
 
 const fetchSelectedTasksByCategory = (userId) => {
   return ScoreCardSelectedTask()
-    .select('c.name', 't.description', 't.points')
+    .select('c.name as category', 't.description', 't.points')
     .from('scorecard_selected_tasks as sst')
     .innerJoin('tasks as t', 'sst.taskId', 't.id')
     .innerJoin('categories as c', 't.categoryId', 'c.id')
     .where({ 'sst.userId': userId })
     .then(results => {
-      return results.reduce((map, { name, description, points }) => {
+      return results.reduce((map, { category, description, points }) => {
         return merge(map, {
-          [name]: (map[name] || []).concat({ description, points })
+          [category]: (map[category] || []).concat({ description, points })
+        });
+      }, {});
+    });
+};
+
+const fetchSelectedTasksByAbility = (userId) => {
+  return ScoreCardSelectedTask()
+    .select('a.name as ability', 't.description', 't.points')
+    .from('scorecard_selected_tasks as sst')
+    .innerJoin('tasks as t', 'sst.taskId', 't.id')
+    .innerJoin('categories as c', 't.categoryId', 'c.id')
+    .innerJoin('abilities as a', 'c.abilityId', 'a.id')
+    .where({ 'sst.userId': userId })
+    .then(results => {
+      return results.reduce((map, { ability, description, points }) => {
+        return merge(map, {
+          [ability]: (map[ability] || []).concat({ description, points })
         });
       }, {});
     });
@@ -100,6 +117,7 @@ const destroyByScorecardId = (scorecardId, userId) =>
 module.exports = {
   fetch,
   fetchSelectedTasksByCategory,
+  fetchSelectedTasksByAbility,
   fetchWithDates,
   fetchByScorecardId,
   findById,

@@ -1,22 +1,28 @@
-import React from 'react';
+import * as React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import NavBar from '../navbar';
 import ReportingChart from './ReportingChart';
 import ReportingOverview from './ReportingOverview';
 import ReportingStreaks from './ReportingStreaks';
+import ScoresByAbility from './ScoresByAbility';
 import TopTasks from './TopTasks';
 import MoodFrequency from './MoodFrequency';
 import ScoresByDay from './ScoresByDay';
 import TopMoods from './TopMoods';
 import HighImpactTasks from './HighImpactTasks';
-import { fetchAllStats } from '../../helpers/reporting';
+import { ReportingStats, fetchAllStats } from '../../helpers/reporting';
 import './Reporting.less';
 
-class Reporting extends React.Component {
-  constructor(props) {
+interface ReportingState {
+  stats: ReportingStats;
+}
+
+class Reporting extends React.Component<RouteComponentProps<{}>, ReportingState> {
+  constructor(props: RouteComponentProps<{}>) {
     super(props);
 
     this.state = {
-      stats: {}
+      stats: {} as ReportingStats
     };
   }
 
@@ -44,7 +50,7 @@ class Reporting extends React.Component {
       completedScorecards = [],
       scorecardScoresByDay = {},
       totalScoreOverTime = [],
-      taskCategoryStats = {},
+      taskAbilityStats = {},
       // Task stats
       topTasks = []
     } = stats;
@@ -57,20 +63,20 @@ class Reporting extends React.Component {
     return (
       <div>
         <NavBar
-          title="Reporting"
-          linkTo="/"
+          title='Reporting'
+          linkTo='/'
           history={history} />
 
-        <div className="default-container">
-          <div className="reporting-header-container reporting-component">
+        <div className='default-container'>
+          <div className='reporting-header-container reporting-component'>
             <ReportingOverview
               checklists={completedChecklists}
               scorecards={completedScorecards}
               tasks={topTasks} />
           </div>
 
-          <div className="clearfix">
-            <div className="reporting-sidebar-container reporting-component pull-left">
+          <div className='clearfix'>
+            <div className='reporting-sidebar-container reporting-component pull-left'>
               <h4>Daily Averages</h4>
 
               <ScoresByDay
@@ -78,35 +84,35 @@ class Reporting extends React.Component {
                 scorecardScores={scorecardScoresByDay} />
             </div>
 
-            <div className="reporting-graph-container reporting-component pull-right">
+            <div className='reporting-graph-container reporting-component pull-right'>
               <ReportingChart
                 checklistStats={checklistStats}
                 scorecardStats={scorecardStats} />
             </div>
           </div>
 
-          <div className="clearfix">
-            <div className="reporting-component-container reporting-component pull-left">
+          <div className='clearfix'>
+            <div className='reporting-component-container reporting-component pull-left'>
               <h4>Common Issues</h4>
 
               <TopMoods stats={checklistQuestionStats} />
             </div>
 
-            <div className="reporting-component-container reporting-component pull-left">
+            <div className='reporting-component-container reporting-component pull-left'>
               <h4>Favorite Tasks</h4>
 
               <TopTasks tasks={topTasks} />
             </div>
 
-            <div className="reporting-component-container reporting-component pull-left">
+            <div className='reporting-component-container reporting-component pull-left'>
               <h4>Mood Frequency</h4>
 
               <MoodFrequency stats={depressionLevelFrequency} />
             </div>
           </div>
 
-          <div className="clearfix">
-            <div className="reporting-component-container reporting-component pull-left">
+          <div className='clearfix'>
+            <div className='reporting-component-container reporting-component pull-left'>
               <h4>Streaks</h4>
 
               <ReportingStreaks
@@ -114,13 +120,20 @@ class Reporting extends React.Component {
                 completedScorecards={completedScorecards} />
             </div>
 
-            <div className="reporting-component-container reporting-component pull-left">
+            {/* <div className='reporting-component-container reporting-component pull-left'>
+              <h4>Abilities</h4>
+
+              <ScoresByAbility
+                abilityStats={taskAbilityStats} />
+            </div> */}
+
+            <div className='reporting-component-container reporting-component pull-left'>
               <h4>High-Impact Tasks</h4>
 
               <HighImpactTasks tasks={highImpactTasks} />
             </div>
 
-            <div className="reporting-component-container reporting-component pull-left">
+            <div className='reporting-component-container reporting-component pull-left'>
               <h4>Low-Impact Tasks</h4>
 
               <HighImpactTasks tasks={lowImpactTasks} />

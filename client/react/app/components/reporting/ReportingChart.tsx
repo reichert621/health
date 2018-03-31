@@ -1,14 +1,20 @@
-import React from 'react';
-import Highcharts from 'react-highcharts';
+import * as React from 'react';
+import * as ReactHighcharts from 'react-highcharts';
 import { get, noop } from 'lodash';
-import moment from 'moment';
+import * as moment from 'moment';
 import './Reporting.less';
 
-class ReportingChart extends React.Component {
+interface ChartProps {
+  checklistStats: number[][];
+  scorecardStats: number[][];
+  onClickPoint?: (timestamp: number) => void;
+}
+
+class ReportingChart extends React.Component<ChartProps> {
   // Only re-render if stats length changes
   shouldComponentUpdate({
-    checklistStats: nextChecklistStats = [],
-    scorecardStats: nextScorecardStats = []
+    checklistStats: nextChecklistStats = [] as number[][],
+    scorecardStats: nextScorecardStats = [] as number[][]
   }) {
     const { checklistStats = [], scorecardStats = [] } = this.props;
 
@@ -43,7 +49,7 @@ class ReportingChart extends React.Component {
           cursor: 'pointer',
           point: {
             events: {
-              click(e) {
+              click(e: any) {
                 const timestamp = get(e, 'point.options.x');
 
                 return onClickPoint(timestamp);
@@ -65,7 +71,6 @@ class ReportingChart extends React.Component {
           }
         }
       },
-
       yAxis: {
         title: {
           text: 'Points'
@@ -90,7 +95,7 @@ class ReportingChart extends React.Component {
 
     return (
       <div>
-        <Highcharts config={config} />
+        <ReactHighcharts config={config} />
       </div>
     );
   }

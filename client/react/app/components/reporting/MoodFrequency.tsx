@@ -36,6 +36,7 @@ interface MoodFrequencyProps {
   };
 }
 
+// TODO: this could be a great candidate for a pie chart
 const MoodFrequency = ({ stats = {} }: MoodFrequencyProps) => {
   const frequencies = keys(stats).map(level => {
     const count = stats[level];
