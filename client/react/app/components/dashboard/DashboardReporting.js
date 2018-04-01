@@ -1,6 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import Highcharts from 'react-highcharts';
 import ReportingChart from '../reporting/ReportingChart';
 import { fetchAllStats } from '../../helpers/reporting';
 import '../reporting/Reporting.less';

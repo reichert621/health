@@ -37,9 +37,18 @@ export interface TaskImpactStats {
   };
 }
 
+export interface AbilityStats {
+  [ability: string]: {
+    count: number;
+    score: number;
+  };
+}
+
 export interface ReportingStats {
   checklist: number[][];
+  checklistStats: number[][];
   scorecard: number[][];
+  scorecardStats: number[][];
   completedChecklists: ReportingDatedItem[];
   completedScorecards: ReportingDatedItem[];
   checklistScoresByDay: ScoreByDay;
@@ -48,6 +57,10 @@ export interface ReportingStats {
   totalScoreOverTime: number[][];
   checklistQuestionStats: ChecklistQuestionStats[];
   checklistScoresByTask: TaskImpactStats[];
+  taskAbilityStats: AbilityStats;
+  depressionLevelFrequency: {
+    [level: string]: number;
+  };
 }
 
 // TODO: unit test
