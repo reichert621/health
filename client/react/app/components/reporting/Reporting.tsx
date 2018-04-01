@@ -113,19 +113,11 @@ class Reporting extends React.Component<RouteComponentProps<{}>, ReportingState>
 
           <div className='clearfix'>
             <div className='reporting-component-container reporting-component pull-left'>
-              <h4>Streaks</h4>
-
-              <ReportingStreaks
-                completedChecklists={completedChecklists}
-                completedScorecards={completedScorecards} />
-            </div>
-
-            {/* <div className='reporting-component-container reporting-component pull-left'>
-              <h4>Abilities</h4>
+              <h4>Skills</h4>
 
               <ScoresByAbility
                 abilityStats={taskAbilityStats} />
-            </div> */}
+            </div>
 
             <div className='reporting-component-container reporting-component pull-left'>
               <h4>High-Impact Tasks</h4>
