@@ -10,7 +10,11 @@ import MoodFrequency from './MoodFrequency';
 import ScoresByDay from './ScoresByDay';
 import TopMoods from './TopMoods';
 import HighImpactTasks from './HighImpactTasks';
-import { ReportingStats, fetchAllStats } from '../../helpers/reporting';
+import {
+  ReportingStats,
+  fetchAllStats,
+  mergeTaskStats
+} from '../../helpers/reporting';
 import './Reporting.less';
 
 interface ReportingState {
@@ -57,6 +61,7 @@ class Reporting extends React.Component<RouteComponentProps<{}>, ReportingState>
 
     const highImpactTasks = checklistScoresByTask.slice(0, 5);
     const lowImpactTasks = checklistScoresByTask.slice(-5).reverse();
+    const taskStats = mergeTaskStats(topTasks, checklistScoresByTask);
 
     console.log('stats!', stats);
 

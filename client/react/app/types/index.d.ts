@@ -16,7 +16,13 @@ declare module 'react-highcharts' {
       id?: string;
       name?: string;
       color?: string;
-      data: number[][];
+      data?: number[][] | {
+        id?: string;
+        name?: string;
+        color?: string;
+        x?: number;
+        y?: number;
+      }[];
     }
 
     interface Config {
@@ -29,7 +35,9 @@ declare module 'react-highcharts' {
       };
       plotOptions?: {
         series?: any;
+        pie?: any;
       };
+      tooltip?: any;
       xAxis?: Axis;
       yAxis?: Axis;
       credits?: boolean;
