@@ -39,8 +39,8 @@ export interface ChecklistQuestionStats {
 export interface TaskImpactStats extends TaskStat {
   data: {
     average: number;
-    scores: number[];
-    dates: moment.Moment|Date|string[]
+    scores?: number[];
+    dates?: moment.Moment|Date|string[]
   };
 }
 
@@ -116,7 +116,7 @@ const groupByTask = (map: TaskStatMap<TaskStat>, stat: TaskStat) => {
 export const mergeTaskStats = (
   topTasks: ReportingTask[],
   checklistScoresByTask: TaskImpactStats[]
-) => {
+): ReportingTask[] => {
   const t: TaskStatMap<ReportingTask> = topTasks.reduce(groupByTask, {});
   const c: TaskStatMap<TaskImpactStats> = checklistScoresByTask.reduce(groupByTask, {});
   const tasks = uniq(keys(t).concat(keys(c)));
