@@ -31,7 +31,7 @@ const TaskReportingTable = ({ stats }: TaskReportingTableProps) => {
               <tr key={key}
                 className='dashboard-list-row'>
                 <td style={styles.lg}>{task}</td>
-                <td style={styles.sm}>{count} tasks</td>
+                <td style={styles.sm}>{count} times</td>
                 <td style={styles.sm}>{points} points</td>
                 <td style={styles.sm}>{happiness.toFixed(1)}% happy</td>
               </tr>

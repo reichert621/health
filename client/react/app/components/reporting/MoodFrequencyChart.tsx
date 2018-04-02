@@ -71,3 +71,5 @@ const MoodFrequencyChart = ({ stats }: MoodFrequencyProps) => {
     </div>
   );
 };
+
+export default MoodFrequencyChart;

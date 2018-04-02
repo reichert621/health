@@ -125,7 +125,6 @@ export const mergeTaskStats = (
     const { count, points } = t[task];
     const { data: checklistStats } = c[task];
     const { average: averageDepressionScore } = checklistStats;
-    const totalPoints = count * points;
 
     return {
       task,
