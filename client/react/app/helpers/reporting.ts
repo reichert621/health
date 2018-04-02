@@ -1,6 +1,6 @@
 import * as Bluebird from 'bluebird';
 import * as moment from 'moment';
-import { keys, groupBy } from 'lodash';
+import { keys, groupBy, extend, uniq } from 'lodash';
 import { HttpResponse, get } from './http';
 import { fetchScorecard } from './scorecard';
 import { DatedItem, getStreakStats } from './utils';
@@ -9,10 +9,18 @@ export interface ScoreByDay {
   [key: string]: number[];
 }
 
-export interface ReportingTask {
+export interface TaskStat {
   task: string;
+}
+
+export interface TaskStatMap<T> {
+  [task: string]: T;
+}
+
+export interface ReportingTask extends TaskStat {
   count: number;
   points: number;
+  happiness?: number;
 }
 
 // TODO: name this better
@@ -28,12 +36,11 @@ export interface ChecklistQuestionStats {
   average: number;
 }
 
-export interface TaskImpactStats {
-  task: string;
+export interface TaskImpactStats extends TaskStat {
   data: {
     average: number;
-    scores: number[];
-    dates: moment.Moment|Date|string[]
+    scores?: number[];
+    dates?: moment.Moment|Date|string[]
   };
 }
 
@@ -100,6 +107,32 @@ export const calculateEarnings = (streaks: number[]): number => {
 
     return earnings + base + bonuses;
   }, 0);
+};
+
+const groupByTask = (map: TaskStatMap<TaskStat>, stat: TaskStat) => {
+  return extend(map, { [stat.task]: stat });
+};
+
+export const mergeTaskStats = (
+  topTasks: ReportingTask[],
+  checklistScoresByTask: TaskImpactStats[]
+): ReportingTask[] => {
+  const t: TaskStatMap<ReportingTask> = topTasks.reduce(groupByTask, {});
+  const c: TaskStatMap<TaskImpactStats> = checklistScoresByTask.reduce(groupByTask, {});
+  const tasks = uniq(keys(t).concat(keys(c)));
+
+  return tasks.map(task => {
+    const { count, points } = t[task];
+    const { data: checklistStats } = c[task];
+    const { average: averageDepressionScore } = checklistStats;
+
+    return {
+      task,
+      count,
+      points: count * points,
+      happiness: 100 - averageDepressionScore
+    };
+  });
 };
 
 export const fetchChecklistStats = (): Promise<number[][]> => {
