@@ -21,7 +21,11 @@ import { EntryContainer, UserEntryContainer } from './components/entry';
 import { Scorecard } from './components/scorecard';
 import { ChecklistContainer } from './components/checklist';
 import TaskList from './components/tasks';
-import { Reporting } from './components/reporting';
+import {
+  Reporting,
+  TaskReporting,
+  MoodReporting
+} from './components/reporting';
 import {
   SelfActivationMethods,
   CognitiveDistortions,
@@ -84,6 +88,8 @@ ReactDOM.render(
             <Route path="/entry/:id" component={EntryContainer} />
             <Route path="/scorecard/:id" component={Scorecard} />
             <Route path="/checklist/:id" component={ChecklistContainer} />
+            <Route path="/reporting/tasks" component={TaskReporting} />
+            <Route path="/reporting/moods" component={MoodReporting} />
             <Route path="/reporting" component={Reporting} />
             <Route path="/components" component={Library} />
           </Switch>

@@ -180,6 +180,30 @@ export const fetchTotalScoreOverTime = (): Promise<any[]> => {
     .then((res: HttpResponse) => res.stats);
 };
 
+export const fetchTaskCategoryStats = (): Promise<any[]> => {
+  return get('/api/stats/categories')
+    .then((res: HttpResponse) => res.stats);
+};
+
+export const fetchChecklistQuestionStats = (): Promise<any[]> => {
+  return get('/api/stats/questions')
+    .then((res: HttpResponse) => res.stats);
+};
+
+export const fetchTaskStats = (): Bluebird<[any[], number[][]]> => {
+  return Bluebird.all([
+    fetchTaskCategoryStats(),
+    fetchChecklistStats()
+  ]);
+};
+
+export const fetchMoodStats = (): Bluebird<[any[], number[][]]> => {
+  return Bluebird.all([
+    fetchChecklistQuestionStats(),
+    fetchScorecardStats()
+  ]);
+};
+
 export const fetchAllStats = (): Promise<ReportingStats> => {
   return get('/api/stats/all')
     .then((res: HttpResponse) => res.stats)
