@@ -43,7 +43,12 @@ class Profile extends React.Component {
     const { username, entries = [] } = this.state;
 
     if (!entries || !entries.length) {
-      return null;
+      return (
+        <div className='text-center'>
+          <span className='text-blue'>{username} </span>
+          <span>has not published anything yet!</span>
+        </div>
+      );
     }
 
     return entries

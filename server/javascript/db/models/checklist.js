@@ -4,6 +4,7 @@ const moment = require('moment');
 const ChecklistQuestion = require('./checklist_question');
 const ChecklistScore = require('./checklist_score');
 const ScorecardSelectedTask = require('./scorecard_selected_task');
+const User = require('./user');
 
 // Depression levels
 const levels = {
@@ -143,6 +144,34 @@ const fetchCompletedDays = (userId) => {
           return merge(r, { count: Number(r.count) });
         })
         .filter(r => r.count > 0);
+    });
+};
+
+const fetchAllCompleted = (userIds = []) => {
+  return Checklist()
+    .select('c.date', 'u.username')
+    .count('cs.*')
+    .from('checklists as c')
+    .innerJoin('checklist_scores as cs', 'cs.checklistId', 'c.id')
+    .innerJoin('users as u', 'u.id', 'c.userId')
+    .whereIn('u.id', userIds)
+    .groupBy('c.date', 'u.username')
+    .orderBy('c.date', 'desc')
+    .then(result => {
+      return result
+        .map(r => {
+          return merge(r, { count: Number(r.count) });
+        })
+        .filter(r => r.count > 0);
+    });
+};
+
+const fetchFriendsCompleted = (userId) => {
+  return User.fetchFriends(userId)
+    .then(friends => {
+      const friendIds = friends.map(friend => friend.id);
+
+      return fetchAllCompleted(friendIds);
     });
 };
 
@@ -313,6 +342,7 @@ module.exports = {
   updateScores,
   fetchWithPoints,
   fetchCompletedDays,
+  fetchFriendsCompleted,
   fetchScoresByDate,
   fetchScoresByDayOfWeek,
   fetchScoresByTask,

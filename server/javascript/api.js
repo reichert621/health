@@ -45,6 +45,8 @@ api.delete('/entries/:id', isAuthenticated, entries.destroy);
 api.get('/is-authenticated', users.isAuthenticated);
 api.get('/users/:username/entries', users.fetchEntries);
 api.get('/users/:username/entries/:id', users.fetchEntry);
+// Feed
+api.get('/feed', isAuthenticated, users.feed);
 // Scorecards
 api.get('/scorecards', isAuthenticated, scorecards.fetch);
 api.get('/scorecards/:id', isAuthenticated, scorecards.findById);

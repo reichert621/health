@@ -3,6 +3,7 @@ const { first, groupBy, isNumber, sum } = require('lodash');
 const moment = require('moment');
 const Task = require('./task');
 const ScoreCardSelectedTask = require('./scorecard_selected_task');
+const User = require('./user');
 
 const ScoreCard = () => knex('scorecards');
 
@@ -84,6 +85,34 @@ const fetchCompletedDays = (userId) => {
           return merge(r, { count: Number(r.count) });
         })
         .filter(r => r.count > 0);
+    });
+};
+
+const fetchAllCompleted = (userIds = []) => {
+  return ScoreCard()
+    .select('s.date', 'u.username')
+    .count('sst.*')
+    .from('scorecards as s')
+    .innerJoin('scorecard_selected_tasks as sst', 'sst.scorecardId', 's.id')
+    .innerJoin('users as u', 'u.id', 's.userId')
+    .whereIn('u.id', userIds)
+    .groupBy('s.date', 'u.username')
+    .orderBy('s.date', 'desc')
+    .then(result => {
+      return result
+        .map(r => {
+          return merge(r, { count: Number(r.count) });
+        })
+        .filter(r => r.count > 0);
+    });
+};
+
+const fetchFriendsCompleted = (userId) => {
+  return User.fetchFriends(userId)
+    .then(friends => {
+      const friendIds = friends.map(friend => friend.id);
+
+      return fetchAllCompleted(friendIds);
     });
 };
 
@@ -226,7 +255,6 @@ const fetchStatsPerCategory = (userId) => {
 };
 
 const create = (params, userId) => {
-  console.log('Creating scorecard!', params, userId);
   return ScoreCard()
     .returning('id')
     .insert(merge(params, { userId }))
@@ -294,6 +322,7 @@ module.exports = {
   findById,
   fetchWithPoints,
   fetchCompletedDays,
+  fetchFriendsCompleted,
   fetchScoresByDate,
   fetchScoresByDayOfWeek,
   fetchTotalScoreOverTime,

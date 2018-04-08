@@ -7,8 +7,8 @@ const DefaultTasks = require('./default_tasks');
 
 const reject = (msg) => Promise.reject(new Error(msg));
 
-// TODO: move to models
 const Users = () => knex('users');
+const UserFriends = () => knex('user_friends');
 
 const makeSalt = (num = 20) =>
   crypto
@@ -76,6 +76,14 @@ const create = (params) =>
     .then(first)
     .then(findById);
 
+const fetchFriends = (userId) => {
+  return UserFriends()
+    .select('f.id', 'f.email', 'f.username')
+    .from('user_friends as uf')
+    .innerJoin('users as f', 'uf.friendId', 'f.id')
+    .where({ 'uf.userId': userId });
+};
+
 const createCategoryTasks = (category, tasks, userId) => {
   return Category.create(category, userId)
     .then(({ id: categoryId }) => {
@@ -140,6 +148,7 @@ module.exports = {
   findById,
   findByUsername,
   findByEmail,
+  fetchFriends,
   create,
   register,
   authenticate,
