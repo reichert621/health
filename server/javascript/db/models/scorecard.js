@@ -185,7 +185,23 @@ const fetchCategoryStats = (userId) => {
         .reduce((result, category) => {
           const tasks = mappings[category];
           const count = tasks.length;
-          const score = tasks.reduce((sum, t) => sum + t.points, 0);
+          const score = tasks.reduce((acc, t) => acc + t.points, 0);
+
+          return merge(result, {
+            [category]: { count, score }
+          });
+        }, {});
+    });
+};
+
+const fetchAbilityStats = (userId) => {
+  return ScoreCardSelectedTask.fetchSelectedTasksByAbility(userId)
+    .then(mappings => {
+      return Object.keys(mappings)
+        .reduce((result, category) => {
+          const tasks = mappings[category];
+          const count = tasks.length;
+          const score = tasks.reduce((acc, t) => acc + t.points, 0);
 
           return merge(result, {
             [category]: { count, score }
@@ -232,6 +248,10 @@ const fetchStats = (userId) => {
 
       return stats;
     });
+};
+
+const fetchStatsPerCategory = (userId) => {
+  return ScoreCardSelectedTask.fetchTaskStatsPerCategory(userId);
 };
 
 const create = (params, userId) => {
@@ -307,7 +327,9 @@ module.exports = {
   fetchScoresByDayOfWeek,
   fetchTotalScoreOverTime,
   fetchCategoryStats,
+  fetchAbilityStats,
   fetchStats,
+  fetchStatsPerCategory,
   create,
   createWithScores,
   update,

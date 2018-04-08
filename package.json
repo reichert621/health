@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.19",
+    "@types/highcharts": "^5.0.20",
     "@types/highlight.js": "^9.1.9",
     "@types/jest": "^22.1.4",
     "@types/lodash": "^4.14.71",
@@ -125,6 +126,7 @@
     "build:react": "./node_modules/.bin/webpack --config webpack.react.config.js",
     "react:watch": "./node_modules/.bin/webpack --config webpack.react.config.js -w",
     "react:test": "jest",
+    "test": "npm run react:test",
     "restart": "pm2 startOrRestart ecosystem.config.js",
     "deploy": "pm2 deploy ecosystem.config.js production"
   }

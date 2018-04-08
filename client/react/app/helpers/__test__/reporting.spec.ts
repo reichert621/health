@@ -101,4 +101,36 @@ describe('reporting', () => {
       expect(reporting.calculateEarnings(streaks)).toBe(expected);
     });
   });
+
+  describe('mergeTaskStats', () => {
+    it('merges two sets of task stats into one', () => {
+      const topTasks: reporting.ReportingTask[] = [
+        { task: 'Exercise', count: 3, points: 4 },
+        { task: 'Read', count: 4, points: 2 },
+        { task: 'Write', count: 2, points: 8 }
+      ];
+
+      const checklistScoresByTask: reporting.TaskImpactStats[] = [
+        { task: 'Exercise', data: { average: 0.4 } },
+        { task: 'Read', data: { average: 1.6 } },
+        { task: 'Write', data: { average: 0.8 } }
+      ];
+
+      const actual = reporting.mergeTaskStats(topTasks, checklistScoresByTask);
+      const expected: reporting.ReportingTask[] = [
+        { task: 'Exercise', count: 3, points: 12, happiness: 99.6 },
+        { task: 'Read', count: 4, points: 8, happiness: 98.4 },
+        { task: 'Write', count: 2, points: 16, happiness: 99.2 }
+      ];
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('handles empty stats', () => {
+      const actual = reporting.mergeTaskStats([], []);
+      const expected: reporting.ReportingTask[] = [];
+
+      expect(actual).toEqual(expected);
+    });
+  });
 });

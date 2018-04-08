@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - "8"
+cache:
+  directories:
+  - node_modules
+script:
+  - npm test
+deploy:
+  provider: heroku
+  api_key:
+    secure: IzFEAM7cxEu2+KQOmJ1tlMBwXXaSlm0xZP/e4/LgLiLKbzo/ZwiOQiCOkQeht1aliLWFQoS1QXicPn/e2T2ERUy4s7mP7c8wVB8kKTNTqroY/RI4ljS/yOFV4nrppykB57xGTyN1K5oDZnXUhcfawEWUHJujY+hpgx2ar7Xd9hvsy6U3XCAxoLW2dfs8ydLPyL6dpoHJo4UeC1M4eZCj6aP9h0t1Yb+48yP5Hch5yFqm6MfFtuvM1OfIk6PPhsMVQ7vrNkRWFgK+sMmo5d6SuHBbmFk+LgToT+44GvQvXrPmHQDsw69tlVtbuwdcvRmQwDpOOv0Zd9Yco54pwfYFW2e3lLoJtD6CsbBCeC/vGVrJOilEI7bC11v6sVlvUb5CEEyEwz3mAbhEPyKpRSXW7sfU+Vv/IPcdm6theU8I24kLd2WmdgGWNUQ2PJTLU6Hvkvu/hsUcJJWawMA0kDMIDM2Y/thojchAFUEp7xR+b0QCwXapuLHKDgYC6BIGyfIKJFVnU3cYGA/t8x53zyl/7qbG5MK/khYEhhQEE4jqyvJdeNdeojeGmV2y5QWT4f8KEBz4KTmW2A3r7ZFFi6MfM5GrwGIsltnA6gSA5+CYMovwHbvTxBRJ7tUydmPz2vu2IU+Q0JhcjiQ3b/K/KwXl05sFddZ/eqewAmp/rgciDoE=
+  app: beok
+  on:
+    repo: reichert621/blog

@@ -36,6 +36,7 @@ interface MoodFrequencyProps {
   };
 }
 
+// TODO: maybe combine this with the MoodFrequencyChart component?
 const MoodFrequency = ({ stats = {} }: MoodFrequencyProps) => {
   const frequencies = keys(stats).map(level => {
     const count = stats[level];

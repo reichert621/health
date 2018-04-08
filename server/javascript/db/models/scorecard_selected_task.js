@@ -1,5 +1,6 @@
 const knex = require('../knex.js');
 const { first, isObject, isEmpty } = require('lodash');
+const { getDateRange, getDaysBetween } = require('./utils');
 
 const ScoreCardSelectedTask = () => knex('scorecard_selected_tasks');
 
@@ -12,15 +13,75 @@ const fetch = (where = {}, userId) =>
 
 const fetchSelectedTasksByCategory = (userId) => {
   return ScoreCardSelectedTask()
-    .select('c.name', 't.description', 't.points')
+    .select('c.name as category', 't.description', 't.points')
     .from('scorecard_selected_tasks as sst')
     .innerJoin('tasks as t', 'sst.taskId', 't.id')
     .innerJoin('categories as c', 't.categoryId', 'c.id')
     .where({ 'sst.userId': userId })
     .then(results => {
-      return results.reduce((map, { name, description, points }) => {
+      return results.reduce((map, { category, description, points }) => {
         return merge(map, {
-          [name]: (map[name] || []).concat({ description, points })
+          [category]: (map[category] || []).concat({ description, points })
+        });
+      }, {});
+    });
+};
+
+// Fetches task chart stats
+const fetchTaskStatsPerCategory = (userId) => {
+  return ScoreCardSelectedTask()
+    .select('c.name as category', 't.description', 't.points', 's.date')
+    .from('scorecard_selected_tasks as sst')
+    .innerJoin('scorecards as s', 'sst.scorecardId', 's.id')
+    .innerJoin('tasks as t', 'sst.taskId', 't.id')
+    .innerJoin('categories as c', 't.categoryId', 'c.id')
+    .where({ 'sst.userId': userId })
+    .then(results => {
+      const dates = results.map(r => r.date);
+      const [start, end] = getDateRange(dates);
+      const days = getDaysBetween(start, end);
+      const mappings = results.reduce((map, { category, date, points }) => {
+        return merge(map, {
+          [category]: (map[category] || []).concat({ date, points })
+        });
+      }, {});
+
+      return Object.keys(mappings)
+        .map(category => {
+          const stats = mappings[category];
+          const scores = stats.reduce((acc, { date, points }) => {
+            const timestamp = Number(date);
+
+            return merge(acc, {
+              [timestamp]: (acc[timestamp] || 0) + points
+            });
+          }, {});
+
+          return {
+            category,
+            data: days.map(day => {
+              const timestamp = Number(day); // TODO: format date instead of unix?
+              const score = scores[timestamp] || 0;
+
+              return [timestamp, score];
+            })
+          };
+        });
+    });
+};
+
+const fetchSelectedTasksByAbility = (userId) => {
+  return ScoreCardSelectedTask()
+    .select('a.name as ability', 't.description', 't.points')
+    .from('scorecard_selected_tasks as sst')
+    .innerJoin('tasks as t', 'sst.taskId', 't.id')
+    .innerJoin('categories as c', 't.categoryId', 'c.id')
+    .innerJoin('abilities as a', 'c.abilityId', 'a.id')
+    .where({ 'sst.userId': userId })
+    .then(results => {
+      return results.reduce((map, { ability, description, points }) => {
+        return merge(map, {
+          [ability]: (map[ability] || []).concat({ description, points })
         });
       }, {});
     });
@@ -100,6 +161,8 @@ const destroyByScorecardId = (scorecardId, userId) =>
 module.exports = {
   fetch,
   fetchSelectedTasksByCategory,
+  fetchTaskStatsPerCategory,
+  fetchSelectedTasksByAbility,
   fetchWithDates,
   fetchByScorecardId,
   findById,
