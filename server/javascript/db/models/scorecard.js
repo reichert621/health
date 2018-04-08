@@ -221,6 +221,10 @@ const fetchStats = (userId) => {
     });
 };
 
+const fetchStatsPerCategory = (userId) => {
+  return ScoreCardSelectedTask.fetchTaskStatsPerCategory(userId);
+};
+
 const create = (params, userId) => {
   console.log('Creating scorecard!', params, userId);
   return ScoreCard()
@@ -296,6 +300,7 @@ module.exports = {
   fetchCategoryStats,
   fetchAbilityStats,
   fetchStats,
+  fetchStatsPerCategory,
   create,
   createWithScores,
   update,

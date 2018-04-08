@@ -267,6 +267,10 @@ const fetchQuestionStats = (userId) => {
     });
 };
 
+const fetchStatsPerQuestion = (userId) => {
+  return ChecklistScore.fetchStatsPerQuestion(userId);
+};
+
 const fetchStats = (userId) => {
   return fetch({}, userId)
     .then(checklists => {
@@ -314,6 +318,7 @@ module.exports = {
   fetchScoresByTask,
   fetchScoreRangeFrequency,
   fetchQuestionStats,
+  fetchStatsPerQuestion,
   fetchStats,
   destroy
 };

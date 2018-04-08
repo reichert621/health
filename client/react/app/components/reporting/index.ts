@@ -5,6 +5,8 @@ import ReportingStreaks from './ReportingStreaks';
 import TopTasks from './TopTasks';
 import MoodFrequency from './MoodFrequency';
 import ScoresByDay from './ScoresByDay';
+import TaskReporting from './TaskReporting';
+import MoodReporting from './MoodReporting';
 
 export {
   Reporting,
@@ -13,5 +15,7 @@ export {
   ReportingStreaks,
   TopTasks,
   MoodFrequency,
-  ScoresByDay
+  ScoresByDay,
+  TaskReporting,
+  MoodReporting
 };

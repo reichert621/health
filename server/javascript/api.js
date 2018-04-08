@@ -93,5 +93,8 @@ api.get('/stats/total-score-over-time', isAuthenticated, scorecards.fetchTotalSc
 api.get('/stats/checklist-questions', isAuthenticated, checklists.fetchQuestionStats);
 api.get('/stats/task-category-totals', isAuthenticated, scorecards.fetchCategoryStats);
 api.get('/stats/checklist-scores-by-task', isAuthenticated, checklists.fetchScoresByTask);
+// TODO: name better?
+api.get('/stats/categories', isAuthenticated, scorecards.fetchStatsPerCategory);
+api.get('/stats/questions', isAuthenticated, checklists.fetchStatsPerQuestion);
 
 module.exports = api;
