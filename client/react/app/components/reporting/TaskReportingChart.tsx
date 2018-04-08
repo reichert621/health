@@ -61,9 +61,7 @@ class TaskReportingChart extends React.Component<ChartProps, ChartState> {
           point: {
             events: {
               click(e: any) {
-                const timestamp = get(e, 'point.options.x');
-
-                // return onClickPoint(timestamp);
+                // handle click event
               }
             }
           }
@@ -110,8 +108,6 @@ class TaskReportingChart extends React.Component<ChartProps, ChartState> {
       };
     });
 
-    const config = this.getChartConfig(series);
-
     return (
       <div>
         {
@@ -122,7 +118,6 @@ class TaskReportingChart extends React.Component<ChartProps, ChartState> {
             return <ReactHighcharts key={s.id} config={config} />;
           })
         }
-        {/* <ReactHighcharts config={config} /> */}
       </div>
     );
   }

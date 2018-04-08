@@ -16,7 +16,7 @@ interface Series {
   data: number[][];
 }
 
-interface ChartProps { }
+interface ChartProps {}
 
 interface ChartState {
   stats: Item[];
@@ -59,9 +59,7 @@ class MoodReportingChart extends React.Component<ChartProps, ChartState> {
           point: {
             events: {
               click(e: any) {
-                const timestamp = get(e, 'point.options.x');
-
-                // return onClickPoint(timestamp);
+                // handle click event
               }
             }
           }
@@ -85,17 +83,12 @@ class MoodReportingChart extends React.Component<ChartProps, ChartState> {
           text: 'Points'
         },
         min: 0,
-        // max: 4,
+        max: 4,
         minTickInterval: 1,
         opposite: true
       },
       credits: false,
       series
-      // series: series.concat({
-      //   id: 'scorecard',
-      //   name: 'Productivity',
-      //   data: scorecardStats
-      // })
     };
   }
 
@@ -114,8 +107,6 @@ class MoodReportingChart extends React.Component<ChartProps, ChartState> {
         };
       });
 
-    const config = this.getChartConfig(series);
-
     return (
       <div>
         {
@@ -126,7 +117,6 @@ class MoodReportingChart extends React.Component<ChartProps, ChartState> {
             return <ReactHighcharts key={s.id} config={config} />;
           })
         }
-        {/* <ReactHighcharts config={config} /> */}
       </div>
     );
   }
