@@ -13,6 +13,8 @@ interface Item {
 interface Series {
   id?: string;
   name?: string;
+  color?: string;
+  zIndex?: number;
   data: number[][];
 }
 
@@ -49,7 +51,7 @@ class TaskReportingChart extends React.Component<ChartProps, ChartState> {
     return {
       title: { text: '' },
       chart: {
-        height: 240,
+        height: 200,
         style: {
           fontFamily: 'Helvetica Neue',
           letterSpacing: '0.6px'
@@ -90,6 +92,8 @@ class TaskReportingChart extends React.Component<ChartProps, ChartState> {
       series: series.concat({
         id: 'checklists',
         name: 'Depression',
+        color: '#eaeaea',
+        zIndex: -1,
         data: checklistStats
       })
     };
@@ -101,6 +105,7 @@ class TaskReportingChart extends React.Component<ChartProps, ChartState> {
     const series = stats.map(({ category: name, data }) => {
       return {
         name,
+        color: '#33A2CC',
         data: data.map(([t, n]) => {
           return n === 0 ? [t, null] : [t, n];
         }),

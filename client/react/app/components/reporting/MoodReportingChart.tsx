@@ -13,6 +13,7 @@ interface Item {
 interface Series {
   id?: string;
   name?: string;
+  color?: string;
   data: number[][];
 }
 
@@ -103,6 +104,7 @@ class MoodReportingChart extends React.Component<ChartProps, ChartState> {
         return {
           name,
           data,
+          color: '#33A2CC',
           id: name.toLowerCase().split(' ').join('_')
         };
       });
