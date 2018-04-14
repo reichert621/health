@@ -48,6 +48,7 @@ import {
   DisarmingTechnique,
   CountWhatCounts
 } from './components/self-activation';
+import v2 from './components/_experimental';
 // import 'normalize.css'; // TODO: figure out if necessary
 import './App.less';
 
@@ -65,6 +66,7 @@ ReactDOM.render(
             <Route path="/blog" component={Home} />
             <Route path="/@:username/entry/:id" component={UserEntryContainer} />
             <Route path="/@:username" component={Profile} />
+            <Route path="/v2" component={v2} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/feed" component={FriendFeed} />
             <Route path="/tasks" component={TaskList} />
