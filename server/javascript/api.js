@@ -64,6 +64,7 @@ api.put('/tasks/:id', isAuthenticated, tasks.update);
 // Checklists
 api.get('/checklists', isAuthenticated, checklists.fetch);
 api.get('/checklists/:id', isAuthenticated, checklists.findById);
+api.post('/checklists/:id/questions/:questionId/score', isAuthenticated, checklists.updateScore);
 api.post('/checklists/:id/update-scores', isAuthenticated, checklists.updateScores);
 api.post('/checklists/new', isAuthenticated, checklists.create);
 // Checklist Scores

@@ -5,8 +5,6 @@ import ChecklistFlowQuestion from './ChecklistFlowQuestion';
 import {
   IChecklist,
   IQuestion,
-  fetchChecklist,
-  updateChecklistScores
 } from '../../helpers/checklist';
 import './CheckList.less';
 
@@ -179,7 +177,7 @@ class ChecklistFlow extends React.Component<ChecklistProps, ChecklistState> {
               (currentIndex === questions.length - 1) ? '' : 'hidden'
             }`}
             onClick={onSubmit}>
-            Submit
+            Done
           </button>
         </div>
       </div>

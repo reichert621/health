@@ -3,9 +3,7 @@ import * as moment from 'moment';
 import ChecklistQuestion from './ChecklistQuestion';
 import {
   IChecklist,
-  IQuestion,
-  fetchChecklist,
-  updateChecklistScores
+  IQuestion
 } from '../../helpers/checklist';
 import { AppState, formatPoints } from '../../helpers/utils';
 import './CheckList.less';
@@ -69,7 +67,7 @@ class Checklist extends React.Component<ChecklistProps> {
           <button
             className='btn-default pull-right'
             onClick={onSubmit}>
-            Submit
+            Done
           </button>
         </div>
       </div>
