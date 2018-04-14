@@ -93,6 +93,15 @@ const update = (id, params, userId) =>
     .then(count => (count > 0))
     .then(success => findById(id, userId));
 
+const updateScore = (id, questionId, score, userId) => {
+  const where = {
+    checklistId: id,
+    checklistQuestionId: questionId
+  };
+
+  return ChecklistScore.createOrUpdate(where, { score }, userId);
+};
+
 const updateScores = (id, params, userId) => {
   const { scores: checklistScores } = params;
   const promises = checklistScores.map(checklistScore => {
@@ -339,6 +348,7 @@ module.exports = {
   create,
   createWithScores,
   update,
+  updateScore,
   updateScores,
   fetchWithPoints,
   fetchCompletedDays,

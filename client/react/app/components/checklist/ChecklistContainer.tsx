@@ -10,7 +10,7 @@ import {
   IChecklist,
   IQuestion,
   fetchChecklist,
-  updateChecklistScores
+  updateChecklistScore
 } from '../../helpers/checklist';
 import { AppState, formatPoints } from '../../helpers/utils';
 import { getChecklist } from '../../reducers';
@@ -102,12 +102,22 @@ class ChecklistContainer extends React.Component<
   }
 
   handleScoreChange(question: IQuestion, score: number) {
+    const { match } = this.props;
+    const { id: checklistId } = match.params;
+    const { id: questionId } = question;
     const { questions } = this.state;
-    const update = questions.map(q => {
-      return (q.id === question.id) ? { ...q, score } : q;
-    });
 
-    return this.setState({ questions: update });
+    return updateChecklistScore(checklistId, questionId, score)
+      .then(() => {
+        const update = questions.map(q => {
+          return (q.id === questionId) ? { ...q, score } : q;
+        });
+
+        return this.setState({ questions: update });
+      })
+      .catch(err => {
+        console.log('Error updating score!', err);
+      });
   }
 
   calculateScore(questions: IQuestion[]) {
@@ -117,26 +127,9 @@ class ChecklistContainer extends React.Component<
   }
 
   submit() {
-    const { questions, checklist } = this.state;
     const { history } = this.props;
-    const { id: checklistId } = checklist;
 
-    const scores = questions
-      .filter(q => isNumber(q.score))
-      .map(({ id, score, checklistScoreId }) => {
-        return {
-          score,
-          checklistId,
-          checklistScoreId,
-          checklistQuestionId: id
-        };
-      });
-
-    return updateChecklistScores(checklistId, { scores })
-      .then(res => {
-        return history.push('/dashboard');
-      })
-      .catch(err => console.log('Error updating scores!', err));
+    return history.push('/dashboard');
   }
 
   render() {

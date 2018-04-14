@@ -181,6 +181,20 @@ const update = (id, params, userId) =>
     .then(count => (count > 0))
     .then(success => findById(id, userId));
 
+const createOrUpdate = (where, updates = {}, userId) => {
+  return findOne(where, userId)
+    .then(result => {
+      const checklistScoreId = result && result.id;
+      const params = merge(where, updates);
+
+      if (checklistScoreId) {
+        return update(checklistScoreId, updates, userId);
+      } else {
+        return create(params, userId);
+      }
+    });
+};
+
 const destroy = (id, userId) =>
   findById(id, userId)
     .delete();
@@ -194,5 +208,6 @@ module.exports = {
   fetchByChecklistId,
   create,
   update,
+  createOrUpdate,
   destroy
 };

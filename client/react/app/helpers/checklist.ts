@@ -7,6 +7,14 @@ export interface IChecklist {
   questions: IQuestion[];
 }
 
+export interface IChecklistScore {
+  id: number;
+  userId: number;
+  checklistId: number;
+  checklistQuestionId: number;
+  score: number;
+}
+
 export interface IQuestion {
   id: number;
   checklistScoreId: number;
@@ -25,7 +33,15 @@ export const fetchChecklist = (id: number): Promise<IChecklist> => {
     .then((res: HttpResponse) => res.checklist);
 };
 
-// TODO: don't use `any`!
+export const updateChecklistScore = (
+  id: number,
+  questionId: number,
+  score: number
+): Promise<IChecklistScore> => {
+  return post(`/api/checklists/${id}/questions/${questionId}/score`, { score })
+    .then((res: HttpResponse) => res.checklistScore);
+};
+
 export const updateChecklistScores = (id: number, params: object): Promise<IChecklist> => {
   return post(`/api/checklists/${id}/update-scores`, params)
     .then((res: HttpResponse) => res.updates);

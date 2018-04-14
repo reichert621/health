@@ -20,6 +20,17 @@ module.exports = {
       .catch(err => handleError(res, err));
   },
 
+  updateScore: (req, res) => {
+    const { params, user, body } = req;
+    const { id, questionId } = params;
+    const { score } = body;
+    const { id: userId } = user;
+
+    return Checklist.updateScore(id, questionId, score, userId)
+      .then(checklistScore => res.json({ checklistScore }))
+      .catch(err => handleError(res, err));
+  },
+
   updateScores: (req, res) => {
     return Checklist.updateScores(req.params.id, req.body, req.user.id)
       .then(updates => res.json({ updates }))
