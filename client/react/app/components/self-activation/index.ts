@@ -2,6 +2,7 @@ import SelfActivationMethods from './SelfActivationMethods';
 import CognitiveDistortions from './CognitiveDistortions';
 import DailyImperatives from './DailyImperatives';
 import DailyGratitude from './DailyGratitude';
+import DailyGratitudeSmall from './DailyGratitudeSmall';
 import AntiProcrastinationSheet from './AntiProcrastinationSheet';
 import PleasurePredicting from './PleasurePredicting';
 import TripleColumnTechnique from './TripleColumnTechnique';
@@ -23,6 +24,7 @@ export {
   CognitiveDistortions,
   DailyImperatives,
   DailyGratitude,
+  DailyGratitudeSmall,
   AntiProcrastinationSheet,
   PleasurePredicting,
   TripleColumnTechnique,

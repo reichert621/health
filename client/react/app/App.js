@@ -48,6 +48,7 @@ import {
   DisarmingTechnique,
   CountWhatCounts
 } from './components/self-activation';
+import v2 from './components/_experimental';
 // import 'normalize.css'; // TODO: figure out if necessary
 import './App.less';
 

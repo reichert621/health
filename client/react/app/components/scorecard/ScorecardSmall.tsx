@@ -1,3 +1,5 @@
+// NB: this is identical to Scorecard.tsx
+// aside from some minor UI simplifications
 import * as React from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -70,7 +72,8 @@ class ScoreCard extends React.Component<
 
   componentDidMount() {
     const { match, history, dispatch } = this.props;
-    const { id } = match.params;
+    const id = 168; // TODO! this is just for testing and only works locally!
+    // const { id } = match.params;
 
     dispatch(getScorecard(id));
     // In redux, cache only tasks where `isActive` is true,
@@ -167,47 +170,27 @@ class ScoreCard extends React.Component<
     const completed = tasks.filter(t => t.isComplete);
 
     return (
-      <div>
-        <NavBar
-          title='Scorecard'
-          linkTo='/dashboard'
-          history={history} />
-
-        <div className='default-container'>
-          <h3 className='text-light'>
-            {date.format('dddd MMMM DD, YYYY')}
-          </h3>
-
-          <div className='hidden'>
-            <DatePicker
-              selected={date}
-              onChange={this.handleDateChange.bind(this)} />
+      <div style={{ marginTop: 16 }}>
+        <div className='clearfix'>
+          <div className='scorecard-container'
+            style={{ borderTop: 'none', margin: '0 auto' }}>
+            {this.renderCheckboxes()}
           </div>
+        </div>
 
-          <div className='clearfix'>
-            <div className='scorecard-container pull-left'>
-              {this.renderCheckboxes()}
-            </div>
-
-            <div className='scorecard-overview-container pull-right'>
-              <ScorecardOverview tasks={completed} />
-            </div>
-          </div>
-
-          <div className='scorecard-footer clearfix'>
-            <Link to='/dashboard'>
-              <button className='btn-default pull-left'>
-                Done
-              </button>
-            </Link>
-
-            <button className='btn-default btn-saving pull-right'>
-              {isSaving ? 'Saving...' : 'Saved'}
-              <img
-                className={`saving-icon ${isSaving ? 'hidden' : ''}`}
-                src='assets/check.svg' />
+        <div className='scorecard-footer clearfix'>
+          <Link to='/dashboard'>
+            <button className='btn-default pull-left'>
+              Done
             </button>
-          </div>
+          </Link>
+
+          <button className='btn-default btn-saving pull-right'>
+            {isSaving ? 'Saving...' : 'Saved'}
+            <img
+              className={`saving-icon ${isSaving ? 'hidden' : ''}`}
+              src='assets/check.svg' />
+          </button>
         </div>
       </div>
     );

@@ -87,7 +87,7 @@ class ImperativeItem extends React.Component<ItemProps, ItemState> {
     const { id: itemId, description } = item;
 
     return (
-      <div className='task-item'
+      <div className='task-item editable'
         style={{ paddingLeft: 16 }}>
         <img className='remove-icon pull-left'
           src='assets/plus-gray.svg'

@@ -1,0 +1,32 @@
+@bright-blue: #33A2CC;
+@light-blue-hover: #F6FCFF;
+
+.dashboard-section-header {
+  float: left;
+  padding: 0px 16px;
+  text-align: center;
+  width: 20%;
+
+  .header-text {
+    border-bottom: 2px solid @light-blue-hover;
+    cursor: pointer;
+    padding: 8px;
+  }
+
+  .header-icon {
+
+  }
+
+  &.is-active {
+    .header-text {
+      border-bottom: 2px solid @bright-blue;
+    }
+  }
+
+  &.is-complete {
+    .header-text {
+      color: @bright-blue;
+      font-weight: 400;
+    }
+  }
+}
