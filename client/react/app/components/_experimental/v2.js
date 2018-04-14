@@ -1,4 +1,3 @@
-// TODO: move this to `/experimental` directory (or something like that)
 import React from 'react';
 import { sample, keys, groupBy } from 'lodash';
 import NavBar from '../navbar';
@@ -316,7 +315,7 @@ class Dashboard extends React.Component {
       .then(imperatives => {
         return this.setState({ imperatives });
       })
-      .catch(err => console.log('Error!', err));
+      .catch(err => console.log('Error fetching imperatives!', err));
   }
 
   handleSectionSelected(selectedSection) {
