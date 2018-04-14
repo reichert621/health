@@ -1,11 +1,9 @@
 import Dashboard from './Dashboard';
-import DashboardCheckList from './DashboardCheckLists';
-import DashboardScoreCard from './DashboardScoreCards';
+import DashboardList from './DashboardList';
 import DashboardReporting from './DashboardReporting';
 
 export {
   Dashboard,
-  DashboardCheckList,
-  DashboardScoreCard,
+  DashboardList,
   DashboardReporting
 };

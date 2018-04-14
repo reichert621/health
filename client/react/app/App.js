@@ -19,7 +19,7 @@ import {
 import { Dashboard } from './components/dashboard';
 import { EntryContainer, UserEntryContainer } from './components/entry';
 import { Scorecard } from './components/scorecard';
-import { ChecklistContainer } from './components/checklist';
+import ChecklistContainer from './components/checklist';
 import TaskList from './components/tasks';
 import FriendFeed from './components/feed';
 import {

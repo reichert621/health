@@ -2,8 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { extend, isNumber } from 'lodash';
 import moment from 'moment';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import ChecklistQuestion from './ChecklistQuestion';
 import { fetchChecklistQuestions, createNewChecklist } from '../../helpers/checklist';
 import './CheckList.less';
@@ -81,10 +79,6 @@ class NewCheckList extends React.Component {
               </Link>
               Check-in
             </h1>
-
-            <DatePicker
-              selected={date}
-              onChange={this.handleDateChange.bind(this)} />
 
             <h3 className="text-light">
               {date.format('dddd MMMM DD, YYYY')}
