@@ -111,7 +111,7 @@
   },
   "main": "server/index.js",
   "scripts": {
-    "prestart": "npm run db:migrate && npm run build:react",
+    "prestart": "npm run db:migrate && npm run build",
     "start": "node server/index.js",
     "dev": "./node_modules/nodemon/bin/nodemon.js server/index.js",
     "eslint:react": "./node_modules/.bin/eslint 'client/react/app/**/*.js'",
@@ -121,9 +121,10 @@
     "lint": "./node_modules/.bin/eslint",
     "db:migrate": "./node_modules/.bin/knex migrate:latest --knexfile server/db/knexfile.js",
     "db:seed": "./node_modules/.bin/knex seed:run --knexfile server/db/knexfile.js",
-    "build:react": "./node_modules/.bin/webpack --config webpack.react.config.js",
+    "build:react": "./node_modules/.bin/webpack --config webpack.react.config.js -p",
     "react:watch": "./node_modules/.bin/webpack --config webpack.react.config.js -w",
     "react:test": "jest",
+    "build": "npm run build:react",
     "test": "npm run react:test",
     "restart": "pm2 startOrRestart ecosystem.config.js",
     "deploy": "pm2 deploy ecosystem.config.js production"
