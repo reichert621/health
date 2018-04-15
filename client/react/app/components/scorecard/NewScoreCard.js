@@ -2,8 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { groupBy, keys } from 'lodash';
 import moment from 'moment';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import TaskCheckbox from './TaskCheckbox';
 import ScorecardOverview from './ScorecardOverview';
 import { fetchTasks, calculateScore } from '../../helpers/tasks';

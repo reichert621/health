@@ -65,7 +65,7 @@ class TaskItem extends React.Component<TaskItemProps, TaskItemState> {
     const { description, points, isActive } = task;
 
     return (
-      <div className={`task-item ${isActive ? 'active' : 'inactive'}`}>
+      <div className={`task-item editable ${isActive ? 'active' : 'inactive'}`}>
         <span className='task-description'>{description}</span>
         <span className='task-points'>{points} points</span>
         <img className='edit-icon'

@@ -5,8 +5,6 @@ import { Link, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { groupBy, keys, sortBy } from 'lodash';
 import * as moment from 'moment';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import NavBar from '../navbar';
 import TaskCheckbox from './TaskCheckbox';
 import ScorecardOverview from './ScorecardOverview';
