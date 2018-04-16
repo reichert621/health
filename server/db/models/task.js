@@ -5,6 +5,8 @@ const Tasks = () => knex('tasks');
 
 const merge = (x, y) => Object.assign({}, x, y);
 
+const isValidPointValue = (points) => [1, 2, 4, 8, 16].includes(points);
+
 // TODO: clean this up or rename to `fetchWithCategory`
 const fetch = (where = {}, userId) =>
   Tasks()
@@ -65,11 +67,19 @@ const create = (params = {}, userId) =>
     .then(first)
     .then(id => findById(id, userId));
 
-const update = (id, userId, params = {}) =>
-  findById(id, userId)
+const update = (id, userId, params = {}) => {
+  // TODO: should validations be handled somewhere else?
+  const { points } = params;
+
+  if (points && !isValidPointValue(points)) {
+    return Promise.reject(new Error(`Invalid point value: ${points}`));
+  }
+
+  return findById(id, userId)
     .update(params)
     .then(count => (count > 0))
     .then(success => findById(id, userId));
+};
 
 const destroy = (id, userId) =>
   findById(id, userId).delete();
