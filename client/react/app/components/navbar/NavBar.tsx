@@ -52,11 +52,11 @@ class NavDropdown extends React.Component<NavDropdownProps> {
         className={`dropdown ${isOpen ? 'open' : ''}`}
         ref='dropdownMenu'>
         <div
-          className='dropdown-toggle'
+          className='nav-dropdown-toggle'
           onClick={onToggle}>
           {first(username)}
         </div>
-        <div className='dropdown-menu'>
+        <div className='nav-dropdown-menu'>
           <Link to='/reporting'>
             <div className='dropdown-item'
               style={{ marginTop: 8 }}>

@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { resolve } from 'bluebird';
-import { extend } from 'lodash';
+import { extend, find } from 'lodash';
+import Dropdown, { IDropdownOption } from './Dropdown';
 import { Task } from '../../helpers/tasks';
+import { formatPoints } from '../../helpers/utils';
 
 interface TaskItemProps {
   task: Task;
@@ -9,8 +11,13 @@ interface TaskItemProps {
   onToggleTaskActive: (task: Task) => void;
 }
 
+interface PointOption extends IDropdownOption {
+  points: number;
+}
+
 interface TaskItemState {
   updatedTask: Task;
+  selected?: PointOption;
   isEditing: boolean;
 }
 
@@ -22,16 +29,26 @@ class TaskItem extends React.Component<TaskItemProps, TaskItemState> {
 
     this.state = {
       updatedTask: extend({}, task),
+      selected: this.getDefaultPointOption(),
       isEditing: false
     };
   }
 
-  updateTask(e: any) {
-    const { name, value } = e.target;
+  updateTaskDescription(description: string) {
     const { updatedTask } = this.state;
 
     return this.setState({
-      updatedTask: extend(updatedTask, { [name]: value })
+      updatedTask: extend(updatedTask, { description })
+    });
+  }
+
+  updateTaskPoints(option: PointOption) {
+    const { points } = option;
+    const { updatedTask } = this.state;
+
+    return this.setState({
+      selected: option,
+      updatedTask: extend(updatedTask, { points })
     });
   }
 
@@ -56,8 +73,25 @@ class TaskItem extends React.Component<TaskItemProps, TaskItemState> {
 
     return this.setState({
       updatedTask: extend({}, task),
+      selected: this.getDefaultPointOption(),
       isEditing: false
     });
+  }
+
+  getPointOptions(): PointOption[] {
+    return [
+      { value: '1 point', subvalue: 'Very Easy', points: 1 },
+      { value: '2 points', subvalue: 'Easy', points: 2 },
+      { value: '4 points', subvalue: 'Medium', points: 4 },
+      { value: '8 points', subvalue: 'Difficult', points: 8 },
+      { value: '16 points', subvalue: 'Very Difficult', points: 16 }
+    ];
+  }
+
+  getDefaultPointOption(): PointOption {
+    const { task } = this.props;
+
+    return find(this.getPointOptions(), { points: task.points });
   }
 
   renderStaticTask() {
@@ -66,8 +100,14 @@ class TaskItem extends React.Component<TaskItemProps, TaskItemState> {
 
     return (
       <div className={`task-item editable ${isActive ? 'active' : 'inactive'}`}>
-        <span className='task-description'>{description}</span>
-        <span className='task-points'>{points} points</span>
+        <span className='task-description'
+          onClick={() => this.setState({ isEditing: true })}>
+          {description}
+        </span>
+        <span className='task-points'
+          onClick={() => this.setState({ isEditing: true })}>
+          {formatPoints(points)}
+        </span>
         <img className='edit-icon'
           src='assets/pencil.svg'
           onClick={() => this.setState({ isEditing: true })} />
@@ -80,8 +120,9 @@ class TaskItem extends React.Component<TaskItemProps, TaskItemState> {
   }
 
   renderEditableTask() {
-    const { updatedTask } = this.state;
+    const { updatedTask, selected } = this.state;
     const { description, points } = updatedTask;
+    const options = this.getPointOptions();
 
     return (
       <form onSubmit={this.saveUpdatedTask.bind(this)}>
@@ -91,16 +132,12 @@ class TaskItem extends React.Component<TaskItemProps, TaskItemState> {
           className='input-default -inline task-description-input'
           placeholder='Task'
           value={description}
-          onChange={this.updateTask.bind(this)} />
-        {/* TODO: fix width and only allow 1, 2, 4, 8, 16 points */}
-        <input
-          type='number'
-          name='points'
-          className='input-default -inline task-points-input'
-          placeholder='0'
-          min='0'
-          value={points}
-          onChange={this.updateTask.bind(this)} />
+          onChange={e => this.updateTaskDescription(e.target.value)} />
+        <Dropdown
+          className='task-points-input -inline'
+          options={options}
+          selected={selected}
+          onSelect={option => this.updateTaskPoints(option)} />
         <button
           type='submit'
           className='btn-primary'>
