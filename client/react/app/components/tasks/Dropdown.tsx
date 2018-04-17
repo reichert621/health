@@ -1,9 +1,5 @@
 import * as React from 'react';
-
-export interface IDropdownOption {
-  value: string;
-  subvalue?: string;
-}
+import { IDropdownOption } from '../../helpers/utils';
 
 interface DropdownProps {
   options: IDropdownOption[];

@@ -1,4 +1,5 @@
 import { HttpResponse, get, post, put } from './http';
+import { IDropdownOption } from './utils';
 
 export interface Task {
   id: number;
@@ -9,6 +10,20 @@ export interface Task {
   isActive: boolean;
   isComplete: boolean;
 }
+
+export interface PointOption extends IDropdownOption {
+  points: number;
+}
+
+export const getPointOptions = (): PointOption[] => {
+  return [
+    { value: '1 point', subvalue: 'Very Easy', points: 1 },
+    { value: '2 points', subvalue: 'Easy', points: 2 },
+    { value: '4 points', subvalue: 'Medium', points: 4 },
+    { value: '8 points', subvalue: 'Difficult', points: 8 },
+    { value: '16 points', subvalue: 'Very Difficult', points: 16 }
+  ];
+};
 
 export const fetchTasks = (): Promise<Task[]> => {
   return get('/api/tasks')
