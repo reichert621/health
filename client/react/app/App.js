@@ -49,6 +49,7 @@ import {
   CountWhatCounts
 } from './components/self-activation';
 import v2 from './components/_experimental';
+import Instagram from './components/instagram';
 // import 'normalize.css'; // TODO: figure out if necessary
 import './App.less';
 
@@ -95,6 +96,7 @@ ReactDOM.render(
             <Route path="/reporting/moods" component={MoodReporting} />
             <Route path="/reporting" component={Reporting} />
             <Route path="/components" component={Library} />
+            <Route path="/instagram" component={Instagram} />
           </Switch>
         </div>
       </Router>

@@ -1,5 +1,6 @@
 const express = require('express');
 const { auth, isAuthenticated } = require('./passport');
+const instagram = require('./instagram');
 
 const { Router } = express;
 const {
@@ -99,5 +100,10 @@ api.get('/stats/checklist-scores-by-task', isAuthenticated, checklists.fetchScor
 // TODO: name better?
 api.get('/stats/categories', isAuthenticated, scorecards.fetchStatsPerCategory);
 api.get('/stats/questions', isAuthenticated, checklists.fetchStatsPerQuestion);
+// Instagram
+api.get('/auth/instagram', instagram.auth);
+api.get('/instagram/auth-url', instagram.fetchAuthUrl);
+api.get('/instagram/token', instagram.fetchToken);
+api.get('/instagram/media', instagram.media);
 
 module.exports = api;

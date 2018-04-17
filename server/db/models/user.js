@@ -76,6 +76,15 @@ const create = (params) =>
     .then(first)
     .then(findById);
 
+const update = (id, params = {}) =>
+  findById(id)
+    .update(params)
+    .then(count => (count > 0))
+    .then(success => findById(id));
+
+const setInstagramToken = (id, token) =>
+  update(id, { instagramAccessToken: token });
+
 const fetchFriends = (userId) => {
   return UserFriends()
     .select('f.id', 'f.email', 'f.username')
@@ -149,6 +158,7 @@ module.exports = {
   findByUsername,
   findByEmail,
   fetchFriends,
+  setInstagramToken,
   create,
   register,
   authenticate,
