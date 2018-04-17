@@ -41,6 +41,11 @@ export interface ItemWithId {
   id: number|string;
 }
 
+export interface IDropdownOption {
+  value: string;
+  subvalue?: string;
+}
+
 export const DAYS_OF_WEEK = [
   'Monday',
   'Tuesday',

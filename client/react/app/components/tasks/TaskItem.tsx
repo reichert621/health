@@ -1,18 +1,14 @@
 import * as React from 'react';
 import { resolve } from 'bluebird';
 import { extend, find } from 'lodash';
-import Dropdown, { IDropdownOption } from './Dropdown';
-import { Task } from '../../helpers/tasks';
+import { PointOption, Task, getPointOptions } from '../../helpers/tasks';
 import { formatPoints } from '../../helpers/utils';
+import Dropdown from './Dropdown';
 
 interface TaskItemProps {
   task: Task;
   onUpdateTask: (id: number, updates: object) => Promise<Task>;
   onToggleTaskActive: (task: Task) => void;
-}
-
-interface PointOption extends IDropdownOption {
-  points: number;
 }
 
 interface TaskItemState {
@@ -78,20 +74,10 @@ class TaskItem extends React.Component<TaskItemProps, TaskItemState> {
     });
   }
 
-  getPointOptions(): PointOption[] {
-    return [
-      { value: '1 point', subvalue: 'Very Easy', points: 1 },
-      { value: '2 points', subvalue: 'Easy', points: 2 },
-      { value: '4 points', subvalue: 'Medium', points: 4 },
-      { value: '8 points', subvalue: 'Difficult', points: 8 },
-      { value: '16 points', subvalue: 'Very Difficult', points: 16 }
-    ];
-  }
-
   getDefaultPointOption(): PointOption {
     const { task } = this.props;
 
-    return find(this.getPointOptions(), { points: task.points });
+    return find(getPointOptions(), { points: task.points });
   }
 
   renderStaticTask() {
@@ -122,7 +108,7 @@ class TaskItem extends React.Component<TaskItemProps, TaskItemState> {
   renderEditableTask() {
     const { updatedTask, selected } = this.state;
     const { description, points } = updatedTask;
-    const options = this.getPointOptions();
+    const options = getPointOptions();
 
     return (
       <form onSubmit={this.saveUpdatedTask.bind(this)}>
