@@ -14,7 +14,7 @@ import {
 } from '../../helpers/checklist';
 import { AppState, formatPoints } from '../../helpers/utils';
 import { getChecklist } from '../../reducers';
-import './CheckList.less';
+import './Checklist.less';
 
 interface ChecklistProps {
   checklist: IChecklist;

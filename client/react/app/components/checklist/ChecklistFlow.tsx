@@ -6,7 +6,7 @@ import {
   IChecklist,
   IQuestion,
 } from '../../helpers/checklist';
-import './CheckList.less';
+import './Checklist.less';
 
 interface ChecklistProps {
   checklist: IChecklist;

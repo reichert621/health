@@ -1,13 +1,24 @@
-import React from 'react';
+import * as React from 'react';
+import * as moment from 'moment';
 import { first } from 'lodash';
 import { Link } from 'react-router-dom';
 import './Entry.less';
+
+interface IEntryPreview {
+  content: string;
+  date: moment.Moment;
+}
 
 const getPreviewContent = (content = '') => {
   return first(content.split('\n'));
 };
 
-const EntryPreview = ({ entry, linkTo }) => {
+interface EntryPreviewProps {
+  entry: IEntryPreview;
+  linkTo: string;
+}
+
+const EntryPreview = ({ entry, linkTo }: EntryPreviewProps) => {
   const { content, date } = entry;
 
   return (
