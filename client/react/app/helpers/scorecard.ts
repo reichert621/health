@@ -6,6 +6,7 @@ export interface IScorecard {
   userId: number;
   date: string;
   title?: string;
+  points?: number;
   tasks?: Task[];
 }
 

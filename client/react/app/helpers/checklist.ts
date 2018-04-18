@@ -4,6 +4,7 @@ export interface IChecklist {
   id: number;
   userId: number;
   date: string;
+  points?: number;
   questions: IQuestion[];
 }
 

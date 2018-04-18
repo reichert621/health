@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import { HttpResponse, get, post, put, del } from './http';
 
 export interface Entry {

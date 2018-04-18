@@ -1,15 +1,26 @@
-import React from 'react';
+import * as React from 'react';
 import ReportingChart from '../reporting/ReportingChart';
-import { fetchAllStats } from '../../helpers/reporting';
+import { ReportingStats, fetchAllStats } from '../../helpers/reporting';
 import '../reporting/Reporting.less';
 
+interface DashboardReportingProps {
+  onClickPoint: (timestamp: number) => void;
+}
+
+interface DashboardReportingState {
+  stats: ReportingStats;
+}
+
 // TODO: DRY up (see Reporting)
-class DashboardReporting extends React.Component {
-  constructor(props) {
+class DashboardReporting extends React.Component<
+  DashboardReportingProps,
+  DashboardReportingState
+> {
+  constructor(props: DashboardReportingProps) {
     super(props);
 
     this.state = {
-      stats: {}
+      stats: {} as ReportingStats
     };
   }
 
@@ -27,7 +38,7 @@ class DashboardReporting extends React.Component {
     const { onClickPoint } = this.props;
 
     return (
-      <div className="dashboard-chart-container">
+      <div className='dashboard-chart-container'>
         <ReportingChart
           checklistStats={checklistStats}
           scorecardStats={scorecardStats}

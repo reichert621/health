@@ -17,7 +17,7 @@ import {
 } from '../../helpers/scorecard';
 import { AppState, keyifyDate } from '../../helpers/utils';
 import { getScorecard } from '../../reducers';
-import './ScoreCard.less';
+import './Scorecard.less';
 
 interface ScorecardProps {
   date: moment.Moment;
