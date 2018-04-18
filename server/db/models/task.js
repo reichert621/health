@@ -21,36 +21,63 @@ const fetchActive = (userId, taskIds = []) =>
 
 const fetchTopSelected = (userId) => {
   return Tasks()
-    .select('tasks.description', 'tasks.points', 'categories.name as category')
-    .innerJoin(
-      'scorecard_selected_tasks',
-      'scorecard_selected_tasks.taskId',
-      'tasks.id'
+    .select(
+      't.id as taskId',
+      't.description',
+      't.points',
+      't.isActive',
+      'c.name as category'
     )
-    .innerJoin('categories', 'tasks.categoryId', 'categories.id')
-    .where({ 'scorecard_selected_tasks.userId': userId })
+    .from('tasks as t')
+    .innerJoin('scorecard_selected_tasks as sst', 'sst.taskId', 't.id')
+    .innerJoin('categories as c', 't.categoryId', 'c.id')
+    .where({ 'sst.userId': userId })
     .then(results => {
       return results
-        .reduce((stats, { category, description, points }) => {
+        .reduce((stats, result) => {
+          const { category, description } = result;
           const key = `${category}: ${description}`;
-          const [count] = stats[key] || [0];
+          const { count = 0 } = stats[key] || {};
 
           return Object.assign(stats, {
-            [key]: [count + 1, points] // store points as well for reference
+            [key]: { ...result, count: count + 1 }
           });
         }, {});
     })
     .then(mapped => {
       return Object.keys(mapped)
         .map(task => {
-          const [count, points] = mapped[task];
-
-          return { task, count, points };
+          return { ...mapped[task], task };
         })
         .sort((x, y) => {
           // Sort by count, taking points into account if counts are the same
           return (y.count + (y.points / 10)) - (x.count + (x.points / 10));
         });
+    });
+};
+
+const fetchSuggestions = (userId) => {
+  return fetchTopSelected(userId)
+    .then(results => {
+      const valid = results.filter(r => r.isActive);
+      const count = valid.length;
+      const simple = valid.filter(r => r.points < 2).slice(0, 5);
+
+      if (count <= 5) {
+        return {
+          favorites: valid,
+          simple: [],
+          neglected: []
+        };
+      }
+
+      const n = (count < 10) ? Math.floor(valid.length / 2) : 5;
+
+      return {
+        simple,
+        favorites: valid.slice(0, n),
+        neglected: valid.slice(-n)
+      };
     });
 };
 
@@ -88,6 +115,7 @@ module.exports = {
   fetch,
   fetchActive,
   fetchTopSelected,
+  fetchSuggestions,
   findById,
   create,
   update,

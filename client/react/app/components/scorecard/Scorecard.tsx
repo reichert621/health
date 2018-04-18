@@ -97,7 +97,10 @@ class ScoreCard extends React.Component<
     const update = tasks.map(t => {
       return t.id === taskId ? { ...t, isComplete } : t;
     });
+
+    // Optimistic updating
     this.setState({ isSaving: true, tasks: update });
+
     return toggleScorecardTask(scorecardId, taskId, isComplete)
       .then(() => {
         const delay = 1400;
