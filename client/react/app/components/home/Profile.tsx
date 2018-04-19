@@ -1,14 +1,23 @@
-import React from 'react';
-import moment from 'moment';
+import * as React from 'react';
+import * as moment from 'moment';
+import { RouteComponentProps } from 'react-router-dom';
 import { all } from 'bluebird';
 import NavBar from '../navbar';
 import EntryPreview from '../entry/EntryPreview';
 import { isAuthenticated } from '../../helpers/auth';
-import { fetchUserEntries } from '../../helpers/entries';
+import { Entry, fetchUserEntries } from '../../helpers/entries';
 import './Home.less';
 
-class Profile extends React.Component {
-  constructor(props) {
+interface ProfileProps extends RouteComponentProps<{ username: string }> {}
+
+interface ProfileState {
+  username: string;
+  isLoggedIn: boolean;
+  entries: Entry[];
+}
+
+class Profile extends React.Component<ProfileProps, ProfileState> {
+  constructor(props: ProfileProps) {
     super(props);
 
     const { match } = this.props;

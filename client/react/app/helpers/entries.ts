@@ -15,7 +15,7 @@ export const fetchEntries = (): Promise<Entry[]> => {
     .then((res: HttpResponse) => res.entries);
 };
 
-export const fetchUserEntries = (username: string): Promise<Entry> => {
+export const fetchUserEntries = (username: string): Promise<Entry[]> => {
   return get(`/api/users/${username}/entries`)
     .then((res: HttpResponse) => res.entries);
 };

@@ -1,21 +1,25 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import ReportingChart from '../reporting/ReportingChart';
 import { ReportingStats, fetchAllStats } from '../../helpers/reporting';
+import { AppState } from '../../helpers/utils';
+import { getAllStats } from '../../reducers';
 import '../reporting/Reporting.less';
 
-interface DashboardReportingProps {
-  onClickPoint: (timestamp: number) => void;
-}
+const mapStateToProps = (state: AppState) => {
+  const { stats = {} as ReportingStats } = state;
 
-interface DashboardReportingState {
+  return { stats };
+};
+
+interface DashboardReportingProps {
   stats: ReportingStats;
+  onClickPoint: (timestamp: number) => void;
+  dispatch: (action: any) => any;
 }
 
 // TODO: DRY up (see Reporting)
-class DashboardReporting extends React.Component<
-  DashboardReportingProps,
-  DashboardReportingState
-> {
+class DashboardReporting extends React.Component<DashboardReportingProps> {
   constructor(props: DashboardReportingProps) {
     super(props);
 
@@ -25,17 +29,12 @@ class DashboardReporting extends React.Component<
   }
 
   componentDidMount() {
-    return fetchAllStats()
-      .then(stats => this.setState({ stats }))
-      .catch(err => {
-        console.log('Error fetching stats!', err);
-      });
+    return this.props.dispatch(getAllStats());
   }
 
   render() {
-    const { stats } = this.state;
+    const { stats, onClickPoint } = this.props;
     const { checklistStats, scorecardStats } = stats;
-    const { onClickPoint } = this.props;
 
     return (
       <div className='dashboard-chart-container'>
@@ -48,4 +47,4 @@ class DashboardReporting extends React.Component<
   }
 }
 
-export default DashboardReporting;
+export default connect(mapStateToProps)(DashboardReporting);

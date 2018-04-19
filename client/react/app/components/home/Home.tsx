@@ -1,13 +1,20 @@
-import React from 'react';
-import moment from 'moment';
+import * as React from 'react';
+import * as moment from 'moment';
+import { RouteComponentProps } from 'react-router-dom';
 import NavBar from '../navbar';
 import EntryPreview from '../entry/EntryPreview';
-import { fetchEntries } from '../../helpers/entries';
+import { Entry, fetchEntries } from '../../helpers/entries';
 import { logout } from '../../helpers/auth';
 import './Home.less';
 
-class Home extends React.Component {
-  constructor(props) {
+interface HomeProps extends RouteComponentProps<{}> {}
+
+interface HomeState {
+  entries: Entry[];
+}
+
+class Home extends React.Component<HomeProps, HomeState> {
+  constructor(props: HomeProps) {
     super(props);
 
     this.state = {

@@ -2,7 +2,7 @@ const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  entry: './client/react/app/App.js',
+  entry: './client/react/app/App.tsx',
   output: {
     path: path.join(__dirname, 'client/react/build'),
     filename: 'bundle.js'
