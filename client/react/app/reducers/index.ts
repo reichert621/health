@@ -2,11 +2,28 @@ import { combineReducers } from 'redux';
 import * as moment from 'moment';
 import { extend, merge } from 'lodash';
 import { IUser, fetchCurrentUser } from '../helpers/auth';
-import { IScorecard, fetchScorecards, fetchScorecard } from '../helpers/scorecard';
-import { IChecklist, IQuestion, fetchChecklists, fetchChecklist } from '../helpers/checklist';
+import {
+  IScorecard,
+  fetchScorecards,
+  fetchScorecard,
+  toggleScorecardTask
+} from '../helpers/scorecard';
+import {
+  IChecklist,
+  IQuestion,
+  fetchChecklists,
+  fetchChecklist
+} from '../helpers/checklist';
+import { Task } from '../helpers/tasks';
 import { Entry, fetchEntries, fetchEntry } from '../helpers/entries';
 import { ReportingStats, fetchAllStats } from '../helpers/reporting';
-import { SelectedState, MappedItems, mapByDate, mapById, keyifyDate } from '../helpers/utils';
+import {
+  SelectedState,
+  MappedItems,
+  mapByDate,
+  mapById,
+  keyifyDate
+} from '../helpers/utils';
 
 // Constants
 
@@ -19,6 +36,7 @@ export const REQUEST_SCORECARDS = 'REQUEST_SCORECARDS';
 export const RECEIVE_SCORECARDS = 'RECEIVE_SCORECARDS';
 export const REQUEST_SCORECARD = 'REQUEST_SCORECARD';
 export const RECEIVE_SCORECARD = 'RECEIVE_SCORECARD';
+export const UPDATE_SCORECARD = 'RECEIVE_SCORECARD';
 export const REQUEST_CHECKLISTS = 'REQUEST_CHECKLISTS';
 export const RECEIVE_CHECKLISTS = 'RECEIVE_CHECKLISTS';
 export const REQUEST_CHECKLIST = 'REQUEST_CHECKLIST';
@@ -71,6 +89,40 @@ export const getScorecard = (id: number) => {
         return dispatch({
           type: RECEIVE_SCORECARD,
           payload: scorecard
+        });
+      });
+  };
+};
+
+export const toggleTask = (scorecard: IScorecard, task: Task) => {
+  const { id: scorecardId, tasks = [] } = scorecard;
+  const { id: taskId, isComplete: isCurrentlyComplete = false } = task;
+  const isComplete = !isCurrentlyComplete;
+  const update = {
+    ...scorecard,
+    tasks: tasks.map(t => {
+      return t.id === taskId ? { ...t, isComplete } : t;
+    })
+  };
+
+  return (dispatch: any) => {
+    // Optimistic update
+    dispatch({
+      type: UPDATE_SCORECARD,
+      payload: update
+    });
+
+    return toggleScorecardTask(scorecardId, taskId, isComplete)
+      .then(success => {
+        // Do nothing, only revert if update fails
+      })
+      .catch(err => {
+        console.log('Error toggling task!', err);
+        // Revert if actual update failed
+        return dispatch({
+          type: UPDATE_SCORECARD,
+          payload: scorecard,
+          error: err // TODO: handle errors better in redux
         });
       });
   };
@@ -254,6 +306,7 @@ const scorecards = (state = {
     case RECEIVE_SCORECARDS:
       return updateScorecards(state, payload);
     case RECEIVE_SCORECARD:
+    case UPDATE_SCORECARD:
       return updateWithScorecard(state, payload);
     default:
       return state;
