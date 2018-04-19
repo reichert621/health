@@ -21,7 +21,7 @@ interface ScorecardProps {
   date: moment.Moment;
   scorecard: IScorecard;
   tasks: Task[];
-  dispatch: (action: any) => any;
+  dispatch: (action: any) => Promise<any>;
 }
 
 interface ScorecardState {
@@ -70,7 +70,7 @@ class ScoreCard extends React.Component<
     // In redux, cache only tasks where `isActive` is true,
     // and sanitize irrelevant fields (like `isComplete`)
     return dispatch(getScorecard(id))
-      .catch((err: any) => {
+      .catch(err => {
         // TODO: handle this at a higher level
         if (err.status === 401) {
           return history.push('/login');
@@ -95,7 +95,7 @@ class ScoreCard extends React.Component<
   }
 
   renderCheckboxes() {
-    const { tasks } = this.props;
+    const { tasks = [] } = this.props;
     const grouped = groupBy(tasks, 'category');
     const categories = keys(grouped);
 
@@ -126,7 +126,7 @@ class ScoreCard extends React.Component<
 
   render() {
     const { isSaving } = this.state;
-    const { tasks, date, history } = this.props;
+    const { date, history, tasks = [] } = this.props;
     const completed = tasks.filter(t => t.isComplete);
 
     return (

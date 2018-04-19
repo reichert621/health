@@ -64,7 +64,6 @@ class ChecklistContainer extends React.Component<
 
     // In redux, cache questions with `id`, `text`, and `category` fields
     return dispatch(getChecklist(id))
-    // return fetchChecklist(id)
       .then(() => {
         return this.setState({
           isLoading: false
