@@ -12,7 +12,8 @@ import {
   IChecklist,
   IQuestion,
   fetchChecklists,
-  fetchChecklist
+  fetchChecklist,
+  updateChecklistScore
 } from '../helpers/checklist';
 import { Task } from '../helpers/tasks';
 import { Entry, fetchEntries, fetchEntry } from '../helpers/entries';
@@ -41,6 +42,7 @@ export const REQUEST_CHECKLISTS = 'REQUEST_CHECKLISTS';
 export const RECEIVE_CHECKLISTS = 'RECEIVE_CHECKLISTS';
 export const REQUEST_CHECKLIST = 'REQUEST_CHECKLIST';
 export const RECEIVE_CHECKLIST = 'RECEIVE_CHECKLIST';
+export const UPDATE_CHECKLIST = 'UPDATE_CHECKLIST';
 export const REQUEST_ENTRIES = 'REQUEST_ENTRIES';
 export const RECEIVE_ENTRIES = 'RECEIVE_ENTRIES';
 export const REQUEST_ENTRY = 'REQUEST_ENTRY';
@@ -152,6 +154,36 @@ export const getChecklist = (id: number) => {
           type: RECEIVE_CHECKLIST,
           payload: checklist
         });
+      });
+  };
+};
+
+export const updateScore = (
+  checklist: IChecklist,
+  question: IQuestion,
+  score: number
+) => {
+  return (dispatch: any) => {
+    const { id: checklistId, questions = [] } = checklist;
+    const { id: questionId } = question;
+
+    return updateChecklistScore(checklistId, questionId, score)
+      .then(() => {
+        const update = {
+          ...checklist,
+          questions: questions.map(q => {
+            return (q.id === questionId) ? { ...q, score } : q;
+          })
+        };
+
+        return dispatch({
+          type: UPDATE_CHECKLIST,
+          payload: update
+        });
+      })
+      .catch(err => {
+        // TODO: improve error handling in redux
+        console.log('Error updating score!', err);
       });
   };
 };
@@ -358,6 +390,7 @@ const checklists = (state = {
     case RECEIVE_CHECKLISTS:
       return updateChecklists(state, payload);
     case RECEIVE_CHECKLIST:
+    case UPDATE_CHECKLIST:
       return updateWithChecklist(state, payload);
     default:
       return state;
