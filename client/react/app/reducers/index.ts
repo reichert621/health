@@ -1,12 +1,30 @@
-import { combineReducers } from 'redux';
+import { Dispatch, combineReducers } from 'redux';
 import * as moment from 'moment';
 import { extend, merge } from 'lodash';
 import { IUser, fetchCurrentUser } from '../helpers/auth';
-import { IScorecard, fetchScorecards, fetchScorecard } from '../helpers/scorecard';
-import { IChecklist, IQuestion, fetchChecklists, fetchChecklist } from '../helpers/checklist';
+import {
+  IScorecard,
+  fetchScorecards,
+  fetchScorecard,
+  toggleScorecardTask
+} from '../helpers/scorecard';
+import {
+  IChecklist,
+  IQuestion,
+  fetchChecklists,
+  fetchChecklist,
+  updateChecklistScore
+} from '../helpers/checklist';
+import { Task } from '../helpers/tasks';
 import { Entry, fetchEntries, fetchEntry } from '../helpers/entries';
 import { ReportingStats, fetchAllStats } from '../helpers/reporting';
-import { SelectedState, MappedItems, mapByDate, mapById, keyifyDate } from '../helpers/utils';
+import {
+  SelectedState,
+  MappedItems,
+  mapByDate,
+  mapById,
+  keyifyDate
+} from '../helpers/utils';
 
 // Constants
 
@@ -19,10 +37,12 @@ export const REQUEST_SCORECARDS = 'REQUEST_SCORECARDS';
 export const RECEIVE_SCORECARDS = 'RECEIVE_SCORECARDS';
 export const REQUEST_SCORECARD = 'REQUEST_SCORECARD';
 export const RECEIVE_SCORECARD = 'RECEIVE_SCORECARD';
+export const UPDATE_SCORECARD = 'RECEIVE_SCORECARD';
 export const REQUEST_CHECKLISTS = 'REQUEST_CHECKLISTS';
 export const RECEIVE_CHECKLISTS = 'RECEIVE_CHECKLISTS';
 export const REQUEST_CHECKLIST = 'REQUEST_CHECKLIST';
 export const RECEIVE_CHECKLIST = 'RECEIVE_CHECKLIST';
+export const UPDATE_CHECKLIST = 'UPDATE_CHECKLIST';
 export const REQUEST_ENTRIES = 'REQUEST_ENTRIES';
 export const RECEIVE_ENTRIES = 'RECEIVE_ENTRIES';
 export const REQUEST_ENTRY = 'REQUEST_ENTRY';
@@ -33,6 +53,15 @@ export const REQUEST_ALL_STATS = 'REQUEST_ALL_STATS';
 export const RECEIVE_ALL_STATS = 'RECEIVE_ALL_STATS';
 
 // Actions
+
+interface IAction {
+  type: string;
+  payload?: any; // TODO: use generic type?
+}
+
+interface ViewAction extends IAction {
+  view: string;
+}
 
 export const updateCurrentView = (view: string) => {
   return {
@@ -49,7 +78,7 @@ export const selectDate = (payload: SelectedState) => {
 };
 
 export const getScorecards = () => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_SCORECARDS });
 
     return fetchScorecards()
@@ -63,7 +92,7 @@ export const getScorecards = () => {
 };
 
 export const getScorecard = (id: number) => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_SCORECARD });
 
     return fetchScorecard(id)
@@ -76,8 +105,42 @@ export const getScorecard = (id: number) => {
   };
 };
 
+export const toggleTask = (scorecard: IScorecard, task: Task) => {
+  const { id: scorecardId, tasks = [] } = scorecard;
+  const { id: taskId, isComplete: isCurrentlyComplete = false } = task;
+  const isComplete = !isCurrentlyComplete;
+  const update = {
+    ...scorecard,
+    tasks: tasks.map(t => {
+      return t.id === taskId ? { ...t, isComplete } : t;
+    })
+  };
+
+  return (dispatch: Dispatch<IAction>) => {
+    // Optimistic update
+    dispatch({
+      type: UPDATE_SCORECARD,
+      payload: update
+    });
+
+    return toggleScorecardTask(scorecardId, taskId, isComplete)
+      .then(success => {
+        // Do nothing, only revert if update fails
+      })
+      .catch(err => {
+        console.log('Error toggling task!', err);
+        // Revert if actual update failed
+        return dispatch({
+          type: UPDATE_SCORECARD,
+          payload: scorecard,
+          error: err // TODO: handle errors better in redux
+        });
+      });
+  };
+};
+
 export const getChecklists = () => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_CHECKLISTS });
 
     return fetchChecklists()
@@ -91,7 +154,7 @@ export const getChecklists = () => {
 };
 
 export const getChecklist = (id: number) => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_CHECKLIST });
 
     return fetchChecklist(id)
@@ -104,8 +167,38 @@ export const getChecklist = (id: number) => {
   };
 };
 
+export const updateScore = (
+  checklist: IChecklist,
+  question: IQuestion,
+  score: number
+) => {
+  return (dispatch: Dispatch<IAction>) => {
+    const { id: checklistId, questions = [] } = checklist;
+    const { id: questionId } = question;
+
+    return updateChecklistScore(checklistId, questionId, score)
+      .then(() => {
+        const update = {
+          ...checklist,
+          questions: questions.map(q => {
+            return (q.id === questionId) ? { ...q, score } : q;
+          })
+        };
+
+        return dispatch({
+          type: UPDATE_CHECKLIST,
+          payload: update
+        });
+      })
+      .catch(err => {
+        // TODO: improve error handling in redux
+        console.log('Error updating score!', err);
+      });
+  };
+};
+
 export const getEntries = () => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_ENTRIES });
 
     return fetchEntries()
@@ -119,7 +212,7 @@ export const getEntries = () => {
 };
 
 export const getEntry = (id: number) => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_ENTRY });
 
     return fetchEntry(id)
@@ -133,7 +226,7 @@ export const getEntry = (id: number) => {
 };
 
 export const getCurrentUser = () => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_CURRENT_USER });
 
     return fetchCurrentUser()
@@ -147,7 +240,7 @@ export const getCurrentUser = () => {
 };
 
 export const getAllStats = () => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_ALL_STATS });
 
     return fetchAllStats()
@@ -161,15 +254,6 @@ export const getAllStats = () => {
 };
 
 // Reducers
-
-interface IAction {
-  type: string;
-  payload?: any;
-}
-
-interface ViewAction extends IAction {
-  view: string;
-}
 
 const currentUser = (state = null as IUser, action = {} as IAction) => {
   switch (action.type) {
@@ -254,6 +338,7 @@ const scorecards = (state = {
     case RECEIVE_SCORECARDS:
       return updateScorecards(state, payload);
     case RECEIVE_SCORECARD:
+    case UPDATE_SCORECARD:
       return updateWithScorecard(state, payload);
     default:
       return state;
@@ -305,6 +390,7 @@ const checklists = (state = {
     case RECEIVE_CHECKLISTS:
       return updateChecklists(state, payload);
     case RECEIVE_CHECKLIST:
+    case UPDATE_CHECKLIST:
       return updateWithChecklist(state, payload);
     default:
       return state;
@@ -352,7 +438,7 @@ const updateEntries = (state = {
   items: [],
   byDate: {},
   byId: {}
-} as MappedItems<any>, entries: Entry[]) => {
+} as MappedItems<Entry>, entries: Entry[]) => {
   const { byId, byDate, items } = state;
 
   return entries.reduce((nextState, entry) => {

@@ -14,30 +14,30 @@ import {
   toggleScorecardTask
 } from '../../helpers/scorecard';
 import { AppState, keyifyDate } from '../../helpers/utils';
-import { getScorecard } from '../../reducers';
+import { getScorecard, toggleTask } from '../../reducers';
 import './Scorecard.less';
 
 interface ScorecardProps {
   date: moment.Moment;
   scorecard: IScorecard;
   tasks: Task[];
-  dispatch: (action: any) => any;
+  dispatch: (action: any) => Promise<any>;
 }
 
 interface ScorecardState {
-  scorecard: IScorecard;
-  date: moment.Moment;
-  tasks: Task[];
   isSaving: boolean;
 }
 
 const mapStateToProps = (state: AppState) => {
   const { selected, scorecards } = state;
-  const { date, scorecard: selectedScorecard = {} as IScorecard } = selected;
+  const {
+    date = moment(),
+    scorecard: selectedScorecard = {} as IScorecard
+  } = selected;
   const { byId: scorecardsById } = scorecards;
   const { id: scorecardId } = selectedScorecard;
   const scorecard = scorecardsById[scorecardId] || {} as IScorecard;
-  const { tasks } = scorecard;
+  const { tasks = [] } = scorecard;
 
   return {
     date,
@@ -59,9 +59,6 @@ class ScoreCard extends React.Component<
     } = this.props;
 
     this.state = {
-      scorecard,
-      date,
-      tasks,
       isSaving: false
     };
   }
@@ -70,15 +67,9 @@ class ScoreCard extends React.Component<
     const { match, history, dispatch } = this.props;
     const { id } = match.params;
 
-    dispatch(getScorecard(id));
     // In redux, cache only tasks where `isActive` is true,
     // and sanitize irrelevant fields (like `isComplete`)
-    return fetchScorecard(id)
-      .then(scorecard => {
-        const { tasks, date } = scorecard;
-
-        return this.setState({ scorecard, tasks, date: moment(date) });
-      })
+    return dispatch(getScorecard(id))
       .catch(err => {
         // TODO: handle this at a higher level
         if (err.status === 401) {
@@ -90,50 +81,21 @@ class ScoreCard extends React.Component<
   }
 
   handleCheckboxUpdate(task: Task) {
-    const { tasks, scorecard } = this.state;
-    const { id: scorecardId } = scorecard;
-    const { id: taskId, isComplete: isCurrentlyComplete = false } = task;
-    const isComplete = !isCurrentlyComplete;
-    const update = tasks.map(t => {
-      return t.id === taskId ? { ...t, isComplete } : t;
-    });
+    const { scorecard } = this.props;
+    const { dispatch } = this.props;
 
-    // Optimistic updating
-    this.setState({ isSaving: true, tasks: update });
+    this.setState({ isSaving: true });
 
-    return toggleScorecardTask(scorecardId, taskId, isComplete)
+    return dispatch(toggleTask(scorecard, task))
       .then(() => {
         const delay = 1400;
 
         setTimeout(() => this.setState({ isSaving: false }), delay);
-      })
-      .catch(err => {
-        console.log('Error toggling task checkbox!', err);
-        const revert = this.state.tasks.map(t => {
-          return t.id === taskId
-            ? { ...t, isComplete: isCurrentlyComplete }
-            : t;
-        });
-
-        this.setState({ tasks: revert });
-      });
-  }
-
-  handleDateChange(date: moment.Moment) {
-    const { scorecard } = this.state;
-    const { id: scorecardId } = scorecard;
-
-    return updateScoreCard(scorecardId, { date })
-      .then(scorecard => {
-        this.setState({ date });
-      })
-      .catch(err => {
-        console.log('Error updating date!', err);
       });
   }
 
   renderCheckboxes() {
-    const { tasks } = this.state;
+    const { tasks = [] } = this.props;
     const grouped = groupBy(tasks, 'category');
     const categories = keys(grouped);
 
@@ -163,8 +125,8 @@ class ScoreCard extends React.Component<
   }
 
   render() {
-    const { tasks, date, isSaving } = this.state;
-    const { history } = this.props;
+    const { isSaving } = this.state;
+    const { date, history, tasks = [] } = this.props;
     const completed = tasks.filter(t => t.isComplete);
 
     return (
