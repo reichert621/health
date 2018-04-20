@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import { Dispatch, combineReducers } from 'redux';
 import * as moment from 'moment';
 import { extend, merge } from 'lodash';
 import { IUser, fetchCurrentUser } from '../helpers/auth';
@@ -54,6 +54,15 @@ export const RECEIVE_ALL_STATS = 'RECEIVE_ALL_STATS';
 
 // Actions
 
+interface IAction {
+  type: string;
+  payload?: any; // TODO: use generic type?
+}
+
+interface ViewAction extends IAction {
+  view: string;
+}
+
 export const updateCurrentView = (view: string) => {
   return {
     view,
@@ -69,7 +78,7 @@ export const selectDate = (payload: SelectedState) => {
 };
 
 export const getScorecards = () => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_SCORECARDS });
 
     return fetchScorecards()
@@ -83,7 +92,7 @@ export const getScorecards = () => {
 };
 
 export const getScorecard = (id: number) => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_SCORECARD });
 
     return fetchScorecard(id)
@@ -107,7 +116,7 @@ export const toggleTask = (scorecard: IScorecard, task: Task) => {
     })
   };
 
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     // Optimistic update
     dispatch({
       type: UPDATE_SCORECARD,
@@ -131,7 +140,7 @@ export const toggleTask = (scorecard: IScorecard, task: Task) => {
 };
 
 export const getChecklists = () => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_CHECKLISTS });
 
     return fetchChecklists()
@@ -145,7 +154,7 @@ export const getChecklists = () => {
 };
 
 export const getChecklist = (id: number) => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_CHECKLIST });
 
     return fetchChecklist(id)
@@ -163,7 +172,7 @@ export const updateScore = (
   question: IQuestion,
   score: number
 ) => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     const { id: checklistId, questions = [] } = checklist;
     const { id: questionId } = question;
 
@@ -189,7 +198,7 @@ export const updateScore = (
 };
 
 export const getEntries = () => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_ENTRIES });
 
     return fetchEntries()
@@ -203,7 +212,7 @@ export const getEntries = () => {
 };
 
 export const getEntry = (id: number) => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_ENTRY });
 
     return fetchEntry(id)
@@ -217,7 +226,7 @@ export const getEntry = (id: number) => {
 };
 
 export const getCurrentUser = () => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_CURRENT_USER });
 
     return fetchCurrentUser()
@@ -231,7 +240,7 @@ export const getCurrentUser = () => {
 };
 
 export const getAllStats = () => {
-  return (dispatch: any) => {
+  return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_ALL_STATS });
 
     return fetchAllStats()
@@ -245,15 +254,6 @@ export const getAllStats = () => {
 };
 
 // Reducers
-
-interface IAction {
-  type: string;
-  payload?: any;
-}
-
-interface ViewAction extends IAction {
-  view: string;
-}
 
 const currentUser = (state = null as IUser, action = {} as IAction) => {
   switch (action.type) {
@@ -438,7 +438,7 @@ const updateEntries = (state = {
   items: [],
   byDate: {},
   byId: {}
-} as MappedItems<any>, entries: Entry[]) => {
+} as MappedItems<Entry>, entries: Entry[]) => {
   const { byId, byDate, items } = state;
 
   return entries.reduce((nextState, entry) => {
