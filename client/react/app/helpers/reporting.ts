@@ -73,7 +73,6 @@ export interface ReportingStats {
   };
 }
 
-// TODO: unit test
 export const getTotalStreak = (
   checklists: ReportingDatedItem[],
   scorecards: ReportingDatedItem[]
@@ -87,7 +86,6 @@ export const getTotalStreak = (
   return getStreakStats(items);
 };
 
-// TODO: unit test
 export const calculateEarnings = (streaks: number[]): number => {
   // Values are in cents (USD)
   const DAILY_EARNINGS = 100;
