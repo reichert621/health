@@ -119,16 +119,6 @@ a {
   }
 }
 
-.btn-saving {
-  min-width: 132px;
-  text-align: left;
-
-  &:hover {
-    background: @light-gray-3 !important; // TODO: not ideal
-    cursor: default;
-  }
-}
-
 .btn-default {
   background: @light-gray-3;
   border: 1px solid @light-gray-3;
@@ -215,6 +205,18 @@ a {
       color: @white;
       background-color: @bright-blue;
     }
+  }
+}
+
+.btn-saving {
+  min-width: 132px;
+  text-align: left;
+  background: transparent;
+  border: none;
+
+  &:hover {
+    background: transparent;
+    cursor: default;
   }
 }
 
