@@ -1,6 +1,6 @@
 const { first } = require('lodash');
 const moment = require('moment');
-const knex = require('../knex.js');
+const knex = require('../knex');
 
 const Gratitudes = () => knex('gratitudes');
 
