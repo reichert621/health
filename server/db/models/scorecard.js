@@ -18,25 +18,30 @@ const findOne = (where, userId) =>
   fetch(where, userId)
     .first();
 
-// TODO: rename
-const findById = async (id, userId, where = {}) => {
-  const scorecard = await findOne(merge(where, { id }), userId);
-  const selectedTasks = await ScoreCardSelectedTask.fetchByScorecardId(id, userId);
+const fetchTasks = async (scorecardId, userId) => {
+  const selectedTasks = await ScoreCardSelectedTask.fetchByScorecardId(scorecardId, userId);
   const selectedTaskIds = selectedTasks.map(({ taskId }) => taskId);
   const tasks = await Task.fetchActive(userId, selectedTaskIds);
-
-  const { date } = scorecard;
-  const utc = moment.utc(date).format('YYYY-MM-DD');
   const isComplete = selectedTasks.reduce((map, { taskId }) => {
     return merge(map, { [taskId]: true });
   }, {});
 
+  return tasks.map(t => {
+    return merge(t, { isComplete: isComplete[t.id] });
+  });
+};
+
+// TODO: rename
+const findById = async (id, userId, where = {}) => {
+  const scorecard = await findOne(merge(where, { id }), userId);
+  const tasks = await fetchTasks(id, userId);
+  const { date } = scorecard;
+  const utc = moment.utc(date).format('YYYY-MM-DD');
+
   return merge(scorecard, {
+    tasks,
     date: utc,
-    _date: date,
-    tasks: tasks.map(t => {
-      return merge(t, { isComplete: isComplete[t.id] });
-    })
+    _date: date
   });
 };
 
@@ -311,6 +316,33 @@ const updateSelectedTasks = (id, params, userId) => {
 
       return Promise.all(promises);
     });
+};
+
+const findOrCreate = (params, userId) => {
+  return findOne(params, userId)
+    .then(found => {
+      if (found) {
+        return found;
+      }
+
+      return create(params, userId);
+    });
+};
+
+const findByDate = async (date, userId, where = {}) => {
+  const scorecard = await findOne(merge(where, { date }), userId);
+
+  if (!scorecard) return null;
+
+  const { id: scorecardId } = scorecard;
+  const tasks = await fetchTasks(scorecardId, userId);
+  const utc = moment.utc(date).format('YYYY-MM-DD');
+
+  return merge(scorecard, {
+    tasks,
+    date: utc,
+    _date: date
+  });
 };
 
 const destroy = (id, userId) =>

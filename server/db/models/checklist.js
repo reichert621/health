@@ -29,36 +29,43 @@ const findOne = (where, userId) =>
   fetch(where, userId)
     .first();
 
-// TODO: rename
-const findById = (id, userId, where = {}) =>
-  Promise.all([
-    findOne(merge(where, { id }), userId),
+const fetchQuestionScores = (checklistId, userId) => {
+  return Promise.all([
     ChecklistQuestion.fetch(),
-    ChecklistScore.fetchByChecklistId(id, userId)
+    ChecklistScore.fetchByChecklistId(checklistId, userId)
   ])
-    .then(([checklist, questions, scores]) => {
-      const { date } = checklist;
-      const utc = moment.utc(date).format('YYYY-MM-DD');
+    .then(([questions, scores]) => {
       const scoresByQuestion = scores.reduce((map, score) => {
         const { checklistQuestionId: questionId } = score;
 
         return merge(map, { [questionId]: score });
       }, {});
 
-      return merge(checklist, {
-        date: utc,
-        _date: date,
-        questions: questions.map(question => {
-          const s = scoresByQuestion[question.id];
+      return questions.map(question => {
+        const s = scoresByQuestion[question.id];
 
-          if (s && isNumber(s.score)) {
-            return merge(question, { score: s.score, checklistScoreId: s.id });
-          } else {
-            return question;
-          }
-        })
+        if (s && isNumber(s.score)) {
+          return merge(question, { score: s.score, checklistScoreId: s.id });
+        } else {
+          return question;
+        }
       });
     });
+};
+
+// TODO: rename
+const findById = async (id, userId, where = {}) => {
+  const checklist = await findOne(merge(where, { id }), userId);
+  const questions = await fetchQuestionScores(id, userId);
+  const { date } = checklist;
+  const utc = moment.utc(date).format('YYYY-MM-DD');
+
+  return merge(checklist, {
+    questions,
+    date: utc,
+    _date: date
+  });
+};
 
 const create = (params, userId) => {
   return Checklist()
@@ -85,6 +92,33 @@ const createWithScores = async (params, userId) => {
   await Promise.all(promises);
 
   return checklist;
+};
+
+const findOrCreate = (params, userId) => {
+  return findOne(params, userId)
+    .then(found => {
+      if (found) {
+        return found;
+      }
+
+      return create(params, userId);
+    });
+};
+
+const findByDate = async (date, userId, where = {}) => {
+  const checklist = await findOne(merge(where, { date }), userId);
+
+  if (!checklist) return null;
+
+  const { id: checklistId } = checklist;
+  const questions = await fetchQuestionScores(checklistId, userId);
+  const utc = moment.utc(date).format('YYYY-MM-DD');
+
+  return merge(checklist, {
+    questions,
+    date: utc,
+    _date: date
+  });
 };
 
 const update = (id, params, userId) =>
