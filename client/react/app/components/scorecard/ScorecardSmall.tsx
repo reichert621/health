@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { groupBy, keys, sortBy } from 'lodash';
 import * as moment from 'moment';
 import NavBar from '../navbar';
@@ -22,7 +23,7 @@ interface ScorecardProps {
   date: moment.Moment;
   scorecard: IScorecard;
   tasks: Task[];
-  dispatch: (action: any) => any;
+  dispatch: Dispatch<any>;
 }
 
 interface ScorecardState {

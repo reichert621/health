@@ -342,9 +342,15 @@ const findByDate = async (date, userId, where = {}) => {
   const { id: scorecardId } = scorecard;
   const tasks = await fetchTasks(scorecardId, userId);
   const utc = moment.utc(date).format('YYYY-MM-DD');
+  const points = tasks.reduce((total, task) => {
+    const { isComplete, points: p } = task;
+
+    return isComplete ? total + p : total;
+  }, 0);
 
   return merge(scorecard, {
     tasks,
+    points,
     date: utc,
     _date: date
   });

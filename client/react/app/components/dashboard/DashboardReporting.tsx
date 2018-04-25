@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import ReportingChart from '../reporting/ReportingChart';
 import { ReportingStats, fetchAllStats } from '../../helpers/reporting';
 import { AppState } from '../../helpers/utils';
@@ -15,7 +16,7 @@ const mapStateToProps = (state: AppState) => {
 interface DashboardReportingProps {
   stats: ReportingStats;
   onClickPoint: (timestamp: number) => void;
-  dispatch: (action: any) => any;
+  dispatch: Dispatch<any>;
 }
 
 // TODO: DRY up (see Reporting)

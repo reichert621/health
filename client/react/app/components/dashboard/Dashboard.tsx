@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { extend, values } from 'lodash';
 import * as moment from 'moment';
 import { all, resolve } from 'bluebird';
@@ -50,7 +51,7 @@ interface DashboardProps extends RouteComponentProps<{}> {
   scorecards: IScorecard[];
   checklists: IChecklist[];
   entries: Entry[];
-  dispatch: (action: any) => any;
+  dispatch: Dispatch<Promise<any>>;
 }
 
 interface DashboardState {
