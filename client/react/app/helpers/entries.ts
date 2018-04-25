@@ -30,6 +30,11 @@ export const fetchEntry = (id: number): Promise<Entry> => {
     .then((res: HttpResponse) => res.entry);
 };
 
+export const findOrCreateByDate = (date: string): Promise<Entry> => {
+  return post('/api/entries/date', { date })
+    .then((res: HttpResponse) => res.entry);
+};
+
 export const createEntry = (params: object): Promise<Entry> => {
   return post('/api/entries', params)
     .then((res: HttpResponse) => res.entry);

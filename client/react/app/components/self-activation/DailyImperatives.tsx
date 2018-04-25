@@ -343,7 +343,7 @@ class DailyImperatives extends React.Component<
       <div>
         <NavBar
           title={`Dos and Don'ts`}
-          linkTo='/dashboard'
+          linkTo='/today'
           history={history} />
 
         <div className='default-container'>

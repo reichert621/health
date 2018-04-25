@@ -20,15 +20,14 @@ export const fetchScorecard = (id: number): Promise<IScorecard> => {
     .then((res: HttpResponse) => res.scorecard);
 };
 
-export const updateScoreCard = (id: number, params: object): Promise<IScorecard> => {
-  return put(`/api/scorecards/${id}`, params)
+export const findOrCreateByDate = (date: string): Promise<IScorecard> => {
+  return post('/api/scorecards/date', { date })
     .then((res: HttpResponse) => res.scorecard);
 };
 
-// TODO: don't use `any`!
-export const updateScoreCardSelectedTasks = (id: number, params: object): Promise<any> => {
-  return post(`/api/scorecards/${id}/update-selected-tasks`, params)
-    .then((res: HttpResponse) => res.updates);
+export const updateScorecard = (id: number, params: object): Promise<IScorecard> => {
+  return put(`/api/scorecards/${id}`, params)
+    .then((res: HttpResponse) => res.scorecard);
 };
 
 export const selectScorecardTask = (id: number, taskId: number): Promise<boolean> => {

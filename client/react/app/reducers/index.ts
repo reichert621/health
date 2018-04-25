@@ -6,17 +6,24 @@ import {
   IScorecard,
   fetchScorecards,
   fetchScorecard,
-  toggleScorecardTask
+  toggleScorecardTask,
+  findOrCreateByDate as findOrCreateScorecard
 } from '../helpers/scorecard';
 import {
   IChecklist,
   IQuestion,
   fetchChecklists,
   fetchChecklist,
-  updateChecklistScore
+  updateChecklistScore,
+  findOrCreateByDate as findOrCreateChecklist
 } from '../helpers/checklist';
 import { Task } from '../helpers/tasks';
-import { Entry, fetchEntries, fetchEntry } from '../helpers/entries';
+import {
+  Entry,
+  fetchEntries,
+  fetchEntry,
+  findOrCreateByDate as findOrCreateEntry
+} from '../helpers/entries';
 import { ReportingStats, fetchAllStats } from '../helpers/reporting';
 import {
   SelectedState,
@@ -105,6 +112,20 @@ export const getScorecard = (id: number) => {
   };
 };
 
+export const getScorecardByDate = (date: string) => {
+  return (dispatch: Dispatch<IAction>) => {
+    dispatch({ type: REQUEST_SCORECARD });
+
+    return findOrCreateScorecard(date)
+      .then(scorecard => {
+        return dispatch({
+          type: RECEIVE_SCORECARD,
+          payload: scorecard
+        });
+      });
+  };
+};
+
 export const toggleTask = (scorecard: IScorecard, task: Task) => {
   const { id: scorecardId, tasks = [] } = scorecard;
   const { id: taskId, isComplete: isCurrentlyComplete = false } = task;
@@ -167,6 +188,20 @@ export const getChecklist = (id: number) => {
   };
 };
 
+export const getChecklistByDate = (date: string) => {
+  return (dispatch: Dispatch<IAction>) => {
+    dispatch({ type: REQUEST_CHECKLIST });
+
+    return findOrCreateChecklist(date)
+      .then(checklist => {
+        return dispatch({
+          type: RECEIVE_CHECKLIST,
+          payload: checklist
+        });
+      });
+  };
+};
+
 export const updateScore = (
   checklist: IChecklist,
   question: IQuestion,
@@ -216,6 +251,20 @@ export const getEntry = (id: number) => {
     dispatch({ type: REQUEST_ENTRY });
 
     return fetchEntry(id)
+      .then(entry => {
+        return dispatch({
+          type: RECEIVE_ENTRY,
+          payload: entry
+        });
+      });
+  };
+};
+
+export const getEntryByDate = (date: string) => {
+  return (dispatch: Dispatch<IAction>) => {
+    dispatch({ type: REQUEST_ENTRY });
+
+    return findOrCreateEntry(date)
       .then(entry => {
         return dispatch({
           type: RECEIVE_ENTRY,
@@ -288,6 +337,11 @@ const selected = (state = {} as SelectedState, action = {} as IAction) => {
       return extend({}, state, {
         date: moment(payload.date),
         checklist: extend(state.checklist || {}, payload)
+      });
+    case RECEIVE_ENTRY:
+      return extend({}, state, {
+        date: moment(payload.date),
+        entry: extend(state.entry || {}, payload)
       });
     default:
       return state;

@@ -100,7 +100,7 @@ class FriendFeed extends React.Component<RouteComponentProps<{}>, FeedState> {
       <div>
         <NavBar
           title='Feed'
-          linkTo='/'
+          linkTo='/today'
           history={history} />
 
         <div className='default-container'>

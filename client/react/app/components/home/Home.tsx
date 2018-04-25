@@ -78,7 +78,7 @@ class Home extends React.Component<HomeProps, HomeState> {
       <div>
         <NavBar
           title='Blog'
-          linkTo='/'
+          linkTo='/today'
           history={history} />
 
         <div className='default-container'>

@@ -20,6 +20,16 @@ module.exports = {
       .catch(err => handleError(res, err));
   },
 
+  findOrCreateByDate: (req, res) => {
+    const { body, user } = req;
+    const { date } = body;
+    const { id: userId } = user;
+
+    return Checklist.findOrCreateByDate(date, userId)
+      .then(checklist => res.json({ checklist }))
+      .catch(err => handleError(res, err));
+  },
+
   updateScore: (req, res) => {
     const { params, user, body } = req;
     const { id, questionId } = params;

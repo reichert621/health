@@ -12,7 +12,6 @@ import { Task, calculateScore } from '../../helpers/tasks';
 import {
   IScorecard,
   fetchScorecard,
-  updateScoreCard,
   toggleScorecardTask
 } from '../../helpers/scorecard';
 import { AppState, keyifyDate } from '../../helpers/utils';
@@ -116,19 +115,6 @@ class ScoreCard extends React.Component<
         });
 
         this.setState({ tasks: revert });
-      });
-  }
-
-  handleDateChange(date: moment.Moment) {
-    const { scorecard } = this.state;
-    const { id: scorecardId } = scorecard;
-
-    return updateScoreCard(scorecardId, { date })
-      .then(scorecard => {
-        this.setState({ date });
-      })
-      .catch(err => {
-        console.log('Error updating date!', err);
       });
   }
 
