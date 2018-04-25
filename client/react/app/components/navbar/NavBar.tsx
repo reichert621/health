@@ -58,13 +58,24 @@ class NavDropdown extends React.Component<NavDropdownProps> {
           {first(username)}
         </div>
         <div className='nav-dropdown-menu'>
+          <Link to='/today'>
+            <div className='dropdown-item first-item'
+              style={{ paddingTop: 16, paddingBottom: 16 }}>
+              Today
+            </div>
+          </Link>
+
+          <Link to='/dashboard'>
+            <div className='dropdown-item'>
+              Dashboard
+            </div>
+          </Link>
           <Link to='/reporting'>
-            <div className='dropdown-item'
-              style={{ marginTop: 8 }}>
+            <div className='dropdown-item'>
               Reporting
             </div>
           </Link>
-          <Link to='/gratitude'>
+          {/* <Link to='/gratitude'>
             <div className='dropdown-item'>
               Daily Gratitude
             </div>
@@ -73,28 +84,22 @@ class NavDropdown extends React.Component<NavDropdownProps> {
             <div className='dropdown-item'>
               Dos and Don'ts
             </div>
+          </Link> */}
+          <Link to='/tasks'>
+            <div className='dropdown-item'
+              style={{ marginBottom: 8 }}>
+              Task Settings
+            </div>
           </Link>
           <Link to='/self-activation'>
             <div className='dropdown-item'>
               Self-Activation
             </div>
           </Link>
-          <Link to='/tasks'>
-            <div className='dropdown-item'>
-              Task Settings
-            </div>
-          </Link>
-          <Link to='/dashboard'>
-            <div className='dropdown-item'
-              style={{ marginBottom: 8 }}>
-              History
-            </div>
-          </Link>
 
           <Link to='#'
             onClick={onLogOut}>
-            <div
-              className='dropdown-item last-item'
+            <div className='dropdown-item last-item'
               style={{ paddingTop: 16, paddingBottom: 16 }}>
               Log Out
             </div>
