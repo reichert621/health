@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { first } from 'lodash';
 import { IUser, logout } from '../../helpers/auth';
 import { AppState } from '../../helpers/utils';
@@ -109,7 +110,7 @@ interface NavBarProps {
   history?: any;
   linkTo?: string;
   currentUser: IUser;
-  dispatch: (action: any) => any;
+  dispatch: Dispatch<any>;
 }
 
 interface NavBarState {

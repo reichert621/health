@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import NavBar from '../navbar';
 import ReportingChart from './ReportingChart';
 import ReportingOverview from './ReportingOverview';
@@ -24,7 +25,7 @@ const mapStateToProps = (state: AppState) => {
 
 interface ReportingProps extends RouteComponentProps<{}> {
   stats: ReportingStats;
-  dispatch: (action: any) => any;
+  dispatch: Dispatch<any>;
 }
 
 class Reporting extends React.Component<ReportingProps> {

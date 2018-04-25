@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { isNumber } from 'lodash';
 import * as moment from 'moment';
 import NavBar from '../navbar';
@@ -21,7 +22,7 @@ interface ChecklistProps {
   date: moment.Moment;
   questions: IQuestion[];
   isComplete: boolean;
-  dispatch: (action: any) => Promise<any>;
+  dispatch: Dispatch<Promise<any>>;
 }
 
 interface ChecklistState {

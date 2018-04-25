@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import * as moment from 'moment';
 import { all, resolve } from 'bluebird';
 import NavBar from '../navbar';
@@ -39,7 +40,7 @@ interface TodayProps extends RouteComponentProps<{}> {
   scorecard: IScorecard;
   checklist: IChecklist;
   entry: Entry;
-  dispatch: (action: any) => any;
+  dispatch: Dispatch<any>;
 }
 
 interface TodayState {

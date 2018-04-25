@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import * as moment from 'moment';
 import NavBar from '../navbar';
 import ScorecardOverview from './ScorecardOverview';
@@ -15,7 +16,7 @@ interface ScorecardContainerProps {
   date: moment.Moment;
   scorecard: IScorecard;
   tasks: Task[];
-  dispatch: (action: any) => Promise<any>;
+  dispatch: Dispatch<Promise<any>>;
 }
 
 interface ScorecardContainerState {
