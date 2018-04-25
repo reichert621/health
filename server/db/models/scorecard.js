@@ -282,11 +282,12 @@ const createWithScores = async (params, userId) => {
   return scorecard;
 };
 
-const update = (id, params, userId) =>
-  findOne({ id }, userId)
+const update = (id, params, userId) => {
+  return findOne({ id }, userId)
     .update(params)
     .then(count => (count > 0))
     .then(success => findById(id, userId));
+};
 
 const selectTask = (id, taskId, userId) => {
   const params = { scorecardId: id, taskId, userId };
@@ -330,6 +331,10 @@ const findOrCreate = (params, userId) => {
 };
 
 const findByDate = async (date, userId, where = {}) => {
+  if (!date) {
+    throw new Error('Date is required!');
+  }
+
   const scorecard = await findOne(merge(where, { date }), userId);
 
   if (!scorecard) return null;
@@ -345,9 +350,15 @@ const findByDate = async (date, userId, where = {}) => {
   });
 };
 
-const destroy = (id, userId) =>
-  findById(id, userId)
+const findOrCreateByDate = async (date, userId) => {
+  return findOrCreate({ date }, userId)
+    .then(scorecard => findByDate(date, userId));
+};
+
+const destroy = (id, userId) => {
+  return findById(id, userId)
     .delete();
+};
 
 module.exports = {
   fetch,
@@ -368,5 +379,6 @@ module.exports = {
   selectTask,
   deselectTask,
   updateSelectedTasks,
+  findOrCreateByDate,
   destroy
 };

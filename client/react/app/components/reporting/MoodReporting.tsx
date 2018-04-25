@@ -53,7 +53,7 @@ class MoodReporting extends React.Component<RouteComponentProps<{}>, ReportingSt
       <div>
         <NavBar
           title='Mood Reporting'
-          linkTo='/'
+          linkTo='/reporting'
           history={history} />
 
         <div className='default-container'>

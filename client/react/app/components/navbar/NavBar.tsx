@@ -83,10 +83,10 @@ class NavDropdown extends React.Component<NavDropdownProps> {
               Task Settings
             </div>
           </Link>
-          <Link to='/blog'>
+          <Link to='/dashboard'>
             <div className='dropdown-item'
               style={{ marginBottom: 8 }}>
-              Personal Blog
+              History
             </div>
           </Link>
 

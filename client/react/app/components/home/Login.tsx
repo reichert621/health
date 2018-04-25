@@ -40,7 +40,7 @@ class Login extends React.Component<LoginProps & RouteComponentProps<{}>, LoginS
     };
 
     return login(credentials)
-      .then(() => history.push('/'))
+      .then(() => history.push('/today'))
       .catch(err => {
         console.log('Error logging in!', err);
         this.setState({ error: 'Invalid credentials' });

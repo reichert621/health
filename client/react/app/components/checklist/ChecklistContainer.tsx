@@ -12,7 +12,7 @@ import {
   fetchChecklist,
   updateChecklistScore
 } from '../../helpers/checklist';
-import { AppState, formatPoints } from '../../helpers/utils';
+import { AppState, formatPoints, isDateToday } from '../../helpers/utils';
 import { getChecklist, updateScore } from '../../reducers';
 import './Checklist.less';
 
@@ -92,14 +92,18 @@ class ChecklistContainer extends React.Component<
   }
 
   submit() {
-    const { history } = this.props;
+    const { history, date } = this.props;
+    const isToday = isDateToday(date);
+    const url = isToday ? '/today' : '/dashboard';
 
-    return history.push('/dashboard');
+    return history.push(url);
   }
 
   render() {
     const { isLoading } = this.state;
     const { checklist, questions, date, isComplete, history } = this.props;
+    const isToday = isDateToday(date);
+    const url = isToday ? '/today' : '/dashboard';
 
     if (isLoading) return null;
 
@@ -107,7 +111,7 @@ class ChecklistContainer extends React.Component<
       <div>
         <NavBar
           title='Check-in'
-          linkTo='/dashboard'
+          linkTo={url}
           history={history} />
         {
           isComplete ?

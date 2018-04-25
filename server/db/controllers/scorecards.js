@@ -14,6 +14,16 @@ module.exports = {
       .catch(err => handleError(res, err));
   },
 
+  findOrCreateByDate: (req, res) => {
+    const { body, user } = req;
+    const { date } = body;
+    const { id: userId } = user;
+
+    return ScoreCard.findOrCreateByDate(date, userId)
+      .then(scorecard => res.json({ scorecard }))
+      .catch(err => handleError(res, err));
+  },
+
   create: (req, res) => {
     return ScoreCard.createWithScores(req.body, req.user.id)
       .then(scorecard => res.json({ scorecard }))

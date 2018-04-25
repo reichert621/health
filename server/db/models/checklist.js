@@ -59,9 +59,13 @@ const findById = async (id, userId, where = {}) => {
   const questions = await fetchQuestionScores(id, userId);
   const { date } = checklist;
   const utc = moment.utc(date).format('YYYY-MM-DD');
+  const points = questions.reduce((total, { score }) => {
+    return isNumber(score) ? total + score : total;
+  }, 0);
 
   return merge(checklist, {
     questions,
+    points,
     date: utc,
     _date: date
   });
@@ -106,6 +110,10 @@ const findOrCreate = (params, userId) => {
 };
 
 const findByDate = async (date, userId, where = {}) => {
+  if (!date) {
+    throw new Error('Date is required!');
+  }
+
   const checklist = await findOne(merge(where, { date }), userId);
 
   if (!checklist) return null;
@@ -113,12 +121,21 @@ const findByDate = async (date, userId, where = {}) => {
   const { id: checklistId } = checklist;
   const questions = await fetchQuestionScores(checklistId, userId);
   const utc = moment.utc(date).format('YYYY-MM-DD');
+  const points = questions.reduce((total, { score }) => {
+    return isNumber(score) ? total + score : total;
+  }, 0);
 
   return merge(checklist, {
     questions,
+    points,
     date: utc,
     _date: date
   });
+};
+
+const findOrCreateByDate = async (date, userId) => {
+  return findOrCreate({ date }, userId)
+    .then(checklist => findByDate(date, userId));
 };
 
 const update = (id, params, userId) =>
@@ -381,6 +398,7 @@ module.exports = {
   findById,
   create,
   createWithScores,
+  findOrCreateByDate,
   update,
   updateScore,
   updateScores,

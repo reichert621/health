@@ -165,7 +165,7 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
       <div>
         <NavBar
           title='Log'
-          linkTo='/'
+          linkTo='/today'
           history={history} />
 
         <div className={`default-container ${isEditing ? 'edit-mode' : 'view-mode'}`}>

@@ -70,7 +70,7 @@ class TaskList extends React.Component<RouteComponentProps<{}>, TaskListState> {
       <div>
         <NavBar
           title='My Tasks'
-          linkTo='/dashboard'
+          linkTo='/today'
           history={history} />
 
         <div className='default-container'>

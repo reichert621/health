@@ -16,9 +16,9 @@ import {
   About,
   Library
 } from './components/home';
-import { Dashboard } from './components/dashboard';
+import { Dashboard, Today } from './components/dashboard';
 import { EntryContainer, UserEntryContainer } from './components/entry';
-import { Scorecard } from './components/scorecard';
+import { ScorecardContainer } from './components/scorecard';
 import ChecklistContainer from './components/checklist';
 import TaskList from './components/tasks';
 import FriendFeed from './components/feed';
@@ -57,7 +57,7 @@ ReactDOM.render(
       <Router>
         <div className='app'>
           <Switch>
-            <Route exact path='/' component={Dashboard} />
+            <Route exact path='/' component={Today} />
             <Route path='/login' component={Login} />
             <Route path='/signup' component={SignUp} />
             <Route path='/about' component={About} />
@@ -66,6 +66,7 @@ ReactDOM.render(
             <Route path='/@:username/entry/:id' component={UserEntryContainer} />
             <Route path='/@:username' component={Profile} />
             <Route path='/dashboard' component={Dashboard} />
+            <Route path='/today' component={Today} />
             <Route path='/feed' component={FriendFeed} />
             <Route path='/tasks' component={TaskList} />
             <Route path='/self-activation' component={SelfActivationMethods} />
@@ -88,7 +89,7 @@ ReactDOM.render(
             <Route path='/dos-and-donts' component={DailyImperatives} />
             <Route path='/gratitude' component={DailyGratitude} />
             <Route path='/entry/:id' component={EntryContainer} />
-            <Route path='/scorecard/:id' component={Scorecard} />
+            <Route path='/scorecard/:id' component={ScorecardContainer} />
             <Route path='/checklist/:id' component={ChecklistContainer} />
             <Route path='/reporting/tasks' component={TaskReporting} />
             <Route path='/reporting/moods' component={MoodReporting} />

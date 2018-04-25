@@ -103,6 +103,10 @@ export const keyifyDate = (date: moment.Moment|Date|string): string => {
   return moment(date).format('MMDDYYYY');
 };
 
+export const isDateToday = (date: moment.Moment | Date | string): boolean => {
+  return moment(date).isSame(moment(), 'day');
+};
+
 // TODO: figure out how to type this better
 export const mapById = (list: ItemWithId[] = []): { [id: string]: any; } => {
   return list.reduce((map, item) => {

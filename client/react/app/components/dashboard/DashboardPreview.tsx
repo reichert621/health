@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { isNumber, groupBy, keys } from 'lodash';
 import * as moment from 'moment';
-import { SelectedState, formatPoints } from '../../helpers/utils';
+import { SelectedState, formatPoints, isDateToday } from '../../helpers/utils';
 import { Task } from '../../helpers/tasks';
 import { Entry } from '../../helpers/entries';
 import { IScorecard } from '../../helpers/scorecard';
@@ -56,17 +56,21 @@ const DashboardScorecardPreview = ({
   const completed = tasks.filter(t => t.isComplete);
   const grouped = groupBy(completed, 'category');
   const categories = keys(grouped);
+  const hasCompleted = completed && (completed.length > 0);
 
   return (
     <div className='dashboard-scorecard-preview'>
       <div className='clearfix'>
         <h4 className='dashboard-preview-header section-header pull-left'>
-          Scorecard
-          {
-            scorecardId ?
-              <img className='preview-icon checkmark' src='assets/checkmark.svg' /> :
-              <img className='preview-icon' src='assets/pencil.svg' />
-          }
+          Productivity
+          <Link to={scorecardId ? `/scorecard/${scorecardId}` : '#'}
+            onClick={handleClick}>
+            {
+              hasCompleted ?
+                <img className='preview-icon checkmark' src='assets/checkmark.svg' /> :
+                <img className='preview-icon' src='assets/pencil.svg' />
+            }
+          </Link>
         </h4>
 
         <Link className='preview-link text-active pull-right'
@@ -76,10 +80,16 @@ const DashboardScorecardPreview = ({
         </Link>
       </div>
 
-      <div className={`dashboard-preview-points ${
+      <div className={`dashboard-preview-points clearfix ${
         !isNumber(points) ? 'hidden' : ''
       }`}>
-        {points} productivity {points === 1 ? 'point' : 'points'}
+        <span className='pull-left'>
+          {completed.length} {completed.length === 1 ? 'accomplishment' : 'accomplishments'}
+        </span>
+
+        <span className='pull-right'>
+          {points} {points === 1 ? 'point' : 'points'}
+        </span>
       </div>
 
       <div className='dashboard-preview-scorecard-overview'>
@@ -115,12 +125,16 @@ const DashboardChecklistPreview = ({
     <div className='dashboard-checklist-preview'>
       <div className='clearfix'>
         <h4 className='dashboard-preview-header section-header pull-left'>
-          Check-in
-          {
-            checklistId ?
-              <img className='preview-icon checkmark' src='assets/checkmark.svg' /> :
-              <img className='preview-icon' src='assets/pencil.svg' />
-          }
+          Mood
+          <Link to={checklistId ? `/checklist/${checklistId}` : '#'}
+            onClick={handleClick}>
+            {
+              // TODO: only render checkmark if questions have been answered
+              checklistId ?
+                <img className='preview-icon checkmark' src='assets/checkmark.svg' /> :
+                <img className='preview-icon' src='assets/pencil.svg' />
+            }
+          </Link>
         </h4>
 
         <Link className='preview-link text-active pull-right'
@@ -146,19 +160,23 @@ const DashboardEntryPreview = ({
   entry = {} as Entry,
   handleClick
 }: EntryPreviewProps) => {
-  const { id: entryId, content } = entry;
+  const { id: entryId, content = '' } = entry;
   const hasContent = content && (content.length > 0);
+  const wordCount = hasContent ? content.split(' ').length : 0;
 
   return (
     <div className='dashboard-entry-preview'>
       <div className='clearfix'>
         <h4 className='dashboard-preview-header section-header pull-left'>
-          Log
-          {
-            hasContent ?
-              <img className='preview-icon checkmark' src='assets/checkmark.svg' /> :
-              <img className='preview-icon' src='assets/pencil.svg' />
-          }
+          Journal
+          <Link to={entryId ? `/entry/${entryId}` : '#'}
+            onClick={handleClick}>
+            {
+              hasContent ?
+                <img className='preview-icon checkmark' src='assets/checkmark.svg' /> :
+                <img className='preview-icon' src='assets/pencil.svg' />
+            }
+          </Link>
         </h4>
 
         <Link className='preview-link text-active pull-right'
@@ -166,6 +184,10 @@ const DashboardEntryPreview = ({
           onClick={handleClick}>
           {hasContent ? 'View' : 'Start'}
         </Link>
+      </div>
+
+      <div className={`dashboard-preview-points ${!hasContent && 'hidden'}`}>
+        {wordCount} {wordCount === 1 ? 'word' : 'words'}
       </div>
     </div>
   );
@@ -185,7 +207,7 @@ const DashboardPreview = ({
   handleEntryClicked
 }: DashboardPreviewProps) => {
   const { scorecard, checklist, entry, date = moment() } = selected;
-  const isToday = moment(date).isSame(moment(), 'day');
+  const isToday = isDateToday(date);
 
   return (
     <div className='dashboard-preview'>

@@ -43,7 +43,7 @@ class SelfActivationMethods extends React.Component<RouteComponentProps<{}>> {
       <div>
         <NavBar
           title='Self-Activation Methods'
-          linkTo='/'
+          linkTo='/today'
           history={history} />
 
         <div className='default-container'>

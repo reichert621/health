@@ -34,6 +34,11 @@ export const fetchChecklist = (id: number): Promise<IChecklist> => {
     .then((res: HttpResponse) => res.checklist);
 };
 
+export const findOrCreateByDate = (date: string): Promise<IChecklist> => {
+  return post('/api/checklists/date', { date })
+    .then((res: HttpResponse) => res.checklist);
+};
+
 export const updateChecklistScore = (
   id: number,
   questionId: number,
