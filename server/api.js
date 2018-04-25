@@ -38,7 +38,7 @@ api.all('/logout', logout);
 // Entries
 api.get('/entries', isAuthenticated, entries.fetch);
 api.get('/entries/:id', isAuthenticated, entries.findById);
-api.post('/entries/date', isAuthenticated, entries.findOrCreateByDate);
+api.post('/entries/date', isAuthenticated, entries.findOrCreateByDate); // TODO: name better
 api.post('/entries', isAuthenticated, entries.create);
 api.put('/entries/:id', isAuthenticated, entries.update);
 api.delete('/entries/:id', isAuthenticated, entries.destroy);
@@ -51,7 +51,7 @@ api.get('/feed', isAuthenticated, users.feed);
 // Scorecards
 api.get('/scorecards', isAuthenticated, scorecards.fetch);
 api.get('/scorecards/:id', isAuthenticated, scorecards.findById);
-api.post('/scorecards/date', isAuthenticated, scorecards.findOrCreateByDate);
+api.post('/scorecards/date', isAuthenticated, scorecards.findOrCreateByDate); // TODO: name better
 api.post('/scorecards/new', isAuthenticated, scorecards.create);
 api.put('/scorecards/:id', isAuthenticated, scorecards.update);
 api.post('/scorecards/:id/select-task/:taskId', isAuthenticated, scorecards.selectTask);
@@ -67,7 +67,7 @@ api.get('/tasks/suggestions', isAuthenticated, tasks.fetchSuggestions);
 // Checklists
 api.get('/checklists', isAuthenticated, checklists.fetch);
 api.get('/checklists/:id', isAuthenticated, checklists.findById);
-api.post('/checklists/date', isAuthenticated, checklists.findOrCreateByDate);
+api.post('/checklists/date', isAuthenticated, checklists.findOrCreateByDate); // TODO: name better
 api.post('/checklists/:id/questions/:questionId/score', isAuthenticated, checklists.updateScore);
 api.post('/checklists/:id/update-scores', isAuthenticated, checklists.updateScores);
 api.post('/checklists/new', isAuthenticated, checklists.create);

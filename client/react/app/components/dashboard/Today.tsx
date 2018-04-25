@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { extend, values } from 'lodash';
 import * as moment from 'moment';
 import { all, resolve } from 'bluebird';
 import NavBar from '../navbar';
@@ -11,20 +10,15 @@ import { IScorecard, createNewScorecard } from '../../helpers/scorecard';
 import { IChecklist, createNewChecklist } from '../../helpers/checklist';
 import { Entry, createEntry } from '../../helpers/entries';
 import { Task } from '../../helpers/tasks';
-import { AppState, SelectedState, keyifyDate, getPastDates } from '../../helpers/utils';
+import { AppState, SelectedState, keyifyDate } from '../../helpers/utils';
 import {
-  getScorecards,
-  getChecklists,
   getScorecardByDate,
   getChecklistByDate,
   getEntryByDate,
-  getEntries,
-  toggleTask,
-  selectDate
+  toggleTask
 } from '../../reducers';
 import './Dashboard.less';
 
-// TODO: only fetch today's scorecard, checklist, etc.
 const mapStateToProps = (state: AppState) => {
   const today = keyifyDate(moment());
   const { selected, scorecards, checklists, entries } = state;
@@ -40,7 +34,6 @@ const mapStateToProps = (state: AppState) => {
   };
 };
 
-// TODO: remove unnnecessary props
 interface TodayProps extends RouteComponentProps<{}> {
   selected: SelectedState;
   scorecard: IScorecard;
@@ -128,8 +121,6 @@ class Today extends React.Component<TodayProps, TodayState> {
   }
 
   handleTaskUpdate(task: Task) {
-    // const { selected = {} as SelectedState, dispatch } = this.props;
-    // const { scorecard = {} as IScorecard } = selected;
     const { scorecard = {} as IScorecard, dispatch } = this.props;
 
     return dispatch(toggleTask(scorecard, task));

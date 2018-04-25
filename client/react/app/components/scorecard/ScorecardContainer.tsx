@@ -46,11 +46,6 @@ class ScorecardContainer extends React.Component<
   > {
   constructor(props: ScorecardContainerProps & RouteComponentProps<{ id: number }>) {
     super(props);
-    const {
-      scorecard = {} as IScorecard,
-      date = moment(),
-      tasks = []
-    } = this.props;
 
     this.state = {
       isSaving: false
