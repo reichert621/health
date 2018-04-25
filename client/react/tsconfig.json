@@ -1,4 +1,5 @@
 {
+  "allowSyntheticDefaultImports": true,
   "compilerOptions": {
     "jsx": "react",
     "lib" : ["es2015", "es2015.iterable", "dom"],
@@ -10,5 +11,10 @@
   },
   "include": [
     "app/**/*.ts*"
-  ]
+  ],
+  "paths": {
+    "lodash/fp/*": [
+      "node_modules/@types/lodash/fp/*"
+    ],
+  }
 }

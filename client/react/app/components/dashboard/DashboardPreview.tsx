@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { isNumber, isArray, groupBy, keys, every } from 'lodash';
 import * as moment from 'moment';
 import { SelectedState, formatPoints, isDateToday } from '../../helpers/utils';
-import { Task } from '../../helpers/tasks';
+import { Task, calculateScore } from '../../helpers/tasks';
 import { Entry } from '../../helpers/entries';
 import { IScorecard } from '../../helpers/scorecard';
 import { IChecklist } from '../../helpers/checklist';
@@ -52,7 +52,8 @@ const DashboardScorecardPreview = ({
   scorecard = {} as IScorecard,
   handleClick
 }: ScorecardPreviewProps) => {
-  const { id: scorecardId, points, tasks = [] } = scorecard;
+  const { id: scorecardId, tasks = [] } = scorecard;
+  const score = calculateScore(tasks);
   const completed = tasks.filter(t => t.isComplete);
   const grouped = groupBy(completed, 'category');
   const categories = keys(grouped);
@@ -88,7 +89,7 @@ const DashboardScorecardPreview = ({
         </span>
 
         <span className='pull-right'>
-          {points} {points === 1 ? 'point' : 'points'}
+          {score} {score === 1 ? 'point' : 'points'}
         </span>
       </div>
 

@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
@@ -11,27 +12,35 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js']
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.tsx?$/,
-        loaders: ['ts-loader']
+        use: 'ts-loader'
       },
       {
         test: /\.js$/,
-        loaders: ['babel-loader'],
+        use: 'babel-loader',
         exclude: /node_modules/
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader'
+        use: [
+          { loader: 'style-loader' },
+          { loader: 'css-loader' }
+        ]
       },
       {
         test: /\.less$/,
-        loader: 'style-loader!css-loader!less-loader'
+        use: [
+          { loader: 'style-loader' },
+          { loader: 'css-loader' },
+          { loader: 'less-loader' }
+        ]
       }
     ]
   },
   plugins: [
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new CopyWebpackPlugin([
       { from: './client/assets', to: 'assets' }
     ])
