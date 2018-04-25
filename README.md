@@ -45,7 +45,7 @@ $ npm start
 which is the same as:
 ```
 $ npm run db:migrate              # Ensures the db is up to date with latest migrations
-$ npm run build:react             # Builds the React client
+$ npm run build                   # Builds the React client
 $ node server/javascript/index.js # Runs the Node/Express server
 ```
 
@@ -64,7 +64,7 @@ This will serve the contents of the `client/react/build` directory, which are bu
 
 To run Webpack in `--watch` mode, run:
 ```
-$ npm run react:watch
+$ npm run watch
 ```
 
-And that should be it! Happy hacking 🤓 
+And that should be it! Happy hacking 🤓
