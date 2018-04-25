@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { isNumber, groupBy, keys } from 'lodash';
+import { isNumber, isArray, groupBy, keys, every } from 'lodash';
 import * as moment from 'moment';
 import { SelectedState, formatPoints, isDateToday } from '../../helpers/utils';
 import { Task } from '../../helpers/tasks';
@@ -81,7 +81,7 @@ const DashboardScorecardPreview = ({
       </div>
 
       <div className={`dashboard-preview-points clearfix ${
-        !isNumber(points) ? 'hidden' : ''
+        !hasCompleted ? 'hidden' : ''
       }`}>
         <span className='pull-left'>
           {completed.length} {completed.length === 1 ? 'accomplishment' : 'accomplishments'}
@@ -119,7 +119,11 @@ const DashboardChecklistPreview = ({
   checklist = {} as IChecklist,
   handleClick
 }: ChecklistPreviewProps) => {
-  const { id: checklistId, points } = checklist;
+  const { id: checklistId, questions = [], points } = checklist;
+  const isComplete = isArray(questions) && questions.length && every(
+    questions,
+    q => isNumber(q.score)
+  );
 
   return (
     <div className='dashboard-checklist-preview'>
@@ -129,8 +133,7 @@ const DashboardChecklistPreview = ({
           <Link to={checklistId ? `/checklist/${checklistId}` : '#'}
             onClick={handleClick}>
             {
-              // TODO: only render checkmark if questions have been answered
-              checklistId ?
+              isComplete ?
                 <img className='preview-icon checkmark' src='assets/checkmark.svg' /> :
                 <img className='preview-icon' src='assets/pencil.svg' />
             }
@@ -144,7 +147,7 @@ const DashboardChecklistPreview = ({
         </Link>
       </div>
 
-      <div className={`dashboard-preview-points ${!isNumber(points) && 'hidden'}`}>
+      <div className={`dashboard-preview-points ${!isComplete && 'hidden'}`}>
         {points} depression {points === 1 ? 'point' : 'points'}
       </div>
     </div>

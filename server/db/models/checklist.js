@@ -175,13 +175,18 @@ const fetchWithPoints = (where = {}, userId) => {
         const { id, date } = checklist;
         const utc = moment.utc(date).format('YYYY-MM-DD');
 
-        return ChecklistScore.fetchByChecklistId(id, userId)
-          .then(checklistScores => {
-            const points = checklistScores.reduce((total, { score }) => {
+        return fetchQuestionScores(id, userId)
+          .then(questions => {
+            const points = questions.reduce((total, { score }) => {
               return isNumber(score) ? total + score : total;
             }, 0);
 
-            return merge(checklist, { points, date: utc, _date: date });
+            return merge(checklist, {
+              questions,
+              points,
+              date: utc,
+              _date: date
+            });
           });
       });
 
