@@ -67,7 +67,13 @@ const findOrCreate = (params, userId) => {
 };
 
 const findOrCreateByDate = async (date, userId) => {
-  return findOrCreate({ date }, userId)
+  const params = {
+    date,
+    title: date,
+    content: ''
+  };
+
+  return findOrCreate(params, userId)
     .then(entry => findByDate(date, userId));
 };
 
