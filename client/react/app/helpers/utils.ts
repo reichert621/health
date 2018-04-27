@@ -5,6 +5,7 @@ import { IChecklist, IQuestion } from './checklist';
 import { IScorecard } from './scorecard';
 import { Task } from './tasks';
 import { Entry } from './entries';
+import { IChallenge } from './challenges';
 import { ReportingStats } from './reporting';
 
 export interface SelectedState {
@@ -24,6 +25,14 @@ export interface MappedItems<T> {
   };
 }
 
+export interface ChallengeState {
+  all: IChallenge[];
+  mine: IChallenge[];
+  byDate: {
+    [date: string]: IChallenge[];
+  };
+}
+
 export interface AppState {
   currentUser?: IUser;
   currentView: string;
@@ -32,6 +41,7 @@ export interface AppState {
   entries: MappedItems<Entry>;
   questions: IQuestion[];
   tasks: Task[];
+  challenges: ChallengeState;
   selected: SelectedState;
   stats: ReportingStats;
 }

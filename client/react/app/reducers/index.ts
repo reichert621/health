@@ -1,6 +1,7 @@
 import { Dispatch, combineReducers } from 'redux';
 import * as moment from 'moment';
 import { extend, merge } from 'lodash';
+// TODO: split reducers into separate files
 import { IUser, fetchCurrentUser } from '../helpers/auth';
 import {
   IScorecard,
@@ -26,7 +27,15 @@ import {
 } from '../helpers/entries';
 import { ReportingStats, fetchAllStats } from '../helpers/reporting';
 import {
+  IChallenge,
+  fetchAllChallenges,
+  fetchMyChallenges,
+  fetchByDate as fetchChallengesByDate,
+  toggleChallengeByDate
+} from '../helpers/challenges';
+import {
   SelectedState,
+  ChallengeState,
   MappedItems,
   mapByDate,
   mapById,
@@ -40,22 +49,35 @@ export const CHART_VIEW = 'CHART_VIEW';
 
 export const UPDATE_VIEW = 'UPDATE_VIEW';
 export const SELECT_DATE = 'SELECT_DATE';
+
 export const REQUEST_SCORECARDS = 'REQUEST_SCORECARDS';
 export const RECEIVE_SCORECARDS = 'RECEIVE_SCORECARDS';
 export const REQUEST_SCORECARD = 'REQUEST_SCORECARD';
 export const RECEIVE_SCORECARD = 'RECEIVE_SCORECARD';
 export const UPDATE_SCORECARD = 'RECEIVE_SCORECARD';
+
 export const REQUEST_CHECKLISTS = 'REQUEST_CHECKLISTS';
 export const RECEIVE_CHECKLISTS = 'RECEIVE_CHECKLISTS';
 export const REQUEST_CHECKLIST = 'REQUEST_CHECKLIST';
 export const RECEIVE_CHECKLIST = 'RECEIVE_CHECKLIST';
 export const UPDATE_CHECKLIST = 'UPDATE_CHECKLIST';
+
 export const REQUEST_ENTRIES = 'REQUEST_ENTRIES';
 export const RECEIVE_ENTRIES = 'RECEIVE_ENTRIES';
 export const REQUEST_ENTRY = 'REQUEST_ENTRY';
 export const RECEIVE_ENTRY = 'RECEIVE_ENTRY';
+
 export const REQUEST_CURRENT_USER = 'REQUEST_CURRENT_USER';
 export const RECEIVE_CURRENT_USER = 'RECEIVE_CURRENT_USER';
+
+export const REQUEST_CHALLENGES = 'REQUEST_CHALLENGES';
+export const RECEIVE_CHALLENGES = 'RECEIVE_CHALLENGES';
+export const REQUEST_ALL_CHALLENGES = 'REQUEST_ALL_CHALLENGES';
+export const RECEIVE_ALL_CHALLENGES = 'RECEIVE_ALL_CHALLENGES';
+export const REQUEST_MY_CHALLENGES = 'REQUEST_MY_CHALLENGES';
+export const RECEIVE_MY_CHALLENGES = 'RECEIVE_MY_CHALLENGES';
+export const UPDATE_CHALLENGE = 'UPDATE_CHALLENGE';
+
 export const REQUEST_ALL_STATS = 'REQUEST_ALL_STATS';
 export const RECEIVE_ALL_STATS = 'RECEIVE_ALL_STATS';
 
@@ -302,6 +324,48 @@ export const getAllStats = () => {
   };
 };
 
+export const getAllChallenges = () => {
+  return (dispatch: Dispatch<IAction>) => {
+    dispatch({ type: REQUEST_ALL_CHALLENGES });
+
+    return fetchAllChallenges()
+      .then(challenges => {
+        return dispatch({
+          type: RECEIVE_ALL_CHALLENGES,
+          payload: challenges
+        });
+      });
+  };
+};
+
+export const getMyChallenges = () => {
+  return (dispatch: Dispatch<IAction>) => {
+    dispatch({ type: REQUEST_MY_CHALLENGES });
+
+    return fetchMyChallenges()
+      .then(challenges => {
+        return dispatch({
+          type: RECEIVE_MY_CHALLENGES,
+          payload: challenges
+        });
+      });
+  };
+};
+
+export const getChallengesByDate = (date: string) => {
+  return (dispatch: Dispatch<IAction>) => {
+    dispatch({ type: REQUEST_CHALLENGES });
+
+    return fetchChallengesByDate(date)
+      .then(challenges => {
+        return dispatch({
+          type: RECEIVE_CHALLENGES,
+          payload: { date, challenges }
+        });
+      });
+  };
+};
+
 // Reducers
 
 const currentUser = (state = null as IUser, action = {} as IAction) => {
@@ -518,6 +582,54 @@ const entries = (state = {
   }
 };
 
+const updateWithChallenge = (
+  state: ChallengeState,
+  payload: { date: string, challenge: IChallenge },
+) => {
+  const { byDate } = state;
+  const { date, challenge } = payload;
+  const key = keyifyDate(date);
+  const existing = byDate[key];
+
+  return {
+    ...state,
+    byDate: {
+      [key]: existing.map(original => {
+        return (original.id === challenge.id) ? challenge : original;
+      })
+    }
+  };
+};
+
+const challenges = (state = {
+  all: [],
+  mine: [],
+  byDate: {}
+} as ChallengeState, action = {} as IAction) => {
+  const { mine = [], byDate = {} } = state;
+  const { type, payload } = action;
+
+  switch (type) {
+    case RECEIVE_CHALLENGES:
+      return {
+        ...state,
+        byDate: {
+          ...byDate,
+          [keyifyDate(payload.date)]: payload.challenges
+        }
+      };
+    case RECEIVE_ALL_CHALLENGES:
+      return { ...state, all: payload };
+    case RECEIVE_MY_CHALLENGES:
+      return { ...state, mine: payload };
+    case UPDATE_CHALLENGE:
+      // TODO: make this better
+      return updateWithChallenge(state, payload);
+    default:
+      return state;
+  }
+};
+
 const stats = (state = {
   // Checklist stats
   checklistStats: [],
@@ -584,6 +696,7 @@ const rootReducer = combineReducers({
   checklists,
   entries,
   questions,
+  challenges,
   stats
 });
 
