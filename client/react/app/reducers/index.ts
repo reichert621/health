@@ -28,7 +28,7 @@ import {
 import { ReportingStats, fetchAllStats } from '../helpers/reporting';
 import {
   IChallenge,
-  fetchAllChallenges,
+  fetchActiveChallenges,
   fetchMyChallenges,
   fetchByDate as fetchChallengesByDate,
   toggleChallengeByDate
@@ -324,11 +324,11 @@ export const getAllStats = () => {
   };
 };
 
-export const getAllChallenges = () => {
+export const getActiveChallenges = () => {
   return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_ALL_CHALLENGES });
 
-    return fetchAllChallenges()
+    return fetchActiveChallenges()
       .then(challenges => {
         return dispatch({
           type: RECEIVE_ALL_CHALLENGES,

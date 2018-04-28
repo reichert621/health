@@ -8,6 +8,14 @@ module.exports = {
       .catch(err => handleError(res, err));
   },
 
+  fetchActive(req, res) {
+    const { id: userId } = req.user;
+
+    return Challenge.fetchActive(userId)
+      .then(challenges => res.json({ challenges }))
+      .catch(err => handleError(res, err));
+  },
+
   fetchMyChallenges(req, res) {
     const { id: userId } = req.user;
 
@@ -23,6 +31,26 @@ module.exports = {
 
     return Challenge.findByDate(date, userId)
       .then(challenges => res.json({ challenges }))
+      .catch(err => handleError(res, err));
+  },
+
+  subscribe(req, res) {
+    const { params, user } = req;
+    const { id: challengeId } = params;
+    const { id: userId } = user;
+
+    return Challenge.subscribe(challengeId, userId)
+      .then(subscription => res.json({ success: !!subscription }))
+      .catch(err => handleError(res, err));
+  },
+
+  unsubscribe(req, res) {
+    const { params, user } = req;
+    const { id: challengeId } = params;
+    const { id: userId } = user;
+
+    return Challenge.unsubscribe(challengeId, userId)
+      .then(removed => res.json({ success: removed > 0 }))
       .catch(err => handleError(res, err));
   },
 

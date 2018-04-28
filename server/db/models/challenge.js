@@ -1,7 +1,8 @@
-const { first } = require('lodash');
+const { first, includes } = require('lodash');
 const moment = require('moment');
 const knex = require('../knex');
-const UserAccomplishedChallenges = require('./user_accomplished_challenges');
+const ChallengeMembers = require('./challenge_member');
+const UserAccomplishedChallenges = require('./user_accomplished_challenge');
 
 const Challenges = () => knex('challenges');
 
@@ -9,10 +10,6 @@ const fetch = (where = {}) => {
   return Challenges()
     .select()
     .where(where);
-};
-
-const fetchActive = (where = {}) => {
-  return fetch({ ...where, isActive: true });
 };
 
 const findOne = (where = {}) => {
@@ -31,6 +28,38 @@ const findByUser = (userId, where = {}) => {
     .from('challenges as c')
     .innerJoin('challenge_members as cm', 'cm.challengeId', 'c.id')
     .where({ ...where, 'cm.userId': userId, 'c.isActive': true });
+};
+
+const subscribe = (id, userId) => {
+  const params = { userId, challengeId: id };
+
+  return ChallengeMembers.create(params, userId);
+};
+
+const unsubscribe = (id, userId) => {
+  const where = { userId, challengeId: id };
+
+  return ChallengeMembers.destroyWhere(where, userId);
+};
+
+const fetchSubscribedChallengeIds = (userId) => {
+  return ChallengeMembers.fetchByUserId(userId)
+    .then(results => results.map(r => Number(r.challengeId)));
+};
+
+const fetchActive = (userId, where = {}) => {
+  return Promise.all([
+    fetch({ ...where, isActive: true }),
+    fetchSubscribedChallengeIds(userId)
+  ])
+    .then(([challenges, challengeIds]) => {
+      return challenges.map(challenge => {
+        const { id } = challenge;
+        const isSubscribed = includes(challengeIds, id);
+
+        return { ...challenge, isSubscribed };
+      });
+    });
 };
 
 const findByDate = async (date, userId) => {
@@ -90,10 +119,12 @@ const deselectChallenge = (id, date, userId) => {
 
 module.exports = {
   fetch,
-  fetchActive,
   findById,
   findByUser,
+  fetchActive,
   findByDate,
+  subscribe,
+  unsubscribe,
   create,
   update,
   destroy,

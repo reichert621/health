@@ -87,7 +87,7 @@ api.post('/gratitudes', isAuthenticated, gratitudes.create);
 api.put('/gratitudes/:id', isAuthenticated, gratitudes.update);
 api.delete('/gratitudes/:id', isAuthenticated, gratitudes.destroy);
 // Challenges
-api.get('/challenges', isAuthenticated, challenges.fetch);
+api.get('/challenges', isAuthenticated, challenges.fetchActive);
 api.get('/challenges/mine', isAuthenticated, challenges.fetchMyChallenges);
 api.get('/challenges/date/:date', isAuthenticated, challenges.fetchByDate);
 api.post('/challenges', isAuthenticated, challenges.create);
@@ -95,6 +95,8 @@ api.put('/challenges/:id', isAuthenticated, challenges.update);
 api.delete('/challenges/:id', isAuthenticated, challenges.destroy);
 api.post('/challenges/:id/select', isAuthenticated, challenges.selectChallenge);
 api.post('/challenges/:id/deselect', isAuthenticated, challenges.deselectChallenge);
+api.post('/challenges/:id/subscribe', isAuthenticated, challenges.subscribe);
+api.post('/challenges/:id/unsubscribe', isAuthenticated, challenges.unsubscribe);
 // Reporting Stats
 // TODO: clean up these endpoints
 api.get('/stats/all', isAuthenticated, reporting.fetchAllStats);

@@ -1,12 +1,16 @@
 const { first, isObject, isEmpty } = require('lodash');
 const knex = require('../knex');
 
-const AccomplishedChallenges = () => knex('user_accomplished_challenges');
+const ChallengeMember = () => knex('challenge_members');
 
 const fetch = (where = {}, userId) => {
-  return AccomplishedChallenges()
+  return ChallengeMember()
     .select()
     .where({ ...where, userId });
+};
+
+const fetchByUserId = (userId, where = {}) => {
+  return fetch(where, userId);
 };
 
 const findOne = (where = {}, userId) => {
@@ -17,19 +21,8 @@ const findById = (id, userId, where = {}) => {
   return findOne({ ...where, id }, userId);
 };
 
-const fetchChallengeAccomplishments = (date, challengeIds = []) => {
-  if (!date) return Promise.reject(new Error('Date is required!'));
-
-  return AccomplishedChallenges()
-    .select('uac.*', 'u.username', 'u.email')
-    .from('user_accomplished_challenges as uac')
-    .innerJoin('users as u', 'uac.userId', 'u.id')
-    .whereIn('uac.challengeId', challengeIds)
-    .andWhere({ 'uac.date': date });
-};
-
 const create = (params = {}, userId) => {
-  return AccomplishedChallenges()
+  return ChallengeMember()
     .returning('id')
     .insert({ ...params, userId })
     .then(first)
@@ -64,16 +57,16 @@ const destroyWhere = (where = {}, userId) => {
     return Promise.reject(new Error('A valid where filter is required!'));
   }
 
-  return AccomplishedChallenges()
-    .where(where)
+  return ChallengeMember()
+    .where({ ...where, userId })
     .del();
 };
 
 
 module.exports = {
   fetch,
+  fetchByUserId,
   findById,
-  fetchChallengeAccomplishments,
   create,
   findOrCreate,
   update,

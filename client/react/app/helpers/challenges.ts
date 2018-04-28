@@ -13,10 +13,11 @@ export interface IChallenge {
   isActive: boolean;
   isComplete?: boolean;
   text?: string;
+  isSubscribed?: boolean;
   accomplishers?: IAccomplisher[];
 }
 
-export const fetchAllChallenges = (): Promise<IChallenge[]> => {
+export const fetchActiveChallenges = (): Promise<IChallenge[]> => {
   return get('/api/challenges')
     .then((res: HttpResponse) => res.challenges);
 };
@@ -64,4 +65,21 @@ export const toggleChallengeByDate = (
   return isComplete ?
     selectChallenge(id, date) :
     deselectChallenge(id, date);
+};
+
+export const subscribe = (id: number): Promise<boolean> => {
+  return post(`/api/challenges/${id}/subscribe`)
+    .then((res: HttpResponse) => res.success);
+};
+
+export const unsubscribe = (id: number): Promise<boolean> => {
+  return post(`/api/challenges/${id}/unsubscribe`)
+    .then((res: HttpResponse) => res.success);
+};
+
+export const toggleChallengeSubscription = (
+  id: number,
+  shouldSubscribe: boolean
+): Promise<boolean> => {
+  return shouldSubscribe ? subscribe(id) : unsubscribe(id);
 };
