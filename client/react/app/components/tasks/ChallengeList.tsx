@@ -11,6 +11,10 @@ const ChallengeList = ({
   challenges = [],
   onToggleChallenge
 }: ChallengeListProps) => {
+  if (!challenges || !challenges.length) {
+    return null;
+  }
+
   return (
     <div>
       <h4 className='category-label'>
