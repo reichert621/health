@@ -106,6 +106,7 @@ class ScorecardContainer extends React.Component<
             <div className='scorecard-container pull-left'>
               <Scorecard
                 tasks={tasks}
+                challenges={[]}
                 handleTaskUpdate={this.handleTaskUpdate.bind(this)} />
             </div>
 

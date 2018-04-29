@@ -11,27 +11,31 @@ import { IScorecard, createNewScorecard } from '../../helpers/scorecard';
 import { IChecklist, createNewChecklist } from '../../helpers/checklist';
 import { Entry, createEntry } from '../../helpers/entries';
 import { Task } from '../../helpers/tasks';
+import { IChallenge, toggleChallengeByDate } from '../../helpers/challenges';
 import { AppState, SelectedState, keyifyDate } from '../../helpers/utils';
 import {
   getScorecardByDate,
   getChecklistByDate,
   getEntryByDate,
+  getChallengesByDate,
   toggleTask
 } from '../../reducers';
 import './Dashboard.less';
 
 const mapStateToProps = (state: AppState) => {
   const today = keyifyDate(moment());
-  const { selected, scorecards, checklists, entries } = state;
+  const { selected, scorecards, checklists, entries, challenges } = state;
   const { byDate: scorecardsByDate } = scorecards;
   const { byDate: checklistsByDate } = checklists;
   const { byDate: entriesByDate } = entries;
+  const { byDate: challengeByDate } = challenges;
 
   return {
     selected,
     scorecard: scorecardsByDate[today],
     checklist: checklistsByDate[today],
-    entry: entriesByDate[today]
+    entry: entriesByDate[today],
+    challenges: challengeByDate[today]
   };
 };
 
@@ -40,6 +44,7 @@ interface TodayProps extends RouteComponentProps<{}> {
   scorecard: IScorecard;
   checklist: IChecklist;
   entry: Entry;
+  challenges: IChallenge[];
   dispatch: Dispatch<any>;
 }
 
@@ -67,7 +72,8 @@ class Today extends React.Component<TodayProps, TodayState> {
     return all([
       dispatch(getScorecardByDate(today)),
       dispatch(getChecklistByDate(today)),
-      dispatch(getEntryByDate(today))
+      dispatch(getEntryByDate(today)),
+      dispatch(getChallengesByDate(today))
     ])
       .then(() => this.setState({ isLoading: false }))
       .catch(err => {
@@ -127,12 +133,26 @@ class Today extends React.Component<TodayProps, TodayState> {
     return dispatch(toggleTask(scorecard, task));
   }
 
+  handleChallengeUpdate(challenge: IChallenge) {
+    const { dispatch } = this.props;
+    const { id: challengeId, isComplete: isCurrentlyComplete } = challenge;
+    const isComplete = !isCurrentlyComplete;
+    const today = moment().format('YYYY-MM-DD');
+
+    // TODO: handle in redux better
+    return toggleChallengeByDate(challengeId, today, isComplete)
+      .then(() => {
+        return dispatch(getChallengesByDate(today))
+      });
+  }
+
   render() {
     const { isLoading } = this.state;
     const {
       history,
       scorecard = {} as IScorecard,
       selected = {} as SelectedState,
+      challenges = []
     } = this.props;
     const { tasks = [] } = scorecard;
 
@@ -159,7 +179,9 @@ class Today extends React.Component<TodayProps, TodayState> {
             <div className='dashboard-scorecard-container pull-right'>
               <Scorecard
                 tasks={tasks}
-                handleTaskUpdate={this.handleTaskUpdate.bind(this)} />
+                challenges={challenges}
+                handleTaskUpdate={this.handleTaskUpdate.bind(this)}
+                handleChallengeUpdate={this.handleChallengeUpdate.bind(this)} />
             </div>
           </div>
         </div>
