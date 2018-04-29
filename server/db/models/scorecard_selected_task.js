@@ -151,7 +151,7 @@ const destroyWhere = (where = {}, userId) => {
   }
 
   return ScoreCardSelectedTask()
-    .where(where)
+    .where({ ...where, userId })
     .del();
 };
 

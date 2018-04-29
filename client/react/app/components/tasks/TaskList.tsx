@@ -9,13 +9,20 @@ import {
   fetchCategories,
   createCategory
 } from '../../helpers/tasks';
+import {
+  IChallenge,
+  fetchActiveChallenges,
+  toggleChallengeSubscription
+} from '../../helpers/challenges';
 import NavBar from '../navbar';
 import CategoryTasks from './CategoryTasks';
+import ChallengeList from './ChallengeList';
 import './Task.less';
 
 interface TaskListState {
   tasks: Task[];
   categories: Category[];
+  challenges: IChallenge[];
   newCategory: string;
 }
 
@@ -26,16 +33,21 @@ class TaskList extends React.Component<RouteComponentProps<{}>, TaskListState> {
     this.state = {
       tasks: [],
       categories: [],
+      challenges: [],
       newCategory: ''
     };
   }
 
   componentDidMount() {
+    // TODO: use redux instead
     return all([
       fetchTasks(),
-      fetchCategories()
+      fetchCategories(),
+      fetchActiveChallenges()
     ])
-      .then(([tasks, categories]) => this.setState({ tasks, categories }))
+      .then(([tasks, categories, challenges]) => {
+        this.setState({ tasks, categories, challenges })
+      })
       .catch(err => {
         console.log('Error fetching tasks!', err);
       });
@@ -61,8 +73,20 @@ class TaskList extends React.Component<RouteComponentProps<{}>, TaskListState> {
       });
   }
 
+  handleChallengeToggled(challenge: IChallenge) {
+    const { id, isSubscribed } = challenge;
+    const shouldSubscribe = !isSubscribed;
+
+    return toggleChallengeSubscription(id, shouldSubscribe)
+      .then(success => fetchActiveChallenges())
+      .then(challenges => this.setState({ challenges }))
+      .catch(err => {
+        console.log('Error toggling challenge!', err);
+      });
+  }
+
   render() {
-    const { tasks, categories, newCategory } = this.state;
+    const { tasks, categories, challenges, newCategory } = this.state;
     const { history } = this.props;
     const tasksByCategory = groupBy(tasks, 'category');
 
@@ -74,6 +98,9 @@ class TaskList extends React.Component<RouteComponentProps<{}>, TaskListState> {
           history={history} />
 
         <div className='default-container'>
+          <ChallengeList
+            challenges={challenges}
+            onToggleChallenge={this.handleChallengeToggled.bind(this)} />
           {
             categories
               .sort((x, y) => x.id - y.id)
