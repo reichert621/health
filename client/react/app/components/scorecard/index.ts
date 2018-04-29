@@ -1,9 +1,9 @@
 import Scorecard from './Scorecard';
+import ScorecardContainer from './ScorecardContainer';
 import ScorecardSmall from './ScorecardSmall';
-import ScoreCards from './ScoreCards';
 
 export {
   Scorecard,
-  ScorecardSmall,
-  ScoreCards
+  ScorecardContainer,
+  ScorecardSmall
 };

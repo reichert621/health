@@ -60,7 +60,7 @@ class TaskReporting extends React.Component<RouteComponentProps<{}>, ReportingSt
       <div>
         <NavBar
           title='Task Reporting'
-          linkTo='/'
+          linkTo='/reporting'
           history={history} />
 
         <div className='default-container'>

@@ -125,9 +125,9 @@ const create = (params, userId) =>
 
 const findOrCreate = (params, userId) => {
   return findOne(params, userId)
-    .then(selectedTask => {
-      if (selectedTask) {
-        return selectedTask;
+    .then(found => {
+      if (found) {
+        return found;
       }
 
       return create(params, userId);
@@ -151,7 +151,7 @@ const destroyWhere = (where = {}, userId) => {
   }
 
   return ScoreCardSelectedTask()
-    .where(where)
+    .where({ ...where, userId })
     .del();
 };
 

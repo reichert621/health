@@ -4,6 +4,7 @@ export interface IChecklist {
   id: number;
   userId: number;
   date: string;
+  points?: number;
   questions: IQuestion[];
 }
 
@@ -30,6 +31,11 @@ export const fetchChecklists = (): Promise<IChecklist[]> => {
 
 export const fetchChecklist = (id: number): Promise<IChecklist> => {
   return get(`/api/checklists/${id}`)
+    .then((res: HttpResponse) => res.checklist);
+};
+
+export const findOrCreateByDate = (date: string): Promise<IChecklist> => {
+  return post('/api/checklists/date', { date })
     .then((res: HttpResponse) => res.checklist);
 };
 

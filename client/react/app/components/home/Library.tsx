@@ -1,9 +1,16 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import * as React from 'react';
+import { RouteComponentProps, Link } from 'react-router-dom';
 import '../../App.less';
 
-class Library extends React.Component {
-  constructor(props) {
+interface LibraryProps extends RouteComponentProps<{}> {}
+
+interface LibraryState {
+  selected?: string;
+  checked: any;
+}
+
+class Library extends React.Component<LibraryProps, LibraryState> {
+  constructor(props: LibraryProps) {
     super(props);
 
     // TODO: handle radio/checkbox inputs in separate components
@@ -13,13 +20,13 @@ class Library extends React.Component {
     };
   }
 
-  handleRadioUpdate(e) {
+  handleRadioUpdate(e: any) {
     const option = e.target.value;
 
     return this.setState({ selected: option });
   }
 
-  handleCheckboxToggle(val) {
+  handleCheckboxToggle(val: string) {
     const { checked } = this.state;
     const update = {
       ...checked,
@@ -33,12 +40,12 @@ class Library extends React.Component {
     const { selected, checked } = this.state;
 
     return (
-      <div className="default-container">
+      <div className='default-container'>
         <h1>
           Component Library
         </h1>
 
-        <div className="component-container">
+        <div className='component-container'>
           <h2>Headers</h2>
           <h1>h1</h1>
           <h2>h2</h2>
@@ -47,80 +54,80 @@ class Library extends React.Component {
           <h5>h5</h5>
         </div>
 
-        <div className="component-container">
+        <div className='component-container'>
           <h2>Buttons &amp; Links</h2>
 
-          <button className="button-default">
+          <button className='button-default'>
             button-default
           </button>
 
-          <button className="button-default -large">
+          <button className='button-default -large'>
             button-default -large
           </button>
 
-          <Link to="/">Link</Link>
+          <Link to='/'>Link</Link>
         </div>
 
-        <div className="component-container">
+        <div className='component-container'>
           <h2>Forms &amp; Inputs</h2>
 
           <div>
-            <label className="label-default">
+            <label className='label-default'>
               label-default
             </label>
             <input
-              type="text"
-              className="input-default"
-              placeholder="input-default" />
+              type='text'
+              className='input-default'
+              placeholder='input-default' />
           </div>
 
           <div>
             <input
-              type="text"
-              className="input-default -inline"
-              placeholder="input-default -inline" />
+              type='text'
+              className='input-default -inline'
+              placeholder='input-default -inline' />
 
             <input
-              type="text"
-              className="input-default -inline"
-              placeholder="input-default -inline" />
+              type='text'
+              className='input-default -inline'
+              placeholder='input-default -inline' />
 
             <input
-              type="text"
-              className="input-default -inline"
-              placeholder="input-default -inline" />
+              type='text'
+              className='input-default -inline'
+              placeholder='input-default -inline' />
           </div>
 
           <div>
             <input
-              type="text"
-              className="input-default -wide"
-              placeholder="input-default -wide" />
+              type='text'
+              className='input-default -wide'
+              placeholder='input-default -wide' />
           </div>
 
           <div>
-            <label className="label-default -large">
+            <label className='label-default -large'>
               label-default -large
             </label>
             <input
-              type="text"
-              className="input-default -large"
-              placeholder="input-default -large" />
+              type='text'
+              className='input-default -large'
+              placeholder='input-default -large' />
           </div>
 
           <div>
             <textarea
-              rows="10"
-              className="input-default -wide -large"
-              placeholder="textarea input-default -wide -large">
+              rows={10}
+              className='input-default -wide -large'
+              placeholder='textarea input-default -wide -large'>
             </textarea>
           </div>
 
           <div>
             <label>
               <input
-                type="radio"
-                value="optionOne"
+                type='radio'
+                value='optionOne'
                 checked={selected === 'optionOne'}
                 onChange={this.handleRadioUpdate.bind(this)} />
               Option #1
@@ -128,8 +135,8 @@ class Library extends React.Component {
 
             <label>
               <input
-                type="radio"
-                value="optionTwo"
+                type='radio'
+                value='optionTwo'
                 checked={selected === 'optionTwo'}
                 onChange={this.handleRadioUpdate.bind(this)} />
               Option #2
@@ -137,8 +144,8 @@ class Library extends React.Component {
 
             <label>
               <input
-                type="radio"
-                value="optionThree"
+                type='radio'
+                value='optionThree'
                 checked={selected === 'optionThree'}
                 onChange={this.handleRadioUpdate.bind(this)} />
               Option #3
@@ -148,8 +155,8 @@ class Library extends React.Component {
           <div>
             <label>
               <input
-                type="checkbox"
-                value="one"
+                type='checkbox'
+                value='one'
                 checked={checked.one}
                 onChange={this.handleCheckboxToggle.bind(this, 'one')} />
               Option #1
@@ -157,8 +164,8 @@ class Library extends React.Component {
 
             <label>
               <input
-                type="checkbox"
-                value="two"
+                type='checkbox'
+                value='two'
                 checked={checked.two}
                 onChange={this.handleCheckboxToggle.bind(this, 'two')} />
               Option #2
@@ -166,8 +173,8 @@ class Library extends React.Component {
 
             <label>
               <input
-                type="checkbox"
-                value="three"
+                type='checkbox'
+                value='three'
                 checked={checked.three}
                 onChange={this.handleCheckboxToggle.bind(this, 'three')} />
               Option #3
@@ -175,7 +182,7 @@ class Library extends React.Component {
           </div>
         </div>
 
-        <div className="component-container">
+        <div className='component-container'>
           <h2>Colors &amp; Typography</h2>
 
           <h3 style={{ color: '#d0d0d0' }}>

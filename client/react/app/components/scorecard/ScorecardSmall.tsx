@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { groupBy, keys, sortBy } from 'lodash';
 import * as moment from 'moment';
 import NavBar from '../navbar';
@@ -12,18 +13,17 @@ import { Task, calculateScore } from '../../helpers/tasks';
 import {
   IScorecard,
   fetchScorecard,
-  updateScoreCard,
   toggleScorecardTask
 } from '../../helpers/scorecard';
 import { AppState, keyifyDate } from '../../helpers/utils';
 import { getScorecard } from '../../reducers';
-import './ScoreCard.less';
+import './Scorecard.less';
 
 interface ScorecardProps {
   date: moment.Moment;
   scorecard: IScorecard;
   tasks: Task[];
-  dispatch: (action: any) => any;
+  dispatch: Dispatch<any>;
 }
 
 interface ScorecardState {
@@ -116,19 +116,6 @@ class ScoreCard extends React.Component<
         });
 
         this.setState({ tasks: revert });
-      });
-  }
-
-  handleDateChange(date: moment.Moment) {
-    const { scorecard } = this.state;
-    const { id: scorecardId } = scorecard;
-
-    return updateScoreCard(scorecardId, { date })
-      .then(scorecard => {
-        this.setState({ date });
-      })
-      .catch(err => {
-        console.log('Error updating date!', err);
       });
   }
 

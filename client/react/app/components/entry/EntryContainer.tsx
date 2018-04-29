@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import * as moment from 'moment';
 import NavBar from '../navbar';
 import { fetchEntry, updateEntry } from '../../helpers/entries';
+import { isDateToday } from '../../helpers/utils';
 import md from '../../helpers/markdown';
 import './Entry.less';
 
@@ -158,6 +159,7 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
     const { date, entry, isEditing, isSaving, isFullView } = this.state;
     const { content = '', isPrivate } = entry;
     const { history } = this.props;
+    const isToday = isDateToday(date);
     const chars = isFullView ? 120 : 65;
     const lines = estimateLinesOfContent(content, chars);
 
@@ -165,7 +167,7 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
       <div>
         <NavBar
           title='Log'
-          linkTo='/'
+          linkTo={isToday ? '/today' : '/dashboard'}
           history={history} />
 
         <div className={`default-container ${isEditing ? 'edit-mode' : 'view-mode'}`}>

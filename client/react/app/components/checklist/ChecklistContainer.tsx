@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { isNumber } from 'lodash';
 import * as moment from 'moment';
 import NavBar from '../navbar';
@@ -12,23 +13,19 @@ import {
   fetchChecklist,
   updateChecklistScore
 } from '../../helpers/checklist';
-import { AppState, formatPoints } from '../../helpers/utils';
-import { getChecklist } from '../../reducers';
-import './CheckList.less';
+import { AppState, formatPoints, isDateToday } from '../../helpers/utils';
+import { getChecklist, updateScore } from '../../reducers';
+import './Checklist.less';
 
 interface ChecklistProps {
   checklist: IChecklist;
   date: moment.Moment;
   questions: IQuestion[];
   isComplete: boolean;
-  dispatch: (action: any) => any;
+  dispatch: Dispatch<Promise<any>>;
 }
 
 interface ChecklistState {
-  checklist: IChecklist;
-  date: moment.Moment;
-  questions: IQuestion[];
-  isComplete: boolean;
   isLoading: boolean;
 }
 
@@ -56,18 +53,8 @@ class ChecklistContainer extends React.Component<
 > {
   constructor(props: ChecklistProps & RouteComponentProps<{ id: number }>) {
     super(props);
-    const {
-      checklist = {} as IChecklist,
-      date = moment(),
-      questions = [] as IQuestion[],
-      isComplete = false
-    } = this.props;
 
     this.state = {
-      checklist,
-      date,
-      questions,
-      isComplete,
       isLoading: true
     };
   }
@@ -76,18 +63,10 @@ class ChecklistContainer extends React.Component<
     const { match, history, dispatch } = this.props;
     const { id } = match.params;
 
-    dispatch(getChecklist(id));
     // In redux, cache questions with `id`, `text`, and `category` fields
-    return fetchChecklist(id)
-      .then(checklist => {
-        const { questions = [], date } = checklist;
-        const isComplete = questions.every(q => isNumber(q.score));
-
+    return dispatch(getChecklist(id))
+      .then(() => {
         return this.setState({
-          checklist,
-          questions,
-          isComplete,
-          date: moment(date),
           isLoading: false
         });
       })
@@ -102,22 +81,9 @@ class ChecklistContainer extends React.Component<
   }
 
   handleScoreChange(question: IQuestion, score: number) {
-    const { match } = this.props;
-    const { id: checklistId } = match.params;
-    const { id: questionId } = question;
-    const { questions } = this.state;
+    const { dispatch, checklist } = this.props;
 
-    return updateChecklistScore(checklistId, questionId, score)
-      .then(() => {
-        const update = questions.map(q => {
-          return (q.id === questionId) ? { ...q, score } : q;
-        });
-
-        return this.setState({ questions: update });
-      })
-      .catch(err => {
-        console.log('Error updating score!', err);
-      });
+    return dispatch(updateScore(checklist, question, score));
   }
 
   calculateScore(questions: IQuestion[]) {
@@ -127,14 +93,18 @@ class ChecklistContainer extends React.Component<
   }
 
   submit() {
-    const { history } = this.props;
+    const { history, date } = this.props;
+    const isToday = isDateToday(date);
+    const url = isToday ? '/today' : '/dashboard';
 
-    return history.push('/dashboard');
+    return history.push(url);
   }
 
   render() {
-    const { checklist, questions, date, isComplete, isLoading } = this.state;
-    const { history } = this.props;
+    const { isLoading } = this.state;
+    const { checklist, questions, date, isComplete, history } = this.props;
+    const isToday = isDateToday(date);
+    const url = isToday ? '/today' : '/dashboard';
 
     if (isLoading) return null;
 
@@ -142,7 +112,7 @@ class ChecklistContainer extends React.Component<
       <div>
         <NavBar
           title='Check-in'
-          linkTo='/dashboard'
+          linkTo={url}
           history={history} />
         {
           isComplete ?

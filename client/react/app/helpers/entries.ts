@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import { HttpResponse, get, post, put, del } from './http';
 
 export interface Entry {
@@ -14,7 +15,7 @@ export const fetchEntries = (): Promise<Entry[]> => {
     .then((res: HttpResponse) => res.entries);
 };
 
-export const fetchUserEntries = (username: string): Promise<Entry> => {
+export const fetchUserEntries = (username: string): Promise<Entry[]> => {
   return get(`/api/users/${username}/entries`)
     .then((res: HttpResponse) => res.entries);
 };
@@ -26,6 +27,11 @@ export const fetchUserEntry = (username: string, entryId: number): Promise<Entry
 
 export const fetchEntry = (id: number): Promise<Entry> => {
   return get(`/api/entries/${id}`)
+    .then((res: HttpResponse) => res.entry);
+};
+
+export const findOrCreateByDate = (date: string): Promise<Entry> => {
+  return post('/api/entries/date', { date })
     .then((res: HttpResponse) => res.entry);
 };
 

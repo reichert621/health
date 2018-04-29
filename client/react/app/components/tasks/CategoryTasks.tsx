@@ -1,8 +1,16 @@
 import * as React from 'react';
 import { resolve } from 'bluebird';
 import { extend } from 'lodash';
-import { Task, Category, createTask, updateTask } from '../../helpers/tasks';
+import {
+  Task,
+  Category,
+  PointOption,
+  createTask,
+  updateTask,
+  getPointOptions
+} from '../../helpers/tasks';
 import TaskItem from './TaskItem';
+import Dropdown from './Dropdown';
 
 interface CategoryProps {
   category: Category;
@@ -15,6 +23,7 @@ interface CategoryState {
   isCreating: boolean;
   newTask: string;
   newPoints?: number;
+  selectedPointOption?: PointOption;
 }
 
 class CategoryTasks extends React.Component<CategoryProps, CategoryState> {
@@ -45,7 +54,8 @@ class CategoryTasks extends React.Component<CategoryProps, CategoryState> {
 
   handleCreateTask(e: React.FormEvent<HTMLFormElement>, category: Category) {
     e.preventDefault();
-    const { newTask, newPoints, tasks = [] } = this.state;
+    const { newTask, selectedPointOption, tasks = [] } = this.state;
+    const { points: newPoints } = selectedPointOption;
 
     if (!newTask || !newPoints) return resolve();
 
@@ -93,12 +103,22 @@ class CategoryTasks extends React.Component<CategoryProps, CategoryState> {
     return this.handleUpdateTask(id, updates);
   }
 
+  cancelNewTask() {
+    return this.setState({
+      isCreating: false,
+      newTask: '',
+      selectedPointOption: null
+    });
+  }
+
   renderNewTaskForm() {
+    const options = getPointOptions();
     const {
       isCreating,
       category = {} as Category,
       newTask = '',
-      newPoints = 0
+      newPoints = 0,
+      selectedPointOption
     } = this.state;
 
     return (
@@ -112,22 +132,19 @@ class CategoryTasks extends React.Component<CategoryProps, CategoryState> {
           placeholder='New task'
           value={newTask}
           onChange={(e) => this.setState({ newTask: e.target.value })} />
-        {/* TODO: fix width and only allow 1, 2, 4, 8, 16 points */}
-        <input
-          type='number'
-          className='input-default -inline task-points-input'
-          placeholder='0'
-          min='0'
-          value={newPoints}
-          onChange={(e) => this.setState({ newPoints: Number(e.target.value) })} />
+        <Dropdown
+          className='task-points-input -inline'
+          options={options}
+          selected={selectedPointOption}
+          onSelect={option => this.setState({ selectedPointOption: option })} />
         <button
           type='submit'
           className='btn-primary'
-          disabled={!newTask || !newPoints}>
+          disabled={!newTask || !selectedPointOption}>
           Create
         </button>
         <a className='btn-link'
-          onClick={() => this.setState({ isCreating: false })}>
+          onClick={() => this.cancelNewTask()}>
           Cancel
         </a>
       </form>

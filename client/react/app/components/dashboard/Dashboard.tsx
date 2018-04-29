@@ -1,16 +1,18 @@
-import React from 'react';
+import * as React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { extend, values } from 'lodash';
-import moment from 'moment';
+import * as moment from 'moment';
 import { all, resolve } from 'bluebird';
 import NavBar from '../navbar';
 import DashboardReporting from './DashboardReporting';
 import DashboardList from './DashboardList';
 import DashboardPreview from './DashboardPreview';
-import { fetchScorecard, createNewScorecard } from '../../helpers/scorecard';
-import { createNewChecklist } from '../../helpers/checklist';
-import { createEntry } from '../../helpers/entries';
-import { keyifyDate, getPastDates } from '../../helpers/utils';
+import { IScorecard, fetchScorecard, createNewScorecard } from '../../helpers/scorecard';
+import { IChecklist, createNewChecklist } from '../../helpers/checklist';
+import { Entry, createEntry } from '../../helpers/entries';
+import { AppState, SelectedState, keyifyDate, getPastDates } from '../../helpers/utils';
 import {
   LIST_VIEW,
   CHART_VIEW,
@@ -22,7 +24,7 @@ import {
 } from '../../reducers';
 import './Dashboard.less';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: AppState) => {
   const { currentView, selected, scorecards, checklists, entries } = state;
   const { byId: scorecardsById, byDate: scorecardsByDate } = scorecards;
   const { byId: checklistsById, byDate: checklistsByDate } = checklists;
@@ -40,8 +42,25 @@ const mapStateToProps = (state) => {
   };
 };
 
-class Dashboard extends React.Component {
-  constructor(props) {
+interface DashboardProps extends RouteComponentProps<{}> {
+  currentView: string;
+  selected: SelectedState;
+  scorecardsByDate: { [date: string]: IScorecard; };
+  checklistsByDate: { [date: string]: IChecklist; };
+  entriesByDate: { [date: string]: Entry; };
+  scorecards: IScorecard[];
+  checklists: IChecklist[];
+  entries: Entry[];
+  dispatch: Dispatch<Promise<any>>;
+}
+
+interface DashboardState {
+  isLoading: boolean;
+  showChart: boolean;
+}
+
+class Dashboard extends React.Component<DashboardProps, DashboardState> {
+  constructor(props: DashboardProps) {
     super(props);
 
     this.state = {
@@ -54,7 +73,7 @@ class Dashboard extends React.Component {
     // TODO: this is a temporary hack to make sure this page scrolls
     // to the top after a scorecard or a checklist is submitted
     window.scrollTo(0, 0);
-    const { history, dispatch, selected = {} } = this.props;
+    const { history, dispatch, selected = {} as SelectedState } = this.props;
     const { date = moment() } = selected;
 
     return all([
@@ -73,7 +92,7 @@ class Dashboard extends React.Component {
       });
   }
 
-  handleDateSelected(date) {
+  handleDateSelected(date: moment.Moment) {
     const { scorecardsByDate, checklistsByDate, entriesByDate } = this.props;
     const { dispatch } = this.props;
     const key = keyifyDate(date);
@@ -103,7 +122,7 @@ class Dashboard extends React.Component {
       });
   }
 
-  handlePointClicked(timestamp) {
+  handlePointClicked(timestamp: number) {
     const date = moment.utc(timestamp);
 
     if (date.isValid()) {
@@ -113,7 +132,7 @@ class Dashboard extends React.Component {
     }
   }
 
-  createNewScorecard(scorecard, date) {
+  createNewScorecard(scorecard: IScorecard, date: moment.Moment) {
     if (scorecard && scorecard.id) return resolve();
 
     const { history } = this.props;
@@ -126,7 +145,7 @@ class Dashboard extends React.Component {
       });
   }
 
-  createNewChecklist(checklist, date) {
+  createNewChecklist(checklist: IChecklist, date: moment.Moment) {
     if (checklist && checklist.id) return resolve();
 
     const { history } = this.props;
@@ -138,7 +157,7 @@ class Dashboard extends React.Component {
       });
   }
 
-  createNewEntry(entry, date) {
+  createNewEntry(entry: Entry, date: moment.Moment) {
     if (entry && entry.id) return resolve();
 
     const { history } = this.props;
@@ -155,7 +174,7 @@ class Dashboard extends React.Component {
       });
   }
 
-  setCurrentView(view) {
+  setCurrentView(view: string) {
     const { dispatch } = this.props;
 
     return dispatch({ view, type: UPDATE_VIEW });
@@ -167,7 +186,7 @@ class Dashboard extends React.Component {
     const {
       history,
       currentView,
-      selected = {},
+      selected = {} as SelectedState,
       scorecards = [],
       checklists = []
     } = this.props;
@@ -180,12 +199,12 @@ class Dashboard extends React.Component {
     return (
       <div>
         <NavBar
-          title="Dashboard"
+          title='Dashboard'
           history={history} />
 
-        <div className="default-container">
-          <div className="clearfix">
-            <div className="dashboard-preview-container pull-left">
+        <div className='default-container'>
+          <div className='clearfix'>
+            <div className='dashboard-preview-container pull-left'>
               <DashboardPreview
                 selected={selected}
                 handleScorecardClicked={this.createNewScorecard.bind(this)}
@@ -193,8 +212,8 @@ class Dashboard extends React.Component {
                 handleEntryClicked={this.createNewEntry.bind(this)} />
             </div>
 
-            <div className="dashboard-list-container pull-right">
-              <div className="toggle-btn-container">
+            <div className='dashboard-list-container pull-right'>
+              <div className='toggle-btn-container'>
                 <button
                   className={`btn-default btn-toggle ${showChart ? '' : 'active'}`}
                   onClick={this.setCurrentView.bind(this, LIST_VIEW)}>

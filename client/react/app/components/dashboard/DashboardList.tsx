@@ -1,20 +1,36 @@
-import React from 'react';
-import { keyifyDate, formatPoints, mapByDate } from '../../helpers/utils';
+import * as React from 'react';
+import * as moment from 'moment';
+import {
+  SelectedState,
+  keyifyDate,
+  formatPoints,
+  mapByDate
+} from '../../helpers/utils';
+import { IScorecard } from '../../helpers/scorecard';
+import { IChecklist } from '../../helpers/checklist';
+
+interface DashboardListProps {
+  dates: moment.Moment[];
+  scorecards: IScorecard[];
+  checklists: IChecklist[];
+  selected: SelectedState;
+  handleDateSelected: (date: moment.Moment) => void;
+}
 
 const DashboardList = ({
   dates = [],
   scorecards = [],
   checklists = [],
-  selected = {},
+  selected = {} as SelectedState,
   handleDateSelected
-}) => {
+}: DashboardListProps) => {
   const scorecardsByDate = mapByDate(scorecards);
   const checklistsByDate = mapByDate(checklists);
   const { date: selectedDate } = selected;
   const selectedKey = keyifyDate(selectedDate);
 
   return (
-    <table className="dashboard-list-table">
+    <table className='dashboard-list-table'>
       <thead>
         <tr>
           <th>Date</th>
@@ -35,7 +51,7 @@ const DashboardList = ({
                 className={`dashboard-list-row ${isSelected && 'selected'}`}
                 onClick={() => handleDateSelected(date)}>
                 <td className={isSelected ? '' : 'text-blue'}>
-                  <span className="dashboard-list-date">
+                  <span className='dashboard-list-date'>
                     {date.format('ddd MM/DD')}
                   </span>
                 </td>

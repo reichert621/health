@@ -100,6 +100,19 @@
   }
 }
 
+.challenge-item {
+  padding: 4px 24px;
+
+  &.inactive {
+    color: @faded-gray;
+    opacity: 0.9;
+  }
+
+  .subscription-btn {
+    min-width: 168px;
+  }
+}
+
 .task-description-input,
 .new-category-input {
   width: 385px;
@@ -113,8 +126,13 @@
 }
 
 .task-points-input {
-  width: 120px;
+  min-width: 124px;
+  width: 124px;
   margin-bottom: 0px;
+
+  .dropdown-menu {
+    min-width: 144px;
+  }
 }
 
 .new-category-form {

@@ -39,12 +39,43 @@ const findById = (id, userId, where = {}) =>
       return formatWithUtc(entry);
     });
 
+const findByDate = (date, userId, where = {}) => {
+  return findOne(merge(where, { date }), userId)
+    .then(entry => {
+      if (!entry) throw new Error('No entry found!');
+
+      return formatWithUtc(entry);
+    });
+};
+
 const create = (params, userId) =>
   Entries()
     .returning('id')
     .insert(merge(params, { userId }))
     .then(first)
     .then(id => findById(id, userId));
+
+const findOrCreate = (params, userId) => {
+  return findOne(params, userId)
+    .then(found => {
+      if (found) {
+        return found;
+      }
+
+      return create(params, userId);
+    });
+};
+
+const findOrCreateByDate = async (date, userId) => {
+  const params = {
+    date,
+    title: date,
+    content: ''
+  };
+
+  return findOrCreate(params, userId)
+    .then(entry => findByDate(date, userId));
+};
 
 const update = (id, params, userId) =>
   findOne({ id }, userId)
@@ -61,6 +92,7 @@ module.exports = {
   fetchWithUtc,
   findById,
   create,
+  findOrCreateByDate,
   update,
   destroy
 };

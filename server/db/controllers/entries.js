@@ -25,5 +25,15 @@ module.exports = {
   destroy: (req, res) =>
     Entry.destroy(req.params.id, req.user.id)
       .then(entry => res.json({ entry }))
-      .catch(err => handleError(res, err))
+      .catch(err => handleError(res, err)),
+
+  findOrCreateByDate: (req, res) => {
+    const { body, user } = req;
+    const { date } = body;
+    const { id: userId } = user;
+
+    return Entry.findOrCreateByDate(date, userId)
+      .then(entry => res.json({ entry }))
+      .catch(err => handleError(res, err));
+  }
 };

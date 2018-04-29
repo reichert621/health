@@ -24,6 +24,17 @@ module.exports = {
     }
   },
 
+  async fetchSuggestions(req, res) {
+    try {
+      const userId = req.user.id;
+      const suggestions = await Task.fetchSuggestions(userId);
+
+      return res.json({ suggestions });
+    } catch (err) {
+      return handleError(res, err);
+    }
+  },
+
   async create(req, res) {
     try {
       const params = req.body;

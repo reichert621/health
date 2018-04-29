@@ -9,6 +9,7 @@ const checklistQuestions = require('./checklist_questions'); // TODO: undo snake
 const imperatives = require('./imperatives');
 const gratitudes = require('./gratitudes');
 const reporting = require('./reporting');
+const challenges = require('./challenges');
 
 module.exports = {
   users,
@@ -21,5 +22,6 @@ module.exports = {
   checklistQuestions,
   imperatives,
   gratitudes,
-  reporting
+  reporting,
+  challenges
 };

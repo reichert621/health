@@ -6,7 +6,7 @@ import {
   IQuestion
 } from '../../helpers/checklist';
 import { AppState, formatPoints } from '../../helpers/utils';
-import './CheckList.less';
+import './Checklist.less';
 
 interface ChecklistProps {
   checklist: IChecklist;

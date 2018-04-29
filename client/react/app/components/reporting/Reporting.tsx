@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import NavBar from '../navbar';
 import ReportingChart from './ReportingChart';
 import ReportingOverview from './ReportingOverview';
@@ -10,37 +12,29 @@ import MoodFrequency from './MoodFrequency';
 import ScoresByDay from './ScoresByDay';
 import TopMoods from './TopMoods';
 import HighImpactTasks from './HighImpactTasks';
-import {
-  ReportingStats,
-  fetchAllStats,
-  mergeTaskStats
-} from '../../helpers/reporting';
+import { ReportingStats } from '../../helpers/reporting';
+import { AppState } from '../../helpers/utils';
+import { getAllStats } from '../../reducers';
 import './Reporting.less';
 
-interface ReportingState {
+const mapStateToProps = (state: AppState) => {
+  const { stats = {} as ReportingStats } = state;
+
+  return { stats };
+};
+
+interface ReportingProps extends RouteComponentProps<{}> {
   stats: ReportingStats;
+  dispatch: Dispatch<any>;
 }
 
-class Reporting extends React.Component<RouteComponentProps<{}>, ReportingState> {
-  constructor(props: RouteComponentProps<{}>) {
-    super(props);
-
-    this.state = {
-      stats: {} as ReportingStats
-    };
-  }
-
+class Reporting extends React.Component<ReportingProps> {
   componentDidMount() {
-    return fetchAllStats()
-      .then(stats => this.setState({ stats }))
-      .catch(err => {
-        console.log('Error fetching stats!', err);
-      });
+    return this.props.dispatch(getAllStats());
   }
 
   render() {
-    const { history } = this.props;
-    const { stats } = this.state;
+    const { history, stats } = this.props;
     const {
       // Checklist stats
       checklistStats = [],
@@ -61,7 +55,6 @@ class Reporting extends React.Component<RouteComponentProps<{}>, ReportingState>
 
     const highImpactTasks = checklistScoresByTask.slice(0, 5);
     const lowImpactTasks = checklistScoresByTask.slice(-5).reverse();
-    const taskStats = mergeTaskStats(topTasks, checklistScoresByTask);
 
     console.log('stats!', stats);
 
@@ -69,7 +62,7 @@ class Reporting extends React.Component<RouteComponentProps<{}>, ReportingState>
       <div>
         <NavBar
           title='Reporting'
-          linkTo='/'
+          linkTo='/today'
           history={history} />
 
         <div className='default-container'>
@@ -142,4 +135,4 @@ class Reporting extends React.Component<RouteComponentProps<{}>, ReportingState>
   }
 }
 
-export default Reporting;
+export default connect(mapStateToProps)(Reporting);

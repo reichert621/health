@@ -24,19 +24,21 @@ const TaskReportingTable = ({ stats }: TaskReportingTableProps) => {
       </thead>
       <tbody>
         {
-          stats.map((stat, key) => {
-            const { task, count, points, happiness } = stat;
+          stats
+            .sort((x, y) => y.happiness - x.happiness)
+            .map((stat, key) => {
+              const { task, count, points, happiness } = stat;
 
-            return (
-              <tr key={key}
-                className='dashboard-list-row'>
-                <td style={styles.lg}>{task}</td>
-                <td style={styles.sm}>{count} times</td>
-                <td style={styles.sm}>{points} points</td>
-                <td style={styles.sm}>{happiness.toFixed(1)}% happy</td>
-              </tr>
-            );
-          })
+              return (
+                <tr key={key}
+                  className='dashboard-list-row'>
+                  <td style={styles.lg}>{task}</td>
+                  <td style={styles.sm}>{count} times</td>
+                  <td style={styles.sm}>{points} points</td>
+                  <td style={styles.sm}>{happiness.toFixed(1)}% happy</td>
+                </tr>
+              );
+            })
         }
       </tbody>
     </table>

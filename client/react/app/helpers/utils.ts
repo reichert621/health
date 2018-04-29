@@ -4,12 +4,15 @@ import { IUser } from './auth';
 import { IChecklist, IQuestion } from './checklist';
 import { IScorecard } from './scorecard';
 import { Task } from './tasks';
+import { Entry } from './entries';
+import { IChallenge } from './challenges';
 import { ReportingStats } from './reporting';
 
 export interface SelectedState {
   date?: moment.Moment;
   checklist: IChecklist;
   scorecard: IScorecard;
+  entry: Entry;
 }
 
 export interface MappedItems<T> {
@@ -22,13 +25,23 @@ export interface MappedItems<T> {
   };
 }
 
+export interface ChallengeState {
+  all: IChallenge[];
+  mine: IChallenge[];
+  byDate: {
+    [date: string]: IChallenge[];
+  };
+}
+
 export interface AppState {
   currentUser?: IUser;
   currentView: string;
   checklists: MappedItems<IChecklist>;
   scorecards: MappedItems<IScorecard>;
+  entries: MappedItems<Entry>;
   questions: IQuestion[];
   tasks: Task[];
+  challenges: ChallengeState;
   selected: SelectedState;
   stats: ReportingStats;
 }
@@ -39,6 +52,11 @@ export interface DatedItem {
 
 export interface ItemWithId {
   id: number|string;
+}
+
+export interface IDropdownOption {
+  value: string;
+  subvalue?: string;
 }
 
 export const DAYS_OF_WEEK = [
@@ -95,7 +113,12 @@ export const keyifyDate = (date: moment.Moment|Date|string): string => {
   return moment(date).format('MMDDYYYY');
 };
 
-export const mapById = (list: ItemWithId[] = []): object => {
+export const isDateToday = (date: moment.Moment | Date | string): boolean => {
+  return moment(date).isSame(moment(), 'day');
+};
+
+// TODO: figure out how to type this better
+export const mapById = (list: ItemWithId[] = []): { [id: string]: any; } => {
   return list.reduce((map, item) => {
     if (!has(item, 'id')) return map;
 
@@ -105,7 +128,7 @@ export const mapById = (list: ItemWithId[] = []): object => {
   }, {});
 };
 
-export const mapByDate = (list: DatedItem[] = []): object => {
+export const mapByDate = (list: DatedItem[] = []): { [date: string]: any; } => {
   return list.reduce((map, item) => {
     if (!has(item, 'date')) return map;
 

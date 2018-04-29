@@ -296,7 +296,7 @@ class DailyGratitude extends React.Component<RouteComponentProps<{}>, GratitudeS
       <div>
         <NavBar
           title='Gratitude'
-          linkTo='/'
+          linkTo='/today'
           history={history} />
 
         <div className='default-container gratitude-container text-center'>

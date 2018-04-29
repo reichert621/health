@@ -18,25 +18,30 @@ const findOne = (where, userId) =>
   fetch(where, userId)
     .first();
 
-// TODO: rename
-const findById = async (id, userId, where = {}) => {
-  const scorecard = await findOne(merge(where, { id }), userId);
-  const selectedTasks = await ScoreCardSelectedTask.fetchByScorecardId(id, userId);
+const fetchTasks = async (scorecardId, userId) => {
+  const selectedTasks = await ScoreCardSelectedTask.fetchByScorecardId(scorecardId, userId);
   const selectedTaskIds = selectedTasks.map(({ taskId }) => taskId);
   const tasks = await Task.fetchActive(userId, selectedTaskIds);
-
-  const { date } = scorecard;
-  const utc = moment.utc(date).format('YYYY-MM-DD');
   const isComplete = selectedTasks.reduce((map, { taskId }) => {
     return merge(map, { [taskId]: true });
   }, {});
 
+  return tasks.map(t => {
+    return merge(t, { isComplete: isComplete[t.id] });
+  });
+};
+
+// TODO: rename
+const findById = async (id, userId, where = {}) => {
+  const scorecard = await findOne(merge(where, { id }), userId);
+  const tasks = await fetchTasks(id, userId);
+  const { date } = scorecard;
+  const utc = moment.utc(date).format('YYYY-MM-DD');
+
   return merge(scorecard, {
+    tasks,
     date: utc,
-    _date: date,
-    tasks: tasks.map(t => {
-      return merge(t, { isComplete: isComplete[t.id] });
-    })
+    _date: date
   });
 };
 
@@ -277,11 +282,12 @@ const createWithScores = async (params, userId) => {
   return scorecard;
 };
 
-const update = (id, params, userId) =>
-  findOne({ id }, userId)
+const update = (id, params, userId) => {
+  return findOne({ id }, userId)
     .update(params)
     .then(count => (count > 0))
     .then(success => findById(id, userId));
+};
 
 const selectTask = (id, taskId, userId) => {
   const params = { scorecardId: id, taskId, userId };
@@ -313,9 +319,52 @@ const updateSelectedTasks = (id, params, userId) => {
     });
 };
 
-const destroy = (id, userId) =>
-  findById(id, userId)
+const findOrCreate = (params, userId) => {
+  return findOne(params, userId)
+    .then(found => {
+      if (found) {
+        return found;
+      }
+
+      return create(params, userId);
+    });
+};
+
+const findByDate = async (date, userId, where = {}) => {
+  if (!date) {
+    throw new Error('Date is required!');
+  }
+
+  const scorecard = await findOne(merge(where, { date }), userId);
+
+  if (!scorecard) return null;
+
+  const { id: scorecardId } = scorecard;
+  const tasks = await fetchTasks(scorecardId, userId);
+  const utc = moment.utc(date).format('YYYY-MM-DD');
+  const points = tasks.reduce((total, task) => {
+    const { isComplete, points: p } = task;
+
+    return isComplete ? total + p : total;
+  }, 0);
+
+  return merge(scorecard, {
+    tasks,
+    points,
+    date: utc,
+    _date: date
+  });
+};
+
+const findOrCreateByDate = async (date, userId) => {
+  return findOrCreate({ date }, userId)
+    .then(scorecard => findByDate(date, userId));
+};
+
+const destroy = (id, userId) => {
+  return findById(id, userId)
     .delete();
+};
 
 module.exports = {
   fetch,
@@ -336,5 +385,6 @@ module.exports = {
   selectTask,
   deselectTask,
   updateSelectedTasks,
+  findOrCreateByDate,
   destroy
 };

@@ -14,7 +14,8 @@ const {
   imperatives,
   gratitudes,
   reporting,
-  tasks
+  tasks,
+  challenges
 } = require('./db/controllers');
 
 const api = Router();
@@ -39,6 +40,7 @@ api.all('/logout', logout);
 // Entries
 api.get('/entries', isAuthenticated, entries.fetch);
 api.get('/entries/:id', isAuthenticated, entries.findById);
+api.post('/entries/date', isAuthenticated, entries.findOrCreateByDate); // TODO: name better
 api.post('/entries', isAuthenticated, entries.create);
 api.put('/entries/:id', isAuthenticated, entries.update);
 api.delete('/entries/:id', isAuthenticated, entries.destroy);
@@ -51,6 +53,7 @@ api.get('/feed', isAuthenticated, users.feed);
 // Scorecards
 api.get('/scorecards', isAuthenticated, scorecards.fetch);
 api.get('/scorecards/:id', isAuthenticated, scorecards.findById);
+api.post('/scorecards/date', isAuthenticated, scorecards.findOrCreateByDate); // TODO: name better
 api.post('/scorecards/new', isAuthenticated, scorecards.create);
 api.put('/scorecards/:id', isAuthenticated, scorecards.update);
 api.post('/scorecards/:id/select-task/:taskId', isAuthenticated, scorecards.selectTask);
@@ -62,9 +65,11 @@ api.post('/categories', isAuthenticated, categories.create);
 api.get('/tasks', isAuthenticated, tasks.fetch);
 api.post('/tasks', isAuthenticated, tasks.create);
 api.put('/tasks/:id', isAuthenticated, tasks.update);
+api.get('/tasks/suggestions', isAuthenticated, tasks.fetchSuggestions);
 // Checklists
 api.get('/checklists', isAuthenticated, checklists.fetch);
 api.get('/checklists/:id', isAuthenticated, checklists.findById);
+api.post('/checklists/date', isAuthenticated, checklists.findOrCreateByDate); // TODO: name better
 api.post('/checklists/:id/questions/:questionId/score', isAuthenticated, checklists.updateScore);
 api.post('/checklists/:id/update-scores', isAuthenticated, checklists.updateScores);
 api.post('/checklists/new', isAuthenticated, checklists.create);
@@ -82,6 +87,17 @@ api.get('/gratitudes', isAuthenticated, gratitudes.fetch);
 api.post('/gratitudes', isAuthenticated, gratitudes.create);
 api.put('/gratitudes/:id', isAuthenticated, gratitudes.update);
 api.delete('/gratitudes/:id', isAuthenticated, gratitudes.destroy);
+// Challenges
+api.get('/challenges', isAuthenticated, challenges.fetchActive);
+api.get('/challenges/mine', isAuthenticated, challenges.fetchMyChallenges);
+api.get('/challenges/date/:date', isAuthenticated, challenges.fetchByDate);
+api.post('/challenges', isAuthenticated, challenges.create);
+api.put('/challenges/:id', isAuthenticated, challenges.update);
+api.delete('/challenges/:id', isAuthenticated, challenges.destroy);
+api.post('/challenges/:id/select', isAuthenticated, challenges.selectChallenge);
+api.post('/challenges/:id/deselect', isAuthenticated, challenges.deselectChallenge);
+api.post('/challenges/:id/subscribe', isAuthenticated, challenges.subscribe);
+api.post('/challenges/:id/unsubscribe', isAuthenticated, challenges.unsubscribe);
 // Reporting Stats
 // TODO: clean up these endpoints
 api.get('/stats/all', isAuthenticated, reporting.fetchAllStats);

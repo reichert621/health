@@ -29,36 +29,47 @@ const findOne = (where, userId) =>
   fetch(where, userId)
     .first();
 
-// TODO: rename
-const findById = (id, userId, where = {}) =>
-  Promise.all([
-    findOne(merge(where, { id }), userId),
+const fetchQuestionScores = (checklistId, userId) => {
+  return Promise.all([
     ChecklistQuestion.fetch(),
-    ChecklistScore.fetchByChecklistId(id, userId)
+    ChecklistScore.fetchByChecklistId(checklistId, userId)
   ])
-    .then(([checklist, questions, scores]) => {
-      const { date } = checklist;
-      const utc = moment.utc(date).format('YYYY-MM-DD');
+    .then(([questions, scores]) => {
       const scoresByQuestion = scores.reduce((map, score) => {
         const { checklistQuestionId: questionId } = score;
 
         return merge(map, { [questionId]: score });
       }, {});
 
-      return merge(checklist, {
-        date: utc,
-        _date: date,
-        questions: questions.map(question => {
-          const s = scoresByQuestion[question.id];
+      return questions.map(question => {
+        const s = scoresByQuestion[question.id];
 
-          if (s && isNumber(s.score)) {
-            return merge(question, { score: s.score, checklistScoreId: s.id });
-          } else {
-            return question;
-          }
-        })
+        if (s && isNumber(s.score)) {
+          return merge(question, { score: s.score, checklistScoreId: s.id });
+        } else {
+          return question;
+        }
       });
     });
+};
+
+// TODO: rename
+const findById = async (id, userId, where = {}) => {
+  const checklist = await findOne(merge(where, { id }), userId);
+  const questions = await fetchQuestionScores(id, userId);
+  const { date } = checklist;
+  const utc = moment.utc(date).format('YYYY-MM-DD');
+  const points = questions.reduce((total, { score }) => {
+    return isNumber(score) ? total + score : total;
+  }, 0);
+
+  return merge(checklist, {
+    questions,
+    points,
+    date: utc,
+    _date: date
+  });
+};
 
 const create = (params, userId) => {
   return Checklist()
@@ -85,6 +96,46 @@ const createWithScores = async (params, userId) => {
   await Promise.all(promises);
 
   return checklist;
+};
+
+const findOrCreate = (params, userId) => {
+  return findOne(params, userId)
+    .then(found => {
+      if (found) {
+        return found;
+      }
+
+      return create(params, userId);
+    });
+};
+
+const findByDate = async (date, userId, where = {}) => {
+  if (!date) {
+    throw new Error('Date is required!');
+  }
+
+  const checklist = await findOne(merge(where, { date }), userId);
+
+  if (!checklist) return null;
+
+  const { id: checklistId } = checklist;
+  const questions = await fetchQuestionScores(checklistId, userId);
+  const utc = moment.utc(date).format('YYYY-MM-DD');
+  const points = questions.reduce((total, { score }) => {
+    return isNumber(score) ? total + score : total;
+  }, 0);
+
+  return merge(checklist, {
+    questions,
+    points,
+    date: utc,
+    _date: date
+  });
+};
+
+const findOrCreateByDate = async (date, userId) => {
+  return findOrCreate({ date }, userId)
+    .then(checklist => findByDate(date, userId));
 };
 
 const update = (id, params, userId) =>
@@ -124,13 +175,18 @@ const fetchWithPoints = (where = {}, userId) => {
         const { id, date } = checklist;
         const utc = moment.utc(date).format('YYYY-MM-DD');
 
-        return ChecklistScore.fetchByChecklistId(id, userId)
-          .then(checklistScores => {
-            const points = checklistScores.reduce((total, { score }) => {
+        return fetchQuestionScores(id, userId)
+          .then(questions => {
+            const points = questions.reduce((total, { score }) => {
               return isNumber(score) ? total + score : total;
             }, 0);
 
-            return merge(checklist, { points, date: utc, _date: date });
+            return merge(checklist, {
+              questions,
+              points,
+              date: utc,
+              _date: date
+            });
           });
       });
 
@@ -347,6 +403,7 @@ module.exports = {
   findById,
   create,
   createWithScores,
+  findOrCreateByDate,
   update,
   updateScore,
   updateScores,

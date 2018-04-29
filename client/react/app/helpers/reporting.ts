@@ -20,7 +20,10 @@ export interface TaskStatMap<T> {
 export interface ReportingTask extends TaskStat {
   count: number;
   points: number;
+  taskId?: number;
   happiness?: number;
+  category?: string;
+  description?: string;
 }
 
 // TODO: name this better
@@ -70,7 +73,6 @@ export interface ReportingStats {
   };
 }
 
-// TODO: unit test
 export const getTotalStreak = (
   checklists: ReportingDatedItem[],
   scorecards: ReportingDatedItem[]
@@ -84,7 +86,6 @@ export const getTotalStreak = (
   return getStreakStats(items);
 };
 
-// TODO: unit test
 export const calculateEarnings = (streaks: number[]): number => {
   // Values are in cents (USD)
   const DAILY_EARNINGS = 100;
@@ -122,13 +123,16 @@ export const mergeTaskStats = (
   const tasks = uniq(keys(t).concat(keys(c)));
 
   return tasks.map(task => {
-    const { count, points } = t[task];
+    const { taskId, count, points, category, description } = t[task];
     const { data: checklistStats } = c[task];
     const { average: averageDepressionScore } = checklistStats;
 
     return {
       task,
+      taskId,
       count,
+      category,
+      description,
       points: count * points,
       happiness: 100 - averageDepressionScore
     };
