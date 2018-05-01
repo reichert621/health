@@ -1,5 +1,7 @@
-const knex = require('../knex.js');
 const { first } = require('lodash');
+const knex = require('../knex.js');
+const DefaultTasks = require('./default_tasks');
+const Categories = require('./category');
 
 const Tasks = () => knex('tasks');
 
@@ -81,6 +83,10 @@ const fetchSuggestions = (userId) => {
     });
 };
 
+const fetchDefaults = () => {
+  return DefaultTasks.getDefaults();
+};
+
 const findOne = (where = {}, userId) =>
   fetch(where, userId).first();
 
@@ -93,6 +99,38 @@ const create = (params = {}, userId) =>
     .insert(merge(params, { userId }))
     .then(first)
     .then(id => findById(id, userId));
+
+const findOrCreate = (params, userId) => {
+  return findOne(params, userId)
+    .then(found => {
+      if (found) {
+        return found;
+      }
+
+      return create(params, userId);
+    });
+};
+
+const createSuggestedTask = (suggestion = {}, userId) => {
+  const { category, description, points } = suggestion;
+
+  if (!category) return Promise.reject(new Error('A category is required!'));
+  if (!description) return Promise.reject(new Error('A description is required!'));
+  if (!points) return Promise.reject(new Error('Points are required!'));
+
+  return Categories.findOrCreate({ name: category, isActive: true }, userId)
+    .then(({ id: categoryId }) => {
+      const task = {
+        description,
+        points,
+        categoryId,
+        isActive: true
+      };
+
+      return create(task, userId);
+    });
+};
+
 
 const update = (id, userId, params = {}) => {
   // TODO: should validations be handled somewhere else?
@@ -116,8 +154,11 @@ module.exports = {
   fetchActive,
   fetchTopSelected,
   fetchSuggestions,
+  fetchDefaults,
   findById,
   create,
+  findOrCreate,
+  createSuggestedTask,
   update,
   destroy
 };

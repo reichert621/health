@@ -61,7 +61,7 @@ class Reporting extends React.Component<ReportingProps> {
     return (
       <div>
         <NavBar
-          title='Reporting'
+          title='Analytics'
           linkTo='/today'
           history={history} />
 

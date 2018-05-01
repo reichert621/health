@@ -1,4 +1,4 @@
-const { Task } = require('../index');
+const { Task, DefaultTasks } = require('../index');
 const { handleError } = require('./utils');
 
 module.exports = {
@@ -35,11 +35,34 @@ module.exports = {
     }
   },
 
+  fetchDefaults(req, res) {
+    try {
+      const defaults = Task.fetchDefaults();
+
+      return res.json({ tasks: defaults });
+    } catch (err) {
+      return handleError(res, err);
+    }
+  },
+
   async create(req, res) {
     try {
       const params = req.body;
       const userId = req.user.id;
-      const task = await Task.create(params, userId);
+      // findOrCreate to avoid duplicates
+      const task = await Task.findOrCreate(params, userId);
+
+      return res.json({ task });
+    } catch (err) {
+      return handleError(res, err);
+    }
+  },
+
+  async createSuggestedTask(req, res) {
+    try {
+      const params = req.body;
+      const userId = req.user.id;
+      const task = await Task.createSuggestedTask(params, userId);
 
       return res.json({ task });
     } catch (err) {

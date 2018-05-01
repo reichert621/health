@@ -1,6 +1,7 @@
 @gray: #979797;
 @faded-gray: #b4b4b4;
 @border-gray: #b4b4b4;
+@light-gray-2: #D8D8D8;
 @bright-blue: #33A2CC;
 
 .task-sublist {
@@ -24,6 +25,7 @@
   .imperative-description,
   .task-points {
     display: inline-block;
+    cursor: pointer;
   }
 
   .task-description {
@@ -36,12 +38,28 @@
   }
 
   .task-points {
-    width: 240px;
+    // width: 240px;
+  }
+}
+
+.task-checkbox-container {
+  &:hover {
+    .task-points-label {
+      opacity: 1;
+    }
+  }
+
+  .task-points-label {
+    opacity: 0.2;
+
+    &.on {
+      opacity: 1;
+    }
   }
 }
 
 .task-item {
-  padding: 12px 24px;
+  padding: 12px 8px;
   transition: color ease 0.4s, opacity ease 0.4s;
   -webkit-transition: color ease 0.4s, opacity ease 0.4s;
 
@@ -66,8 +84,9 @@
   }
 
   .task-active-icon {
-    margin-left: 24px;
+    margin-right: 8px;
     height: 16px;
+    vertical-align: -1px;
     transition: transform ease 0.4s;
     -webkit-transition: transform ease 0.4s;
 
@@ -108,8 +127,26 @@
     opacity: 0.9;
   }
 
+  button {
+    opacity: 0.2;
+  }
+
+  .plus-icon {
+    height: 16px;
+    margin-left: 0px;
+    margin-right: 8px;
+  }
+
   .subscription-btn {
     min-width: 168px;
+  }
+
+  &:hover {
+    cursor: pointer;
+
+    button {
+      opacity: 1;
+    }
   }
 }
 
@@ -136,7 +173,10 @@
 }
 
 .new-category-form {
-  margin-top: 40px;
+  border-top: 1px solid @light-gray-2;
+  border-bottom: 1px solid @light-gray-2;
+  margin: 32px 0px;
+  padding: 32px 16px;
 }
 
 .reporting-percentage-item {

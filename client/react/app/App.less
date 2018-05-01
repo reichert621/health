@@ -9,6 +9,7 @@
 @light-gray: #eee;
 @light-gray-2: #D8D8D8;
 @light-gray-3: #eaeaea;
+@inactive-gray: #D2D2D2;
 @gray: #979797;
 @gray-2: #bbbbbb;
 @toggle-gray: #9B9B9B;
@@ -253,6 +254,7 @@ a {
 }
 
 .checkbox-container {
+  cursor: pointer;
   display: block;
   font-size: 18px;
   margin-bottom: 12px;
@@ -279,6 +281,16 @@ a {
       border-color: @bright-blue;
       background-color: @bright-blue;
     }
+  }
+
+  .points-indicator {
+    background-color: @inactive-gray;
+    border-radius: 50%;
+    margin-top: 6px;
+    margin-right: 2px;
+    margin-left: 2px;
+    height: 10px;
+    width: 10px;
   }
 
   .checkbox-label {

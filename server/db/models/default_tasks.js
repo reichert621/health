@@ -2,41 +2,23 @@ const { groupBy } = require('lodash');
 // TODO: move to db
 const tasks = [
   // Read
-  { category: 'Read', description: '2+ hours', points: 8 },
-  { category: 'Read', description: '1 hour', points: 4 },
-  { category: 'Read', description: '40 mins', points: 2 },
-  { category: 'Read', description: '< 20 mins', points: 1 },
+  { category: 'Read', description: 'For 20 minutes', points: 1 },
   // Write
-  { category: 'Write', description: 'Blog entry', points: 8 },
-  { category: 'Write', description: 'Journal entry', points: 4 },
+  { category: 'Write', description: 'Do some journaling', points: 4 },
   // Exercise
-  { category: 'Exercise', description: 'Go to the gym', points: 8 },
-  { category: 'Exercise', description: 'Play a sport', points: 8 },
-  { category: 'Exercise', description: 'Do yoga', points: 4 },
-  { category: 'Exercise', description: 'Bike', points: 2 },
-  { category: 'Exercise', description: 'Go for a walk', points: 1 },
-  { category: 'Exercise', description: 'Workout at home', points: 1 },
+  { category: 'Exercise', description: 'Go for a walk', points: 2 },
+  { category: 'Exercise', description: 'Do 20 pushups', points: 1 },
   // Eat Healthy
-  { category: 'Eat Healthy', description: 'Vegetables', points: 8 },
-  { category: 'Eat Healthy', description: 'Fruits', points: 4 },
-  { category: 'Eat Healthy', description: '8 glasses of water', points: 4 },
+  { category: 'Eat Healthy', description: 'Eat a salad', points: 4 },
   // Socialize
-  { category: 'Socialize', description: 'Organize a social event', points: 8 },
-  { category: 'Socialize', description: 'Hang out with friends or family', points: 4 },
-  { category: 'Socialize', description: 'Contact a friend or family member', points: 2 },
-  // Create
-  { category: 'Create', description: 'Artwork', points: 8 },
-  { category: 'Create', description: 'Music', points: 8 },
-  { category: 'Create', description: 'A personal project', points: 8 },
+  { category: 'Socialize', description: 'Hang out with friends', points: 4 },
   // Meditate
-  { category: 'Meditate', description: '10+ minutes', points: 4 },
-  { category: 'Meditate', description: '1 - 10 minutes', points: 2 },
-  { category: 'Meditate', description: '< 1 minute', points: 1 }
+  { category: 'Meditate', description: 'For 5 minutes', points: 2 },
+  // Get Organized
+  { category: 'Get Organized', description: 'Plan out the day', points: 1 }
 ];
 
-const getDefaults = () => {
-  return groupBy(tasks, 'category');
-};
+const getDefaults = () => tasks;
 
 module.exports = {
   getDefaults

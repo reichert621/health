@@ -15,11 +15,11 @@ import Dropdown from './Dropdown';
 interface CategoryProps {
   category: Category;
   tasks: Task[];
+  onCreateTask: (categoryId: number, description: string, points: number) => Promise<Task>;
+  onUpdateTask: (taskId: number, updates: object) => Promise<Task>;
 }
 
 interface CategoryState {
-  category: Category;
-  tasks: Task[];
   isCreating: boolean;
   newTask: string;
   newPoints?: number;
@@ -30,11 +30,7 @@ class CategoryTasks extends React.Component<CategoryProps, CategoryState> {
   constructor(props: CategoryProps) {
     super(props);
 
-    const { category, tasks } = props;
-
     this.state = {
-      category,
-      tasks,
       isCreating: false,
       newTask: '',
       newPoints: undefined
@@ -52,24 +48,19 @@ class CategoryTasks extends React.Component<CategoryProps, CategoryState> {
     }
   }
 
-  handleCreateTask(e: React.FormEvent<HTMLFormElement>, category: Category) {
+  handleCreateTask(e: React.FormEvent<HTMLFormElement>, categoryId: number) {
     e.preventDefault();
-    const { newTask, selectedPointOption, tasks = [] } = this.state;
+    const { newTask, selectedPointOption } = this.state;
+    const { onCreateTask } = this.props;
     const { points: newPoints } = selectedPointOption;
 
-    if (!newTask || !newPoints) return resolve();
+    if (!newTask || !newPoints || !categoryId) {
+      return resolve();
+    }
 
-    const { id: categoryId } = category;
-    const params = {
-      categoryId,
-      description: newTask,
-      points: newPoints
-    };
-
-    return createTask(params)
+    return onCreateTask(categoryId, newTask, newPoints)
       .then(task => {
         return this.setState({
-          tasks: tasks.concat(task),
           newTask: '',
           newPoints: 0,
           isCreating: false
@@ -81,16 +72,9 @@ class CategoryTasks extends React.Component<CategoryProps, CategoryState> {
   }
 
   handleUpdateTask(taskId: number, updates: object) {
-    const { tasks = [] } = this.state;
+    const { onUpdateTask } = this.props;
 
-    return updateTask(taskId, updates)
-      .then(task => {
-        return this.setState({
-          tasks: tasks.map(t => {
-            return t.id === task.id ? extend(t, task) : t;
-          })
-        });
-      })
+    return onUpdateTask(taskId, updates)
       .catch(err => {
         console.log('Error updating task!', err);
       });
@@ -113,9 +97,10 @@ class CategoryTasks extends React.Component<CategoryProps, CategoryState> {
 
   renderNewTaskForm() {
     const options = getPointOptions();
+    const { category = {} as Category } = this.props;
+    const { id: categoryId } = category;
     const {
       isCreating,
-      category = {} as Category,
       newTask = '',
       newPoints = 0,
       selectedPointOption
@@ -124,7 +109,7 @@ class CategoryTasks extends React.Component<CategoryProps, CategoryState> {
     return (
       <form
         className={isCreating ? '' : 'hidden'}
-        onSubmit={(e) => this.handleCreateTask(e, category)}>
+        onSubmit={(e) => this.handleCreateTask(e, categoryId)}>
         <input
           type='text'
           className='input-default -inline task-description-input'
@@ -152,11 +137,8 @@ class CategoryTasks extends React.Component<CategoryProps, CategoryState> {
   }
 
   render() {
-    const {
-      isCreating,
-      category = {} as Category,
-      tasks = []
-    } = this.state;
+    const { category = {} as Category, tasks = [] } = this.props;
+    const { isCreating } = this.state;
     const { name: categoryName } = category;
     const isActive = tasks.some(t => t.isActive);
 
@@ -172,7 +154,6 @@ class CategoryTasks extends React.Component<CategoryProps, CategoryState> {
         <ul className='task-sublist'>
           {
             tasks
-              .sort((x, y) => y.points - x.points)
               .map((task, index) => {
                 const { id: taskId } = task;
                 const key = taskId || index;

@@ -23,6 +23,17 @@ const create = (params = {}, userId) =>
     .then(first)
     .then(id => findById(id, userId));
 
+const findOrCreate = (params, userId) => {
+  return findOne(params, userId)
+    .then(found => {
+      if (found) {
+        return found;
+      }
+
+      return create(params, userId);
+    });
+};
+
 const update = (id, params = {}, userId) =>
   findById(id, userId)
     .update(params)
@@ -36,6 +47,7 @@ module.exports = {
   fetch,
   findById,
   create,
+  findOrCreate,
   update,
   destroy
 };

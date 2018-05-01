@@ -1,6 +1,6 @@
 const knex = require('../knex.js');
 const crypto = require('crypto');
-const { first, extend } = require('lodash');
+const { first, groupBy } = require('lodash');
 const Category = require('./category');
 const Task = require('./task');
 const DefaultTasks = require('./default_tasks');
@@ -85,7 +85,7 @@ const fetchFriends = (userId) => {
 };
 
 const createCategoryTasks = (category, tasks, userId) => {
-  return Category.create(category, userId)
+  return Category.findOrCreate(category, userId)
     .then(({ id: categoryId }) => {
       const promises = tasks.map(task => {
         const { description, points } = task;
@@ -106,10 +106,11 @@ const createCategoryTasks = (category, tasks, userId) => {
 const createDefaultTasks = (user) => {
   const { id: userId } = user;
   const defaults = DefaultTasks.getDefaults();
-  const promises = Object.keys(defaults)
+  const grouped = groupBy(defaults, 'category');
+  const promises = Object.keys(grouped)
     .map(categoryName => {
       const category = { name: categoryName, isActive: true };
-      const tasks = defaults[categoryName];
+      const tasks = grouped[categoryName];
 
       return createCategoryTasks(category, tasks, userId);
     });
@@ -133,8 +134,7 @@ const register = (params) => {
       if (existingEmail) throw new Error('That email address is taken!');
 
       return create(params);
-    })
-    .then(user => createDefaultTasks(user));
+    });
 };
 
 const authenticate = ({ username, password }) =>
