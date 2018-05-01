@@ -77,7 +77,7 @@ const DashboardScorecardPreview = ({
         <Link className='preview-link text-active pull-right'
           to={scorecardId ? `/scorecard/${scorecardId}` : '#'}
           onClick={handleClick}>
-          {scorecardId ? 'View' : 'Start'}
+          {hasCompleted ? 'View' : 'Start'}
         </Link>
       </div>
 
@@ -144,7 +144,7 @@ const DashboardChecklistPreview = ({
         <Link className='preview-link text-active pull-right'
           to={checklistId ? `/checklist/${checklistId}` : '#'}
           onClick={handleClick}>
-          {checklistId ? 'View' : 'Start'}
+          {isComplete ? 'View' : 'Start'}
         </Link>
       </div>
 

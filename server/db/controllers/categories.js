@@ -9,7 +9,8 @@ module.exports = {
   },
 
   create: (req, res) => {
-    return Category.create(req.body, req.user.id)
+    // findOrCreate to avoid duplicates
+    return Category.findOrCreate(req.body, req.user.id)
       .then(category => res.json({ category }))
       .catch(err => handleError(res, err));
   }

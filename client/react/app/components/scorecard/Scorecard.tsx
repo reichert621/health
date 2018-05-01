@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { groupBy, keys, sortBy } from 'lodash';
 import TaskCheckbox from './TaskCheckbox';
 import ChallengeCheckbox from './ChallengeCheckbox';
@@ -10,6 +11,7 @@ import './Scorecard.less';
 interface ScorecardProps {
   tasks: Task[];
   challenges?: IChallenge[];
+  isLoading?: boolean;
   handleTaskUpdate: (task: Task) => Promise<any>;
   handleChallengeUpdate?: (challenge: IChallenge) => Promise<any>;
 }
@@ -18,8 +20,22 @@ const Scorecard = ({
   tasks = [],
   challenges = [],
   handleTaskUpdate,
-  handleChallengeUpdate
+  handleChallengeUpdate,
+  isLoading
 }: ScorecardProps) => {
+  if (isLoading) return null;
+
+  if (!tasks.length && !challenges.length) {
+    return (
+      <div>
+        <h2>No tasks :(</h2>
+        <div>
+          <Link to='/tasks'>Click here</Link> to get started!
+        </div>
+      </div>
+    );
+  }
+
   const grouped = groupBy(tasks, 'category');
   const categories = keys(grouped);
 

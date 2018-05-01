@@ -86,6 +86,11 @@ class TaskItem extends React.Component<TaskItemProps, TaskItemState> {
 
     return (
       <div className={`task-item editable ${isActive ? 'active' : 'inactive'}`}>
+        {/* TODO: improve design here */}
+        <img className={`task-active-icon ${isActive ? 'active' : 'inactive'}`}
+          src='assets/plus-gray.svg'
+          onClick={() => onToggleTaskActive(task)} />
+
         <span className='task-description'
           onClick={() => this.setState({ isEditing: true })}>
           {description}
@@ -94,13 +99,6 @@ class TaskItem extends React.Component<TaskItemProps, TaskItemState> {
           onClick={() => this.setState({ isEditing: true })}>
           {formatPoints(points)}
         </span>
-        <img className='edit-icon'
-          src='assets/pencil.svg'
-          onClick={() => this.setState({ isEditing: true })} />
-
-        <img className={`task-active-icon ${isActive ? 'active' : 'inactive'}`}
-          src='assets/plus-gray.svg'
-          onClick={() => onToggleTaskActive(task)} />
       </div>
     );
   }

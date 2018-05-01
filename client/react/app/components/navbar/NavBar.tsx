@@ -72,7 +72,7 @@ class NavDropdown extends React.Component<NavDropdownProps> {
           </Link>
           <Link to='/reporting'>
             <div className='dropdown-item'>
-              Reporting
+              Analytics
             </div>
           </Link>
           {/* <Link to='/gratitude'>
@@ -88,14 +88,14 @@ class NavDropdown extends React.Component<NavDropdownProps> {
           <Link to='/tasks'>
             <div className='dropdown-item'
               style={{ marginBottom: 8 }}>
-              Task Settings
+              My Tasks
             </div>
           </Link>
-          <Link to='/self-activation'>
+          {/* <Link to='/self-activation'>
             <div className='dropdown-item'>
               Self-Activation
             </div>
-          </Link>
+          </Link> */}
 
           <Link to='#'
             onClick={onLogOut}>

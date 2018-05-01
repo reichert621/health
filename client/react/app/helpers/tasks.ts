@@ -6,9 +6,16 @@ export interface Task {
   userId: number;
   categoryId: number;
   description: string;
+  category?: string;
   points: number;
   isActive: boolean;
   isComplete: boolean;
+}
+
+export interface NewTask {
+  description: string;
+  category: string;
+  points: number;
 }
 
 export interface PointOption extends IDropdownOption {
@@ -38,6 +45,18 @@ export const fetchTopTasks = (): Promise<any[]> => {
 export const fetchTaskSuggestions = (): Promise<any> => {
   return get('/api/tasks/suggestions')
     .then((res: HttpResponse) => res.suggestions);
+};
+
+export const fetchDefaultTasks = (): Promise<NewTask[]> => {
+  return get('/api/tasks/defaults')
+    .then((res: HttpResponse) => res.tasks);
+};
+
+export const createSuggestedTask = (suggestion: NewTask): Promise<Task> => {
+  const { category, description, points } = suggestion;
+
+  return post('/api/tasks/suggestions', { category, description, points })
+    .then((res: HttpResponse) => res.task);
 };
 
 export const createTask = (params: object): Promise<Task> => {

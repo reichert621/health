@@ -181,7 +181,8 @@ class Today extends React.Component<TodayProps, TodayState> {
                 tasks={tasks}
                 challenges={challenges}
                 handleTaskUpdate={this.handleTaskUpdate.bind(this)}
-                handleChallengeUpdate={this.handleChallengeUpdate.bind(this)} />
+                handleChallengeUpdate={this.handleChallengeUpdate.bind(this)}
+                isLoading={isLoading} />
             </div>
           </div>
         </div>
