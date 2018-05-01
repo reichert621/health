@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { all, resolve } from 'bluebird';
-import { groupBy, extend } from 'lodash';
+import { groupBy, extend, some } from 'lodash';
 import {
   Task,
   Category,
@@ -148,6 +148,16 @@ class TaskList extends React.Component<RouteComponentProps<{}>, TaskListState> {
       });
   }
 
+  getFilteredSuggestions() {
+    const { tasks = [], suggestions = [] } = this.state;
+
+    return suggestions.filter(({ category, description }) => {
+      const isExistingTask = some(tasks, { category, description });
+
+      return !isExistingTask;
+    });
+  }
+
   render() {
     const {
       tasks = [],
@@ -159,14 +169,7 @@ class TaskList extends React.Component<RouteComponentProps<{}>, TaskListState> {
     } = this.state;
     const { history } = this.props;
     const tasksByCategory = groupBy(tasks, 'category');
-    const filteredSuggestions = suggestions.filter(suggestion => {
-      const exists = tasks.some(task => {
-        return (task.description === suggestion.description) &&
-          (task.category === suggestion.category);
-      });
-
-      return !exists;
-    });
+    const filteredSuggestions = this.getFilteredSuggestions();
 
     return (
       <div>
