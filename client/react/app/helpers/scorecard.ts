@@ -20,6 +20,11 @@ export const fetchScorecard = (id: number): Promise<IScorecard> => {
     .then((res: HttpResponse) => res.scorecard);
 };
 
+export const fetchProgressToday = (): Promise<any> => {
+  return get(`/api/scorecards/progress-today`)
+    .then((res: HttpResponse) => res.scores);
+};
+
 export const findOrCreateByDate = (date: string): Promise<IScorecard> => {
   return post('/api/scorecards/date', { date })
     .then((res: HttpResponse) => res.scorecard);

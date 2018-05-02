@@ -5,12 +5,17 @@ import { Dispatch } from 'redux';
 import * as moment from 'moment';
 import { all, resolve } from 'bluebird';
 import NavBar from '../navbar';
+import TodayProgressBar from './TodayProgressBar';
 import DashboardPreview from './DashboardPreview';
 import Scorecard from '../scorecard/Scorecard';
-import { IScorecard, createNewScorecard } from '../../helpers/scorecard';
+import {
+  IScorecard,
+  createNewScorecard,
+  fetchProgressToday
+} from '../../helpers/scorecard';
 import { IChecklist, createNewChecklist } from '../../helpers/checklist';
 import { Entry, createEntry } from '../../helpers/entries';
-import { Task } from '../../helpers/tasks';
+import { Task, calculateScore } from '../../helpers/tasks';
 import { IChallenge, toggleChallengeByDate } from '../../helpers/challenges';
 import { AppState, SelectedState, keyifyDate } from '../../helpers/utils';
 import {
@@ -50,6 +55,8 @@ interface TodayProps extends RouteComponentProps<{}> {
 
 interface TodayState {
   isLoading: boolean;
+  averageScore?: number;
+  topScore?: number;
 }
 
 class Today extends React.Component<TodayProps, TodayState> {
@@ -57,7 +64,9 @@ class Today extends React.Component<TodayProps, TodayState> {
     super(props);
 
     this.state = {
-      isLoading: true
+      isLoading: true,
+      averageScore: 0,
+      topScore: 0
     };
   }
 
@@ -75,7 +84,16 @@ class Today extends React.Component<TodayProps, TodayState> {
       dispatch(getEntryByDate(today)),
       dispatch(getChallengesByDate(today))
     ])
-      .then(() => this.setState({ isLoading: false }))
+      .then(() => fetchProgressToday())
+      .then(scores => {
+        const { average, top } = scores;
+
+        return this.setState({
+          isLoading: false,
+          averageScore: average,
+          topScore: top
+        })
+      })
       .catch(err => {
         if (err.status === 401) {
           return history.push('/login');
@@ -147,7 +165,7 @@ class Today extends React.Component<TodayProps, TodayState> {
   }
 
   render() {
-    const { isLoading } = this.state;
+    const { isLoading, averageScore, topScore } = this.state;
     const {
       history,
       scorecard = {} as IScorecard,
@@ -155,6 +173,7 @@ class Today extends React.Component<TodayProps, TodayState> {
       challenges = []
     } = this.props;
     const { tasks = [] } = scorecard;
+    const currentScore = calculateScore(tasks);
 
     if (isLoading) {
       // TODO: handle loading state better
@@ -177,6 +196,11 @@ class Today extends React.Component<TodayProps, TodayState> {
             </div>
 
             <div className='dashboard-scorecard-container pull-right'>
+              <TodayProgressBar
+                currentScore={currentScore}
+                averageScore={averageScore}
+                topScore={topScore} />
+
               <Scorecard
                 tasks={tasks}
                 challenges={challenges}
