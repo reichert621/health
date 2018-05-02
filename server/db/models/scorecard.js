@@ -1,9 +1,10 @@
 const knex = require('../knex.js');
-const { first, groupBy, isNumber, sum } = require('lodash');
+const { first, isNumber, max } = require('lodash');
 const moment = require('moment');
 const Task = require('./task');
 const ScoreCardSelectedTask = require('./scorecard_selected_task');
 const User = require('./user');
+const { calculateAverage } = require('./utils');
 
 const ScoreCard = () => knex('scorecards');
 
@@ -72,6 +73,21 @@ const fetchWithPoints = (where = {}, userId) => {
       });
 
       return Promise.all(promises);
+    });
+};
+
+const fetchProgressToday = (where = {}, userId) => {
+  return fetchWithPoints(where, userId)
+    .then(scorecards => {
+      const date = moment().format('YYYY-MM-DD');
+      const today = scorecards.find(s => s.date === date);
+      const others = scorecards.filter(s => s.date !== date);
+      const scores = others.map(s => s.points);
+      const average = calculateAverage(scores);
+      const top = max(scores);
+      const current = (today && today.points) ? today.points : 0;
+
+      return { current, average, top };
     });
 };
 
@@ -370,6 +386,7 @@ module.exports = {
   fetch,
   findById,
   fetchWithPoints,
+  fetchProgressToday,
   fetchCompletedDays,
   fetchFriendsCompleted,
   fetchScoresByDate,

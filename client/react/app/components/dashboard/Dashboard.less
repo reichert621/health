@@ -1,4 +1,5 @@
 @white: #fff;
+@gray: #979797;
 @border-gray: #D8D8D8;
 @main-header-gray: #4A4A4A;
 @header-background-gray: #F3F3F3;
@@ -135,6 +136,56 @@
 
 .dashboard-chart-container {
   margin-top: 40px;
+}
+
+.daily-progress-bar-container {
+  border: 1px solid @gray;
+  border-radius: 4px;
+  height: 32px;
+  width: 100%;
+
+  .daily-progress-bar {
+    height: 100%;
+    background-color: @bright-blue;
+    width: 0%;
+    transition: width ease 0.4s;
+    -webkit-transition: width ease 0.4s;
+  }
+}
+
+.progress-bar-labels-container {
+  font-size: 14px;
+  height: 24px;
+  position: relative;
+  width: 100%;
+
+  .progress-bar-label {
+    height: 100%;
+    padding-left: 8px;
+    padding-top: 2px;
+    position: absolute;
+    transition: left ease 0.4s;
+    -webkit-transition: left ease 0.4s;
+
+    &.top {
+      padding-bottom: 4px;
+    }
+
+    &.bottom {
+      padding-top: 4px;
+    }
+
+    &.active {
+      border-left: 1px solid @bright-blue;
+      color: @bright-blue;
+      // font-weight: 500;
+    }
+
+    &.inactive {
+      border-left: 1px solid @gray;
+      color: @gray;
+    }
+  }
 }
 
 @media (max-width: 720px) {

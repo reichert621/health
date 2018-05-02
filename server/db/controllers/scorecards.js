@@ -14,6 +14,12 @@ module.exports = {
       .catch(err => handleError(res, err));
   },
 
+  fetchProgressToday: (req, res) => {
+    return ScoreCard.fetchProgressToday({}, req.user.id)
+      .then(scores => res.json({ scores }))
+      .catch(err => handleError(res, err));
+  },
+
   findOrCreateByDate: (req, res) => {
     const { body, user } = req;
     const { date } = body;
