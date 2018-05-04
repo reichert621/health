@@ -5,7 +5,7 @@ import { Dispatch } from 'redux';
 import NavBar from '../navbar';
 import ReportingChart from './ReportingChart';
 import ReportingOverview from './ReportingOverview';
-import ReportingStreaks from './ReportingStreaks';
+import ReportingAverages from './ReportingAverages';
 import ScoresByAbility from './ScoresByAbility';
 import TopTasks from './TopTasks';
 import MoodFrequency from './MoodFrequency';
@@ -54,7 +54,9 @@ class Reporting extends React.Component<ReportingProps> {
     } = stats;
 
     const highImpactTasks = checklistScoresByTask.slice(0, 5);
-    const lowImpactTasks = checklistScoresByTask.slice(-5).reverse();
+    const lowImpactTasks = checklistScoresByTask.length > 5
+      ? checklistScoresByTask.slice(-5).reverse()
+      : [];
 
     console.log('stats!', stats);
 
@@ -91,15 +93,17 @@ class Reporting extends React.Component<ReportingProps> {
 
           <div className='clearfix'>
             <div className='reporting-component-container reporting-component pull-left'>
-              <h4>Common Issues</h4>
+              <h4>Overall</h4>
 
-              <TopMoods stats={checklistQuestionStats} />
+              <ReportingAverages
+                checklistStats={checklistStats}
+                scorecardStats={scorecardStats} />
             </div>
 
             <div className='reporting-component-container reporting-component pull-left'>
-              <h4>Favorite Tasks</h4>
+              <h4>Common Issues</h4>
 
-              <TopTasks tasks={topTasks} />
+              <TopMoods stats={checklistQuestionStats} />
             </div>
 
             <div className='reporting-component-container reporting-component pull-left'>
@@ -111,10 +115,9 @@ class Reporting extends React.Component<ReportingProps> {
 
           <div className='clearfix'>
             <div className='reporting-component-container reporting-component pull-left'>
-              <h4>Skills</h4>
+              <h4>Favorite Tasks</h4>
 
-              <ScoresByAbility
-                abilityStats={taskAbilityStats} />
+              <TopTasks tasks={topTasks} />
             </div>
 
             <div className='reporting-component-container reporting-component pull-left'>

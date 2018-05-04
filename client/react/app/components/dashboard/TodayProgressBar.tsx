@@ -34,7 +34,8 @@ const ProgressBar = ({
   topScore
 }: ProgressBarProps) => {
   const minScore = 1;
-  const maxScore = (currentScore > topScore ? currentScore : topScore) + 8;
+  const max = currentScore > topScore ? currentScore : topScore;
+  const maxScore = Math.floor(max * 1.2) + 1;
   const width = Math.floor((currentScore / maxScore) * 100);
 
   return (
@@ -43,7 +44,7 @@ const ProgressBar = ({
         <span
           className={`progress-bar-label ${
             currentScore > minScore ? 'active' : 'inactive'
-          } ${averageScore ? '' : 'hidden'}`}
+          } ${averageScore && (averageScore > minScore + 4) ? '' : 'hidden'}`}
           style={{
             left: getWidth(minScore, maxScore)
           }}>
@@ -61,7 +62,7 @@ const ProgressBar = ({
         <span
           className={`progress-bar-label ${
             currentScore > topScore ? 'active' : 'inactive'
-            } ${topScore ? '' : 'hidden'}`}
+            } ${topScore && (topScore > averageScore + 4) ? '' : 'hidden'}`}
           style={{
             left: getWidth(topScore, maxScore)
           }}>
