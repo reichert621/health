@@ -166,7 +166,7 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
     return (
       <div>
         <NavBar
-          title='Log'
+          title='Journal'
           linkTo={isToday ? '/today' : '/dashboard'}
           history={history} />
 

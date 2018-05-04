@@ -55,8 +55,8 @@ const create = (params, userId) =>
     .then(first)
     .then(id => findById(id, userId));
 
-const findOrCreate = (params, userId) => {
-  return findOne(params, userId)
+const findOrCreate = (where, params, userId) => {
+  return findOne(where, userId)
     .then(found => {
       if (found) {
         return found;
@@ -66,14 +66,15 @@ const findOrCreate = (params, userId) => {
     });
 };
 
-const findOrCreateByDate = async (date, userId) => {
+const findOrCreateByDate = (date, userId) => {
+  const where = { date };
   const params = {
     date,
     title: date,
     content: ''
   };
 
-  return findOrCreate(params, userId)
+  return findOrCreate(where, params, userId)
     .then(entry => findByDate(date, userId));
 };
 
