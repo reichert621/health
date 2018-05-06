@@ -14,7 +14,8 @@ const {
   gratitudes,
   reporting,
   tasks,
-  challenges
+  challenges,
+  moods
 } = require('./db/controllers');
 
 const api = Router();
@@ -79,6 +80,11 @@ api.post('/checklists/new', isAuthenticated, checklists.create);
 api.get('/checklist-scores', isAuthenticated, checklistScores.fetch);
 // Checklist Questions
 api.get('/checklist-questions', checklistQuestions.fetch);
+// Mood Options
+api.get('/moods', moods.fetch);
+api.get('/moods/user', isAuthenticated, moods.fetchByUser);
+api.get('/moods/date/:date', isAuthenticated, moods.findByDate);
+api.post('/moods/date', isAuthenticated, moods.setByDate);
 // Imperatives
 api.get('/imperatives', isAuthenticated, imperatives.fetch);
 api.post('/imperatives', isAuthenticated, imperatives.create);

@@ -9,6 +9,7 @@ const ChecklistQuestion = require('./models/checklist_question'); // TODO: undo 
 const Imperative = require('./models/imperative');
 const Gratitude = require('./models/gratitude');
 const Challenge = require('./models/challenge');
+const Mood = require('./models/mood');
 
 module.exports = {
   User,
@@ -21,5 +22,6 @@ module.exports = {
   ChecklistQuestion,
   Imperative,
   Gratitude,
-  Challenge
+  Challenge,
+  Mood
 };

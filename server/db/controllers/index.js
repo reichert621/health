@@ -10,6 +10,7 @@ const imperatives = require('./imperatives');
 const gratitudes = require('./gratitudes');
 const reporting = require('./reporting');
 const challenges = require('./challenges');
+const moods = require('./moods');
 
 module.exports = {
   users,
@@ -23,5 +24,6 @@ module.exports = {
   imperatives,
   gratitudes,
   reporting,
-  challenges
+  challenges,
+  moods
 };

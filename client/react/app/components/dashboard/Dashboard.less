@@ -40,6 +40,20 @@
   font-weight: 400;
 }
 
+.dashboard-mood-label {
+  margin-top: 16px;
+}
+
+.dashboard-depression-container {
+  font-size: 14px;
+
+  img.forward-icon {
+    height: 14px;
+    vertical-align: -2px;
+    margin-left: 8px;
+  }
+}
+
 .dashboard-list-container {
   padding-left: 64px;
   width: 70%;
@@ -187,7 +201,23 @@
   }
 }
 
-@media (max-width: 720px) {
+.mood-selector-container {
+  padding: 16px 0px;
+
+  .mood-icon {
+    cursor: pointer;
+    height: 48px;
+    margin-right: 8px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .mood-selector-container > .mood-icon {
+    height: 36px;
+  }
+}
+
+@media (max-width: 840px) {
   .dashboard-preview-container {
     width: 100%;
   }
@@ -198,5 +228,9 @@
     margin-top: 40px;
     padding: 0;
     width: 100%;
+  }
+
+  .mood-selector-container > .mood-icon {
+    height: 48px;
   }
 }

@@ -17,30 +17,43 @@ import { IChecklist, createNewChecklist } from '../../helpers/checklist';
 import { Entry, createEntry } from '../../helpers/entries';
 import { Task, calculateScore } from '../../helpers/tasks';
 import { IChallenge, toggleChallengeByDate } from '../../helpers/challenges';
+import { IMood } from '../../helpers/mood';
 import { AppState, SelectedState, keyifyDate } from '../../helpers/utils';
 import {
   getScorecardByDate,
   getChecklistByDate,
   getEntryByDate,
   getChallengesByDate,
-  toggleTask
+  getMoodByDate,
+  setMoodByDate,
+  toggleTask,
+  selectDate
 } from '../../reducers';
 import './Dashboard.less';
 
 const mapStateToProps = (state: AppState) => {
   const today = keyifyDate(moment());
-  const { selected, scorecards, checklists, entries, challenges } = state;
+  const {
+    selected,
+    scorecards,
+    checklists,
+    entries,
+    challenges,
+    moods
+  } = state;
   const { byDate: scorecardsByDate } = scorecards;
   const { byDate: checklistsByDate } = checklists;
   const { byDate: entriesByDate } = entries;
   const { byDate: challengeByDate } = challenges;
+  const { byDate: moodsByDate } = moods;
 
   return {
     selected,
     scorecard: scorecardsByDate[today],
     checklist: checklistsByDate[today],
     entry: entriesByDate[today],
-    challenges: challengeByDate[today]
+    challenges: challengeByDate[today],
+    mood: moodsByDate[today]
   };
 };
 
@@ -49,8 +62,9 @@ interface TodayProps extends RouteComponentProps<{}> {
   scorecard: IScorecard;
   checklist: IChecklist;
   entry: Entry;
+  mood: IMood;
   challenges: IChallenge[];
-  dispatch: Dispatch<any>;
+  dispatch: Dispatch<any|Promise<any>>;
 }
 
 interface TodayState {
@@ -76,14 +90,27 @@ class Today extends React.Component<TodayProps, TodayState> {
     window.scrollTo(0, 0);
 
     const { history, dispatch } = this.props;
-    const today = moment().format('YYYY-MM-DD');
+    const date = moment();
+    const today = date.format('YYYY-MM-DD');
 
     return all([
       dispatch(getScorecardByDate(today)),
       dispatch(getChecklistByDate(today)),
       dispatch(getEntryByDate(today)),
-      dispatch(getChallengesByDate(today))
+      dispatch(getChallengesByDate(today)),
+      dispatch(getMoodByDate(today))
     ])
+      .then(() => {
+        const { scorecard, checklist, entry, mood } = this.props;
+
+        return dispatch(selectDate({
+          scorecard,
+          checklist,
+          entry,
+          mood,
+          date
+        }));
+      })
       .then(() => fetchProgressToday())
       .then(scores => {
         const { average, top } = scores;
@@ -92,7 +119,7 @@ class Today extends React.Component<TodayProps, TodayState> {
           isLoading: false,
           averageScore: average,
           topScore: top
-        })
+        });
       })
       .catch(err => {
         if (err.status === 401) {
@@ -160,7 +187,18 @@ class Today extends React.Component<TodayProps, TodayState> {
     // TODO: handle in redux better
     return toggleChallengeByDate(challengeId, today, isComplete)
       .then(() => {
-        return dispatch(getChallengesByDate(today))
+        return dispatch(getChallengesByDate(today));
+      });
+  }
+
+  handleMoodSelected(mood: IMood) {
+    const { dispatch } = this.props;
+    const { id: moodId } = mood;
+    const today = moment().format('YYYY-MM-DD');
+
+    return dispatch(setMoodByDate(today, moodId))
+      .catch(err => {
+        console.log('Error updating mood!');
       });
   }
 
@@ -170,6 +208,7 @@ class Today extends React.Component<TodayProps, TodayState> {
       history,
       scorecard = {} as IScorecard,
       selected = {} as SelectedState,
+      mood = {} as IMood,
       challenges = []
     } = this.props;
     const { tasks = [] } = scorecard;
@@ -189,7 +228,9 @@ class Today extends React.Component<TodayProps, TodayState> {
           <div className='clearfix'>
             <div className='dashboard-preview-container pull-left'>
               <DashboardPreview
+                isLoading={isLoading}
                 selected={selected}
+                handleMoodSelected={this.handleMoodSelected.bind(this)}
                 handleScorecardClicked={this.createNewScorecard.bind(this)}
                 handleChecklistClicked={this.createNewChecklist.bind(this)}
                 handleEntryClicked={this.createNewEntry.bind(this)} />
