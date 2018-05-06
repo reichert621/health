@@ -1,5 +1,19 @@
 const { first } = require('lodash');
+const moment = require('moment');
 const knex = require('../knex');
+
+const formatWithUtc = (record = {}) => {
+  if (!record || !record.date) return record;
+
+  const { date } = record;
+  const utc = moment.utc(date).format('YYYY-MM-DD');
+
+  return {
+    ...record,
+    date: utc,
+    _date: date
+  };
+};
 
 const UserMood = () => knex('user_moods');
 
@@ -23,7 +37,12 @@ const findByDate = (date, userId) => {
     .from('user_moods as um')
     .innerJoin('moods as m', 'um.moodId', 'm.id')
     .where({ 'um.userId': userId, 'um.date': date })
-    .then(first);
+    .then(first)
+    .then(result => {
+      if (!result) return null;
+
+      return formatWithUtc(result);
+    });
 };
 
 const create = (params, userId) => {
