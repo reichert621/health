@@ -228,6 +228,7 @@ class Today extends React.Component<TodayProps, TodayState> {
           <div className='clearfix'>
             <div className='dashboard-preview-container pull-left'>
               <DashboardPreview
+                isLoading={isLoading}
                 selected={selected}
                 handleMoodSelected={this.handleMoodSelected.bind(this)}
                 handleScorecardClicked={this.createNewScorecard.bind(this)}

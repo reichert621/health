@@ -213,7 +213,7 @@ const DashboardEntryPreview = ({
 };
 
 interface DashboardPreviewProps {
-  isLoading: boolean;
+  isLoading?: boolean;
   selected: SelectedState;
   handleScorecardClicked: (scorecard: IScorecard, date: moment.Moment) => void;
   handleChecklistClicked: (checklist: IChecklist, date: moment.Moment) => void;

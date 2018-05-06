@@ -48,9 +48,7 @@ class MoodSelector extends React.Component<MoodSelectorProps, MoodSelectorState>
 
   componentDidMount() {
     return fetchMoodOptions()
-      .then((moods) => {
-        return this.setState({ moods });
-      })
+      .then(moods => this.setState({ moods }))
       .catch(err => {
         console.log('Error fetching moods!', err);
       });
