@@ -41,6 +41,12 @@ import {
   mapById,
   keyifyDate
 } from '../helpers/utils';
+import {
+  IMood,
+  findMoodByDate,
+  fetchUserMoods,
+  setMoodByDate as updateMoodByDate
+} from '../helpers/mood';
 
 // Constants
 
@@ -77,6 +83,11 @@ export const RECEIVE_ALL_CHALLENGES = 'RECEIVE_ALL_CHALLENGES';
 export const REQUEST_MY_CHALLENGES = 'REQUEST_MY_CHALLENGES';
 export const RECEIVE_MY_CHALLENGES = 'RECEIVE_MY_CHALLENGES';
 export const UPDATE_CHALLENGE = 'UPDATE_CHALLENGE';
+
+export const REQUEST_MOOD = 'REQUEST_MOOD';
+export const RECEIVE_MOOD = 'RECEIVE_MOOD';
+export const REQUEST_MOODS = 'REQUEST_MOODS';
+export const RECEIVE_MOODS = 'RECEIVE_MOODS';
 
 export const REQUEST_ALL_STATS = 'REQUEST_ALL_STATS';
 export const RECEIVE_ALL_STATS = 'RECEIVE_ALL_STATS';
@@ -366,6 +377,48 @@ export const getChallengesByDate = (date: string) => {
   };
 };
 
+export const getUserMoods = () => {
+  return (dispatch: Dispatch<IAction>) => {
+    dispatch({ type: REQUEST_MOODS });
+
+    return fetchUserMoods()
+      .then(moods => {
+        return dispatch({
+          type: RECEIVE_MOODS,
+          payload: moods
+        });
+      });
+  };
+};
+
+export const getMoodByDate = (date: string) => {
+  return (dispatch: Dispatch<IAction>) => {
+    dispatch({ type: REQUEST_MOOD });
+
+    return findMoodByDate(date)
+      .then(mood => {
+        return dispatch({
+          type: RECEIVE_MOOD,
+          payload: mood
+        });
+      });
+  };
+};
+
+export const setMoodByDate = (date: string, moodId: number) => {
+  return (dispatch: Dispatch<IAction>) => {
+    dispatch({ type: REQUEST_MOOD });
+
+    return updateMoodByDate(date, moodId)
+      .then(mood => {
+        return dispatch({
+          type: RECEIVE_MOOD,
+          payload: mood
+        });
+      });
+  };
+};
+
 // Reducers
 
 const currentUser = (state = null as IUser, action = {} as IAction) => {
@@ -406,6 +459,11 @@ const selected = (state = {} as SelectedState, action = {} as IAction) => {
       return extend({}, state, {
         date: moment(payload.date),
         entry: extend(state.entry || {}, payload)
+      });
+    case RECEIVE_MOOD:
+      return extend({}, state, {
+        date: moment(payload.date),
+        mood: extend(state.mood || {}, payload)
       });
     default:
       return state;
@@ -630,6 +688,46 @@ const challenges = (state = {
   }
 };
 
+const updateMoods = (state: MappedItems<IMood>, moods: IMood[]) => {
+  const { byDate } = state;
+
+  return moods.reduce((nextState, mood) => {
+    const { byDate: nextByDate } = nextState;
+    const { date } = mood;
+    const key = keyifyDate(date);
+
+    return {
+      byDate: {
+        ...nextByDate,
+        [key]: mood
+      }
+    };
+  }, { byDate });
+};
+
+const moods = (state = {
+  byDate: {}
+} as MappedItems<IMood>, action = {} as IAction) => {
+  const { byDate = {} } = state;
+  const { type, payload } = action;
+
+  switch (type) {
+    case RECEIVE_MOODS:
+      return updateMoods(state, payload);
+    case RECEIVE_MOOD:
+      console.log(state, payload);
+      return {
+        ...state,
+        byDate: {
+          ...byDate,
+          [keyifyDate(payload.date)]: payload
+        }
+      };
+    default:
+      return state;
+  }
+};
+
 const stats = (state = {
   // Checklist stats
   checklistStats: [],
@@ -697,6 +795,7 @@ const rootReducer = combineReducers({
   entries,
   questions,
   challenges,
+  moods,
   stats
 });
 

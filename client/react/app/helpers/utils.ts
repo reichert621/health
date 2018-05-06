@@ -6,6 +6,7 @@ import { IScorecard } from './scorecard';
 import { Task } from './tasks';
 import { Entry } from './entries';
 import { IChallenge } from './challenges';
+import { IMood } from './mood';
 import { ReportingStats } from './reporting';
 
 export interface SelectedState {
@@ -13,6 +14,7 @@ export interface SelectedState {
   checklist: IChecklist;
   scorecard: IScorecard;
   entry: Entry;
+  mood: IMood;
 }
 
 export interface MappedItems<T> {
@@ -39,6 +41,7 @@ export interface AppState {
   checklists: MappedItems<IChecklist>;
   scorecards: MappedItems<IScorecard>;
   entries: MappedItems<Entry>;
+  moods: MappedItems<IMood>;
   questions: IQuestion[];
   tasks: Task[];
   challenges: ChallengeState;

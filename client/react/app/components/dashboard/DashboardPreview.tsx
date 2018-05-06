@@ -7,6 +7,8 @@ import { Task, calculateScore } from '../../helpers/tasks';
 import { Entry } from '../../helpers/entries';
 import { IScorecard } from '../../helpers/scorecard';
 import { IChecklist } from '../../helpers/checklist';
+import { IMood } from '../../helpers/mood';
+import MoodSelector from './MoodSelector';
 
 interface CategorySubtasksProps {
   category: string;
@@ -113,11 +115,15 @@ const DashboardScorecardPreview = ({
 
 interface ChecklistPreviewProps {
   checklist: IChecklist;
+  selectedMood: IMood;
+  handleMoodSelected: (mood: IMood) => Promise<any>;
   handleClick: (e: any) => void;
 }
 
 const DashboardChecklistPreview = ({
   checklist = {} as IChecklist,
+  selectedMood,
+  handleMoodSelected,
   handleClick
 }: ChecklistPreviewProps) => {
   const { id: checklistId, questions = [], points } = checklist;
@@ -151,6 +157,10 @@ const DashboardChecklistPreview = ({
       <div className={`dashboard-preview-points ${!isComplete && 'hidden'}`}>
         {points} depression {points === 1 ? 'point' : 'points'}
       </div>
+
+      <MoodSelector
+        selectedMood={selectedMood}
+        handleMoodSelected={handleMoodSelected} />
     </div>
   );
 };
@@ -202,15 +212,17 @@ interface DashboardPreviewProps {
   handleScorecardClicked: (scorecard: IScorecard, date: moment.Moment) => void;
   handleChecklistClicked: (checklist: IChecklist, date: moment.Moment) => void;
   handleEntryClicked: (entry: Entry, date: moment.Moment) => void;
+  handleMoodSelected?: (mood: IMood) => Promise<any>;
 }
 
 const DashboardPreview = ({
   selected = {} as SelectedState,
   handleScorecardClicked,
   handleChecklistClicked,
-  handleEntryClicked
+  handleEntryClicked,
+  handleMoodSelected
 }: DashboardPreviewProps) => {
-  const { scorecard, checklist, entry, date = moment() } = selected;
+  const { scorecard, checklist, entry, mood, date = moment() } = selected;
   const isToday = isDateToday(date);
 
   return (
@@ -228,6 +240,8 @@ const DashboardPreview = ({
 
       <DashboardChecklistPreview
         checklist={checklist}
+        selectedMood={mood}
+        handleMoodSelected={handleMoodSelected}
         handleClick={() => handleChecklistClicked(checklist, date)} />
 
       <DashboardEntryPreview
