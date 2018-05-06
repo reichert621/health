@@ -40,6 +40,14 @@
   font-weight: 400;
 }
 
+.dashboard-mood-label {
+  margin-top: 16px;
+}
+
+.dashboard-depression-container {
+  font-size: 14px;
+}
+
 .dashboard-list-container {
   padding-left: 64px;
   width: 70%;
@@ -197,7 +205,13 @@
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 1024px) {
+  .mood-selector-container > .mood-icon {
+    height: 36px;
+  }
+}
+
+@media (max-width: 840px) {
   .dashboard-preview-container {
     width: 100%;
   }
@@ -208,5 +222,9 @@
     margin-top: 40px;
     padding: 0;
     width: 100%;
+  }
+
+  .mood-selector-container > .mood-icon {
+    height: 48px;
   }
 }

@@ -715,7 +715,6 @@ const moods = (state = {
     case RECEIVE_MOODS:
       return updateMoods(state, payload);
     case RECEIVE_MOOD:
-      console.log(state, payload);
       return {
         ...state,
         byDate: {

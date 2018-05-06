@@ -137,30 +137,33 @@ const DashboardChecklistPreview = ({
       <div className='clearfix'>
         <h4 className='dashboard-preview-header section-header pull-left'>
           Mood
-          <Link to={checklistId ? `/checklist/${checklistId}` : '#'}
-            onClick={handleClick}>
-            {
-              isComplete ?
-                <img className='preview-icon checkmark' src='assets/checkmark.svg' /> :
-                <img className='preview-icon' src='assets/pencil.svg' />
-            }
-          </Link>
+          {
+            (isComplete || selectedMood) ?
+              <img className='preview-icon checkmark' src='assets/checkmark.svg' /> :
+              null
+          }
         </h4>
-
-        <Link className='preview-link text-active pull-right'
-          to={checklistId ? `/checklist/${checklistId}` : '#'}
-          onClick={handleClick}>
-          {isComplete ? 'View' : 'Start'}
-        </Link>
       </div>
 
-      <div className={`dashboard-preview-points ${!isComplete && 'hidden'}`}>
-        {points} depression {points === 1 ? 'point' : 'points'}
+      <div className='dashboard-mood-label'>
+        How are you feeling today?
       </div>
 
       <MoodSelector
         selectedMood={selectedMood}
         handleMoodSelected={handleMoodSelected} />
+
+      <div className='cleafix dashboard-depression-container'>
+        <div className={`pull-left ${!isComplete && 'hidden'}`}>
+          {points} depression {points === 1 ? 'point' : 'points'}
+        </div>
+
+        <Link className='text-blue pull-right'
+          to={checklistId ? `/checklist/${checklistId}` : '#'}
+          onClick={handleClick}>
+          {checklistId ? 'View' : 'Take the questionnaire'}
+        </Link>
+      </div>
     </div>
   );
 };
@@ -208,6 +211,7 @@ const DashboardEntryPreview = ({
 };
 
 interface DashboardPreviewProps {
+  isLoading: boolean;
   selected: SelectedState;
   handleScorecardClicked: (scorecard: IScorecard, date: moment.Moment) => void;
   handleChecklistClicked: (checklist: IChecklist, date: moment.Moment) => void;
@@ -216,6 +220,7 @@ interface DashboardPreviewProps {
 }
 
 const DashboardPreview = ({
+  isLoading = false,
   selected = {} as SelectedState,
   handleScorecardClicked,
   handleChecklistClicked,
@@ -224,6 +229,10 @@ const DashboardPreview = ({
 }: DashboardPreviewProps) => {
   const { scorecard, checklist, entry, mood, date = moment() } = selected;
   const isToday = isDateToday(date);
+
+  if (isLoading) {
+    // TODO: handle loading state
+  }
 
   return (
     <div className='dashboard-preview'>

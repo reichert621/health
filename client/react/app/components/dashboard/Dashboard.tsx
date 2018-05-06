@@ -244,6 +244,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
           <div className='clearfix'>
             <div className='dashboard-preview-container pull-left'>
               <DashboardPreview
+                isLoading={isLoading}
                 selected={selected}
                 handleMoodSelected={this.handleMoodSelected.bind(this)}
                 handleScorecardClicked={this.createNewScorecard.bind(this)}

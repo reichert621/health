@@ -66,11 +66,12 @@ class MoodSelector extends React.Component<MoodSelectorProps, MoodSelectorState>
         {
           moods.map((mood, key) => {
             const { code } = mood;
+            const isSelected = (selectedCode === code);
 
             return (
               <img key={key}
                 className='mood-icon'
-                src={getMoodIcon(code, selectedCode === code)}
+                src={getMoodIcon(code, isSelected)}
                 onClick={() => handleMoodSelected(mood)} />
             );
           })
