@@ -21,6 +21,10 @@ const ChecklistProgressBar = ({
   currentIndex,
   questions = []
 }: ChecklistProgressBarProps) => {
+  if (!questions || !questions.length) {
+    return null;
+  }
+
   const currentQuestion = questions[currentIndex];
   const { category } = currentQuestion;
 
