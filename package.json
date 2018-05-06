@@ -121,7 +121,7 @@
     "lint": "./node_modules/.bin/eslint",
     "db:migrate": "./node_modules/.bin/knex migrate:latest --knexfile server/db/knexfile.js",
     "db:seed": "./node_modules/.bin/knex seed:run --knexfile server/db/knexfile.js",
-    "build": "./node_modules/.bin/webpack --config webpack.prod.config.js",
+    "build": "./node_modules/.bin/webpack --config webpack.prod.config.js -p",
     "watch": "./node_modules/.bin/webpack --config webpack.dev.config.js -w",
     "test": "jest",
     "restart": "pm2 startOrRestart ecosystem.config.js",
