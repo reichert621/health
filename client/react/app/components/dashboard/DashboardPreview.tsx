@@ -162,6 +162,8 @@ const DashboardChecklistPreview = ({
           to={checklistId ? `/checklist/${checklistId}` : '#'}
           onClick={handleClick}>
           {checklistId ? 'View' : 'Take the questionnaire'}
+          <img className={`forward-icon ${checklistId ? 'hidden' : ''}`}
+            src='assets/back-arrow.svg' />
         </Link>
       </div>
     </div>
