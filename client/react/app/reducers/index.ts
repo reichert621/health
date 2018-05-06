@@ -461,10 +461,11 @@ const selected = (state = {} as SelectedState, action = {} as IAction) => {
         entry: extend(state.entry || {}, payload)
       });
     case RECEIVE_MOOD:
-      return extend({}, state, {
+      // TODO: handle this better
+      return (payload && payload.date) ? extend({}, state, {
         date: moment(payload.date),
         mood: extend(state.mood || {}, payload)
-      });
+      }) : state;
     default:
       return state;
   }
@@ -715,13 +716,14 @@ const moods = (state = {
     case RECEIVE_MOODS:
       return updateMoods(state, payload);
     case RECEIVE_MOOD:
-      return {
+      // TODO: handle this better
+      return (payload && payload.date) ? {
         ...state,
         byDate: {
           ...byDate,
           [keyifyDate(payload.date)]: payload
         }
-      };
+      } : state;
     default:
       return state;
   }
