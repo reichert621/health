@@ -8,6 +8,59 @@ import {
 } from '../../helpers/checklist';
 import './Checklist.less';
 
+// TODO: DRY up in other places
+const INACTIVE_COLOR = '#D2D2D2';
+const ACTIVE_COLORS = ['#B8DBE9', '#8BC9E1', '#72BFDB', '#4FAED1', '#33A2CC'];
+
+interface ChecklistProgressBarProps {
+  currentIndex: number;
+  questions: IQuestion[];
+}
+
+const ChecklistProgressBar = ({
+  currentIndex,
+  questions = []
+}: ChecklistProgressBarProps) => {
+  if (!questions || !questions.length) {
+    return null;
+  }
+
+  const currentQuestion = questions[currentIndex];
+  const { category } = currentQuestion;
+
+  return (
+    <div className='checklist-progress-container text-center'>
+      <div className='checklist-category'>{category}</div>
+      <div className='checklist-progress-label'>
+        Question <span className='text-blue'>{currentIndex + 1}</span> / 25
+      </div>
+
+      <div className='checklist-progress-bar clearfix'>
+        {
+          questions.map((question, key) => {
+            const { score } = question;
+            const isActive = (currentIndex === key);
+            const style = {
+              width: '4%',
+              borderBottom: isActive ? '1px solid #979797' : 'none',
+              backgroundColor: (isNumber(score) && !!ACTIVE_COLORS[score])
+                ? ACTIVE_COLORS[score]
+                : INACTIVE_COLOR
+            };
+
+            return (
+              <div key={key}
+                style={style}
+                className='checklist-progress-segment pull-left'>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+  );
+};
+
 interface ChecklistProps {
   checklist: IChecklist;
   date: moment.Moment;
@@ -140,10 +193,15 @@ class ChecklistFlow extends React.Component<ChecklistProps, ChecklistState> {
           </div>
         </div>
 
+        <ChecklistProgressBar
+          currentIndex={currentIndex}
+          questions={questions} />
+
         <div className='checklist-container clearfix'>
           {
             questions.map((question, key) => {
               const offset = (key - currentIndex) * 60;
+
               return (
                 <ChecklistFlowQuestion
                   key={key}

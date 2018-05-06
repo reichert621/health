@@ -1,5 +1,6 @@
 @bright-blue: #33A2CC;
 @border-gray: #d3d3d3;
+@gray: #979797;
 @font-handwritten: 'Covered By Your Grace', cursive;
 
 // TODO: DRY this up (see .checklist-v2)
@@ -88,6 +89,30 @@
     margin-bottom: 40px;
     overflow: hidden;
     position: relative;
+  }
+
+  .checklist-progress-container {
+    padding-bottom: 24px;
+
+    .checklist-category {
+      color: @gray;
+      margin-bottom: 8px;
+    }
+
+    .checklist-progress-label {
+      color: @gray;
+      font-size: 14px;
+    }
+
+    .checklist-progress-bar {
+      height: 8px;
+      margin-top: 16px;
+    }
+
+    .checklist-progress-segment {
+      height: 100%;
+      position: relative;
+    }
   }
 
   .checklist-header {
