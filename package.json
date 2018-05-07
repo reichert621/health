@@ -112,7 +112,7 @@
   },
   "main": "server/index.js",
   "scripts": {
-    "prestart": "npm run db:migrate && npm run build",
+    "heroku-postbuild": "npm run db:migrate && npm run build",
     "start": "node server/index.js",
     "dev": "./node_modules/nodemon/bin/nodemon.js server/index.js",
     "eslint:react": "./node_modules/.bin/eslint 'client/react/app/**/*.js'",
