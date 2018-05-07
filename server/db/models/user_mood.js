@@ -45,6 +45,15 @@ const findByDate = (date, userId) => {
     });
 };
 
+const fetchByUser = (userId) => {
+  return UserMood()
+    .select('m.description', 'm.code', 'um.*')
+    .from('user_moods as um')
+    .innerJoin('moods as m', 'um.moodId', 'm.id')
+    .where({ 'um.userId': userId })
+    .then(results => results.map(formatWithUtc));
+};
+
 const create = (params, userId) => {
   return UserMood()
     .returning('id')
@@ -83,6 +92,7 @@ module.exports = {
   fetch,
   findById,
   findByDate,
+  fetchByUser,
   create,
   update,
   createOrUpdate,

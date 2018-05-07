@@ -23,11 +23,7 @@ const findByDate = (date, userId) => {
 };
 
 const fetchByUser = (userId) => {
-  return Mood()
-    .select('m.description', 'm.code', 'um.*')
-    .from('moods as m')
-    .innerJoin('user_moods as um', 'um.moodId', 'm.id')
-    .where({ 'um.userId': userId });
+  return UserMood.fetchByUser(userId);
 };
 
 const create = (params) => {
