@@ -57,12 +57,12 @@ class Library extends React.Component<LibraryProps, LibraryState> {
         <div className='component-container'>
           <h2>Buttons &amp; Links</h2>
 
-          <button className='button-default'>
-            button-default
+          <button className='btn-default'>
+            btn-default
           </button>
 
-          <button className='button-default -large'>
-            button-default -large
+          <button className='btn-primary'>
+            btn-primary
           </button>
 
           <Link to='/'>Link</Link>

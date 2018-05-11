@@ -87,6 +87,13 @@ class CategoryTasks extends React.Component<CategoryProps, CategoryState> {
     return this.handleUpdateTask(id, updates);
   }
 
+  handleToggleTaskFavorite(task: Task) {
+    const { id, isFavorite } = task;
+    const updates = { isFavorite: !isFavorite };
+
+    return this.handleUpdateTask(id, updates);
+  }
+
   cancelNewTask() {
     return this.setState({
       isCreating: false,
@@ -163,7 +170,8 @@ class CategoryTasks extends React.Component<CategoryProps, CategoryState> {
                     key={key}
                     task={task}
                     onUpdateTask={this.handleUpdateTask.bind(this)}
-                    onToggleTaskActive={this.handleToggleTaskActive.bind(this)} />
+                    onToggleTaskActive={this.handleToggleTaskActive.bind(this)}
+                    onToggleTaskFavorite={this.handleToggleTaskFavorite.bind(this)} />
                 );
               })
           }
