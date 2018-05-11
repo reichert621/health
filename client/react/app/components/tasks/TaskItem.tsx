@@ -8,7 +8,8 @@ import Dropdown from './Dropdown';
 interface TaskItemProps {
   task: Task;
   onUpdateTask: (id: number, updates: object) => Promise<Task>;
-  onToggleTaskActive: (task: Task) => void;
+  onToggleTaskActive: (task: Task) => Promise<void>;
+  onToggleTaskFavorite: (task: Task) => Promise<void>;
 }
 
 interface TaskItemState {
@@ -81,8 +82,8 @@ class TaskItem extends React.Component<TaskItemProps, TaskItemState> {
   }
 
   renderStaticTask() {
-    const { task, onToggleTaskActive } = this.props;
-    const { description, points, isActive } = task;
+    const { task, onToggleTaskActive, onToggleTaskFavorite } = this.props;
+    const { description, points, isActive, isFavorite } = task;
 
     return (
       <div className={`task-item editable ${isActive ? 'active' : 'inactive'}`}>
@@ -98,6 +99,11 @@ class TaskItem extends React.Component<TaskItemProps, TaskItemState> {
         <span className='task-points'
           onClick={() => this.setState({ isEditing: true })}>
           {formatPoints(points)}
+        </span>
+        {/* TODO: use a better icon here */}
+        <span
+          className={`task-favorite-icon ${isFavorite ? 'active' : 'inactive'}`}
+          onClick={() => onToggleTaskFavorite(task)}>
         </span>
       </div>
     );

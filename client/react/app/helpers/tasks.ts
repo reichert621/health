@@ -9,6 +9,7 @@ export interface Task {
   category?: string;
   points: number;
   isActive: boolean;
+  isFavorite: boolean;
   isComplete: boolean;
 }
 

@@ -8,6 +8,19 @@ import { IScorecard } from '../../helpers/scorecard';
 import { IChallenge } from '../../helpers/challenges';
 import './Scorecard.less';
 
+const filterFavoriteTasks = (tasks: Task[]) => {
+  return tasks
+    .filter(task => task.isFavorite)
+    .map(task => {
+      const { category, description } = task;
+
+      return {
+        ...task,
+        description: `${category}: ${description}`
+      };
+    });
+};
+
 interface ScorecardProps {
   tasks: Task[];
   challenges?: IChallenge[];
@@ -38,6 +51,7 @@ const Scorecard = ({
 
   const grouped = groupBy(tasks, 'category');
   const categories = keys(grouped);
+  const favorites = filterFavoriteTasks(tasks);
 
   return (
     <div className='scorecard-component'>
@@ -56,6 +70,23 @@ const Scorecard = ({
           );
         })
       }
+
+      <h4 className={`category-label ${
+        favorites && favorites.length ? '' : 'hidden'
+      }`}>
+        <span>Favorites</span>
+      </h4>
+      {
+        favorites.map((task, key) => {
+          return (
+            <TaskCheckbox
+              key={key}
+              task={task}
+              onToggle={() => handleTaskUpdate(task)} />
+          );
+        })
+      }
+
       {
         categories.map((category, index) => {
           const subtasks = sortBy(grouped[category], t => -t.points);

@@ -16,7 +16,13 @@ const colors: { [n: string]: string } = {
 };
 
 const TaskCheckbox = ({ task, onToggle }: CheckboxProps) => {
-  const { id, description, points, isComplete = false } = task;
+  const {
+    id,
+    description,
+    points,
+    isComplete = false,
+    isFavorite = false
+  } = task;
   const color = colors[points];
   const style = {
     backgroundColor: color,

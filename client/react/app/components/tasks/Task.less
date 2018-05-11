@@ -38,7 +38,7 @@
   }
 
   .task-points {
-    // width: 240px;
+    width: 160px;
   }
 }
 
@@ -71,7 +71,8 @@
   }
 
   .edit-icon,
-  .task-active-icon {
+  .task-active-icon,
+  .task-favorite-icon {
     cursor: pointer;
     visibility: hidden;
   }
@@ -97,6 +98,20 @@
     }
   }
 
+  .task-favorite-icon {
+    border: 1px solid @border-gray;
+    border-radius: 10px;
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+    vertical-align: 1px;
+
+    &.active {
+      border-color: @bright-blue;
+      background-color: @bright-blue;
+    }
+  }
+
   &.inactive {
     color: @faded-gray;
     opacity: 0.9;
@@ -107,7 +122,8 @@
     border-radius: 4px;
 
     .edit-icon,
-    .task-active-icon {
+    .task-active-icon,
+    .task-favorite-icon {
       visibility: visible;
     }
 
