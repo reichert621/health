@@ -7,6 +7,7 @@ import NavBar from '../navbar';
 import ChecklistOverview from './Checklist';
 import ChecklistFlow from './ChecklistFlow';
 import { IQuestion, fetchChecklistQuestions } from '../../helpers/checklist';
+import { isAuthenticated } from '../../helpers/auth';
 import { keyifyDate, isDateToday } from '../../helpers/utils';
 import * as cache from '../../helpers/cache';
 import './Checklist.less';
@@ -97,7 +98,17 @@ class ChecklistSample extends React.Component<
   }
 
   submit() {
-    // TODO: link to summary view?
+    const { history } = this.props;
+
+    return isAuthenticated()
+      .then(isLoggedIn => {
+        const next = isLoggedIn ? '/' : '/login';
+
+        return history.push(next);
+      })
+      .catch(err => {
+        console.log('Error checking authentication!', err);
+      });
   }
 
   render() {
