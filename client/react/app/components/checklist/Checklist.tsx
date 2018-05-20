@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as moment from 'moment';
 import ChecklistQuestion from './ChecklistQuestion';
-import { IQuestion } from '../../helpers/checklist';
+import { IQuestion, getDepressionLevelByScore } from '../../helpers/checklist';
 import { formatPoints } from '../../helpers/utils';
 import './Checklist.less';
 
@@ -27,13 +27,14 @@ class Checklist extends React.Component<ChecklistProps> {
       onSubmit
     } = this.props;
     const points = this.calculateScore(questions);
+    const description = getDepressionLevelByScore(points);
 
     if (!questions || !questions.length) {
       return null;
     }
 
     return (
-      <div className='default-container -narrow checklist-v1'>
+      <div className='default-container checklist-v1'>
         <div className='checklist-header-container clearfix'>
           <div className='checklist-header pull-left'>
             <h3 className='text-light'>
@@ -41,8 +42,9 @@ class Checklist extends React.Component<ChecklistProps> {
             </h3>
           </div>
 
-          <div className={'checklist-overview text-active pull-right'}>
-            {formatPoints(points)}
+          <div className={'checklist-overview pull-right'}>
+            <span className='text-active'>{formatPoints(points)}</span>
+            <span> &mdash; {description}</span>
           </div>
         </div>
 
