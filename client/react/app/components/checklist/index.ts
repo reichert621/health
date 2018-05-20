@@ -1,3 +1,7 @@
 import ChecklistContainer from './ChecklistContainer';
+import ChecklistSample from './ChecklistSample';
 
-export default ChecklistContainer;
+export {
+  ChecklistContainer,
+  ChecklistSample
+};

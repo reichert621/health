@@ -19,7 +19,7 @@ import {
 import { Dashboard, Today } from './components/dashboard';
 import { EntryContainer, UserEntryContainer } from './components/entry';
 import { ScorecardContainer } from './components/scorecard';
-import ChecklistContainer from './components/checklist';
+import { ChecklistContainer, ChecklistSample } from './components/checklist';
 import TaskList from './components/tasks';
 import FriendFeed from './components/feed';
 import {
@@ -61,6 +61,7 @@ ReactDOM.render(
             <Route path='/login' component={Login} />
             <Route path='/signup' component={SignUp} />
             <Route path='/about' component={About} />
+            <Route path='/example/checklist' component={ChecklistSample} />
             <Route path='/signup-complete' component={SignUpComplete} />
             <Route path='/blog' component={Home} />
             <Route path='/@:username/entry/:id' component={UserEntryContainer} />

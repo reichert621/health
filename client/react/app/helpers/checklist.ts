@@ -24,6 +24,14 @@ export interface IQuestion {
   score: number;
 }
 
+export interface ChecklistScore {
+  id: number;
+  userId: number;
+  checklistId: number;
+  checklistQuestionId: number;
+  score: number;
+}
+
 export const fetchChecklists = (): Promise<IChecklist[]> => {
   return get('/api/checklists')
     .then((res: HttpResponse) => res.checklists);
@@ -64,26 +72,12 @@ export const createNewChecklist = (params: object): Promise<IChecklist> => {
     .then((res: HttpResponse) => res.checklist);
 };
 
-export interface ChecklistScore {
-  id: number;
-  userId: number;
-  checklistId: number;
-  checklistQuestionId: number;
-  score: number;
-}
-
 export const fetchChecklistScores = (): Promise<ChecklistScore[]> => {
   return get('/api/checklist-scores')
     .then((res: HttpResponse) => res.scores);
 };
 
-export interface IChecklistQuestion {
-  id: number;
-  text: string;
-  category?: string;
-}
-
-export const fetchChecklistQuestions = (): Promise<IChecklistQuestion[]> => {
+export const fetchChecklistQuestions = (): Promise<IQuestion[]> => {
   return get('/api/checklist-questions')
     .then((res: HttpResponse) => res.questions);
 };

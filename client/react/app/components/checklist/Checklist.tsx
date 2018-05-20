@@ -1,15 +1,11 @@
 import * as React from 'react';
 import * as moment from 'moment';
 import ChecklistQuestion from './ChecklistQuestion';
-import {
-  IChecklist,
-  IQuestion
-} from '../../helpers/checklist';
-import { AppState, formatPoints } from '../../helpers/utils';
+import { IQuestion } from '../../helpers/checklist';
+import { formatPoints } from '../../helpers/utils';
 import './Checklist.less';
 
 interface ChecklistProps {
-  checklist: IChecklist;
   date: moment.Moment;
   questions: IQuestion[];
   onScoreChange: (question: IQuestion, score: number) => void;
