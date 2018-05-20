@@ -24,6 +24,39 @@ export interface IQuestion {
   score: number;
 }
 
+export interface ChecklistScore {
+  id: number;
+  userId: number;
+  checklistId: number;
+  checklistQuestionId: number;
+  score: number;
+}
+
+export enum DepressionLevel {
+  NONE = 'No depression',
+  NORMAL = 'Normal but unhappy',
+  MILD = 'Mild depression',
+  MODERATE = 'Moderate depression',
+  SEVERE = 'Severe depression',
+  EXTREME = 'Extreme depression'
+}
+
+export const getDepressionLevelByScore = (score: number): string => {
+  if (score <= 5) {
+    return DepressionLevel.NONE;
+  } else if (score >= 6 && score <= 10) {
+    return DepressionLevel.NORMAL;
+  } else if (score >= 11 && score <= 25) {
+    return DepressionLevel.MILD;
+  } else if (score >= 26 && score <= 50) {
+    return DepressionLevel.MODERATE;
+  } else if (score >= 51 && score <= 75) {
+    return DepressionLevel.SEVERE;
+  } else {
+    return DepressionLevel.EXTREME;
+  }
+};
+
 export const fetchChecklists = (): Promise<IChecklist[]> => {
   return get('/api/checklists')
     .then((res: HttpResponse) => res.checklists);
@@ -64,26 +97,12 @@ export const createNewChecklist = (params: object): Promise<IChecklist> => {
     .then((res: HttpResponse) => res.checklist);
 };
 
-export interface ChecklistScore {
-  id: number;
-  userId: number;
-  checklistId: number;
-  checklistQuestionId: number;
-  score: number;
-}
-
 export const fetchChecklistScores = (): Promise<ChecklistScore[]> => {
   return get('/api/checklist-scores')
     .then((res: HttpResponse) => res.scores);
 };
 
-export interface IChecklistQuestion {
-  id: number;
-  text: string;
-  category?: string;
-}
-
-export const fetchChecklistQuestions = (): Promise<IChecklistQuestion[]> => {
+export const fetchChecklistQuestions = (): Promise<IQuestion[]> => {
   return get('/api/checklist-questions')
     .then((res: HttpResponse) => res.questions);
 };

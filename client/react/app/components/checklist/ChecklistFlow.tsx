@@ -62,7 +62,6 @@ const ChecklistProgressBar = ({
 };
 
 interface ChecklistProps {
-  checklist: IChecklist;
   date: moment.Moment;
   questions: IQuestion[];
   onScoreChange: (question: IQuestion, score: number) => void;
@@ -167,7 +166,7 @@ class ChecklistFlow extends React.Component<ChecklistProps, ChecklistState> {
 
     onScoreChange(question, score);
 
-    setTimeout(() => this.setNextQuestion(), 200);
+    setTimeout(() => this.setNextQuestion(), 400);
   }
 
   render() {

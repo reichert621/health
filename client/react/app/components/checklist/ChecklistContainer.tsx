@@ -86,12 +86,6 @@ class ChecklistContainer extends React.Component<
     return dispatch(updateScore(checklist, question, score));
   }
 
-  calculateScore(questions: IQuestion[]) {
-    return questions.reduce((score: number, question: IQuestion) => {
-      return question.score ? (score + question.score) : score;
-    }, 0);
-  }
-
   submit() {
     const { history, date } = this.props;
     const isToday = isDateToday(date);
@@ -118,13 +112,11 @@ class ChecklistContainer extends React.Component<
           isComplete ?
             <ChecklistOverview
               date={date}
-              checklist={checklist}
               questions={questions}
               onScoreChange={this.handleScoreChange.bind(this)}
               onSubmit={this.submit.bind(this)} /> :
             <ChecklistFlow
               date={date}
-              checklist={checklist}
               questions={questions}
               onScoreChange={this.handleScoreChange.bind(this)}
               onSubmit={this.submit.bind(this)} />
