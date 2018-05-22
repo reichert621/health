@@ -105,7 +105,8 @@ const createCategoryTasks = (category, tasks, userId) => {
 
 const createDefaultTasks = (user) => {
   const { id: userId } = user;
-  const defaults = DefaultTasks.getDefaults();
+  // Just start with 4 of the default tasks, let user create the rest
+  const defaults = DefaultTasks.getDefaults().slice(0, 4);
   const grouped = groupBy(defaults, 'category');
   const promises = Object.keys(grouped)
     .map(categoryName => {
@@ -134,7 +135,8 @@ const register = (params) => {
       if (existingEmail) throw new Error('That email address is taken!');
 
       return create(params);
-    });
+    })
+    .then(user => createDefaultTasks(user));
 };
 
 const authenticate = ({ username, password }) =>

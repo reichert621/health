@@ -2,21 +2,22 @@ import { HttpResponse, get, post, put } from './http';
 import { IDropdownOption } from './utils';
 
 export interface Task {
-  id: number;
-  userId: number;
-  categoryId: number;
+  id?: number;
+  userId?: number;
+  categoryId?: number;
   description: string;
   category?: string;
   points: number;
-  isActive: boolean;
-  isFavorite: boolean;
-  isComplete: boolean;
+  isActive?: boolean;
+  isFavorite?: boolean;
+  isComplete?: boolean;
 }
 
 export interface NewTask {
   description: string;
   category: string;
   points: number;
+  isComplete?: boolean;
 }
 
 export interface PointOption extends IDropdownOption {
