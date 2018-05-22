@@ -12,15 +12,15 @@ import './Checklist.less';
 const INACTIVE_COLOR = '#D2D2D2';
 const ACTIVE_COLORS = ['#B8DBE9', '#8BC9E1', '#72BFDB', '#4FAED1', '#33A2CC'];
 
-interface ChecklistProgressBarProps {
+interface ChecklistProgressProps {
   currentIndex: number;
   questions: IQuestion[];
 }
 
-const ChecklistProgressBar = ({
+const ChecklistProgressLabel = ({
   currentIndex,
   questions = []
-}: ChecklistProgressBarProps) => {
+}: ChecklistProgressProps) => {
   if (!questions || !questions.length) {
     return null;
   }
@@ -34,7 +34,20 @@ const ChecklistProgressBar = ({
       <div className='checklist-progress-label'>
         Question <span className='text-blue'>{currentIndex + 1}</span> / 25
       </div>
+    </div>
+  );
+};
 
+const ChecklistProgressBar = ({
+  currentIndex,
+  questions = []
+}: ChecklistProgressProps) => {
+  if (!questions || !questions.length) {
+    return null;
+  }
+
+  return (
+    <div className='checklist-progress-container text-center'>
       <div className='checklist-progress-bar clearfix'>
         {
           questions.map((question, key) => {
@@ -192,7 +205,7 @@ class ChecklistFlow extends React.Component<ChecklistProps, ChecklistState> {
           </div>
         </div>
 
-        <ChecklistProgressBar
+        <ChecklistProgressLabel
           currentIndex={currentIndex}
           questions={questions} />
 
@@ -237,6 +250,10 @@ class ChecklistFlow extends React.Component<ChecklistProps, ChecklistState> {
             Done
           </button>
         </div>
+
+        <ChecklistProgressBar
+          currentIndex={currentIndex}
+          questions={questions} />
       </div>
     );
   }
