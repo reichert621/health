@@ -67,7 +67,7 @@ api.get('/tasks', isAuthenticated, tasks.fetch);
 api.post('/tasks', isAuthenticated, tasks.create);
 api.put('/tasks/:id', isAuthenticated, tasks.update);
 api.get('/tasks/suggestions', isAuthenticated, tasks.fetchSuggestions);
-api.get('/tasks/defaults', isAuthenticated, tasks.fetchDefaults);
+api.get('/tasks/defaults', tasks.fetchDefaults);
 api.post('/tasks/suggestions', isAuthenticated, tasks.createSuggestedTask);
 // Checklists
 api.get('/checklists', isAuthenticated, checklists.fetch);
