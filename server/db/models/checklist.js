@@ -5,6 +5,9 @@ const ChecklistQuestion = require('./checklist_question');
 const ChecklistScore = require('./checklist_score');
 const ScorecardSelectedTask = require('./scorecard_selected_task');
 const User = require('./user');
+const Assessment = require('./assessment');
+const UserAssessment = require('./user_assessment');
+const UserAssessmentScore = require('./user_assessment_score');
 
 // Depression levels
 const levels = {
@@ -133,9 +136,36 @@ const findByDate = async (date, userId, where = {}) => {
   });
 };
 
-const findOrCreateByDate = async (date, userId) => {
+const findOrCreateByDate = (date, userId) => {
   return findOrCreate({ date }, userId)
     .then(checklist => findByDate(date, userId));
+};
+
+const migrate = async (date, userId) => {
+  const checklist = await findOrCreateByDate(date, userId);
+  const { questions: questionsWithScores = [] } = checklist;
+  const questions = await Assessment.fetchDepressionQuestions();
+  const { assessmentId } = first(questions);
+  const {
+    id: userAssessmentId
+  } = await UserAssessment.findOrCreate({ userId, assessmentId, date }, userId);
+  const scores = questionsWithScores.map(question => {
+    const { score, text } = question;
+    const match = questions.find(q => q.text === text);
+
+    if (!match || !isNumber(score)) return Promise.resolve(null);
+
+    const { id: assessmentQuestionId } = match;
+
+    return UserAssessmentScore.findOrCreate({
+      userAssessmentId,
+      assessmentQuestionId,
+      userId,
+      score
+    }, userId);
+  });
+
+  return Promise.all(scores);
 };
 
 const update = (id, params, userId) =>
@@ -395,7 +425,7 @@ const fetchStats = (userId) => {
 };
 
 const destroy = (id, userId) =>
-  findById(id, userId)
+  findById(id, userId) // FIXME (this does not return a knex object)
     .delete();
 
 module.exports = {

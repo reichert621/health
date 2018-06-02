@@ -10,6 +10,7 @@ const Imperative = require('./models/imperative');
 const Gratitude = require('./models/gratitude');
 const Challenge = require('./models/challenge');
 const Mood = require('./models/mood');
+const Assessment = require('./models/assessment');
 
 module.exports = {
   User,
@@ -23,5 +24,6 @@ module.exports = {
   Imperative,
   Gratitude,
   Challenge,
-  Mood
+  Mood,
+  Assessment
 };

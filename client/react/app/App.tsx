@@ -28,6 +28,11 @@ import {
   MoodReporting
 } from './components/reporting';
 import {
+  DepressionSample,
+  AnxietySample,
+  WellBeingSample
+} from './components/assessment';
+import {
   SelfActivationMethods,
   CognitiveDistortions,
   DailyImperatives,
@@ -63,6 +68,9 @@ ReactDOM.render(
             <Route path='/about' component={About} />
             <Route path='/example/checklist' component={ChecklistSample} />
             <Route path='/example/scorecard' component={ScorecardSample} />
+            <Route path='/example/depression' component={DepressionSample} />
+            <Route path='/example/anxiety' component={AnxietySample} />
+            <Route path='/example/well-being' component={WellBeingSample} />
             <Route path='/signup-complete' component={SignUpComplete} />
             <Route path='/blog' component={Home} />
             <Route path='/@:username/entry/:id' component={UserEntryContainer} />
