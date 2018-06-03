@@ -15,7 +15,8 @@ const {
   reporting,
   tasks,
   challenges,
-  moods
+  moods,
+  assessments
 } = require('./db/controllers');
 
 const api = Router();
@@ -69,6 +70,11 @@ api.put('/tasks/:id', isAuthenticated, tasks.update);
 api.get('/tasks/suggestions', isAuthenticated, tasks.fetchSuggestions);
 api.get('/tasks/defaults', tasks.fetchDefaults);
 api.post('/tasks/suggestions', isAuthenticated, tasks.createSuggestedTask);
+// Assessments
+api.get('/assessments', assessments.fetch);
+api.get('/assessments/depression', assessments.depression);
+api.get('/assessments/anxiety', assessments.anxiety);
+api.get('/assessments/well-being', assessments.wellBeing);
 // Checklists
 api.get('/checklists', isAuthenticated, checklists.fetch);
 api.get('/checklists/:id', isAuthenticated, checklists.findById);

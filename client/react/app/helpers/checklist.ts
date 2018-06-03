@@ -1,4 +1,5 @@
 import { HttpResponse, get, post } from './http';
+import { AssessmentType } from './assessment';
 
 export interface IChecklist {
   id: number;
@@ -18,6 +19,8 @@ export interface IChecklistScore {
 
 export interface IQuestion {
   id: number;
+  title?: string; // TODO: this refers to the assessment title
+  type?: AssessmentType;
   checklistScoreId: number;
   text: string;
   category: string;

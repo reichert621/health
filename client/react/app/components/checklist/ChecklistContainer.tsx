@@ -7,12 +7,7 @@ import * as moment from 'moment';
 import NavBar from '../navbar';
 import ChecklistOverview from './Checklist';
 import ChecklistFlow from './ChecklistFlow';
-import {
-  IChecklist,
-  IQuestion,
-  fetchChecklist,
-  updateChecklistScore
-} from '../../helpers/checklist';
+import { IChecklist, IQuestion } from '../../helpers/checklist';
 import { AppState, formatPoints, isDateToday } from '../../helpers/utils';
 import { getChecklist, updateScore } from '../../reducers';
 import './Checklist.less';

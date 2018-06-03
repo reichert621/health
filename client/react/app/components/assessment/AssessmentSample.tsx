@@ -4,27 +4,35 @@ import { isNumber, isObject } from 'lodash';
 import { resolve } from 'bluebird';
 import * as moment from 'moment';
 import NavBar from '../navbar';
-import ChecklistOverview from './Checklist';
-import ChecklistFlow from './ChecklistFlow';
+import ChecklistOverview from '../checklist/Checklist';
+import ChecklistFlow from '../checklist/ChecklistFlow';
 import { IQuestion, fetchChecklistQuestions } from '../../helpers/checklist';
 import { isAuthenticated } from '../../helpers/auth';
 import { keyifyDate, isDateToday } from '../../helpers/utils';
 import * as cache from '../../helpers/cache';
-import './Checklist.less';
+import {
+  fetchAnxietyQuestions,
+  fetchDepressionQuestions,
+  fetchWellBeingQuestions
+} from '../../helpers/assessment';
+import '../checklist/Checklist.less';
 
-const CHECKLIST_CACHE_KEY = 'checklist';
+interface AssessmentProps {
+  cacheKey: string;
+  fetchQuestions: () => Promise<IQuestion[]>;
+}
 
-interface ChecklistState {
+interface AssessmentState {
   isLoading: boolean;
   date: moment.Moment;
   questions: IQuestion[];
 }
 
-class ChecklistSample extends React.Component<
-  RouteComponentProps<{}>,
-  ChecklistState
+class AssessmentSample extends React.Component<
+  AssessmentProps & RouteComponentProps<{}>,
+  AssessmentState
 > {
-  constructor(props: RouteComponentProps<{}>) {
+  constructor(props: AssessmentProps & RouteComponentProps<{}>) {
     super(props);
 
     this.state = {
@@ -43,7 +51,8 @@ class ChecklistSample extends React.Component<
   }
 
   getCachedState() {
-    const state = cache.get(CHECKLIST_CACHE_KEY);
+    const { cacheKey } = this.props;
+    const state = cache.get(cacheKey);
 
     if (this.isValidState(state)) {
       const { date } = state;
@@ -55,15 +64,17 @@ class ChecklistSample extends React.Component<
   }
 
   setStateCache() {
+    const { cacheKey } = this.props;
     const { date } = this.state;
 
-    return cache.set(CHECKLIST_CACHE_KEY, {
+    return cache.set(cacheKey, {
       ...this.state,
       date: date.format()
     });
   }
 
   componentDidMount() {
+    const { fetchQuestions } = this.props;
     const cache = this.getCachedState();
 
     if (cache) {
@@ -72,7 +83,7 @@ class ChecklistSample extends React.Component<
       return resolve();
     }
 
-    return fetchChecklistQuestions()
+    return fetchQuestions()
       .then(questions => {
         return this.setState({
           questions,
@@ -80,7 +91,7 @@ class ChecklistSample extends React.Component<
         });
       })
       .catch(err => {
-        console.log('Error fetching checklist questions!', err);
+        console.log('Error fetching questions!', err);
       });
   }
 
@@ -116,12 +127,14 @@ class ChecklistSample extends React.Component<
     const { history } = this.props;
     const isComplete = questions.every(q => isNumber(q.score));
 
-    if (isLoading) return null;
+    if (isLoading || !questions.length) return null;
+
+    const [{ title = 'Assessment' }] = questions;
 
     return (
       <div>
         <NavBar
-          title='Check-in'
+          title={title}
           history={history} />
         {
           isComplete ?
@@ -141,4 +154,36 @@ class ChecklistSample extends React.Component<
   }
 }
 
-export default ChecklistSample;
+// TODO: try using HOC instead?
+export class DepressionSample extends React.Component<RouteComponentProps<{}>> {
+  render() {
+    const cacheKey = 'assessments:depression';
+
+    return <AssessmentSample
+      {...this.props}
+      cacheKey={cacheKey}
+      fetchQuestions={fetchDepressionQuestions} />;
+  }
+}
+
+export class AnxietySample extends React.Component<RouteComponentProps<{}>> {
+  render() {
+    const cacheKey = 'assessments:anxiety';
+
+    return <AssessmentSample
+      {...this.props}
+      cacheKey={cacheKey}
+      fetchQuestions={fetchAnxietyQuestions} />;
+  }
+}
+
+export class WellBeingSample extends React.Component<RouteComponentProps<{}>> {
+  render() {
+    const cacheKey = 'assessments:wellbeing';
+
+    return <AssessmentSample
+      {...this.props}
+      cacheKey={cacheKey}
+      fetchQuestions={fetchWellBeingQuestions} />;
+  }
+}

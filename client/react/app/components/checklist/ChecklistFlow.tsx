@@ -26,13 +26,14 @@ const ChecklistProgressLabel = ({
   }
 
   const currentQuestion = questions[currentIndex];
+  const count = questions.length;
   const { category } = currentQuestion;
 
   return (
     <div className='checklist-progress-container text-center'>
       <div className='checklist-category'>{category}</div>
       <div className='checklist-progress-label'>
-        Question <span className='text-blue'>{currentIndex + 1}</span> / 25
+        Question <span className='text-blue'>{currentIndex + 1}</span> / {count}
       </div>
     </div>
   );
@@ -46,6 +47,9 @@ const ChecklistProgressBar = ({
     return null;
   }
 
+  const count = questions.length;
+  const width = 100 / count;
+
   return (
     <div className='checklist-progress-container text-center'>
       <div className='checklist-progress-bar clearfix'>
@@ -54,7 +58,7 @@ const ChecklistProgressBar = ({
             const { score } = question;
             const isActive = (currentIndex === key);
             const style = {
-              width: '4%',
+              width: `${width}%`,
               borderBottom: isActive ? '1px solid #979797' : 'none',
               backgroundColor: (isNumber(score) && !!ACTIVE_COLORS[score])
                 ? ACTIVE_COLORS[score]

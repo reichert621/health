@@ -11,6 +11,7 @@ const gratitudes = require('./gratitudes');
 const reporting = require('./reporting');
 const challenges = require('./challenges');
 const moods = require('./moods');
+const assessments = require('./assessments');
 
 module.exports = {
   users,
@@ -25,5 +26,6 @@ module.exports = {
   gratitudes,
   reporting,
   challenges,
-  moods
+  moods,
+  assessments
 };
