@@ -28,6 +28,7 @@ import {
   MoodReporting
 } from './components/reporting';
 import {
+  AssessmentContainer,
   DepressionSample,
   AnxietySample,
   WellBeingSample
@@ -101,6 +102,7 @@ ReactDOM.render(
             <Route path='/entry/:id' component={EntryContainer} />
             <Route path='/scorecard/:id' component={ScorecardContainer} />
             <Route path='/checklist/:id' component={ChecklistContainer} />
+            <Route path='/assessment/:id' component={AssessmentContainer} />
             <Route path='/reporting/tasks' component={TaskReporting} />
             <Route path='/reporting/moods' component={MoodReporting} />
             <Route path='/reporting' component={Reporting} />

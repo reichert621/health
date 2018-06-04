@@ -13,12 +13,29 @@ const findOne = (where = {}, userId) => {
   return fetch(where, userId).first();
 };
 
+const fetchByType = (type, userId, where = {}) => {
+  return UserAssessment()
+    .select('a.type', 'a.title', 'ua.id', 'ua.date', 'ua.userId')
+    .from('user_assessments as ua')
+    .innerJoin('assessments as a', 'ua.assessmentId', 'a.id')
+    .where({ ...where, 'a.type': type });
+};
+
+// TODO: DRY up!
+const fetchByDate = (date, userId, where = {}) => {
+  return UserAssessment()
+    .select('a.type', 'a.title', 'ua.id', 'ua.date', 'ua.userId')
+    .from('user_assessments as ua')
+    .innerJoin('assessments as a', 'ua.assessmentId', 'a.id')
+    .where({ ...where, 'ua.date': date });
+};
+
 const findById = (id, userId, where = {}) => {
   return UserAssessment()
     .select('a.type', 'a.title', 'ua.id', 'ua.date', 'ua.userId')
     .from('user_assessments as ua')
     .innerJoin('assessments as a', 'ua.assessmentId', 'a.id')
-    .where({ 'ua.userId': userId, 'ua.id': id })
+    .where({ ...where, 'ua.userId': userId, 'ua.id': id })
     .first();
 };
 
@@ -50,6 +67,8 @@ const update = (id, params, userId) => {
 
 module.exports = {
   fetch,
+  fetchByType,
+  fetchByDate,
   findById,
   create,
   findOrCreate,

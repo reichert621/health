@@ -1,3 +1,4 @@
+import AssessmentContainer from './AssessmentContainer';
 import {
   DepressionSample,
   AnxietySample,
@@ -5,6 +6,7 @@ import {
 } from './AssessmentSample';
 
 export {
+  AssessmentContainer,
   DepressionSample,
   AnxietySample,
   WellBeingSample

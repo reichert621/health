@@ -16,6 +16,23 @@ export interface IAssessmentQuestion {
   title?: string;
 }
 
+export interface IAssessmentScore {
+  id: number;
+  score: number;
+}
+
+export interface IAssessment {
+  id: number;
+  type?: string;
+  title?: string;
+  date: string;
+  questions: IQuestion[]; // FIXME
+}
+
+export interface IAssessmentsByType {
+  [type: string]: IAssessment[];
+}
+
 export enum DepressionLevel {
   NONE = 'No depression',
   NORMAL = 'Normal but unhappy',
@@ -103,6 +120,37 @@ export const getDescriptionByAssessmentType = (
       // For backwards compatibility
       return getDepressionLevelByScore(points);
   }
+};
+
+export const fetchAssessments = (): Promise<IAssessment[]> => {
+  return get('/api/assessments')
+    .then((res: HttpResponse) => res.assessments);
+};
+
+export const fetchAssessmentsByDate = (
+  date: string
+): Promise<{ [type: string]: IAssessment }> => {
+  return get(`/api/assessments/date/${date}`)
+    .then((res: HttpResponse) => res.assessments);
+};
+
+export const fetchAssessment = (id: number): Promise<IAssessment> => {
+  return get(`/api/assessments/${id}`)
+    .then((res: HttpResponse) => res.assessment);
+};
+
+export const createAssessment = (params: object): Promise<IAssessment> => {
+  return post('/api/assessments', params)
+    .then((res: HttpResponse) => res.assessment);
+};
+
+export const updateAssessmentScore = (
+  id: number,
+  questionId: number,
+  score: number
+): Promise<IAssessmentScore> => {
+  return post(`/api/assessments/${id}/questions/${questionId}/score`, { score })
+    .then((res: HttpResponse) => res.assessmentScore);
 };
 
 export const fetchDepressionQuestions = (): Promise<IQuestion[]> => {

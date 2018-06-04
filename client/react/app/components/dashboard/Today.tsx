@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import * as moment from 'moment';
+import { values } from 'lodash';
 import { all, resolve } from 'bluebird';
 import NavBar from '../navbar';
 import TodayProgressBar from './TodayProgressBar';
@@ -18,6 +19,12 @@ import { Entry, createEntry } from '../../helpers/entries';
 import { Task, calculateScore } from '../../helpers/tasks';
 import { IChallenge, toggleChallengeByDate } from '../../helpers/challenges';
 import { IMood } from '../../helpers/mood';
+import {
+  IAssessment,
+  AssessmentType,
+  createAssessment,
+  fetchAssessmentsByDate
+} from '../../helpers/assessment';
 import { AppState, SelectedState, keyifyDate } from '../../helpers/utils';
 import {
   getScorecardByDate,
@@ -25,6 +32,7 @@ import {
   getEntryByDate,
   getChallengesByDate,
   getMoodByDate,
+  getAssessmentsByDate,
   setMoodByDate,
   toggleTask,
   selectDate
@@ -37,12 +45,14 @@ const mapStateToProps = (state: AppState) => {
     selected,
     scorecards,
     checklists,
+    assessments,
     entries,
     challenges,
     moods
   } = state;
   const { byDate: scorecardsByDate } = scorecards;
   const { byDate: checklistsByDate } = checklists;
+  const { byDate: assessmentsByDate } = assessments;
   const { byDate: entriesByDate } = entries;
   const { byDate: challengeByDate } = challenges;
   const { byDate: moodsByDate } = moods;
@@ -51,6 +61,7 @@ const mapStateToProps = (state: AppState) => {
     selected,
     scorecard: scorecardsByDate[today],
     checklist: checklistsByDate[today],
+    assessments: assessmentsByDate[today],
     entry: entriesByDate[today],
     challenges: challengeByDate[today],
     mood: moodsByDate[today]
@@ -64,6 +75,7 @@ interface TodayProps extends RouteComponentProps<{}> {
   entry: Entry;
   mood: IMood;
   challenges: IChallenge[];
+  assessments: { [type: string]: IAssessment };
   dispatch: Dispatch<any|Promise<any>>;
 }
 
@@ -96,19 +108,25 @@ class Today extends React.Component<TodayProps, TodayState> {
     return all([
       dispatch(getScorecardByDate(today)),
       dispatch(getChecklistByDate(today)),
-      dispatch(getEntryByDate(today)),
-      dispatch(getChallengesByDate(today)),
-      dispatch(getMoodByDate(today))
+      dispatch(getEntryByDate(today))
     ])
       .then(() => {
-        const { scorecard, checklist, entry, mood } = this.props;
+        return all([
+          dispatch(getChallengesByDate(today)),
+          dispatch(getMoodByDate(today)),
+          dispatch(getAssessmentsByDate(today))
+        ]);
+      })
+      .then(() => {
+        const { scorecard, checklist, entry, mood, assessments } = this.props;
 
         return dispatch(selectDate({
           scorecard,
           checklist,
           entry,
           mood,
-          date
+          date,
+          assessments
         }));
       })
       .then(() => fetchProgressToday())
@@ -152,6 +170,25 @@ class Today extends React.Component<TodayProps, TodayState> {
     return createNewChecklist(params)
       .then(({ id: checklistId }) => {
         return history.push(`/checklist/${checklistId}`);
+      });
+  }
+
+  createNewAssessment(
+    assessment: IAssessment,
+    date: moment.Moment,
+    type: AssessmentType
+  ) {
+    if (assessment && assessment.id) return resolve();
+
+    const { history } = this.props;
+    const params = { type, date: date.format('YYYY-MM-DD') };
+
+    return createAssessment(params)
+      .then(({ id: assessmentId }) => {
+        return history.push(`/assessment/${assessmentId}`);
+      })
+      .catch(err => {
+        console.log('Error creating assessment!', err);
       });
   }
 
@@ -233,6 +270,7 @@ class Today extends React.Component<TodayProps, TodayState> {
                 handleMoodSelected={this.handleMoodSelected.bind(this)}
                 handleScorecardClicked={this.createNewScorecard.bind(this)}
                 handleChecklistClicked={this.createNewChecklist.bind(this)}
+                handleAssessmentClicked={this.createNewAssessment.bind(this)}
                 handleEntryClicked={this.createNewEntry.bind(this)} />
             </div>
 

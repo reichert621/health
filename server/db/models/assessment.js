@@ -1,11 +1,15 @@
-const { first, groupBy, isNumber } = require('lodash');
+const { first, groupBy, isNumber, includes } = require('lodash');
 const moment = require('moment');
 const knex = require('../knex');
 const AssessmentQuestion = require('./assessment_question');
 const UserAssessment = require('./user_assessment');
 const UserAssessmentScore = require('./user_assessment_score');
 
-const { DEPRESSION, ANXIETY, WELL_BEING } = AssessmentQuestion.types;
+const AssessmentTypes = {
+  DEPRESSION: 'depression',
+  ANXIETY: 'anxiety',
+  WELL_BEING: 'wellbeing'
+};
 
 const Assessment = () => knex('assessments');
 
@@ -21,6 +25,18 @@ const findOne = (where = {}) => {
 
 const findById = (id, where = {}) => {
   return findOne({ ...where, id });
+};
+
+const findByType = (type) => {
+  const types = Object.values(AssessmentTypes);
+
+  if (!includes(types, type)) {
+    const err = new Error(`Type ${type} must be valid type (${types})`);
+
+    return Promise.reject(err);
+  }
+
+  return findOne({ type });
 };
 
 const create = (params) => {
@@ -52,15 +68,15 @@ const fetchQuestionsByType = (type) => {
 };
 
 const fetchDepressionQuestions = () => {
-  return fetchQuestionsByType(DEPRESSION);
+  return fetchQuestionsByType(AssessmentTypes.DEPRESSION);
 };
 
 const fetchAnxietyQuestions = () => {
-  return fetchQuestionsByType(ANXIETY);
+  return fetchQuestionsByType(AssessmentTypes.ANXIETY);
 };
 
 const fetchWellBeingQuestions = () => {
-  return fetchQuestionsByType(WELL_BEING);
+  return fetchQuestionsByType(AssessmentTypes.WELL_BEING);
 };
 
 const fetchUserAssessmentScores = (userId, where = {}) => {
@@ -80,14 +96,15 @@ const fetchUserAssessmentScoresById = (userAssessmentId, userId) => {
   return fetchUserAssessmentScores(userId, { 'ua.id': userAssessmentId });
 };
 
-const formatAssessment = (date, questions, scores) => {
+const formatAssessment = (assessment, questions, scores = []) => {
+  const { id, type, title, date } = assessment;
   const scoresByQuestionId = scores.reduce((map, s) => {
     return { ...map, [s.assessmentQuestionId]: s };
   }, {});
 
   const questionsWithScores = questions.map(question => {
-    const { id } = question;
-    const s = scoresByQuestionId[id] || null;
+    const { id: questionId } = question;
+    const s = scoresByQuestionId[questionId] || null;
 
     if (s && isNumber(s.score)) {
       return { ...question, score: s.score, assessmentScoreId: s.id };
@@ -97,6 +114,9 @@ const formatAssessment = (date, questions, scores) => {
   });
 
   return {
+    id,
+    type,
+    title,
     date: moment.utc(date).format('YYYY-MM-DD'),
     questions: questionsWithScores,
     points: questionsWithScores.reduce((total, { score }) => {
@@ -107,17 +127,35 @@ const formatAssessment = (date, questions, scores) => {
 
 const fetchUserAssessmentsByType = (userId, type) => {
   return Promise.all([
+    UserAssessment.fetchByType(type, userId),
     fetchQuestionsByType(type),
     fetchUserAssessmentScoresByType(type, userId)
   ])
-    .then(([questions, scores]) => {
-      const assessments = groupBy(scores, ({ date }) => {
+    .then(([assessments, questions, scores]) => {
+      const scoresByDate = groupBy(scores, ({ date }) => {
         return moment.utc(date).format('YYYY-MM-DD');
       });
 
-      return Object.keys(assessments).map(date => {
-        return formatAssessment(date, questions, assessments[date]);
+      return assessments.map(assessment => {
+        const { date } = assessment;
+        const utc = moment.utc(date).format('YYYY-MM-DD');
+        const assessmentScores = scoresByDate[utc];
+
+        return formatAssessment(assessment, questions, assessmentScores);
       });
+    });
+};
+
+const fetchUserAssessments = (userId) => {
+  const { DEPRESSION, ANXIETY, WELL_BEING } = AssessmentTypes;
+
+  return Promise.all([
+    fetchUserAssessmentsByType(userId, DEPRESSION),
+    fetchUserAssessmentsByType(userId, ANXIETY),
+    fetchUserAssessmentsByType(userId, WELL_BEING)
+  ])
+    .then(([depression, anxiety, wellbeing]) => {
+      return { depression, anxiety, wellbeing };
     });
 };
 
@@ -127,10 +165,37 @@ const fetchUserAssessmentById = async (userAssessmentId, userId) => {
   if (!assessment) return null;
 
   const scores = await fetchUserAssessmentScoresById(userAssessmentId, userId);
-  const { date, type, title } = assessment;
+  const { type } = assessment;
   const questions = await fetchQuestionsByType(type);
 
-  return formatAssessment(date, questions, scores);
+  return formatAssessment(assessment, questions, scores);
+};
+
+const fetchUserAssessmentsByDate = async (date, userId) => {
+  const userAssessments = await UserAssessment.fetchByDate(date);
+  const ids = userAssessments.map(a => a.id);
+  const assessments = await Promise.all(
+    ids.map(id => fetchUserAssessmentById(id, userId))
+  );
+
+  return assessments.reduce((mappings, assessment) => {
+    const { type } = assessment;
+
+    return { ...mappings, [type]: assessment };
+  }, {});
+};
+
+const findOrCreateUserAssessment = (type, date, userId) => {
+  return findByType(type)
+    .then(assessment => {
+      const assessmentId = assessment && assessment.id;
+
+      if (!assessmentId) {
+        throw new Error(`Invalid assessment type ${type}`);
+      }
+
+      return UserAssessment.findOrCreate({ assessmentId, date }, userId);
+    });
 };
 
 const updateScore = (id, questionId, score, userId) => {
@@ -152,6 +217,9 @@ module.exports = {
   fetchAnxietyQuestions,
   fetchWellBeingQuestions,
   fetchUserAssessmentsByType,
+  fetchUserAssessments,
   fetchUserAssessmentById,
+  fetchUserAssessmentsByDate,
+  findOrCreateUserAssessment,
   updateScore
 };

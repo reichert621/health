@@ -6,8 +6,13 @@ import { SelectedState, formatPoints, isDateToday } from '../../helpers/utils';
 import { Task, calculateScore } from '../../helpers/tasks';
 import { Entry } from '../../helpers/entries';
 import { IScorecard } from '../../helpers/scorecard';
-import { IChecklist } from '../../helpers/checklist';
+import { IChecklist, IQuestion } from '../../helpers/checklist';
 import { IMood } from '../../helpers/mood';
+import {
+  IAssessment,
+  IAssessmentsByType,
+  AssessmentType
+} from '../../helpers/assessment';
 import MoodSelector from './MoodSelector';
 
 interface CategorySubtasksProps {
@@ -115,30 +120,73 @@ const DashboardScorecardPreview = ({
 
 interface ChecklistPreviewProps {
   checklist: IChecklist;
+  assessments: any; // FIXME
   selectedMood: IMood;
   handleMoodSelected: (mood: IMood) => Promise<any>;
-  handleClick: (e: any) => void;
+  handleWellnessClicked: (e: any) => any;
+  handleAnxietyClicked: (e: any) => any;
+  handleDepressionClicked: (e: any) => any;
 }
 
-const DashboardChecklistPreview = ({
-  checklist = {} as IChecklist,
-  selectedMood,
-  handleMoodSelected,
-  handleClick
-}: ChecklistPreviewProps) => {
-  const { id: checklistId, questions = [], points } = checklist;
-  const isComplete = isArray(questions) && questions.length && every(
+const ASSESSMENT_QUESTION_OPTIONS = 4;
+
+const isAssessmentComplete = (questions: IQuestion[]) => {
+  return isArray(questions) && questions.length && every(
     questions,
     q => isNumber(q.score)
   );
+};
+
+const getAssessmentPercentage = (points: number, questions: IQuestion[]) => {
+  if (!points || !questions || !questions.length) {
+    return 0;
+  }
+
+  const total = questions.length * ASSESSMENT_QUESTION_OPTIONS;
+
+  return (points / total) * 100;
+};
+
+const DashboardChecklistPreview = ({
+  checklist = {} as IChecklist,
+  assessments = {} as any, // FIXME
+  selectedMood,
+  handleMoodSelected,
+  handleWellnessClicked,
+  handleAnxietyClicked,
+  handleDepressionClicked
+}: ChecklistPreviewProps) => {
+  const {
+    id: checklistId,
+    questions: checklistQuestions = [],
+    points: checklistPoints
+  } = checklist;
+  const { wellbeing = {}, anxiety = {}, depression = {} } = assessments;
+  const {
+    id: wellBeingId,
+    questions: wellBeingQuestions = [],
+    points: wellBeingPoints
+  } = wellbeing;
+  const {
+    id: anxietyId,
+    questions: anxietyQuestions = [],
+    points: anxietyPoints
+  } = anxiety;
+  const checklistPercentage = getAssessmentPercentage(checklistPoints, checklistQuestions);
+  const wellBeingPercentage = getAssessmentPercentage(wellBeingPoints, wellBeingQuestions);
+  const anxietyPercentage = getAssessmentPercentage(anxietyPoints, anxietyQuestions);
+  const isChecklistComplete = isAssessmentComplete(checklistQuestions);
+  const isWellBeingComplete = isAssessmentComplete(wellBeingQuestions);
+  const isAnxietyComplete = isAssessmentComplete(anxietyQuestions);
+  const isAllComplete = (isChecklistComplete && isWellBeingComplete && isAnxietyComplete);
 
   return (
     <div className='dashboard-checklist-preview'>
       <div className='clearfix'>
         <h4 className='dashboard-preview-header section-header pull-left'>
-          Mood
+          Mental Health
           {
-            (isComplete || selectedMood) ?
+            (isAllComplete || selectedMood) ?
               <img className='preview-icon checkmark' src='assets/checkmark.svg' /> :
               null
           }
@@ -149,20 +197,50 @@ const DashboardChecklistPreview = ({
         How are you feeling today?
       </div>
 
-      <MoodSelector
-        selectedMood={selectedMood}
-        handleMoodSelected={handleMoodSelected} />
+      <div className='clearfix dashboard-depression-container'>
+        <div className={`pull-left`}>
+          {isWellBeingComplete
+            ? `${wellBeingPercentage.toFixed(1)}% well-being`
+            : 'Well-being'}
+        </div>
 
-      <div className='cleafix dashboard-depression-container'>
-        <div className={`pull-left ${!isComplete && 'hidden'}`}>
-          {points} depression {points === 1 ? 'point' : 'points'}
+        <Link className='text-blue pull-right'
+          to={wellBeingId ? `/assessment/${wellBeingId}` : '#'}
+          onClick={handleWellnessClicked}>
+          {isWellBeingComplete ? 'View results' : 'Take assessment'}
+          <img className={`forward-icon`}
+            src='assets/back-arrow.svg' />
+        </Link>
+      </div>
+
+      <div className='clearfix dashboard-depression-container'>
+        <div className={`pull-left`}>
+          {isAnxietyComplete
+            ? `${anxietyPercentage.toFixed(1)}% anxiety`
+            : 'Anxiety'}
+        </div>
+
+        <Link className='text-blue pull-right'
+          to={anxietyId ? `/assessment/${anxietyId}` : '#'}
+          onClick={handleAnxietyClicked}>
+          {isAnxietyComplete ? 'View results' : 'Take assessment'}
+          <img className={`forward-icon`}
+            src='assets/back-arrow.svg' />
+        </Link>
+      </div>
+
+      <div className='clearfix dashboard-depression-container'>
+        <div className={`pull-left`}>
+          {isChecklistComplete
+            ? `${checklistPercentage.toFixed(1)}% depression`
+            : 'Depression'}
         </div>
 
         <Link className='text-blue pull-right'
           to={checklistId ? `/checklist/${checklistId}` : '#'}
-          onClick={handleClick}>
-          {isComplete ? 'View' : 'Take the questionnaire'}
-          <img className={`forward-icon ${checklistId ? 'hidden' : ''}`}
+          onClick={handleDepressionClicked}>
+          {isChecklistComplete ? 'View results' : 'Take assessment'}
+          <img className={`forward-icon`}
             src='assets/back-arrow.svg' />
         </Link>
       </div>
@@ -218,6 +296,7 @@ interface DashboardPreviewProps {
   handleScorecardClicked: (scorecard: IScorecard, date: moment.Moment) => void;
   handleChecklistClicked: (checklist: IChecklist, date: moment.Moment) => void;
   handleEntryClicked: (entry: Entry, date: moment.Moment) => void;
+  handleAssessmentClicked: (assessment: IAssessment, date: moment.Moment, type: AssessmentType) => void;
   handleMoodSelected?: (mood: IMood) => Promise<any>;
 }
 
@@ -227,10 +306,20 @@ const DashboardPreview = ({
   handleScorecardClicked,
   handleChecklistClicked,
   handleEntryClicked,
+  handleAssessmentClicked,
   handleMoodSelected
 }: DashboardPreviewProps) => {
-  const { scorecard, checklist, entry, mood, date = moment() } = selected;
+  const { WELL_BEING, ANXIETY, DEPRESSION } = AssessmentType;
+  const {
+    scorecard,
+    checklist,
+    entry,
+    mood,
+    assessments = {},
+    date = moment()
+  } = selected;
   const isToday = isDateToday(date);
+  const { wellbeing, anxiety, depression } = assessments;
 
   if (isLoading) {
     // TODO: handle loading state
@@ -251,9 +340,12 @@ const DashboardPreview = ({
 
       <DashboardChecklistPreview
         checklist={checklist}
+        assessments={assessments}
         selectedMood={mood}
         handleMoodSelected={handleMoodSelected}
-        handleClick={() => handleChecklistClicked(checklist, date)} />
+        handleWellnessClicked={() => handleAssessmentClicked(wellbeing, date, WELL_BEING)}
+        handleAnxietyClicked={() => handleAssessmentClicked(anxiety, date, ANXIETY)}
+        handleDepressionClicked={() => handleChecklistClicked(checklist, date)} />
 
       <DashboardEntryPreview
         entry={entry}

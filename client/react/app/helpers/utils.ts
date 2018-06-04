@@ -8,11 +8,13 @@ import { Entry } from './entries';
 import { IChallenge } from './challenges';
 import { IMood } from './mood';
 import { ReportingStats } from './reporting';
+import { IAssessment } from './assessment';
 
 export interface SelectedState {
   date?: moment.Moment;
   checklist: IChecklist;
   scorecard: IScorecard;
+  assessments: { [type: string]: IAssessment };
   entry: Entry;
   mood: IMood;
 }
@@ -39,6 +41,7 @@ export interface AppState {
   currentUser?: IUser;
   currentView: string;
   checklists: MappedItems<IChecklist>;
+  assessments: MappedItems<any>;
   scorecards: MappedItems<IScorecard>;
   entries: MappedItems<Entry>;
   moods: MappedItems<IMood>;
