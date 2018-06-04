@@ -56,7 +56,7 @@ class AssessmentContainer extends React.Component<
         });
       })
       .catch(err => {
-        console.log('Error fetching questions!', err);
+        console.log('Error fetching assessment!', err);
       });
   }
 
@@ -71,7 +71,6 @@ class AssessmentContainer extends React.Component<
 
     return updateAssessmentScore(assessmentId, questionId, score)
       .then(res => {
-        console.log('updated?', res);
         return this.setState({ questions: updates });
       })
       .catch(err => {
