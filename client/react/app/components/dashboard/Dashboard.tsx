@@ -13,6 +13,11 @@ import { IScorecard, fetchScorecard, createNewScorecard } from '../../helpers/sc
 import { IChecklist, createNewChecklist } from '../../helpers/checklist';
 import { Entry, createEntry } from '../../helpers/entries';
 import { IMood } from '../../helpers/mood';
+import {
+  IAssessment,
+  AssessmentType,
+  createAssessment
+} from '../../helpers/assessment';
 import { AppState, SelectedState, keyifyDate, getPastDates } from '../../helpers/utils';
 import {
   LIST_VIEW,
@@ -20,6 +25,7 @@ import {
   UPDATE_VIEW,
   getScorecards,
   getChecklists,
+  getAssessments,
   getEntries,
   getUserMoods,
   setMoodByDate,
@@ -33,12 +39,14 @@ const mapStateToProps = (state: AppState) => {
     selected,
     scorecards,
     checklists,
+    assessments,
     entries,
     challenges,
     moods
   } = state;
   const { byId: scorecardsById, byDate: scorecardsByDate } = scorecards;
   const { byId: checklistsById, byDate: checklistsByDate } = checklists;
+  const { byId: assessmentsById, byDate: assessmentsByDate } = assessments;
   const { byId: entriesById, byDate: entriesByDate } = entries;
   const { byDate: moodsByDate } = moods;
 
@@ -47,10 +55,12 @@ const mapStateToProps = (state: AppState) => {
     selected,
     scorecardsByDate,
     checklistsByDate,
+    assessmentsByDate,
     entriesByDate,
     moodsByDate,
     scorecards: values(scorecardsById),
     checklists: values(checklistsById),
+    assessments: values(assessmentsById),
     entries: values(entriesById),
     moods: values(moodsByDate)
   };
@@ -61,10 +71,12 @@ interface DashboardProps extends RouteComponentProps<{}> {
   selected: SelectedState;
   scorecardsByDate: { [date: string]: IScorecard; };
   checklistsByDate: { [date: string]: IChecklist; };
+  assessmentsByDate: { [date: string]: { [type: string]: IAssessment }; };
   entriesByDate: { [date: string]: Entry; };
   moodsByDate: { [date: string]: IMood; };
   scorecards: IScorecard[];
   checklists: IChecklist[];
+  assessments: IAssessment[];
   entries: Entry[];
   moods: IMood[];
   dispatch: Dispatch<Promise<any>>;
@@ -95,6 +107,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     return all([
       dispatch(getScorecards()),
       dispatch(getChecklists()),
+      dispatch(getAssessments()),
       dispatch(getEntries()),
       dispatch(getUserMoods())
     ])
@@ -113,6 +126,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     const {
       scorecardsByDate,
       checklistsByDate,
+      assessmentsByDate,
       entriesByDate,
       moodsByDate
     } = this.props;
@@ -120,6 +134,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     const key = keyifyDate(date);
     const scorecard = scorecardsByDate[key];
     const checklist = checklistsByDate[key];
+    const assessments = assessmentsByDate[key];
     const entry = entriesByDate[key];
     const mood = moodsByDate[key];
 
@@ -128,6 +143,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         date,
         scorecard,
         checklist,
+        assessments,
         entry,
         mood
       }));
@@ -140,6 +156,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         return dispatch(selectDate({
           date,
           checklist,
+          assessments,
           entry,
           mood,
           scorecard: extend(scorecard, { tasks })
@@ -179,6 +196,25 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     return createNewChecklist(params)
       .then(({ id: checklistId }) => {
         return history.push(`/checklist/${checklistId}`);
+      });
+  }
+
+  createNewAssessment(
+    assessment: IAssessment,
+    date: moment.Moment,
+    type: AssessmentType
+  ) {
+    if (assessment && assessment.id) return resolve();
+
+    const { history } = this.props;
+    const params = { type, date: date.format('YYYY-MM-DD') };
+
+    return createAssessment(params)
+      .then(({ id: assessmentId }) => {
+        return history.push(`/assessment/${assessmentId}`);
+      })
+      .catch(err => {
+        console.log('Error creating assessment!', err);
       });
   }
 
@@ -226,6 +262,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       selected = {} as SelectedState,
       scorecards = [],
       checklists = [],
+      assessments = [],
       moodsByDate
     } = this.props;
     const showChart = (currentView === CHART_VIEW);
@@ -249,6 +286,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
                 handleMoodSelected={this.handleMoodSelected.bind(this)}
                 handleScorecardClicked={this.createNewScorecard.bind(this)}
                 handleChecklistClicked={this.createNewChecklist.bind(this)}
+                handleAssessmentClicked={this.createNewAssessment.bind(this)}
                 handleEntryClicked={this.createNewEntry.bind(this)} />
             </div>
 
@@ -273,6 +311,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
                     dates={dates}
                     scorecards={scorecards}
                     checklists={checklists}
+                    assessments={assessments}
                     selected={selected}
                     handleDateSelected={this.handleDateSelected.bind(this)} />
               }

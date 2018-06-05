@@ -1,12 +1,6 @@
 const { first } = require('lodash');
 const knex = require('../knex');
 
-const types = {
-  DEPRESSION: 'depression',
-  ANXIETY: 'anxiety',
-  WELL_BEING: 'wellbeing'
-};
-
 const AssessmentQuestion = () => knex('assessment_questions');
 
 const fetch = (where = {}) => {
@@ -43,7 +37,6 @@ const destroy = (id) => {
 };
 
 module.exports = {
-  types,
   fetch,
   findById,
   create,

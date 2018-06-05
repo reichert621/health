@@ -59,6 +59,7 @@ export interface ReportingStats {
   checklistStats: number[][];
   scorecard: number[][];
   scorecardStats: number[][];
+  assessmentStats: { [type: string]: number[][]; };
   completedChecklists: ReportingDatedItem[];
   completedScorecards: ReportingDatedItem[];
   checklistScoresByDay: ScoreByDay;

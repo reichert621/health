@@ -71,7 +71,11 @@ api.get('/tasks/suggestions', isAuthenticated, tasks.fetchSuggestions);
 api.get('/tasks/defaults', tasks.fetchDefaults);
 api.post('/tasks/suggestions', isAuthenticated, tasks.createSuggestedTask);
 // Assessments
-api.get('/assessments', assessments.fetch);
+api.get('/assessments', isAuthenticated, assessments.fetch);
+api.get('/assessments/:id', isAuthenticated, assessments.findById);
+api.get('/assessments/date/:date', isAuthenticated, assessments.fetchByDate);
+api.post('/assessments', isAuthenticated, assessments.findOrCreate);
+api.post('/assessments/:id/questions/:questionId/score', isAuthenticated, assessments.updateScore);
 api.get('/assessments/depression', assessments.depression);
 api.get('/assessments/anxiety', assessments.anxiety);
 api.get('/assessments/well-being', assessments.wellBeing);
@@ -117,6 +121,7 @@ api.post('/challenges/:id/unsubscribe', isAuthenticated, challenges.unsubscribe)
 api.get('/stats/all', isAuthenticated, reporting.fetchAllStats);
 api.get('/stats/checklists', isAuthenticated, checklists.fetchStats);
 api.get('/stats/scorecards', isAuthenticated, scorecards.fetchStats);
+api.get('/stats/assessments', isAuthenticated, assessments.fetchStats);
 api.get('/stats/top-tasks', isAuthenticated, tasks.fetchTopSelected);
 api.get('/stats/completed-checklists', isAuthenticated, checklists.fetchCompletedDays);
 api.get('/stats/completed-scorecards', isAuthenticated, scorecards.fetchCompletedDays);

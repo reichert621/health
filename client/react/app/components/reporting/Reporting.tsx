@@ -50,7 +50,9 @@ class Reporting extends React.Component<ReportingProps> {
       totalScoreOverTime = [],
       taskAbilityStats = {},
       // Task stats
-      topTasks = []
+      topTasks = [],
+      // Assessment stats
+      assessmentStats = {}
     } = stats;
 
     const highImpactTasks = checklistScoresByTask.slice(0, 5);
@@ -87,7 +89,8 @@ class Reporting extends React.Component<ReportingProps> {
             <div className='reporting-graph-container reporting-component pull-right'>
               <ReportingChart
                 checklistStats={checklistStats}
-                scorecardStats={scorecardStats} />
+                scorecardStats={scorecardStats}
+                assessmentStats={assessmentStats} />
             </div>
           </div>
 

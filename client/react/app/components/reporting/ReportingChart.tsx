@@ -7,6 +7,7 @@ import './Reporting.less';
 interface ChartProps {
   checklistStats: number[][];
   scorecardStats: number[][];
+  assessmentStats?: { [type: string]: number[][]; };
   onClickPoint?: (timestamp: number) => void;
 }
 
@@ -31,9 +32,15 @@ class ReportingChart extends React.Component<ChartProps> {
   render() {
     const {
       checklistStats = [],
+      assessmentStats = {},
       scorecardStats = [],
       onClickPoint = noop
     } = this.props;
+    const {
+      wellbeing = [],
+      anxiety = [],
+      depression = []
+    } = assessmentStats;
 
     const config = {
       title: { text: '' },
@@ -82,13 +89,23 @@ class ReportingChart extends React.Component<ChartProps> {
         {
           id: 'checklist',
           name: 'Depression',
-          color: '#5E5E5E',
+          color: '#979797',
           data: checklistStats
         }, {
           id: 'scorecard',
           name: 'Productivity',
-          color: '#33A2CC',
+          color: '#2b2b2b',
           data: scorecardStats
+        }, {
+          id: 'anxiety',
+          name: 'Anxiety',
+          color: '#5E5E5E',
+          data: anxiety
+        }, {
+          id: 'wellbeing',
+          name: 'Well-Being',
+          color: '#33A2CC',
+          data: wellbeing
         }
       ]
     };

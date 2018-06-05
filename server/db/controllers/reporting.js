@@ -1,4 +1,4 @@
-const { ScoreCard, Checklist, Task } = require('../index');
+const { ScoreCard, Checklist, Task, Assessment } = require('../index');
 const { handleError } = require('./utils');
 
 module.exports = {
@@ -6,20 +6,23 @@ module.exports = {
     const userId = req.user.id;
 
     return Promise.all([
+      // Checklists
       Checklist.fetchStats(userId),
       Checklist.fetchCompletedDays(userId),
       Checklist.fetchScoresByDayOfWeek(userId),
       Checklist.fetchScoreRangeFrequency(userId),
       Checklist.fetchQuestionStats(userId),
       Checklist.fetchScoresByTask(userId),
-
+      // Scorecards
       ScoreCard.fetchStats(userId),
       ScoreCard.fetchCompletedDays(userId),
       ScoreCard.fetchScoresByDayOfWeek(userId),
       ScoreCard.fetchTotalScoreOverTime(userId),
       ScoreCard.fetchAbilityStats(userId),
-
-      Task.fetchTopSelected(userId)
+      // Tasks
+      Task.fetchTopSelected(userId),
+      // Assessments
+      Assessment.fetchStats(userId)
     ])
       .then(result => {
         const [
@@ -37,7 +40,9 @@ module.exports = {
           totalScoreOverTime,
           taskAbilityStats,
           // Task stats
-          topTasks
+          topTasks,
+          // Assessment stats
+          assessmentStats
         ] = result;
 
         const stats = {
@@ -55,7 +60,9 @@ module.exports = {
           totalScoreOverTime,
           taskAbilityStats,
           // Task stats
-          topTasks
+          topTasks,
+          // Assessment stats
+          assessmentStats
         };
 
         return res.json({ stats });
