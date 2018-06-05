@@ -30,6 +30,14 @@ module.exports = {
       .catch(err => handleError(res, err));
   },
 
+  fetchStats: (req, res) => {
+    const { id: userId } = req.user;
+
+    return Assessment.fetchStats(userId)
+      .then(stats => res.json({ stats }))
+      .catch(err => handleError(res, err));
+  },
+
   findById: (req, res) => {
     const { params, user } = req;
     const { id: userAssessmentId } = params;

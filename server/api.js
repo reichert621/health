@@ -121,6 +121,7 @@ api.post('/challenges/:id/unsubscribe', isAuthenticated, challenges.unsubscribe)
 api.get('/stats/all', isAuthenticated, reporting.fetchAllStats);
 api.get('/stats/checklists', isAuthenticated, checklists.fetchStats);
 api.get('/stats/scorecards', isAuthenticated, scorecards.fetchStats);
+api.get('/stats/assessments', isAuthenticated, assessments.fetchStats);
 api.get('/stats/top-tasks', isAuthenticated, tasks.fetchTopSelected);
 api.get('/stats/completed-checklists', isAuthenticated, checklists.fetchCompletedDays);
 api.get('/stats/completed-scorecards', isAuthenticated, scorecards.fetchCompletedDays);

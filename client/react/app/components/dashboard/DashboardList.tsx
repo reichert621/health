@@ -4,7 +4,8 @@ import {
   SelectedState,
   keyifyDate,
   formatPoints,
-  mapByDate
+  mapByDate,
+  getFormattedPercentage
 } from '../../helpers/utils';
 import { IScorecard } from '../../helpers/scorecard';
 import { IChecklist } from '../../helpers/checklist';
@@ -45,7 +46,9 @@ const DashboardList = ({
         <tr>
           <th>Date</th>
           <th>Productivity</th>
-          <th>Mental Health</th>
+          <th>Well-Being</th>
+          <th>Anxiety</th>
+          <th>Depression</th>
         </tr>
       </thead>
       <tbody>
@@ -69,10 +72,19 @@ const DashboardList = ({
                 </td>
                 <td>{scorecard ? formatPoints(scorecard.points) : '--'}</td>
                 <td>
-                  {wellBeing ? `${wellBeing.points}w ` : ''}
-                  {anxiety ? `${anxiety.points}a ` : ''}
-                  {checklist ? `${checklist.points}d` : ''}
-                  {(!wellBeing && !anxiety && !checklist) ? '--' : ''}
+                  {wellBeing
+                    ? `${getFormattedPercentage(wellBeing.points, 80)}%`
+                    : '--'}
+                </td>
+                <td>
+                  {anxiety
+                    ? `${getFormattedPercentage(anxiety.points, 100)}%`
+                    : '--'}
+                </td>
+                <td>
+                  {checklist
+                    ? `${getFormattedPercentage(checklist.points, 100)}%`
+                    : '--'}
                 </td>
               </tr>
             );

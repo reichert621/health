@@ -125,7 +125,7 @@ const formatAssessment = (assessment, questions, scores = []) => {
   };
 };
 
-const fetchUserAssessmentsByType = (userId, type) => {
+const fetchUserAssessmentsByType = (userId, type, where = {}) => {
   return Promise.all([
     UserAssessment.fetchByType(type, userId),
     fetchQuestionsByType(type),
@@ -146,13 +146,13 @@ const fetchUserAssessmentsByType = (userId, type) => {
     });
 };
 
-const fetchUserAssessments = (userId) => {
+const fetchUserAssessments = (userId, where = {}) => {
   const { DEPRESSION, ANXIETY, WELL_BEING } = AssessmentTypes;
 
   return Promise.all([
-    fetchUserAssessmentsByType(userId, DEPRESSION),
-    fetchUserAssessmentsByType(userId, ANXIETY),
-    fetchUserAssessmentsByType(userId, WELL_BEING)
+    fetchUserAssessmentsByType(userId, DEPRESSION, where),
+    fetchUserAssessmentsByType(userId, ANXIETY, where),
+    fetchUserAssessmentsByType(userId, WELL_BEING, where)
   ])
     .then(([depression, anxiety, wellbeing]) => {
       return { depression, anxiety, wellbeing };
@@ -207,6 +207,28 @@ const updateScore = (id, questionId, score, userId) => {
   return UserAssessmentScore.createOrUpdate(where, { score }, userId);
 };
 
+const formatStats = (assessments = []) => {
+  return assessments
+    .sort((x, y) => Number(new Date(x.date)) - Number(new Date(y.date)))
+    .map(assessment => {
+      const { date, points } = assessment;
+      const timestamp = Number(new Date(date));
+
+      return [timestamp, points];
+    });
+};
+
+const fetchStats = (userId) => {
+  return fetchUserAssessments(userId)
+    .then(({ wellbeing = [], anxiety = [], depression = [] }) => {
+      return {
+        wellbeing: formatStats(wellbeing),
+        anxiety: formatStats(anxiety),
+        depression: formatStats(depression)
+      };
+    });
+};
+
 module.exports = {
   fetch,
   findById,
@@ -221,5 +243,6 @@ module.exports = {
   fetchUserAssessmentById,
   fetchUserAssessmentsByDate,
   findOrCreateUserAssessment,
-  updateScore
+  updateScore,
+  fetchStats
 };
