@@ -87,19 +87,20 @@ class ReportingChart extends React.Component<ChartProps> {
       credits: false,
       series: [
         {
-          id: 'checklist',
-          name: 'Depression',
-          color: '#979797',
-          data: checklistStats
-        }, {
           id: 'scorecard',
           name: 'Productivity',
-          color: '#2b2b2b',
+          color: '#91cde4',
           data: scorecardStats
+        },
+        {
+          id: 'checklist',
+          name: 'Depression',
+          color: '#eaeaea',
+          data: checklistStats
         }, {
           id: 'anxiety',
           name: 'Anxiety',
-          color: '#5E5E5E',
+          color: '#2b2b2b',
           data: anxiety
         }, {
           id: 'wellbeing',
