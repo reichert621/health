@@ -26,17 +26,13 @@ import {
   fetchAssessmentsByDate
 } from '../../helpers/assessment';
 import { AppState, SelectedState, keyifyDate } from '../../helpers/utils';
-import {
-  getScorecardByDate,
-  getChecklistByDate,
-  getEntryByDate,
-  getChallengesByDate,
-  getMoodByDate,
-  getAssessmentsByDate,
-  setMoodByDate,
-  toggleTask,
-  selectDate
-} from '../../reducers';
+import { selectDate } from '../../reducers/selected';
+import { getScorecardByDate, toggleTask } from '../../reducers/scorecards';
+import { getChecklistByDate } from '../../reducers/checklists';
+import { getChallengesByDate } from '../../reducers/challenges';
+import { getEntryByDate } from '../../reducers/entries';
+import { getAssessmentsByDate } from '../../reducers/assessments';
+import { getMoodByDate, setMoodByDate } from '../../reducers/moods';
 import './Dashboard.less';
 
 const mapStateToProps = (state: AppState) => {

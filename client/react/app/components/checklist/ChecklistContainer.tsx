@@ -9,7 +9,7 @@ import ChecklistOverview from './Checklist';
 import ChecklistFlow from './ChecklistFlow';
 import { IChecklist, IQuestion } from '../../helpers/checklist';
 import { AppState, formatPoints, isDateToday } from '../../helpers/utils';
-import { getChecklist, updateScore } from '../../reducers';
+import { getChecklist, updateScore } from '../../reducers/checklists';
 import './Checklist.less';
 
 interface ChecklistProps {

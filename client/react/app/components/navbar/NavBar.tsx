@@ -5,7 +5,7 @@ import { Dispatch } from 'redux';
 import { first } from 'lodash';
 import { IUser, logout } from '../../helpers/auth';
 import { AppState } from '../../helpers/utils';
-import { getCurrentUser } from '../../reducers';
+import { getCurrentUser } from '../../reducers/current-user';
 import './NavBar.less';
 
 interface NavDropdownProps {
