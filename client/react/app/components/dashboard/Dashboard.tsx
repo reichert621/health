@@ -19,18 +19,13 @@ import {
   createAssessment
 } from '../../helpers/assessment';
 import { AppState, SelectedState, keyifyDate, getPastDates } from '../../helpers/utils';
-import {
-  LIST_VIEW,
-  CHART_VIEW,
-  UPDATE_VIEW,
-  getScorecards,
-  getChecklists,
-  getAssessments,
-  getEntries,
-  getUserMoods,
-  setMoodByDate,
-  selectDate
-} from '../../reducers';
+import { LIST_VIEW, CHART_VIEW, UPDATE_VIEW } from '../../reducers/current-view';
+import { selectDate } from '../../reducers/selected';
+import { getScorecards } from '../../reducers/scorecards';
+import { getChecklists } from '../../reducers/checklists';
+import { getEntries } from '../../reducers/entries';
+import { getAssessments } from '../../reducers/assessments';
+import { getUserMoods, setMoodByDate } from '../../reducers/moods';
 import './Dashboard.less';
 
 const mapStateToProps = (state: AppState) => {
