@@ -31,7 +31,7 @@ interface ProgressBarProps {
 const ProgressBar = ({
   currentScore,
   averageScore,
-  topScore
+  topScore = 1
 }: ProgressBarProps) => {
   const minScore = 1;
   const max = currentScore > topScore ? currentScore : topScore;
