@@ -172,7 +172,7 @@ const fetchUserAssessmentById = async (userAssessmentId, userId) => {
 };
 
 const fetchUserAssessmentsByDate = async (date, userId) => {
-  const userAssessments = await UserAssessment.fetchByDate(date);
+  const userAssessments = await UserAssessment.fetchByDate(date, userId);
   const ids = userAssessments.map(a => a.id);
   const assessments = await Promise.all(
     ids.map(id => fetchUserAssessmentById(id, userId))

@@ -18,7 +18,7 @@ const fetchByType = (type, userId, where = {}) => {
     .select('a.type', 'a.title', 'ua.id', 'ua.date', 'ua.userId')
     .from('user_assessments as ua')
     .innerJoin('assessments as a', 'ua.assessmentId', 'a.id')
-    .where({ ...where, 'a.type': type });
+    .where({ ...where, 'a.type': type, 'ua.userId': userId });
 };
 
 // TODO: DRY up!
@@ -27,7 +27,7 @@ const fetchByDate = (date, userId, where = {}) => {
     .select('a.type', 'a.title', 'ua.id', 'ua.date', 'ua.userId')
     .from('user_assessments as ua')
     .innerJoin('assessments as a', 'ua.assessmentId', 'a.id')
-    .where({ ...where, 'ua.date': date });
+    .where({ ...where, 'ua.date': date, 'ua.userId': userId });
 };
 
 const findById = (id, userId, where = {}) => {
