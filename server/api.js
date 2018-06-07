@@ -72,13 +72,13 @@ api.get('/tasks/defaults', tasks.fetchDefaults);
 api.post('/tasks/suggestions', isAuthenticated, tasks.createSuggestedTask);
 // Assessments
 api.get('/assessments', isAuthenticated, assessments.fetch);
+api.get('/assessments/depression', assessments.depression);
+api.get('/assessments/anxiety', assessments.anxiety);
+api.get('/assessments/well-being', assessments.wellBeing);
 api.get('/assessments/:id', isAuthenticated, assessments.findById);
 api.get('/assessments/date/:date', isAuthenticated, assessments.fetchByDate);
 api.post('/assessments', isAuthenticated, assessments.findOrCreate);
 api.post('/assessments/:id/questions/:questionId/score', isAuthenticated, assessments.updateScore);
-api.get('/assessments/depression', assessments.depression);
-api.get('/assessments/anxiety', assessments.anxiety);
-api.get('/assessments/well-being', assessments.wellBeing);
 // Checklists
 api.get('/checklists', isAuthenticated, checklists.fetch);
 api.get('/checklists/:id', isAuthenticated, checklists.findById);
