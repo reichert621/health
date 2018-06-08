@@ -71,7 +71,8 @@ const findOrCreateByDate = (date, userId) => {
   const params = {
     date,
     title: date,
-    content: ''
+    content: '',
+    isPrivate: true
   };
 
   return findOrCreate(where, params, userId)
