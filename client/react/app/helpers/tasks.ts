@@ -30,7 +30,10 @@ export const getPointOptions = (): PointOption[] => {
     { value: '2 points', subvalue: 'Easy', points: 2 },
     { value: '4 points', subvalue: 'Medium', points: 4 },
     { value: '8 points', subvalue: 'Difficult', points: 8 },
-    { value: '16 points', subvalue: 'Very Difficult', points: 16 }
+    { value: '16 points', subvalue: 'Very Difficult', points: 16 },
+    { value: '24 points', subvalue: 'Extremely Difficult', points: 24 },
+    { value: '-1 points', subvalue: 'Avoid', points: -1 },
+    { value: '-4 points', subvalue: 'Strongly Avoid', points: -4 }
   ];
 };
 

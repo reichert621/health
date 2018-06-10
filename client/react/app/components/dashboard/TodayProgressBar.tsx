@@ -12,7 +12,7 @@ const colors: { [n: string]: string } = {
 const getWidth = (n: number, d: number): string => {
   const width = Math.floor((n / d) * 100);
 
-  return `${width}%`;
+  return `${width < 0 ? 0 : width}%`;
 };
 
 const getColor = (current: number, average: number, high: number) => {
