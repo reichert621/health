@@ -72,7 +72,7 @@ If you're scoring in the severe-to-extreme level of depression, I would highly e
 - Allow users to access historical data more easily
 - Build a mobile version of the app
 
-If you have any feature requests, bug reports, or any general feedback, feel free to submit them [here](https://github.com/reichert621/blog/issues) or email me at [reichertjalex@gmail.com](mailto:reichertjalex@gmail.com).
+If you have any feature requests, bug reports, or any general feedback, feel free to email me at [uprite.co@gmail.com](mailto:uprite.co@gmail.com).
 `;
 
 interface AboutState {
