@@ -7,7 +7,9 @@ const Tasks = () => knex('tasks');
 
 const merge = (x, y) => Object.assign({}, x, y);
 
-const isValidPointValue = (points) => [1, 2, 4, 8, 16].includes(points);
+const isValidPointValue = (points) => {
+  return [-4, -1, 1, 2, 4, 8, 16, 24].includes(points);
+};
 
 // TODO: clean this up or rename to `fetchWithCategory`
 const fetch = (where = {}, userId) =>
