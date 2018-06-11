@@ -96,7 +96,7 @@ class ReportingChart extends React.Component<ChartProps> {
           id: 'checklist',
           name: 'Depression',
           color: '#eaeaea',
-          data: checklistStats
+          data: depression
         }, {
           id: 'anxiety',
           name: 'Anxiety',

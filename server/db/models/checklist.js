@@ -9,6 +9,9 @@ const Assessment = require('./assessment');
 const UserAssessment = require('./user_assessment');
 const UserAssessmentScore = require('./user_assessment_score');
 
+// TODO: move to utils
+const toUtc = (date) => moment.utc(date).format('YYYY-MM-DD');
+
 // Depression levels
 const levels = {
   NONE: 'No depression',
@@ -61,7 +64,7 @@ const findById = async (id, userId, where = {}) => {
   const checklist = await findOne(merge(where, { id }), userId);
   const questions = await fetchQuestionScores(id, userId);
   const { date } = checklist;
-  const utc = moment.utc(date).format('YYYY-MM-DD');
+  const utc = toUtc(date);
   const points = questions.reduce((total, { score }) => {
     return isNumber(score) ? total + score : total;
   }, 0);
@@ -123,7 +126,7 @@ const findByDate = async (date, userId, where = {}) => {
 
   const { id: checklistId } = checklist;
   const questions = await fetchQuestionScores(checklistId, userId);
-  const utc = moment.utc(date).format('YYYY-MM-DD');
+  const utc = toUtc(date);
   const points = questions.reduce((total, { score }) => {
     return isNumber(score) ? total + score : total;
   }, 0);
@@ -142,7 +145,10 @@ const findOrCreateByDate = (date, userId) => {
 };
 
 const migrate = async (date, userId) => {
-  const checklist = await findOrCreateByDate(date, userId);
+  const checklist = await findByDate(date, userId);
+
+  if (!checklist) return null;
+
   const { questions: questionsWithScores = [] } = checklist;
   const questions = await Assessment.fetchDepressionQuestions();
   const { assessmentId } = first(questions);
@@ -166,6 +172,16 @@ const migrate = async (date, userId) => {
   });
 
   return Promise.all(scores);
+};
+
+const migrateByUser = (userId) => {
+  return fetch({}, userId)
+    .then(checklists => {
+      const dates = checklists.map(({ date }) => toUtc(date));
+      const promises = dates.map(date => migrate(date, userId));
+
+      return Promise.all(promises);
+    });
 };
 
 const update = (id, params, userId) =>
@@ -203,7 +219,7 @@ const fetchWithPoints = (where = {}, userId) => {
     .then(checklists => {
       const promises = checklists.map(checklist => {
         const { id, date } = checklist;
-        const utc = moment.utc(date).format('YYYY-MM-DD');
+        const utc = toUtc(date);
 
         return fetchQuestionScores(id, userId)
           .then(questions => {

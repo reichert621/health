@@ -117,6 +117,7 @@ const formatAssessment = (assessment, questions, scores = []) => {
     id,
     type,
     title,
+    _date: date,
     date: moment.utc(date).format('YYYY-MM-DD'),
     questions: questionsWithScores,
     points: questionsWithScores.reduce((total, { score }) => {
@@ -211,8 +212,8 @@ const formatStats = (assessments = []) => {
   return assessments
     .sort((x, y) => Number(new Date(x.date)) - Number(new Date(y.date)))
     .map(assessment => {
-      const { date, points } = assessment;
-      const timestamp = Number(new Date(date));
+      const { _date, points } = assessment;
+      const timestamp = Number(new Date(_date));
 
       return [timestamp, points];
     });

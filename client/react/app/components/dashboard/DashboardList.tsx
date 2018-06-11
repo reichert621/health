@@ -58,6 +58,7 @@ const DashboardList = ({
             const isSelected = (key === selectedKey);
             const wellBeing = wellBeingByDate[key];
             const anxiety = anxietyByDate[key];
+            const depression = depressionByDate[key];
             const scorecard = scorecardsByDate[key];
             const checklist = checklistsByDate[key];
 
@@ -82,8 +83,8 @@ const DashboardList = ({
                     : '--'}
                 </td>
                 <td>
-                  {checklist
-                    ? `${getFormattedPercentage(checklist.points, 100)}%`
+                  {depression
+                    ? `${getFormattedPercentage(depression.points, 100)}%`
                     : '--'}
                 </td>
               </tr>

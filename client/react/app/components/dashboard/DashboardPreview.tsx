@@ -172,13 +172,18 @@ const DashboardChecklistPreview = ({
     questions: anxietyQuestions = [],
     points: anxietyPoints
   } = anxiety;
-  const checklistPercentage = getAssessmentPercentage(checklistPoints, checklistQuestions);
+  const {
+    id: depressionId,
+    questions: depressionQuestions = [],
+    points: depressionPoints
+  } = depression;
+  const depressionPercentage = getAssessmentPercentage(depressionPoints, depressionQuestions);
   const wellBeingPercentage = getAssessmentPercentage(wellBeingPoints, wellBeingQuestions);
   const anxietyPercentage = getAssessmentPercentage(anxietyPoints, anxietyQuestions);
-  const isChecklistComplete = isAssessmentComplete(checklistQuestions);
+  const isDepressionComplete = isAssessmentComplete(depressionQuestions);
   const isWellBeingComplete = isAssessmentComplete(wellBeingQuestions);
   const isAnxietyComplete = isAssessmentComplete(anxietyQuestions);
-  const isAllComplete = (isChecklistComplete && isWellBeingComplete && isAnxietyComplete);
+  const isAllComplete = (isDepressionComplete && isWellBeingComplete && isAnxietyComplete);
 
   return (
     <div className='dashboard-checklist-preview'>
@@ -231,15 +236,15 @@ const DashboardChecklistPreview = ({
 
       <div className='clearfix dashboard-depression-container'>
         <div className={`pull-left`}>
-          {isChecklistComplete
-            ? `${checklistPercentage.toFixed(1)}% depression`
+          {isDepressionComplete
+            ? `${depressionPercentage.toFixed(1)}% depression`
             : 'Depression'}
         </div>
 
         <Link className='text-blue pull-right'
-          to={checklistId ? `/checklist/${checklistId}` : '#'}
+          to={checklistId ? `/assessment/${depressionId}` : '#'}
           onClick={handleDepressionClicked}>
-          {isChecklistComplete ? 'View results' : 'Take assessment'}
+          {isDepressionComplete ? 'View results' : 'Take assessment'}
           <img className={`forward-icon`}
             src='assets/back-arrow.svg' />
         </Link>
@@ -345,7 +350,7 @@ const DashboardPreview = ({
         handleMoodSelected={handleMoodSelected}
         handleWellnessClicked={() => handleAssessmentClicked(wellbeing, date, WELL_BEING)}
         handleAnxietyClicked={() => handleAssessmentClicked(anxiety, date, ANXIETY)}
-        handleDepressionClicked={() => handleChecklistClicked(checklist, date)} />
+        handleDepressionClicked={() => handleAssessmentClicked(depression, date, DEPRESSION)} />
 
       <DashboardEntryPreview
         entry={entry}
