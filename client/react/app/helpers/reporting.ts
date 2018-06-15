@@ -72,6 +72,7 @@ export interface ReportingStats {
   depressionLevelFrequency: {
     [level: string]: number;
   };
+  weekStats: any; // FIXME
 }
 
 export const getTotalStreak = (
@@ -207,6 +208,11 @@ export const fetchMoodStats = (): Bluebird<[any[], number[][]]> => {
     fetchChecklistQuestionStats(),
     fetchScorecardStats()
   ]);
+};
+
+export const fetchWeekStats = (): Promise<any> => {
+  return get('/api/stats/week')
+    .then((res: HttpResponse) => res.stats);
 };
 
 export const fetchAllStats = (): Promise<ReportingStats> => {

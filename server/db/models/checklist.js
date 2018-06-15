@@ -1,5 +1,5 @@
 const knex = require('../knex.js');
-const { first, isNumber, sortBy } = require('lodash');
+const { first, isNumber, sortBy, times } = require('lodash');
 const moment = require('moment');
 const ChecklistQuestion = require('./checklist_question');
 const ChecklistScore = require('./checklist_score');
@@ -8,6 +8,7 @@ const User = require('./user');
 const Assessment = require('./assessment');
 const UserAssessment = require('./user_assessment');
 const UserAssessmentScore = require('./user_assessment_score');
+const { DATE_FORMAT } = require('./utils');
 
 // Depression levels
 const levels = {
@@ -124,6 +125,7 @@ const findByDate = async (date, userId, where = {}) => {
   const { id: checklistId } = checklist;
   const questions = await fetchQuestionScores(checklistId, userId);
   const utc = moment.utc(date).format('YYYY-MM-DD');
+  const isComplete = questions.every(q => isNumber(q.score));
   const points = questions.reduce((total, { score }) => {
     return isNumber(score) ? total + score : total;
   }, 0);
@@ -131,6 +133,7 @@ const findByDate = async (date, userId, where = {}) => {
   return merge(checklist, {
     questions,
     points,
+    isComplete,
     date: utc,
     _date: date
   });
@@ -142,7 +145,10 @@ const findOrCreateByDate = (date, userId) => {
 };
 
 const migrate = async (date, userId) => {
-  const checklist = await findOrCreateByDate(date, userId);
+  const checklist = await findByDate(date, userId);
+
+  if (!checklist) return null;
+
   const { questions: questionsWithScores = [] } = checklist;
   const questions = await Assessment.fetchDepressionQuestions();
   const { assessmentId } = first(questions);
@@ -166,6 +172,16 @@ const migrate = async (date, userId) => {
   });
 
   return Promise.all(scores);
+};
+
+const migrateByUser = (userId) => {
+  return fetch({}, userId)
+    .then(checklists => {
+      const dates = checklists.map(c => c.date);
+      const promises = dates.map(date => migrate(date, userId));
+
+      return Promise.all(promises);
+    });
 };
 
 const update = (id, params, userId) =>
@@ -424,6 +440,61 @@ const fetchStats = (userId) => {
     });
 };
 
+// TODO: move to utils
+const getDatesInRange = (startDate, endDate) => {
+  const diff = moment(endDate).diff(startDate, 'days');
+
+  if (diff < 0) {
+    throw new Error(
+      `Start date ${startDate} must come before end date ${endDate}!`
+    );
+  }
+
+  return times(diff).map(n => {
+    return moment(startDate).add(n + 1, 'days').format(DATE_FORMAT);
+  });
+};
+
+const fetchByDateRange = (startDate, endDate, userId) => {
+  const dates = getDatesInRange(startDate, endDate);
+  const promises = dates.map(date => findByDate(date, userId));
+
+  return Promise.all(promises);
+};
+
+const getAverageScore = (checklists = []) => {
+  const scores = checklists
+    .filter(c => c && c.isComplete && isNumber(c.points))
+    .map(c => c.points);
+
+  return calculateAverage(scores);
+};
+
+const fetchWeekStats = (userId) => {
+  const today = moment();
+  const day = today.day();
+  const thisSunday = moment(today).subtract(day === 0 ? 7 : day, 'days');
+  const lastSunday = moment(thisSunday).subtract(1, 'week');
+  const thisWeek = [thisSunday.format(DATE_FORMAT), today.format(DATE_FORMAT)];
+  const lastWeek = [lastSunday.format(DATE_FORMAT), thisSunday.format(DATE_FORMAT)];
+
+  return Promise.all([
+    fetchByDateRange(...thisWeek, userId),
+    fetchByDateRange(...lastWeek, userId)
+  ])
+    .then(([thisWeeksChecklists, lastWeeksChecklists]) => {
+      const utc = moment().utc().format(DATE_FORMAT);
+      const todaysChecklist = thisWeeksChecklists.find(s => s.date === utc);
+      const todaysPoints = todaysChecklist && todaysChecklist.points;
+
+      return {
+        today: todaysPoints || null,
+        thisWeek: getAverageScore(thisWeeksChecklists),
+        lastWeek: getAverageScore(lastWeeksChecklists)
+      };
+    });
+};
+
 const destroy = (id, userId) =>
   findById(id, userId) // FIXME (this does not return a knex object)
     .delete();
@@ -447,5 +518,6 @@ module.exports = {
   fetchQuestionStats,
   fetchStatsPerQuestion,
   fetchStats,
+  fetchWeekStats,
   destroy
 };

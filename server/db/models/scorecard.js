@@ -1,10 +1,10 @@
 const knex = require('../knex.js');
-const { first, isNumber, max } = require('lodash');
+const { first, isNumber, max, times } = require('lodash');
 const moment = require('moment');
 const Task = require('./task');
 const ScoreCardSelectedTask = require('./scorecard_selected_task');
 const User = require('./user');
-const { calculateAverage } = require('./utils');
+const { DATE_FORMAT, calculateAverage } = require('./utils');
 
 const ScoreCard = () => knex('scorecards');
 
@@ -372,6 +372,61 @@ const findByDate = async (date, userId, where = {}) => {
   });
 };
 
+// TODO: move to utils
+const getDatesInRange = (startDate, endDate) => {
+  const diff = moment(endDate).diff(startDate, 'days');
+
+  if (diff < 0) {
+    throw new Error(
+      `Start date ${startDate} must come before end date ${endDate}!`
+    );
+  }
+
+  return times(diff).map(n => {
+    return moment(startDate).add(n + 1, 'days').format(DATE_FORMAT);
+  });
+};
+
+const fetchByDateRange = (startDate, endDate, userId) => {
+  const dates = getDatesInRange(startDate, endDate);
+  const promises = dates.map(date => findByDate(date, userId));
+
+  return Promise.all(promises);
+};
+
+const getAverageScore = (scorecards = []) => {
+  const scores = scorecards
+    .filter(s => s && isNumber(s.points))
+    .map(a => a.points);
+
+  return calculateAverage(scores);
+};
+
+const fetchWeekStats = (userId) => {
+  const today = moment();
+  const day = today.day();
+  const thisSunday = moment(today).subtract(day === 0 ? 7 : day, 'days');
+  const lastSunday = moment(thisSunday).subtract(1, 'week');
+  const thisWeek = [thisSunday.format(DATE_FORMAT), today.format(DATE_FORMAT)];
+  const lastWeek = [lastSunday.format(DATE_FORMAT), thisSunday.format(DATE_FORMAT)];
+
+  return Promise.all([
+    fetchByDateRange(...thisWeek, userId),
+    fetchByDateRange(...lastWeek, userId)
+  ])
+    .then(([thisWeeksScorecards, lastWeeksScorecards]) => {
+      const utc = moment().utc().format(DATE_FORMAT);
+      const todaysScorecard = thisWeeksScorecards.find(s => s.date === utc);
+      const todaysPoints = todaysScorecard && todaysScorecard.points;
+
+      return {
+        today: todaysPoints || null,
+        thisWeek: getAverageScore(thisWeeksScorecards),
+        lastWeek: getAverageScore(lastWeeksScorecards)
+      };
+    });
+};
+
 const findOrCreateByDate = async (date, userId) => {
   return findOrCreate({ date }, userId)
     .then(scorecard => findByDate(date, userId));
@@ -402,6 +457,7 @@ module.exports = {
   selectTask,
   deselectTask,
   updateSelectedTasks,
+  fetchWeekStats,
   findOrCreateByDate,
   destroy
 };

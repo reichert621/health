@@ -2,6 +2,21 @@ const { ScoreCard, Checklist, Task, Assessment } = require('../index');
 const { handleError } = require('./utils');
 
 module.exports = {
+  fetchWeekStats: (req, res) => {
+    const { id: userId } = req.user;
+
+    return Promise.all([
+      ScoreCard.fetchWeekStats(userId),
+      Checklist.fetchWeekStats(userId),
+      Assessment.fetchWeekStats(userId)
+    ])
+      .then(([scorecardStats, checklistStats, assessmentStats]) => {
+        const stats = { scorecardStats, checklistStats, assessmentStats };
+
+        return res.json({ stats });
+      });
+  },
+
   fetchAllStats: (req, res) => {
     const userId = req.user.id;
 
