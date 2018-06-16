@@ -1,6 +1,8 @@
 const moment = require('moment');
 const { first, last, times } = require('lodash');
 
+const DATE_FORMAT = 'YYYY-MM-DD';
+
 const calculateAverage = (nums = []) => {
   if (!nums || !nums.length) return 0;
 
@@ -38,6 +40,7 @@ const getCombinations = (arr) => {
 };
 
 module.exports = {
+  DATE_FORMAT,
   calculateAverage,
   getDateRange,
   getDaysBetween,

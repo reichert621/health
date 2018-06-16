@@ -2,6 +2,7 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import { all } from 'bluebird';
 import NavBar from '../navbar';
 import ReportingChart from './ReportingChart';
 import ReportingOverview from './ReportingOverview';
@@ -12,9 +13,10 @@ import MoodFrequency from './MoodFrequency';
 import ScoresByDay from './ScoresByDay';
 import TopMoods from './TopMoods';
 import HighImpactTasks from './HighImpactTasks';
+import ThisWeek from './ThisWeek';
 import { ReportingStats } from '../../helpers/reporting';
 import { AppState } from '../../helpers/utils';
-import { getAllStats } from '../../reducers/stats';
+import { getAllStats, getWeekStats } from '../../reducers/stats';
 import './Reporting.less';
 
 const mapStateToProps = (state: AppState) => {
@@ -30,7 +32,10 @@ interface ReportingProps extends RouteComponentProps<{}> {
 
 class Reporting extends React.Component<ReportingProps> {
   componentDidMount() {
-    return this.props.dispatch(getAllStats());
+    return all([
+      this.props.dispatch(getAllStats()),
+      this.props.dispatch(getWeekStats())
+    ]);
   }
 
   render() {
@@ -52,7 +57,9 @@ class Reporting extends React.Component<ReportingProps> {
       // Task stats
       topTasks = [],
       // Assessment stats
-      assessmentStats = {}
+      assessmentStats = {},
+      // Week stats
+      weekStats = {}
     } = stats;
 
     const highImpactTasks = checklistScoresByTask.slice(0, 5);
@@ -71,10 +78,11 @@ class Reporting extends React.Component<ReportingProps> {
 
         <div className='default-container'>
           <div className='reporting-header-container reporting-component'>
-            <ReportingOverview
+            <ThisWeek stats={weekStats} />
+            {/* <ReportingOverview
               checklists={completedChecklists}
               scorecards={completedScorecards}
-              tasks={topTasks} />
+              tasks={topTasks} /> */}
           </div>
 
           <div className='clearfix'>

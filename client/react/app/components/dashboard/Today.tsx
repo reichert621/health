@@ -3,7 +3,6 @@ import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import * as moment from 'moment';
-import { values } from 'lodash';
 import { all, resolve } from 'bluebird';
 import NavBar from '../navbar';
 import TodayProgressBar from './TodayProgressBar';
@@ -23,7 +22,6 @@ import {
   IAssessment,
   AssessmentType,
   createAssessment,
-  fetchAssessmentsByDate
 } from '../../helpers/assessment';
 import { AppState, SelectedState, keyifyDate } from '../../helpers/utils';
 import { selectDate } from '../../reducers/selected';

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as moment from 'moment';
+import { isNumber } from 'lodash';
 import ChecklistQuestion from './ChecklistQuestion';
 import { IQuestion } from '../../helpers/checklist';
 import { getDescriptionByAssessmentType } from '../../helpers/assessment';
@@ -28,6 +29,7 @@ const ChecklistOverview = ({ questions }: { questions: IQuestion[] }) => {
 interface ChecklistProps {
   date: moment.Moment;
   questions: IQuestion[];
+  onToggleDisplay?: () => void;
   onScoreChange: (question: IQuestion, score: number) => void;
   onSubmit: () => Promise<void>;
 }
@@ -35,12 +37,15 @@ interface ChecklistProps {
 const Checklist = ({
   questions,
   date,
+  onToggleDisplay,
   onScoreChange,
   onSubmit
 }: ChecklistProps) => {
   if (!questions || !questions.length) {
     return null;
   }
+
+  const isComplete = questions.every(q => isNumber(q.score));
 
   return (
     <div className='default-container checklist-v1'>
@@ -50,8 +55,16 @@ const Checklist = ({
             {date.format('dddd MMMM DD, YYYY')}
           </h3>
         </div>
-
-        <ChecklistOverview questions={questions} />
+        {
+          isComplete ?
+            <ChecklistOverview questions={questions} /> :
+            <div className='checklist-view-toggle pull-right'>
+              <button className='btn-link -primary -sm'
+                onClick={onToggleDisplay}>
+                View questions one by one
+              </button>
+            </div>
+        }
       </div>
 
       <div className='checklist-container'>
