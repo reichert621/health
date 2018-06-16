@@ -1,6 +1,7 @@
 @bright-blue: #33A2CC;
 @border-gray: #d3d3d3;
 @gray: #979797;
+@light-blue-hover: #F6FCFF;
 @font-handwritten: 'Covered By Your Grace', cursive;
 
 // TODO: DRY this up (see .checklist-v2)
@@ -27,7 +28,14 @@
   }
 
   .checklist-question-container {
-    margin-bottom: 8px;
+    border-radius: 2px;
+    padding: 8px 16px;
+    margin-left: -16px;
+    margin-right: -16px;
+
+    &:hover {
+      background-color: @light-blue-hover;
+    }
   }
 
   .checklist-question,
