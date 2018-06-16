@@ -291,6 +291,7 @@ const extractAssessmentsScores = (assessments = {}) => {
 };
 
 const fetchWeekStats = (userId) => {
+  console.log('Fetching assessment week stats for:', moment().format(DATE_FORMAT));
   const today = moment();
   const day = today.day();
   const thisSunday = moment(today).subtract(day === 0 ? 7 : day, 'days');
