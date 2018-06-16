@@ -3,19 +3,19 @@ import { isNumber } from 'lodash';
 
 enum StatType { POSITIVE, NEGATIVE }
 
-const colors = {
-  blue: '#33A2CC',
-  red: '#da2a54'
-};
+enum DeltaColor {
+  BLUE = '#33A2CC',
+  RED = '#da2a54'
+}
 
 const getDeltaColor = (delta: number, statType: StatType) => {
   if (!delta) return null; // color should not change
 
   switch (statType) {
     case StatType.POSITIVE:
-      return delta > 0 ? colors.blue : colors.red;
+      return delta > 0 ? DeltaColor.BLUE : DeltaColor.RED;
     case StatType.NEGATIVE:
-      return delta < 0 ? colors.blue : colors.red;
+      return delta < 0 ? DeltaColor.BLUE : DeltaColor.RED;
     default:
       return null;
   }
@@ -29,9 +29,9 @@ interface StatProps {
 
 interface StatSectionProps {
   title: string;
-  statType: StatType,
+  statType: StatType;
   formatter: (val: number) => string;
-  stats: StatProps; // TODO
+  stats: StatProps;
 }
 
 const ThisWeekStatsSection = ({
@@ -46,7 +46,7 @@ const ThisWeekStatsSection = ({
     : null;
 
   const color = getDeltaColor(delta, statType);
-  const prefix = (isNumber(delta) && delta > 0) ? '+' : '-';
+  const prefix = (isNumber(delta) && delta > 0) ? 'up' : 'down';
   const abs = isNumber(delta) ? Math.abs(delta) : null;
 
   return (
@@ -68,10 +68,10 @@ const ThisWeekStatsSection = ({
       <div className='weekly-stat-sub-container'>
         <div
           className='weekly-stat-sub-value'
-          style={{ color: color ? color : 'default' }}>
+          style={{ color: color ? color : 'inherit' }}>
           {isNumber(delta) ? prefix : ''} {formatter(abs)}
         </div>
-        <div className='weekly-stat-sub-label'>since last week</div>
+        <div className='weekly-stat-sub-label'>from last week</div>
       </div>
     </div>
   );
@@ -122,6 +122,16 @@ const ThisWeek = ({ stats }: ThisWeekProps) => {
         stats={scorecardStats} />
 
       <ThisWeekStatsSection
+        title='Well-being'
+        statType={StatType.POSITIVE}
+        formatter={(stat) => `${stat ? stat.toFixed(1) : '--'}%`}
+        stats={{
+          today: todaysWellBeing,
+          thisWeek: thisWeekWellBeing,
+          lastWeek: lastWeekWellBeing
+        }} />
+
+      <ThisWeekStatsSection
         title='Depression'
         statType={StatType.NEGATIVE}
         formatter={(stat) => `${stat ? stat.toFixed(1) : '--'}%`}
@@ -135,16 +145,6 @@ const ThisWeek = ({ stats }: ThisWeekProps) => {
           today: todaysAnxiety,
           thisWeek: thisWeekAnxiety,
           lastWeek: lastWeekAnxiety
-        }} />
-
-      <ThisWeekStatsSection
-        title='Well-being'
-        statType={StatType.POSITIVE}
-        formatter={(stat) => `${stat ? stat.toFixed(1) : '--'}%`}
-        stats={{
-          today: todaysWellBeing,
-          thisWeek: thisWeekWellBeing,
-          lastWeek: lastWeekWellBeing
         }} />
     </div>
   );

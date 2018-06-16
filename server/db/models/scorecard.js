@@ -415,8 +415,8 @@ const fetchWeekStats = (userId) => {
     fetchByDateRange(...lastWeek, userId)
   ])
     .then(([thisWeeksScorecards, lastWeeksScorecards]) => {
-      const utc = moment().utc().format(DATE_FORMAT);
-      const todaysScorecard = thisWeeksScorecards.find(s => s.date === utc);
+      const date = moment().format(DATE_FORMAT);
+      const todaysScorecard = thisWeeksScorecards.find(s => s.date === date);
       const todaysPoints = todaysScorecard && todaysScorecard.points;
 
       return {

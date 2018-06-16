@@ -303,10 +303,10 @@ const fetchWeekStats = (userId) => {
     fetchUserAssessmentsByDateRange(...lastWeek, userId)
   ])
     .then(([current, past]) => {
-      const utc = moment().utc().format(DATE_FORMAT);
+      const date = moment().format(DATE_FORMAT);
       const {
         assessments: todaysAssessments
-      } = current.find(a => a.date === utc) || {};
+      } = current.find(a => a.date === date) || {};
       const thisWeeksAssessments = current.map(r => r.assessments);
       const lastweeksAssessments = past.map(r => r.assessments);
 

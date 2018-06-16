@@ -483,8 +483,8 @@ const fetchWeekStats = (userId) => {
     fetchByDateRange(...lastWeek, userId)
   ])
     .then(([thisWeeksChecklists, lastWeeksChecklists]) => {
-      const utc = moment().utc().format(DATE_FORMAT);
-      const todaysChecklist = thisWeeksChecklists.find(s => s.date === utc);
+      const date = moment().format(DATE_FORMAT);
+      const todaysChecklist = thisWeeksChecklists.find(s => s.date === date);
       const todaysPoints = todaysChecklist && todaysChecklist.points;
 
       return {
