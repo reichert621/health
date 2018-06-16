@@ -470,9 +470,9 @@ const getAverageScore = (checklists = []) => {
   return calculateAverage(scores);
 };
 
-const fetchWeekStats = (userId) => {
-  console.log('Fetching checklist week stats for:', moment().format(DATE_FORMAT));
-  const today = moment();
+const fetchWeekStats = (userId, date = moment().format(DATE_FORMAT)) => {
+  console.log('Fetching checklist week stats for:', moment(date).format(DATE_FORMAT));
+  const today = moment(date);
   const day = today.day();
   const thisSunday = moment(today).subtract(day === 0 ? 7 : day, 'days');
   const lastSunday = moment(thisSunday).subtract(1, 'week');
@@ -484,7 +484,6 @@ const fetchWeekStats = (userId) => {
     fetchByDateRange(...lastWeek, userId)
   ])
     .then(([thisWeeksChecklists, lastWeeksChecklists]) => {
-      const date = moment().format(DATE_FORMAT);
       const todaysChecklist = thisWeeksChecklists.find(c => c && c.date === date);
       const todaysPoints = todaysChecklist && todaysChecklist.points;
 

@@ -290,9 +290,9 @@ const extractAssessmentsScores = (assessments = {}) => {
   };
 };
 
-const fetchWeekStats = (userId) => {
-  console.log('Fetching assessment week stats for:', moment().format(DATE_FORMAT));
-  const today = moment();
+const fetchWeekStats = (userId, date = moment().format(DATE_FORMAT)) => {
+  console.log('Fetching assessment week stats for:', moment(date).format(DATE_FORMAT));
+  const today = moment(date);
   const day = today.day();
   const thisSunday = moment(today).subtract(day === 0 ? 7 : day, 'days');
   const lastSunday = moment(thisSunday).subtract(1, 'week');
@@ -304,7 +304,6 @@ const fetchWeekStats = (userId) => {
     fetchUserAssessmentsByDateRange(...lastWeek, userId)
   ])
     .then(([current, past]) => {
-      const date = moment().format(DATE_FORMAT);
       const {
         assessments: todaysAssessments
       } = current.find(a => a && a.date === date) || {};

@@ -119,7 +119,7 @@ api.post('/challenges/:id/unsubscribe', isAuthenticated, challenges.unsubscribe)
 // Reporting Stats
 // TODO: clean up these endpoints
 api.get('/stats/all', isAuthenticated, reporting.fetchAllStats);
-api.get('/stats/week', isAuthenticated, reporting.fetchWeekStats);
+api.get('/stats/week/:date', isAuthenticated, reporting.fetchWeekStats);
 api.get('/stats/checklists', isAuthenticated, checklists.fetchStats);
 api.get('/stats/scorecards', isAuthenticated, scorecards.fetchStats);
 api.get('/stats/assessments', isAuthenticated, assessments.fetchStats);

@@ -210,8 +210,8 @@ export const fetchMoodStats = (): Bluebird<[any[], number[][]]> => {
   ]);
 };
 
-export const fetchWeekStats = (): Promise<any> => {
-  return get('/api/stats/week')
+export const fetchWeekStats = (date: string): Promise<any> => {
+  return get(`/api/stats/week/${date}`)
     .then((res: HttpResponse) => res.stats);
 };
 

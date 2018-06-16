@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux';
+import * as moment from 'moment';
 import { IAction } from './index';
 import {
   ReportingStats,
@@ -25,11 +26,13 @@ export const getAllStats = () => {
   };
 };
 
-export const getWeekStats = () => {
+export const getWeekStats = (customDate?: string) => {
+  let date = customDate || moment().format('YYYY-MM-DD');
+
   return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_WEEK_STATS });
 
-    return fetchWeekStats()
+    return fetchWeekStats(date)
       .then(stats => {
         return dispatch({
           type: RECEIVE_WEEK_STATS,

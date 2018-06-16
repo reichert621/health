@@ -402,9 +402,9 @@ const getAverageScore = (scorecards = []) => {
   return calculateAverage(scores);
 };
 
-const fetchWeekStats = (userId) => {
-  console.log('Fetching scorecard week stats for:', moment().format(DATE_FORMAT));
-  const today = moment();
+const fetchWeekStats = (userId, date = moment().format(DATE_FORMAT)) => {
+  console.log('Fetching scorecard week stats for:', moment(date).format(DATE_FORMAT));
+  const today = moment(date);
   const day = today.day();
   const thisSunday = moment(today).subtract(day === 0 ? 7 : day, 'days');
   const lastSunday = moment(thisSunday).subtract(1, 'week');
@@ -416,7 +416,6 @@ const fetchWeekStats = (userId) => {
     fetchByDateRange(...lastWeek, userId)
   ])
     .then(([thisWeeksScorecards, lastWeeksScorecards]) => {
-      const date = moment().format(DATE_FORMAT);
       const todaysScorecard = thisWeeksScorecards.find(s => s && s.date === date);
       const todaysPoints = todaysScorecard && todaysScorecard.points;
 

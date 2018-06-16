@@ -3,12 +3,14 @@ const { handleError } = require('./utils');
 
 module.exports = {
   fetchWeekStats: (req, res) => {
-    const { id: userId } = req.user;
+    const { params, user } = req;
+    const { date } = params;
+    const { id: userId } = user;
 
     return Promise.all([
-      ScoreCard.fetchWeekStats(userId),
-      Checklist.fetchWeekStats(userId),
-      Assessment.fetchWeekStats(userId)
+      ScoreCard.fetchWeekStats(userId, date),
+      Checklist.fetchWeekStats(userId, date),
+      Assessment.fetchWeekStats(userId, date)
     ])
       .then(([scorecardStats, checklistStats, assessmentStats]) => {
         const stats = { scorecardStats, checklistStats, assessmentStats };
