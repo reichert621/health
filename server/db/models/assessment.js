@@ -306,7 +306,7 @@ const fetchWeekStats = (userId) => {
       const date = moment().format(DATE_FORMAT);
       const {
         assessments: todaysAssessments
-      } = current.find(a => a.date === date) || {};
+      } = current.find(a => a && a.date === date) || {};
       const thisWeeksAssessments = current.map(r => r.assessments);
       const lastweeksAssessments = past.map(r => r.assessments);
 
