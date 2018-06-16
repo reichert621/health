@@ -24,6 +24,7 @@ interface AssessmentProps {
 
 interface AssessmentState {
   isLoading: boolean;
+  forceDisplayList: boolean;
   date: moment.Moment;
   questions: IQuestion[];
 }
@@ -38,6 +39,7 @@ class AssessmentSample extends React.Component<
     this.state = {
       date: moment(),
       questions: [],
+      forceDisplayList: false,
       isLoading: true
     };
   }
@@ -123,7 +125,7 @@ class AssessmentSample extends React.Component<
   }
 
   render() {
-    const { isLoading, date, questions = [] } = this.state;
+    const { isLoading, forceDisplayList, date, questions = [] } = this.state;
     const { history } = this.props;
     const isComplete = questions.every(q => isNumber(q.score));
 
@@ -137,15 +139,17 @@ class AssessmentSample extends React.Component<
           title={title}
           history={history} />
         {
-          isComplete ?
+          (isComplete || forceDisplayList) ?
             <ChecklistOverview
               date={date}
               questions={questions}
+              onToggleDisplay={() => this.setState({ forceDisplayList: false })}
               onScoreChange={this.handleScoreChange.bind(this)}
               onSubmit={this.submit.bind(this)} /> :
             <ChecklistFlow
               date={date}
               questions={questions}
+              onToggleDisplay={() => this.setState({ forceDisplayList: true })}
               onScoreChange={this.handleScoreChange.bind(this)}
               onSubmit={this.submit.bind(this)} />
         }
