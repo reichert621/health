@@ -65,7 +65,7 @@ const stats = (state = {
 
   switch (type) {
     case RECEIVE_ALL_STATS:
-      return payload;
+      return { ...state, ...payload };
     case RECEIVE_WEEK_STATS:
       return { ...state, weekStats: payload };
     default:
