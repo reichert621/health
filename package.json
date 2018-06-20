@@ -125,7 +125,7 @@
     "db:seed": "./node_modules/.bin/knex seed:run --knexfile server/db/knexfile.js",
     "build": "./node_modules/.bin/webpack --config webpack.prod.config.js -p",
     "watch": "./node_modules/.bin/webpack --config webpack.dev.config.js -w",
-    "test": "jest",
+    "test": "./node_modules/jest/bin/jest.js",
     "restart": "pm2 startOrRestart ecosystem.config.js",
     "deploy": "pm2 deploy ecosystem.config.js production"
   }
