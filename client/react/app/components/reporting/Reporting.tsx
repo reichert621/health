@@ -121,8 +121,8 @@ class Reporting extends React.Component<ReportingProps> {
               <h4>Overall</h4>
 
               <ReportingAverages
-                checklistStats={checklistStats}
-                scorecardStats={scorecardStats} />
+                scorecardStats={scorecardStats}
+                assessmentStats={assessmentStats} />
             </div>
 
             <div className='reporting-component-container reporting-component pull-left'>

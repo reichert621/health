@@ -1,25 +1,36 @@
 import * as React from 'react';
-import { max, min } from 'lodash';
+import {
+  getWellnessLevelByScore,
+  getAnxietyLevelByScore,
+  getDepressionLevelByScore
+} from '../../helpers/assessment';
 import { calculateAverage } from '../../helpers/utils';
 
 const getStatScore = ([timestamp, score]: number[]) => score;
 
 interface ReportingAveragesProps {
-  checklistStats: number[][];
   scorecardStats: number[][];
+  assessmentStats: {
+    [type: string]: number[][];
+  };
 }
 
 const ReportingAverages = ({
-  checklistStats = [],
-  scorecardStats = []
+  scorecardStats = [],
+  assessmentStats
 }: ReportingAveragesProps) => {
   const style = { fontSize: 24 };
+  const { depression = [], anxiety = [], wellbeing = [] } = assessmentStats;
   const productivityScores = scorecardStats.map(getStatScore);
-  const moodScores = checklistStats.map(getStatScore);
+  const depressionScores = depression.map(getStatScore);
+  const anxietyScores = anxiety.map(getStatScore);
+  const wellBeingScores = wellbeing.map(getStatScore);
   const averageProductivity = calculateAverage(productivityScores);
-  const averageMood = calculateAverage(moodScores);
-  const topProductivity = max(productivityScores);
-  const topMood = min(moodScores);
+  const averageDepression = calculateAverage(depressionScores);
+  const averageAnxiety = calculateAverage(anxietyScores);
+  // This is a bit of a hack, since wellness is calculated out of 80
+  // total points, though anxiety and depression are out of 100
+  const averageWellBeing = (calculateAverage(wellBeingScores) / 80) * 100;
 
   return (
     <div>
@@ -29,19 +40,25 @@ const ReportingAverages = ({
       <div className='reporting-label'>Average Productivity</div>
 
       <div className='text-blue' style={style}>
-        {(100 - averageMood).toFixed(1)}% happy
+        {(averageWellBeing).toFixed(1)}% well-being
       </div>
-      <div className='reporting-label'>Average Mood</div>
+      <div className='reporting-label'>
+        Average - {getWellnessLevelByScore(averageWellBeing)}
+      </div>
 
       <div className='text-blue' style={style}>
-        {topProductivity} points
+        {(averageAnxiety).toFixed(1)}% anxiety
       </div>
-      <div className='reporting-label'>Top Productivity</div>
+      <div className='reporting-label'>
+        Average - {getAnxietyLevelByScore(averageAnxiety)}
+      </div>
 
       <div className='text-blue' style={style}>
-        {(100 - topMood)}% happy
+        {(averageDepression).toFixed(1)}% depression
       </div>
-      <div className='reporting-label'>Top Mood</div>
+      <div className='reporting-label'>
+        Average - {getDepressionLevelByScore(averageDepression)}
+      </div>
     </div>
   );
 };
