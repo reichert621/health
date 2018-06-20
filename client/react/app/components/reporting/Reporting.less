@@ -39,8 +39,8 @@
 
 .reporting-component-container {
   margin-right: 2%;
-  min-height: 364px;
-  width: 32%;
+  min-height: 392px;
+  width: 32%; // TODO: use flexbox
 
   &:last-child {
     margin-right: 0px;
@@ -115,5 +115,24 @@
 
   .weekly-stat-label {
     font-size: 14px;
+  }
+}
+
+@media (max-width: 720px) {
+  .reporting-component-container,
+  .reporting-sidebar-container,
+  .reporting-graph-container {
+    width: 100%;
+  }
+
+  .weekly-stats-container {
+    display: block;
+
+    .weekly-stat-container {
+      border-right: none;
+      border-bottom: 1px solid @border-gray;
+      padding: 16px;
+      width: 100%;
+    }
   }
 }

@@ -1,5 +1,6 @@
-const { first } = require('lodash');
+const { first, map, groupBy } = require('lodash');
 const knex = require('../knex');
+const { isValidAssessmentType } = require('./utils');
 
 const UserAssessmentScore = () => knex('user_assessment_scores');
 
@@ -61,6 +62,41 @@ const destroy = (id, userId) => {
   return findById(id, userId).delete();
 };
 
+const fetchScoresByQuestion = (type, userId) => {
+  if (!isValidAssessmentType(type)) {
+    return Promise.reject(new Error(`Invalid type ${type}!`));
+  }
+
+  return UserAssessmentScore()
+    .select(
+      'ua.date', 'aq.text', 'aq.category', 'uas.score', 'ua.userId', 'a.type'
+    )
+    .from('user_assessment_scores as uas')
+    .innerJoin('user_assessments as ua', 'uas.userAssessmentId', 'ua.id')
+    .innerJoin('assessment_questions as aq', 'uas.assessmentQuestionId', 'aq.id')
+    .innerJoin('assessments as a', 'ua.assessmentId', 'a.id')
+    .where({ 'ua.userId': userId, 'a.type': type })
+    .then(results => {
+      // TODO: what's the best way to include the category + question?
+      const SEPARATOR = '::';
+      const scoresByQuestion = groupBy(results, ({ category, text }) => {
+        return [category, text].join(SEPARATOR);
+      });
+
+      return Object.keys(scoresByQuestion)
+        .map(key => {
+          const [category, question] = key.split(SEPARATOR);
+          const scores = map(scoresByQuestion[key], 'score');
+          const count = scores.length;
+          const total = scores.reduce((sum, n) => sum + n, 0);
+          const average = (total / count);
+
+          return { question, category, count, total, average };
+        })
+        .sort((x, y) => y.total - x.total);
+    });
+};
+
 module.exports = {
   fetch,
   findById,
@@ -68,5 +104,6 @@ module.exports = {
   findOrCreate,
   update,
   createOrUpdate,
-  destroy
+  destroy,
+  fetchScoresByQuestion
 };

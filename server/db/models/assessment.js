@@ -1,15 +1,40 @@
-const { first, groupBy, isNumber, includes, times } = require('lodash');
+const { first, groupBy, isNumber, sortBy, times } = require('lodash');
 const moment = require('moment');
 const knex = require('../knex');
-const AssessmentQuestion = require('./assessment_question');
 const UserAssessment = require('./user_assessment');
 const UserAssessmentScore = require('./user_assessment_score');
-const { DATE_FORMAT, calculateAverage } = require('./utils');
+const ScorecardSelectedTask = require('./scorecard_selected_task');
+const {
+  DATE_FORMAT,
+  AssessmentTypes,
+  calculateAverage,
+  isValidAssessmentType
+} = require('./utils');
 
-const AssessmentTypes = {
-  DEPRESSION: 'depression',
-  ANXIETY: 'anxiety',
-  WELL_BEING: 'wellbeing'
+const levels = {
+  [AssessmentTypes.DEPRESSION]: {
+    NONE: 'No depression',
+    NORMAL: 'Normal but unhappy',
+    MILD: 'Mild depression',
+    MODERATE: 'Moderate depression',
+    SEVERE: 'Severe depression',
+    EXTREME: 'Extreme depression'
+  },
+  [AssessmentTypes.ANXIETY]: {
+    NONE: 'No anxiety',
+    NORMAL: 'Normal anxiety',
+    MILD: 'Mild anxiety',
+    MODERATE: 'Moderate anxiety',
+    SEVERE: 'Severe anxiety',
+    EXTREME: 'Extreme anxiety'
+  },
+  [AssessmentTypes.WELL_BEING]: {
+    VERY_LOW: 'Very low well-being',
+    LOW: 'Low well-being',
+    MODERATE: 'Moderate well-being',
+    HIGH: 'High well-being',
+    VERY_HIGH: 'Very high well-being'
+  }
 };
 
 const Assessment = () => knex('assessments');
@@ -29,10 +54,8 @@ const findById = (id, where = {}) => {
 };
 
 const findByType = (type) => {
-  const types = Object.values(AssessmentTypes);
-
-  if (!includes(types, type)) {
-    const err = new Error(`Type ${type} must be valid type (${types})`);
+  if (!isValidAssessmentType(type)) {
+    const err = new Error(`Type ${type} must be valid type (${AssessmentTypes})`);
 
     return Promise.reject(err);
   }
@@ -318,7 +341,204 @@ const fetchWeekStats = (userId, date = moment().format(DATE_FORMAT)) => {
     });
 };
 
+const fetchCompletedDays = (userId, where = {}) => {
+  return Assessment()
+    .select('a.type', 'ua.date')
+    .count('uas.*')
+    .from('assessments as a')
+    .innerJoin('user_assessments as ua', 'ua.assessmentId', 'a.id')
+    .innerJoin('user_assessment_scores as uas', 'uas.userAssessmentId', 'ua.id')
+    .where({ ...where, 'ua.userId': userId })
+    .groupBy('ua.date', 'a.type')
+    .orderBy('ua.date', 'desc')
+    .then(result => {
+      return result
+        .map(r => {
+          return { ...r, count: Number(r.count) };
+        })
+        .filter(r => r.count > 0);
+    });
+};
+
+const fetchCompletedDaysByType = (type, userId) => {
+  const where = isValidAssessmentType(type) ? { 'a.type': type } : {};
+
+  return fetchCompletedDays(userId, where);
+};
+
+const fetchQuestionStats = (type, userId) => {
+  return UserAssessmentScore.fetchScoresByQuestion(type, userId);
+};
+
+const fetchScoresByDate = (userId, where = {}) => {
+  return Assessment()
+    .select('a.type', 'ua.date')
+    .sum('uas.score as score')
+    .from('assessments as a')
+    .innerJoin('user_assessments as ua', 'ua.assessmentId', 'a.id')
+    .innerJoin('user_assessment_scores as uas', 'uas.userAssessmentId', 'ua.id')
+    .where({ ...where, 'ua.userId': userId })
+    .groupBy('ua.date', 'a.type')
+    .orderBy('ua.date', 'desc')
+    .then(result => {
+      return result.map(r => {
+        return { ...r, score: Number(r.score) };
+      });
+    });
+};
+
+const fetchScoresByDayOfWeek = (type, userId, where = {}) => {
+  const filter = isValidAssessmentType(type) ? { ...where, 'a.type': type } : where;
+
+  return fetchScoresByDate(userId, filter)
+    .then(result => {
+      return result.reduce((map, { date, score }) => {
+        const day = moment(date).format('dddd');
+        const s = Number(score);
+
+        return {
+          ...map,
+          [day]: (map[day] || []).concat(s)
+        };
+      }, {});
+    });
+};
+
+const getDepressionLevelByScore = (score) => {
+  const l = levels[AssessmentTypes.DEPRESSION];
+
+  if (score <= 5) {
+    return l.NONE;
+  } else if (score >= 6 && score <= 10) {
+    return l.NORMAL;
+  } else if (score >= 11 && score <= 25) {
+    return l.MILD;
+  } else if (score >= 26 && score <= 50) {
+    return l.MODERATE;
+  } else if (score >= 51 && score <= 75) {
+    return l.SEVERE;
+  } else {
+    return l.EXTREME;
+  }
+};
+
+const getAnxietyLevelByScore = (score) => {
+  const l = levels[AssessmentTypes.ANXIETY];
+
+  if (score <= 5) {
+    return l.NONE;
+  } else if (score >= 6 && score <= 10) {
+    return l.NORMAL;
+  } else if (score >= 11 && score <= 25) {
+    return l.MILD;
+  } else if (score >= 26 && score <= 50) {
+    return l.MODERATE;
+  } else if (score >= 51 && score <= 75) {
+    return l.SEVERE;
+  } else {
+    return l.EXTREME;
+  }
+};
+
+const getWellnessLevelByScore = (score) => {
+  const l = levels[AssessmentTypes.WELL_BEING];
+
+  if (score <= 15) {
+    return l.VERY_LOW;
+  } else if (score >= 16 && score <= 35) {
+    return l.LOW;
+  } else if (score >= 36 && score <= 55) {
+    return l.MODERATE;
+  } else if (score >= 56 && score <= 70) {
+    return l.HIGH;
+  } else {
+    return l.VERY_HIGH;
+  }
+};
+
+const getLevelByScore = (type, score) => {
+  switch (type) {
+    case AssessmentTypes.DEPRESSION:
+      return getDepressionLevelByScore(score);
+    case AssessmentTypes.ANXIETY:
+      return getAnxietyLevelByScore(score);
+    case AssessmentTypes.WELL_BEING:
+      return getWellnessLevelByScore(score);
+    default:
+      throw new Error(`Invalid type ${type}!`);
+  }
+};
+
+const fetchScoreRangeFrequency = (type, userId, where = {}) => {
+  if (!isValidAssessmentType(type)) {
+    return Promise.reject(new Error(`Invalid type ${type}!`));
+  }
+
+  const filter = { ...where, 'a.type': type };
+  const l = levels[type];
+  const init = Object.values(l).reduce((acc, key) => {
+    return { ...acc, [key]: 0 };
+  }, {});
+
+  return fetchScoresByDate(userId, filter)
+    .then(results => {
+      return results.reduce((map, { score }) => {
+        const s = Number(score);
+        const level = getLevelByScore(type, s);
+
+        return {
+          ...map,
+          [level]: (map[level] || 0) + 1
+        };
+      }, init);
+    });
+};
+
+const fetchScoresByTask = (type, userId, where = {}) => {
+  if (!isValidAssessmentType(type)) {
+    return Promise.reject(new Error(`Invalid type ${type}!`));
+  }
+
+  const filter = { ...where, 'a.type': type };
+
+  return Promise.all([
+    fetchScoresByDate(userId, filter),
+    ScorecardSelectedTask.fetchWithDates(userId)
+  ])
+    .then(([scoresByDate, tasksByDate]) => {
+      const mappings = scoresByDate.reduce((acc, { date, score }) => {
+        return { ...acc, [date]: score };
+      }, {});
+
+      return Object.keys(tasksByDate).map(task => {
+        const dates = tasksByDate[task];
+        const scores = dates
+          .filter(date => isNumber(mappings[date]))
+          .map(date => mappings[date]);
+
+        return {
+          task,
+          data: {
+            dates,
+            scores,
+            average: calculateAverage(scores)
+          }
+        };
+      });
+    })
+    .then(stats => {
+      return stats.filter(({ data = {} }) => {
+        const { scores = [] } = data;
+
+        return scores.length > 0;
+      });
+    })
+    .then(stats => sortBy(stats, 'data.average'));
+};
+
 module.exports = {
+  levels,
+  AssessmentTypes,
   fetch,
   findById,
   create,
@@ -334,5 +554,16 @@ module.exports = {
   findOrCreateUserAssessment,
   updateScore,
   fetchStats,
-  fetchWeekStats
+  fetchWeekStats,
+  fetchCompletedDays,
+  fetchCompletedDaysByType,
+  fetchQuestionStats,
+  fetchScoresByDate,
+  fetchScoresByDayOfWeek,
+  getDepressionLevelByScore,
+  getAnxietyLevelByScore,
+  getWellnessLevelByScore,
+  getLevelByScore,
+  fetchScoreRangeFrequency,
+  fetchScoresByTask
 };

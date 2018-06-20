@@ -69,10 +69,31 @@ export interface ReportingStats {
   checklistQuestionStats: ChecklistQuestionStats[];
   checklistScoresByTask: TaskImpactStats[];
   taskAbilityStats: AbilityStats;
+  weekStats: any; // FIXME
+  // Assessments - Depression
+  completedDepressionAssessments: ReportingDatedItem[];
+  depressionScoresByDay: ScoreByDay;
   depressionLevelFrequency: {
     [level: string]: number;
   };
-  weekStats: any; // FIXME
+  depressionQuestionStats: ChecklistQuestionStats[];
+  depressionScoresByTask: TaskImpactStats[];
+  // Assessments - Anxiety
+  completedAnxietyAssessments: ReportingDatedItem[];
+  anxietyScoresByDay: ScoreByDay;
+  anxietyLevelFrequency: {
+    [level: string]: number;
+  };
+  anxietyQuestionStats: ChecklistQuestionStats[];
+  anxietyScoresByTask: TaskImpactStats[];
+  // Assessments - Wellness
+  completedWellnessAssessments: ReportingDatedItem[];
+  wellnessScoresByDay: ScoreByDay;
+  wellnessLevelFrequency: {
+    [level: string]: number;
+  };
+  wellnessQuestionStats: ChecklistQuestionStats[];
+  wellnessScoresByTask: TaskImpactStats[];
 }
 
 export const getTotalStreak = (
