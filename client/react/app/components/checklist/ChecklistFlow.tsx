@@ -81,6 +81,7 @@ const ChecklistProgressBar = ({
 interface ChecklistProps {
   date: moment.Moment;
   questions: IQuestion[];
+  onToggleDisplay?: () => void;
   onScoreChange: (question: IQuestion, score: number) => void;
   onSubmit: () => Promise<void>;
 }
@@ -172,7 +173,7 @@ class ChecklistFlow extends React.Component<ChecklistProps, ChecklistState> {
   handleKeyboardScoreChange(e: any) {
     const score = Number(e.key) - 1;
     const { currentIndex } = this.state;
-    const { questions, onScoreChange } = this.props;
+    const { questions } = this.props;
     const question = questions[currentIndex];
 
     return this.handleScoreChange(question, score);
@@ -191,7 +192,7 @@ class ChecklistFlow extends React.Component<ChecklistProps, ChecklistState> {
     const {
       questions,
       date,
-      onScoreChange,
+      onToggleDisplay,
       onSubmit
     } = this.props;
 
@@ -206,6 +207,13 @@ class ChecklistFlow extends React.Component<ChecklistProps, ChecklistState> {
             <h3 className='text-light'>
               {date.format('dddd MMMM DD, YYYY')}
             </h3>
+          </div>
+
+          <div className='checklist-view-toggle pull-right'>
+            <button className='btn-link -primary -sm'
+              onClick={onToggleDisplay}>
+              View all questions
+            </button>
           </div>
         </div>
 

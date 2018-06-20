@@ -21,6 +21,7 @@ interface ChecklistProps {
 }
 
 interface ChecklistState {
+  forceDisplayList?: boolean;
   isLoading: boolean;
 }
 
@@ -50,6 +51,7 @@ class ChecklistContainer extends React.Component<
     super(props);
 
     this.state = {
+      forceDisplayList: false,
       isLoading: true
     };
   }
@@ -90,8 +92,8 @@ class ChecklistContainer extends React.Component<
   }
 
   render() {
-    const { isLoading } = this.state;
-    const { checklist, questions, date, isComplete, history } = this.props;
+    const { isLoading, forceDisplayList } = this.state;
+    const { questions, date, isComplete, history } = this.props;
     const isToday = isDateToday(date);
     const url = isToday ? '/today' : '/dashboard';
 
@@ -104,15 +106,17 @@ class ChecklistContainer extends React.Component<
           linkTo={url}
           history={history} />
         {
-          isComplete ?
+          (isComplete || forceDisplayList) ?
             <ChecklistOverview
               date={date}
               questions={questions}
+              onToggleDisplay={() => this.setState({ forceDisplayList: false })}
               onScoreChange={this.handleScoreChange.bind(this)}
               onSubmit={this.submit.bind(this)} /> :
             <ChecklistFlow
               date={date}
               questions={questions}
+              onToggleDisplay={() => this.setState({ forceDisplayList: true })}
               onScoreChange={this.handleScoreChange.bind(this)}
               onSubmit={this.submit.bind(this)} />
         }

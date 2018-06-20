@@ -1,9 +1,10 @@
-const { first, groupBy, isNumber, includes } = require('lodash');
+const { first, groupBy, isNumber, includes, times } = require('lodash');
 const moment = require('moment');
 const knex = require('../knex');
 const AssessmentQuestion = require('./assessment_question');
 const UserAssessment = require('./user_assessment');
 const UserAssessmentScore = require('./user_assessment_score');
+const { DATE_FORMAT, calculateAverage } = require('./utils');
 
 const AssessmentTypes = {
   DEPRESSION: 'depression',
@@ -113,16 +114,20 @@ const formatAssessment = (assessment, questions, scores = []) => {
     }
   });
 
+  const points = questionsWithScores.reduce((total, { score }) => {
+    return isNumber(score) ? total + score : total;
+  }, 0);
+
   return {
     id,
     type,
     title,
+    points,
     _date: date,
-    date: moment.utc(date).format('YYYY-MM-DD'),
+    score: (points / (questions.length * 4)) * 100,
+    date: moment.utc(date).format(DATE_FORMAT),
     questions: questionsWithScores,
-    points: questionsWithScores.reduce((total, { score }) => {
-      return isNumber(score) ? total + score : total;
-    }, 0)
+    isComplete: questionsWithScores.every(q => isNumber(q.score))
   };
 };
 
@@ -134,12 +139,12 @@ const fetchUserAssessmentsByType = (userId, type, where = {}) => {
   ])
     .then(([assessments, questions, scores]) => {
       const scoresByDate = groupBy(scores, ({ date }) => {
-        return moment.utc(date).format('YYYY-MM-DD');
+        return moment.utc(date).format(DATE_FORMAT);
       });
 
       return assessments.map(assessment => {
         const { date } = assessment;
-        const utc = moment.utc(date).format('YYYY-MM-DD');
+        const utc = moment.utc(date).format(DATE_FORMAT);
         const assessmentScores = scoresByDate[utc];
 
         return formatAssessment(assessment, questions, assessmentScores);
@@ -186,6 +191,52 @@ const fetchUserAssessmentsByDate = async (date, userId) => {
   }, {});
 };
 
+// TODO: move to utils
+const getDatesInRange = (startDate, endDate) => {
+  const diff = moment(endDate).diff(startDate, 'days');
+
+  if (diff < 0) {
+    throw new Error(
+      `Start date ${startDate} must come before end date ${endDate}!`
+    );
+  }
+
+  return times(diff).map(n => {
+    return moment(startDate).add(n + 1, 'days').format(DATE_FORMAT);
+  });
+};
+
+const fetchUserAssessmentsByDateRange = (startDate, endDate, userId) => {
+  const dates = getDatesInRange(startDate, endDate);
+  const promises = dates.map(date => {
+    return fetchUserAssessmentsByDate(date, userId).then(assessments => {
+      return { date, assessments };
+    });
+  });
+
+  return Promise.all(promises);
+};
+
+const calculateAverageScore = (assessments = []) => {
+  const scores = assessments
+    .filter(a => a.isComplete && isNumber(a.score))
+    .map(a => a.score);
+
+  return calculateAverage(scores);
+};
+
+const getAssessmentAverages = (assessments = []) => {
+  const depression = assessments.map(a => a.depression).filter(a => a);
+  const anxiety = assessments.map(a => a.anxiety).filter(a => a);
+  const wellbeing = assessments.map(a => a.wellbeing).filter(a => a);
+
+  return {
+    depression: calculateAverageScore(depression),
+    anxiety: calculateAverageScore(anxiety),
+    wellbeing: calculateAverageScore(wellbeing)
+  };
+};
+
 const findOrCreateUserAssessment = (type, date, userId) => {
   return findByType(type)
     .then(assessment => {
@@ -230,6 +281,44 @@ const fetchStats = (userId) => {
     });
 };
 
+const extractAssessmentsScores = (assessments = {}) => {
+  const { depression, anxiety, wellbeing } = assessments;
+
+  return {
+    depression: (depression && depression.score) || null,
+    anxiety: (anxiety && anxiety.score) || null,
+    wellbeing: (wellbeing && wellbeing.score) || null
+  };
+};
+
+const fetchWeekStats = (userId, date = moment().format(DATE_FORMAT)) => {
+  console.log('Fetching assessment week stats for:', moment(date).format(DATE_FORMAT));
+  const today = moment(date);
+  const day = today.day();
+  const thisSunday = moment(today).subtract(day === 0 ? 7 : day, 'days');
+  const lastSunday = moment(thisSunday).subtract(1, 'week');
+  const thisWeek = [thisSunday.format(DATE_FORMAT), today.format(DATE_FORMAT)];
+  const lastWeek = [lastSunday.format(DATE_FORMAT), thisSunday.format(DATE_FORMAT)];
+
+  return Promise.all([
+    fetchUserAssessmentsByDateRange(...thisWeek, userId),
+    fetchUserAssessmentsByDateRange(...lastWeek, userId)
+  ])
+    .then(([current, past]) => {
+      const {
+        assessments: todaysAssessments
+      } = current.find(a => a && a.date === date) || {};
+      const thisWeeksAssessments = current.map(r => r.assessments);
+      const lastweeksAssessments = past.map(r => r.assessments);
+
+      return {
+        today: extractAssessmentsScores(todaysAssessments),
+        thisWeek: getAssessmentAverages(thisWeeksAssessments),
+        lastWeek: getAssessmentAverages(lastweeksAssessments)
+      };
+    });
+};
+
 module.exports = {
   fetch,
   findById,
@@ -245,5 +334,6 @@ module.exports = {
   fetchUserAssessmentsByDate,
   findOrCreateUserAssessment,
   updateScore,
-  fetchStats
+  fetchStats,
+  fetchWeekStats
 };

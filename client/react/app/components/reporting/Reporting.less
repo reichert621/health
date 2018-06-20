@@ -1,3 +1,4 @@
+@gray: #979797;
 @border-gray: #b4b4b4;
 @bright-blue: #33A2CC;
 
@@ -54,4 +55,65 @@
   font-size: 14px;
   margin-bottom: 16px;
   margin-top: 4px;
+}
+
+.weekly-stats-container {
+  display: flex;
+
+  .weekly-stat-section-label {
+    font-size: 18px;
+  }
+
+  .weekly-stat-container {
+    border-right: 1px solid @border-gray;
+    flex: 1;
+    margin-top: auto;
+    padding: 8px;
+
+    &:last-child {
+      border-right: none;
+    }
+
+    .weekly-stat-main-container {
+      margin-bottom: 16px;
+      margin-top: 16px;
+      width: 100%;
+    }
+
+    .weekly-stat-main-value {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    .weekly-stat-main-label,
+    .weekly-stat-sub-label {
+      color: @gray;
+      letter-spacing: 0.4px;
+    }
+
+    .weekly-stat-main-label {
+      font-size: 14px;
+    }
+
+    .weekly-stat-sub-container {
+      float: left;
+      width: 50%;
+    }
+
+    .weekly-stat-sub-value {
+      font-size: 14px;
+    }
+
+    .weekly-stat-sub-label {
+      font-size: 12px;
+    }
+  }
+
+  .weekly-stat-value {
+    font-size: 24px;
+  }
+
+  .weekly-stat-label {
+    font-size: 14px;
+  }
 }
