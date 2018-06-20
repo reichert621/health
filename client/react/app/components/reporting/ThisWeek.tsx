@@ -80,7 +80,6 @@ const ThisWeekStatsSection = ({
 interface ThisWeekProps {
   stats: {
     assessmentStats: any; // TODO
-    checklistStats: StatProps;
     scorecardStats: StatProps;
   };
 }
@@ -88,7 +87,6 @@ interface ThisWeekProps {
 const ThisWeek = ({ stats }: ThisWeekProps) => {
   const {
     assessmentStats = {},
-    checklistStats = {} as StatProps,
     scorecardStats = {} as StatProps
   } = stats;
   // TODO: format assessment stats better on the server
@@ -135,7 +133,11 @@ const ThisWeek = ({ stats }: ThisWeekProps) => {
         title='Depression'
         statType={StatType.NEGATIVE}
         formatter={(stat) => `${stat ? stat.toFixed(1) : '--'}%`}
-        stats={checklistStats} />
+        stats={{
+          today: todaysDepression,
+          thisWeek: thisWeekDepression,
+          lastWeek: lastWeekDepression
+        }} />
 
       <ThisWeekStatsSection
         title='Anxiety'
