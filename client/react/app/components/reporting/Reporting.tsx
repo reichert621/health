@@ -78,10 +78,19 @@ class Reporting extends React.Component<ReportingProps> {
       weekStats = {}
     } = stats;
 
-    const highImpactTasksWellness = wellnessScoresByTask.slice(0, 5).reverse();
+    const wellBeingIssues = wellnessQuestionStats.slice().reverse();
     const highImpactTasksAnxiety = anxietyScoresByTask.slice(0, 5);
     const highImpactTasksDepression = depressionScoresByTask.slice(0, 5);
-    const wellBeingIssues = wellnessQuestionStats.slice().reverse();
+    // TODO: this is getting hacky, handle it somewhere else!
+    const highImpactTasksWellness = wellnessScoresByTask.slice(0, 5)
+      .reverse()
+      .map(({ task, data }) => {
+        const { average } = data;
+        // This is done because wellness assessments are out of 80 points
+        const normalized = (average / 80) * 100;
+
+        return { task, data: { ...data, average: normalized } };
+      });
 
     console.log('stats!', stats);
 
