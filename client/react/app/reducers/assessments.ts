@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-import { mapValues, groupBy } from 'lodash';
+import { mapValues, groupBy, isEqual } from 'lodash';
 import { IAction } from './index';
 import { MappedItems, keyifyDate } from '../helpers/utils';
 import {
@@ -81,8 +81,15 @@ const updateAssessmentsByDate = (state = {
 } as MappedItems<any>, assessments: any) => {
   const { byId, byDate, items } = state;
   const { wellbeing, anxiety, depression } = assessments;
+  // TODO: make this more clear
   const updates = [wellbeing, anxiety, depression].filter(assessment => {
-    return assessment && assessment.id && !byId[assessment.id];
+    const existing = assessment && assessment.id && byId[assessment.id];
+
+    if (!existing) {
+      return true;
+    }
+
+    return !isEqual(existing, assessment);
   });
 
   if (!updates || !updates.length) {
