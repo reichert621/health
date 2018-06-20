@@ -5,9 +5,8 @@ import { Dispatch } from 'redux';
 import { all } from 'bluebird';
 import NavBar from '../navbar';
 import ReportingChart from './ReportingChart';
-import ReportingOverview from './ReportingOverview';
 import ReportingAverages from './ReportingAverages';
-import ScoresByAbility from './ScoresByAbility';
+import ReportingStreaks from './ReportingStreaks';
 import TopTasks from './TopTasks';
 import MoodFrequency from './MoodFrequency';
 import ScoresByDay from './ScoresByDay';
@@ -45,7 +44,6 @@ class Reporting extends React.Component<ReportingProps> {
       checklistStats = [],
       completedChecklists = [],
       checklistScoresByDay = {},
-      depressionLevelFrequency = {},
       checklistQuestionStats = [],
       checklistScoresByTask = [],
       // Scorecard stats
@@ -58,14 +56,32 @@ class Reporting extends React.Component<ReportingProps> {
       topTasks = [],
       // Assessment stats
       assessmentStats = {},
+      // Assessments - Depression
+      completedDepressionAssessments = [],
+      depressionScoresByDay = {},
+      depressionLevelFrequency = {},
+      depressionQuestionStats = [],
+      depressionScoresByTask = [],
+      // Assessments - Anxiety
+      completedAnxietyAssessments = [],
+      anxietyScoresByDay = {},
+      anxietyLevelFrequency = {},
+      anxietyQuestionStats = [],
+      anxietyScoresByTask = [],
+      // Assessments - Wellness
+      completedWellnessAssessments = [],
+      wellnessScoresByDay = {},
+      wellnessLevelFrequency = {},
+      wellnessQuestionStats = [],
+      wellnessScoresByTask = [],
       // Week stats
       weekStats = {}
     } = stats;
 
-    const highImpactTasks = checklistScoresByTask.slice(0, 5);
-    const lowImpactTasks = checklistScoresByTask.length > 5
-      ? checklistScoresByTask.slice(-5).reverse()
-      : [];
+    const highImpactTasksWellness = wellnessScoresByTask.slice(0, 5).reverse();
+    const highImpactTasksAnxiety = anxietyScoresByTask.slice(0, 5);
+    const highImpactTasksDepression = depressionScoresByTask.slice(0, 5);
+    const wellBeingIssues = wellnessQuestionStats.slice().reverse();
 
     console.log('stats!', stats);
 
@@ -79,10 +95,6 @@ class Reporting extends React.Component<ReportingProps> {
         <div className='default-container'>
           <div className='reporting-header-container reporting-component'>
             <ThisWeek stats={weekStats} />
-            {/* <ReportingOverview
-              checklists={completedChecklists}
-              scorecards={completedScorecards}
-              tasks={topTasks} /> */}
           </div>
 
           <div className='clearfix'>
@@ -90,8 +102,10 @@ class Reporting extends React.Component<ReportingProps> {
               <h4>Daily Averages</h4>
 
               <ScoresByDay
-                checklistScores={checklistScoresByDay}
-                scorecardScores={scorecardScoresByDay} />
+                scorecardScores={scorecardScoresByDay}
+                depressionScores={depressionScoresByDay}
+                anxietyScores={anxietyScoresByDay}
+                wellnessScores={wellnessScoresByDay} />
             </div>
 
             <div className='reporting-graph-container reporting-component pull-right'>
@@ -107,24 +121,10 @@ class Reporting extends React.Component<ReportingProps> {
               <h4>Overall</h4>
 
               <ReportingAverages
-                checklistStats={checklistStats}
-                scorecardStats={scorecardStats} />
+                scorecardStats={scorecardStats}
+                assessmentStats={assessmentStats} />
             </div>
 
-            <div className='reporting-component-container reporting-component pull-left'>
-              <h4>Common Issues</h4>
-
-              <TopMoods stats={checklistQuestionStats} />
-            </div>
-
-            <div className='reporting-component-container reporting-component pull-left'>
-              <h4>Mood Frequency</h4>
-
-              <MoodFrequency stats={depressionLevelFrequency} />
-            </div>
-          </div>
-
-          <div className='clearfix'>
             <div className='reporting-component-container reporting-component pull-left'>
               <h4>Favorite Tasks</h4>
 
@@ -132,15 +132,79 @@ class Reporting extends React.Component<ReportingProps> {
             </div>
 
             <div className='reporting-component-container reporting-component pull-left'>
-              <h4>High-Impact Tasks</h4>
+              <h4>Streaks</h4>
 
-              <HighImpactTasks tasks={highImpactTasks} />
+              <ReportingStreaks
+                completedScorecards={completedScorecards}
+                completedDepressionAssessments={completedDepressionAssessments}
+                completedAnxietyAssessments={completedAnxietyAssessments}
+                completedWellnessAssessments={completedWellnessAssessments} />
+            </div>
+          </div>
+
+          <div className='clearfix'>
+            <div className='reporting-component-container reporting-component pull-left'>
+              <h4>Well-being Issues</h4>
+
+              <TopMoods stats={wellBeingIssues} />
             </div>
 
             <div className='reporting-component-container reporting-component pull-left'>
-              <h4>Low-Impact Tasks</h4>
+              <h4>Wellness Frequency</h4>
 
-              <HighImpactTasks tasks={lowImpactTasks} />
+              <MoodFrequency stats={wellnessLevelFrequency} />
+            </div>
+
+            <div className='reporting-component-container reporting-component pull-left'>
+              <h4>High-Impact Tasks</h4>
+
+              <HighImpactTasks
+                label='well-being'
+                tasks={highImpactTasksWellness} />
+            </div>
+          </div>
+
+          <div className='clearfix'>
+            <div className='reporting-component-container reporting-component pull-left'>
+              <h4>Depression Issues</h4>
+
+              <TopMoods stats={checklistQuestionStats} />
+            </div>
+
+            <div className='reporting-component-container reporting-component pull-left'>
+              <h4>Depression Frequency</h4>
+
+              <MoodFrequency stats={depressionLevelFrequency} />
+            </div>
+
+            <div className='reporting-component-container reporting-component pull-left'>
+              <h4>High-Impact Tasks</h4>
+
+              <HighImpactTasks
+                label='depression'
+                tasks={highImpactTasksDepression} />
+            </div>
+          </div>
+
+          <div className='clearfix'>
+            <div className='reporting-component-container reporting-component pull-left'>
+              <h4>Anxiety Issues</h4>
+
+              <TopMoods stats={anxietyQuestionStats} />
+            </div>
+
+            <div className='reporting-component-container reporting-component pull-left'>
+              <h4>Anxiety Frequency</h4>
+
+              <MoodFrequency stats={anxietyLevelFrequency} />
+            </div>
+
+            <div className='reporting-component-container reporting-component pull-left'>
+              <h4>High-Impact Tasks</h4>
+
+              <HighImpactTasks
+                label='anxiety'
+                tasks={highImpactTasksAnxiety} />
             </div>
           </div>
         </div>

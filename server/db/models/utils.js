@@ -1,7 +1,13 @@
 const moment = require('moment');
-const { first, last, times } = require('lodash');
+const { first, last, times, includes } = require('lodash');
 
 const DATE_FORMAT = 'YYYY-MM-DD';
+
+const AssessmentTypes = {
+  DEPRESSION: 'depression',
+  ANXIETY: 'anxiety',
+  WELL_BEING: 'wellbeing'
+};
 
 const calculateAverage = (nums = []) => {
   if (!nums || !nums.length) return 0;
@@ -39,10 +45,20 @@ const getCombinations = (arr) => {
   ];
 };
 
+const isValidAssessmentType = (type) => {
+  if (!type || !type.length) return false;
+
+  const types = Object.values(AssessmentTypes);
+
+  return includes(types, type);
+};
+
 module.exports = {
   DATE_FORMAT,
+  AssessmentTypes,
   calculateAverage,
   getDateRange,
   getDaysBetween,
-  getCombinations
+  getCombinations,
+  isValidAssessmentType
 };

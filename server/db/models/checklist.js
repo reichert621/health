@@ -519,5 +519,6 @@ module.exports = {
   fetchStatsPerQuestion,
   fetchStats,
   fetchWeekStats,
-  destroy
+  destroy,
+  migrateByUser
 };
