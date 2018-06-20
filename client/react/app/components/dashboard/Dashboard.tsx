@@ -280,7 +280,6 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
                 selected={selected}
                 handleMoodSelected={this.handleMoodSelected.bind(this)}
                 handleScorecardClicked={this.createNewScorecard.bind(this)}
-                handleChecklistClicked={this.createNewChecklist.bind(this)}
                 handleAssessmentClicked={this.createNewAssessment.bind(this)}
                 handleEntryClicked={this.createNewEntry.bind(this)} />
             </div>

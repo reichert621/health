@@ -14,13 +14,25 @@ interface ChartProps {
 class ReportingChart extends React.Component<ChartProps> {
   // Only re-render if stats length changes
   shouldComponentUpdate({
-    checklistStats: nextChecklistStats = [] as number[][],
+    assessmentStats: nextAssessmentStats = {} as { [type: string]: number[][]; },
     scorecardStats: nextScorecardStats = [] as number[][]
   }) {
-    const { checklistStats = [], scorecardStats = [] } = this.props;
+    const { assessmentStats = {}, scorecardStats = [] } = this.props;
+    const {
+      wellbeing = [],
+      anxiety = [],
+      depression = []
+    } = assessmentStats;
+    const {
+      wellbeing: nextWellBeing = [],
+      anxiety: nextAnxiety = [],
+      depression: nextDepression = []
+    } = nextAssessmentStats;
 
     if (
-      (checklistStats.length === nextChecklistStats.length) &&
+      (wellbeing.length === nextWellBeing.length) &&
+      (anxiety.length === nextAnxiety.length) &&
+      (depression.length === nextDepression.length) &&
       (scorecardStats.length === nextScorecardStats.length)
     ) {
       return false;
@@ -31,7 +43,6 @@ class ReportingChart extends React.Component<ChartProps> {
 
   render() {
     const {
-      checklistStats = [],
       assessmentStats = {},
       scorecardStats = [],
       onClickPoint = noop
@@ -96,7 +107,7 @@ class ReportingChart extends React.Component<ChartProps> {
           id: 'checklist',
           name: 'Depression',
           color: '#eaeaea',
-          data: checklistStats
+          data: depression
         }, {
           id: 'anxiety',
           name: 'Anxiety',
