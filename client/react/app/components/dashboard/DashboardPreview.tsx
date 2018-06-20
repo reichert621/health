@@ -148,19 +148,12 @@ const getAssessmentPercentage = (points: number, questions: IQuestion[]) => {
 };
 
 const DashboardChecklistPreview = ({
-  checklist = {} as IChecklist,
   assessments = {} as any, // FIXME
   selectedMood,
-  handleMoodSelected,
   handleWellnessClicked,
   handleAnxietyClicked,
   handleDepressionClicked
 }: ChecklistPreviewProps) => {
-  const {
-    id: checklistId,
-    questions: checklistQuestions = [],
-    points: checklistPoints
-  } = checklist;
   const { wellbeing = {}, anxiety = {}, depression = {} } = assessments;
   const {
     id: wellBeingId,
@@ -172,13 +165,18 @@ const DashboardChecklistPreview = ({
     questions: anxietyQuestions = [],
     points: anxietyPoints
   } = anxiety;
-  const checklistPercentage = getAssessmentPercentage(checklistPoints, checklistQuestions);
+  const {
+    id: depressionId,
+    questions: depressionQuestions = [],
+    points: depressionPoints
+  } = depression;
+  const depressionPercentage = getAssessmentPercentage(depressionPoints, depressionQuestions);
   const wellBeingPercentage = getAssessmentPercentage(wellBeingPoints, wellBeingQuestions);
   const anxietyPercentage = getAssessmentPercentage(anxietyPoints, anxietyQuestions);
-  const isChecklistComplete = isAssessmentComplete(checklistQuestions);
+  const isDepressionComplete = isAssessmentComplete(depressionQuestions);
   const isWellBeingComplete = isAssessmentComplete(wellBeingQuestions);
   const isAnxietyComplete = isAssessmentComplete(anxietyQuestions);
-  const isAllComplete = (isChecklistComplete && isWellBeingComplete && isAnxietyComplete);
+  const isAllComplete = (isDepressionComplete && isWellBeingComplete && isAnxietyComplete);
 
   return (
     <div className='dashboard-checklist-preview'>
@@ -231,15 +229,15 @@ const DashboardChecklistPreview = ({
 
       <div className='clearfix dashboard-depression-container'>
         <div className={`pull-left`}>
-          {isChecklistComplete
-            ? `${checklistPercentage.toFixed(1)}% depression`
+          {isDepressionComplete
+            ? `${depressionPercentage.toFixed(1)}% depression`
             : 'Depression'}
         </div>
 
         <Link className='text-blue pull-right'
-          to={checklistId ? `/checklist/${checklistId}` : '#'}
+          to={depressionId ? `/assessment/${depressionId}` : '#'}
           onClick={handleDepressionClicked}>
-          {isChecklistComplete ? 'View results' : 'Take assessment'}
+          {isDepressionComplete ? 'View results' : 'Take assessment'}
           <img className={`forward-icon`}
             src='assets/back-arrow.svg' />
         </Link>
@@ -294,7 +292,6 @@ interface DashboardPreviewProps {
   isLoading?: boolean;
   selected: SelectedState;
   handleScorecardClicked: (scorecard: IScorecard, date: moment.Moment) => void;
-  handleChecklistClicked: (checklist: IChecklist, date: moment.Moment) => void;
   handleEntryClicked: (entry: Entry, date: moment.Moment) => void;
   handleAssessmentClicked: (assessment: IAssessment, date: moment.Moment, type: AssessmentType) => void;
   handleMoodSelected?: (mood: IMood) => Promise<any>;
@@ -304,7 +301,6 @@ const DashboardPreview = ({
   isLoading = false,
   selected = {} as SelectedState,
   handleScorecardClicked,
-  handleChecklistClicked,
   handleEntryClicked,
   handleAssessmentClicked,
   handleMoodSelected
@@ -345,7 +341,7 @@ const DashboardPreview = ({
         handleMoodSelected={handleMoodSelected}
         handleWellnessClicked={() => handleAssessmentClicked(wellbeing, date, WELL_BEING)}
         handleAnxietyClicked={() => handleAssessmentClicked(anxiety, date, ANXIETY)}
-        handleDepressionClicked={() => handleChecklistClicked(checklist, date)} />
+        handleDepressionClicked={() => handleAssessmentClicked(depression, date, DEPRESSION)} />
 
       <DashboardEntryPreview
         entry={entry}
