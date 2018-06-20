@@ -85,11 +85,7 @@ const updateAssessmentsByDate = (state = {
   const updates = [wellbeing, anxiety, depression].filter(assessment => {
     const existing = assessment && assessment.id && byId[assessment.id];
 
-    if (!existing) {
-      return true;
-    }
-
-    return !isEqual(existing, assessment);
+    return assessment || !isEqual(assessment, existing);
   });
 
   if (!updates || !updates.length) {
