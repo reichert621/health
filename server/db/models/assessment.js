@@ -341,6 +341,33 @@ const fetchWeekStats = (userId, date = moment().format(DATE_FORMAT)) => {
     });
 };
 
+// TODO: DRY up (see `fetchWeekStats` above)
+const fetchMonthStats = (userId, date = moment().format(DATE_FORMAT)) => {
+  const today = moment(date);
+  const start = moment(today).startOf('month');
+  const previous = moment(start).subtract(1, 'month');
+  const thisMonth = [start.format(DATE_FORMAT), today.format(DATE_FORMAT)];
+  const lastMonth = [previous.format(DATE_FORMAT), start.format(DATE_FORMAT)];
+
+  return Promise.all([
+    fetchUserAssessmentsByDateRange(...thisMonth, userId),
+    fetchUserAssessmentsByDateRange(...lastMonth, userId)
+  ])
+    .then(([current, past]) => {
+      const {
+        assessments: todaysAssessments
+      } = current.find(a => a && a.date === date) || {};
+      const thisMonthsAssessments = current.map(r => r.assessments);
+      const lastMonthsAssessments = past.map(r => r.assessments);
+
+      return {
+        today: extractAssessmentsScores(todaysAssessments),
+        thisMonth: getAssessmentAverages(thisMonthsAssessments),
+        lastMonth: getAssessmentAverages(lastMonthsAssessments)
+      };
+    });
+};
+
 const fetchCompletedDays = (userId, where = {}) => {
   return Assessment()
     .select('a.type', 'ua.date')
@@ -555,6 +582,7 @@ module.exports = {
   updateScore,
   fetchStats,
   fetchWeekStats,
+  fetchMonthStats,
   fetchCompletedDays,
   fetchCompletedDaysByType,
   fetchQuestionStats,

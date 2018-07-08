@@ -69,7 +69,6 @@ const destroyWhere = (where = {}, userId) => {
     .del();
 };
 
-
 module.exports = {
   fetch,
   findById,
