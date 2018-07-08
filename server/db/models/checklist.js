@@ -495,6 +495,29 @@ const fetchWeekStats = (userId, date = moment().format(DATE_FORMAT)) => {
     });
 };
 
+const fetchMonthStats = (userId, date = moment().format(DATE_FORMAT)) => {
+  const today = moment(date);
+  const start = moment(today).startOf('month');
+  const previous = moment(start).subtract(1, 'month');
+  const thisMonth = [start.format(DATE_FORMAT), today.format(DATE_FORMAT)];
+  const lastMonth = [previous.format(DATE_FORMAT), start.format(DATE_FORMAT)];
+
+  return Promise.all([
+    fetchByDateRange(...thisMonth, userId),
+    fetchByDateRange(...lastMonth, userId)
+  ])
+    .then(([thisMonthsChecklists, lastMonthsChecklists]) => {
+      const todaysChecklist = thisMonthsChecklists.find(c => c && c.date === date);
+      const todaysPoints = todaysChecklist && todaysChecklist.points;
+
+      return {
+        today: todaysPoints || null,
+        thisMonth: getAverageScore(thisMonthsChecklists),
+        lastMonth: getAverageScore(lastMonthsChecklists)
+      };
+    });
+};
+
 const destroy = (id, userId) =>
   findById(id, userId) // FIXME (this does not return a knex object)
     .delete();
@@ -519,6 +542,7 @@ module.exports = {
   fetchStatsPerQuestion,
   fetchStats,
   fetchWeekStats,
+  fetchMonthStats,
   destroy,
   migrateByUser
 };

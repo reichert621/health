@@ -10,10 +10,23 @@ const ScoreCard = () => knex('scorecards');
 
 const merge = (x, y) => Object.assign({}, x, y);
 
-const fetch = (where = {}, userId) =>
-  ScoreCard()
+const fetch = (where = {}, userId) => {
+  return ScoreCard()
     .select()
     .where(merge(where, { userId }));
+};
+
+const fetchBetween = (userId, dates = {}) => {
+  const {
+    startDate = -Infinity,
+    endDate = Infinity
+  } = dates;
+
+  return ScoreCard()
+    .select()
+    .whereBetween('date', [startDate, endDate])
+    .andWhere({ userId });
+};
 
 const findOne = (where, userId) =>
   fetch(where, userId)
@@ -427,6 +440,30 @@ const fetchWeekStats = (userId, date = moment().format(DATE_FORMAT)) => {
     });
 };
 
+// TODO: DRY up (see `fetchWeekStats` above)
+const fetchMonthStats = (userId, date = moment().format(DATE_FORMAT)) => {
+  const today = moment(date);
+  const current = moment(today).startOf('month');
+  const previous = moment(current).subtract(1, 'month');
+  const thisMonth = [current.format(DATE_FORMAT), today.format(DATE_FORMAT)];
+  const lastMonth = [previous.format(DATE_FORMAT), current.format(DATE_FORMAT)];
+
+  return Promise.all([
+    fetchByDateRange(...thisMonth, userId),
+    fetchByDateRange(...lastMonth, userId)
+  ])
+    .then(([thisMonthsScorecards, lastMonthsScorecards]) => {
+      const todaysScorecard = thisMonthsScorecards.find(s => s && s.date === date);
+      const todaysPoints = todaysScorecard && todaysScorecard.points;
+
+      return {
+        today: todaysPoints || null,
+        thisMonth: getAverageScore(thisMonthsScorecards),
+        lastMonth: getAverageScore(lastMonthsScorecards)
+      };
+    });
+};
+
 const findOrCreateByDate = async (date, userId) => {
   return findOrCreate({ date }, userId)
     .then(scorecard => findByDate(date, userId));
@@ -458,6 +495,7 @@ module.exports = {
   deselectTask,
   updateSelectedTasks,
   fetchWeekStats,
+  fetchMonthStats,
   findOrCreateByDate,
   destroy
 };

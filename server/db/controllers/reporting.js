@@ -21,6 +21,23 @@ module.exports = {
       });
   },
 
+  fetchMonthStats: (req, res) => {
+    const { params, user } = req;
+    const { date } = params;
+    const { id: userId } = user;
+
+    return Promise.all([
+      ScoreCard.fetchMonthStats(userId, date),
+      Checklist.fetchMonthStats(userId, date),
+      Assessment.fetchMonthStats(userId, date)
+    ])
+      .then(([scorecardStats, checklistStats, assessmentStats]) => {
+        const stats = { scorecardStats, checklistStats, assessmentStats };
+
+        return res.json({ stats });
+      });
+  },
+
   // TODO: maybe this is doing too much?
   fetchAllStats: (req, res) => {
     const userId = req.user.id;
