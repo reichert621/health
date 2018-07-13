@@ -1,0 +1,117 @@
+@matte-blue: #80A0C0;
+@beige: #FBF6F0;
+@white: #fff;
+@black: #382210;
+
+.activities-container {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.activity-card-container {
+  border-radius: 4px;
+  color: @black;
+  margin: 12px;
+  min-height: 80px;
+  padding: 24px 16px;
+  width: 296px;
+
+  // Box shadow
+  -webkit-box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.24);
+  -moz-box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.24);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.24);
+
+  &.checked {
+    background-color: @beige;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+  }
+}
+
+.category-tags-container {
+  margin-bottom: 12px;
+
+  .activity-category-tag {
+    background-color: @matte-blue;
+    border-radius: 4px;
+    color: @white;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    min-width: 64px;
+    padding: 6px 12px;
+    text-align: center;
+  }
+}
+
+.activity-description-container {
+  margin-bottom: 16px;
+
+  // Flexbox
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .activity-description {
+    letter-spacing: 1.2px;
+  }
+
+  .activity-checkbox {
+    background: rgba(0, 0, 0, 0.02);
+    box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.16);
+    border-radius: 8px;
+    cursor: pointer;
+    height: 48px;
+    width: 48px;
+
+    &.checked {
+      background-image: url('assets/check-orange.svg');
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  }
+}
+
+.activity-points-container {
+  // Flexbox
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .activity-points {
+    font-size: 14px;
+    font-weight: 100;
+  }
+
+  .activity-points-btn {
+    background: @white;
+    border-radius: 50%;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.16);
+    height: 36px;
+    margin-left: 8px;
+    width: 36px;
+  }
+
+  .btn-plus,
+  .btn-minus {
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    outline: 0;
+
+    &:active {
+      border-style: solid;
+    }
+  }
+
+  .btn-plus {
+    background-image: url('assets/plus-orange.svg');
+  }
+
+  .btn-minus {
+    background-image: url('assets/minus.svg');
+  }
+}
