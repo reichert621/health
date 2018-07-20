@@ -18,7 +18,13 @@ import {
   AssessmentType,
   createAssessment
 } from '../../helpers/assessment';
-import { AppState, SelectedState, keyifyDate, getPastDates } from '../../helpers/utils';
+import {
+  DATE_FORMAT,
+  AppState,
+  SelectedState,
+  keyifyDate,
+  getPastDates
+} from '../../helpers/utils';
 import { LIST_VIEW, CHART_VIEW, UPDATE_VIEW } from '../../reducers/current-view';
 import { selectDate } from '../../reducers/selected';
 import { getScorecards } from '../../reducers/scorecards';
@@ -174,7 +180,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
     const { history } = this.props;
     // TODO: deal with timezone bug (inconsistency with db and client)
-    const params = { date: date.format('YYYY-MM-DD') };
+    const params = { date: date.format(DATE_FORMAT) };
 
     return createNewScorecard(params)
       .then(({ id: scorecardId }) => {
@@ -186,7 +192,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     if (checklist && checklist.id) return resolve();
 
     const { history } = this.props;
-    const params = { date: date.format('YYYY-MM-DD') };
+    const params = { date: date.format(DATE_FORMAT) };
 
     return createNewChecklist(params)
       .then(({ id: checklistId }) => {
@@ -202,7 +208,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     if (assessment && assessment.id) return resolve();
 
     const { history } = this.props;
-    const params = { type, date: date.format('YYYY-MM-DD') };
+    const params = { type, date: date.format(DATE_FORMAT) };
 
     return createAssessment(params)
       .then(({ id: assessmentId }) => {
@@ -218,8 +224,8 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
     const { history } = this.props;
     const params = {
-      date: date.format('YYYY-MM-DD'),
-      title: date.format('YYYY-MM-DD'),
+      date: date.format(DATE_FORMAT),
+      title: date.format(DATE_FORMAT),
       content: '',
       isPrivate: true
     };
@@ -240,7 +246,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     const { dispatch, selected } = this.props;
     const { date } = selected;
     const { id: moodId } = mood;
-    const formatted = date.format('YYYY-MM-DD');
+    const formatted = date.format(DATE_FORMAT);
 
     return dispatch(setMoodByDate(formatted, moodId))
       .catch(err => {

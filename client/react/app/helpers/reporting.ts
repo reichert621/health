@@ -43,7 +43,7 @@ export interface TaskImpactStats extends TaskStat {
   data: {
     average: number;
     scores?: number[];
-    dates?: moment.Moment|Date|string[]
+    dates?: moment.Moment | Date | string[]
   };
 }
 
@@ -52,6 +52,12 @@ export interface AbilityStats {
     count: number;
     score: number;
   };
+}
+
+export interface DateRange {
+  [key: string]: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface ReportingStats {
@@ -236,8 +242,13 @@ export const fetchWeekStats = (date: string): Promise<any> => {
     .then((res: HttpResponse) => res.stats);
 };
 
-export const fetchAllStats = (): Promise<ReportingStats> => {
-  return get('/api/stats/all')
+export const fetchAllStats = (range = {} as DateRange): Promise<ReportingStats> => {
+  const qs = Object.keys(range)
+    .filter(key => range[key])
+    .map(key => `${key}=${range[key]}`)
+    .join('&');
+
+  return get(`/api/stats/all?${qs}`)
     .then((res: HttpResponse) => res.stats)
     .then(stats => {
       const { checklistStats, scorecardStats } = stats;

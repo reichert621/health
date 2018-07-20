@@ -1,5 +1,6 @@
 const { first } = require('lodash');
 const knex = require('../knex');
+const { formatBetweenFilter } = require('./utils');
 
 const UserAssessment = () => knex('user_assessments');
 
@@ -13,12 +14,13 @@ const findOne = (where = {}, userId) => {
   return fetch(where, userId).first();
 };
 
-const fetchByType = (type, userId, where = {}) => {
+const fetchByType = (type, userId, dates = {}) => {
   return UserAssessment()
     .select('a.type', 'a.title', 'ua.id', 'ua.date', 'ua.userId')
     .from('user_assessments as ua')
     .innerJoin('assessments as a', 'ua.assessmentId', 'a.id')
-    .where({ ...where, 'a.type': type, 'ua.userId': userId });
+    .where({ 'a.type': type, 'ua.userId': userId })
+    .andWhere(k => k.whereBetween('ua.date', formatBetweenFilter(dates)));
 };
 
 // TODO: DRY up!

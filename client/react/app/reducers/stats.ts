@@ -1,8 +1,10 @@
 import { Dispatch } from 'redux';
 import * as moment from 'moment';
 import { IAction } from './index';
+import { DATE_FORMAT } from '../helpers/utils';
 import {
   ReportingStats,
+  DateRange,
   fetchAllStats,
   fetchWeekStats
 } from '../helpers/reporting';
@@ -12,11 +14,11 @@ export const RECEIVE_ALL_STATS = 'RECEIVE_ALL_STATS';
 export const REQUEST_WEEK_STATS = 'REQUEST_WEEK_STATS';
 export const RECEIVE_WEEK_STATS = 'RECEIVE_WEEK_STATS';
 
-export const getAllStats = () => {
+export const getAllStats = (range?: DateRange) => {
   return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_ALL_STATS });
 
-    return fetchAllStats()
+    return fetchAllStats(range)
       .then(stats => {
         return dispatch({
           type: RECEIVE_ALL_STATS,
@@ -27,7 +29,7 @@ export const getAllStats = () => {
 };
 
 export const getWeekStats = (customDate?: string) => {
-  let date = customDate || moment().format('YYYY-MM-DD');
+  let date = customDate || moment().format(DATE_FORMAT);
 
   return (dispatch: Dispatch<IAction>) => {
     dispatch({ type: REQUEST_WEEK_STATS });

@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import * as moment from 'moment';
 import ReportingChart from '../reporting/ReportingChart';
 import { ReportingStats, fetchAllStats } from '../../helpers/reporting';
-import { AppState } from '../../helpers/utils';
+import { DATE_FORMAT, AppState } from '../../helpers/utils';
 import { getAllStats } from '../../reducers/stats';
 import '../reporting/Reporting.less';
 
@@ -19,18 +20,29 @@ interface DashboardReportingProps {
   dispatch: Dispatch<any>;
 }
 
+interface DashboardReportingState {
+  startDate?: string;
+  endDate?: string;
+}
+
 // TODO: DRY up (see Reporting)
-class DashboardReporting extends React.Component<DashboardReportingProps> {
+class DashboardReporting extends React.Component<
+  DashboardReportingProps,
+  DashboardReportingState
+> {
   constructor(props: DashboardReportingProps) {
     super(props);
 
     this.state = {
-      stats: {} as ReportingStats
+      startDate: moment().subtract(3, 'months').format(DATE_FORMAT),
+      endDate: moment().format(DATE_FORMAT)
     };
   }
 
   componentDidMount() {
-    return this.props.dispatch(getAllStats());
+    const { startDate, endDate } = this.state;
+
+    return this.props.dispatch(getAllStats({ startDate, endDate }));
   }
 
   render() {

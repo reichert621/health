@@ -2,6 +2,7 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import * as moment from 'moment';
 import { all } from 'bluebird';
 import NavBar from '../navbar';
 import ReportingChart from './ReportingChart';
@@ -14,7 +15,7 @@ import TopMoods from './TopMoods';
 import HighImpactTasks from './HighImpactTasks';
 import ThisWeek from './ThisWeek';
 import { ReportingStats } from '../../helpers/reporting';
-import { AppState } from '../../helpers/utils';
+import { DATE_FORMAT, AppState } from '../../helpers/utils';
 import { getAllStats, getWeekStats } from '../../reducers/stats';
 import './Reporting.less';
 
@@ -29,10 +30,26 @@ interface ReportingProps extends RouteComponentProps<{}> {
   dispatch: Dispatch<any>;
 }
 
-class Reporting extends React.Component<ReportingProps> {
+interface ReportingState {
+  startDate: string;
+  endDate: string;
+}
+
+class Reporting extends React.Component<ReportingProps, ReportingState> {
+  constructor(props: ReportingProps) {
+    super(props);
+
+    this.state = {
+      startDate: moment().subtract(3, 'months').format(DATE_FORMAT),
+      endDate: moment().format(DATE_FORMAT)
+    };
+  }
+
   componentDidMount() {
+    const { startDate, endDate } = this.state;
+
     return all([
-      this.props.dispatch(getAllStats()),
+      this.props.dispatch(getAllStats({ startDate, endDate })),
       this.props.dispatch(getWeekStats())
     ]);
   }

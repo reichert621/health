@@ -1,6 +1,6 @@
 const { first, map, groupBy } = require('lodash');
 const knex = require('../knex');
-const { isValidAssessmentType } = require('./utils');
+const { isValidAssessmentType, formatBetweenFilter } = require('./utils');
 
 const UserAssessmentScore = () => knex('user_assessment_scores');
 
@@ -62,7 +62,7 @@ const destroy = (id, userId) => {
   return findById(id, userId).delete();
 };
 
-const fetchScoresByQuestion = (type, userId) => {
+const fetchScoresByQuestion = (type, userId, dates = {}) => {
   if (!isValidAssessmentType(type)) {
     return Promise.reject(new Error(`Invalid type ${type}!`));
   }
@@ -76,6 +76,7 @@ const fetchScoresByQuestion = (type, userId) => {
     .innerJoin('assessment_questions as aq', 'uas.assessmentQuestionId', 'aq.id')
     .innerJoin('assessments as a', 'ua.assessmentId', 'a.id')
     .where({ 'ua.userId': userId, 'a.type': type })
+    .andWhere(k => k.whereBetween('ua.date', formatBetweenFilter(dates)))
     .then(results => {
       // TODO: what's the best way to include the category + question?
       const SEPARATOR = '::';

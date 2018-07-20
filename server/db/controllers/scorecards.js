@@ -3,7 +3,7 @@ const { handleError } = require('./utils');
 
 module.exports = {
   fetch: (req, res) => {
-    return ScoreCard.fetchWithPoints({}, req.user.id)
+    return ScoreCard.fetchWithPoints(req.user.id)
       .then(scorecards => res.json({ scorecards }))
       .catch(err => handleError(res, err));
   },
@@ -15,7 +15,7 @@ module.exports = {
   },
 
   fetchProgressToday: (req, res) => {
-    return ScoreCard.fetchProgressToday({}, req.user.id)
+    return ScoreCard.fetchProgressToday(req.user.id)
       .then(scores => res.json({ scores }))
       .catch(err => handleError(res, err));
   },
