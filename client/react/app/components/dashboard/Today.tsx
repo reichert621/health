@@ -23,7 +23,12 @@ import {
   AssessmentType,
   createAssessment,
 } from '../../helpers/assessment';
-import { AppState, SelectedState, keyifyDate } from '../../helpers/utils';
+import {
+  DATE_FORMAT,
+  AppState,
+  SelectedState,
+  keyifyDate
+} from '../../helpers/utils';
 import { selectDate } from '../../reducers/selected';
 import { getScorecardByDate, toggleTask } from '../../reducers/scorecards';
 import { getChecklistByDate } from '../../reducers/checklists';
@@ -97,7 +102,7 @@ class Today extends React.Component<TodayProps, TodayState> {
 
     const { history, dispatch } = this.props;
     const date = moment();
-    const today = date.format('YYYY-MM-DD');
+    const today = date.format(DATE_FORMAT);
 
     return all([
       dispatch(getScorecardByDate(today)),
@@ -147,7 +152,7 @@ class Today extends React.Component<TodayProps, TodayState> {
 
     const { history } = this.props;
     // TODO: deal with timezone bug (inconsistency with db and client)
-    const params = { date: date.format('YYYY-MM-DD') };
+    const params = { date: date.format(DATE_FORMAT) };
 
     return createNewScorecard(params)
       .then(({ id: scorecardId }) => {
@@ -159,7 +164,7 @@ class Today extends React.Component<TodayProps, TodayState> {
     if (checklist && checklist.id) return resolve();
 
     const { history } = this.props;
-    const params = { date: date.format('YYYY-MM-DD') };
+    const params = { date: date.format(DATE_FORMAT) };
 
     return createNewChecklist(params)
       .then(({ id: checklistId }) => {
@@ -175,7 +180,7 @@ class Today extends React.Component<TodayProps, TodayState> {
     if (assessment && assessment.id) return resolve();
 
     const { history } = this.props;
-    const params = { type, date: date.format('YYYY-MM-DD') };
+    const params = { type, date: date.format(DATE_FORMAT) };
 
     return createAssessment(params)
       .then(({ id: assessmentId }) => {
@@ -191,8 +196,8 @@ class Today extends React.Component<TodayProps, TodayState> {
 
     const { history } = this.props;
     const params = {
-      date: date.format('YYYY-MM-DD'),
-      title: date.format('YYYY-MM-DD'),
+      date: date.format(DATE_FORMAT),
+      title: date.format(DATE_FORMAT),
       content: '',
       isPrivate: true
     };
@@ -213,7 +218,7 @@ class Today extends React.Component<TodayProps, TodayState> {
     const { dispatch } = this.props;
     const { id: challengeId, isComplete: isCurrentlyComplete } = challenge;
     const isComplete = !isCurrentlyComplete;
-    const today = moment().format('YYYY-MM-DD');
+    const today = moment().format(DATE_FORMAT);
 
     // TODO: handle in redux better
     return toggleChallengeByDate(challengeId, today, isComplete)
@@ -225,7 +230,7 @@ class Today extends React.Component<TodayProps, TodayState> {
   handleMoodSelected(mood: IMood) {
     const { dispatch } = this.props;
     const { id: moodId } = mood;
-    const today = moment().format('YYYY-MM-DD');
+    const today = moment().format(DATE_FORMAT);
 
     return dispatch(setMoodByDate(today, moodId))
       .catch(err => {

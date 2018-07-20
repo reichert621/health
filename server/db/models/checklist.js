@@ -8,7 +8,7 @@ const User = require('./user');
 const Assessment = require('./assessment');
 const UserAssessment = require('./user_assessment');
 const UserAssessmentScore = require('./user_assessment_score');
-const { DATE_FORMAT } = require('./utils');
+const { DATE_FORMAT, formatBetweenFilter } = require('./utils');
 
 // Depression levels
 const levels = {
@@ -24,14 +24,23 @@ const Checklist = () => knex('checklists');
 
 const merge = (x, y) => Object.assign({}, x, y);
 
-const fetch = (where = {}, userId) =>
-  Checklist()
+const fetch = (where = {}, userId) => {
+  return Checklist()
     .select()
     .where(merge(where, { userId }));
+};
 
-const findOne = (where, userId) =>
-  fetch(where, userId)
+const fetchBetween = (userId, dates = {}) => {
+  return Checklist()
+    .select()
+    .whereBetween('date', formatBetweenFilter(dates))
+    .andWhere({ userId });
+};
+
+const findOne = (where = {}, userId) => {
+  return fetch(where, userId)
     .first();
+};
 
 const fetchQuestionScores = (checklistId, userId) => {
   return Promise.all([
@@ -214,8 +223,8 @@ const updateScores = (id, params, userId) => {
   return Promise.all(promises);
 };
 
-const fetchWithPoints = (where = {}, userId) => {
-  return fetch(where, userId)
+const fetchWithPoints = (userId, dates = {}) => {
+  return fetchBetween(userId, dates)
     .then(checklists => {
       const promises = checklists.map(checklist => {
         const { id, date } = checklist;
@@ -240,13 +249,14 @@ const fetchWithPoints = (where = {}, userId) => {
     });
 };
 
-const fetchCompletedDays = (userId) => {
+const fetchCompletedDays = (userId, dates = {}) => {
   return Checklist()
     .select('c.date')
     .count('cs.*')
     .from('checklists as c')
     .innerJoin('checklist_scores as cs', 'cs.checklistId', 'c.id')
     .where({ 'c.userId': userId })
+    .andWhere(k => k.whereBetween('c.date', formatBetweenFilter(dates)))
     .groupBy('c.date')
     .orderBy('c.date', 'desc')
     .then(result => {
@@ -258,7 +268,7 @@ const fetchCompletedDays = (userId) => {
     });
 };
 
-const fetchAllCompleted = (userIds = []) => {
+const fetchAllCompleted = (userIds = [], dates = {}) => {
   return Checklist()
     .select('c.date', 'u.username')
     .count('cs.*')
@@ -266,6 +276,7 @@ const fetchAllCompleted = (userIds = []) => {
     .innerJoin('checklist_scores as cs', 'cs.checklistId', 'c.id')
     .innerJoin('users as u', 'u.id', 'c.userId')
     .whereIn('u.id', userIds)
+    .andWhere(k => k.whereBetween('c.date', formatBetweenFilter(dates)))
     .groupBy('c.date', 'u.username')
     .orderBy('c.date', 'desc')
     .then(result => {
@@ -277,22 +288,23 @@ const fetchAllCompleted = (userIds = []) => {
     });
 };
 
-const fetchFriendsCompleted = (userId) => {
+const fetchFriendsCompleted = (userId, dates = {}) => {
   return User.fetchFriends(userId)
     .then(friends => {
       const friendIds = friends.map(friend => friend.id);
 
-      return fetchAllCompleted(friendIds);
+      return fetchAllCompleted(friendIds, dates);
     });
 };
 
-const fetchScoresByDate = (userId) => {
+const fetchScoresByDate = (userId, dates = {}) => {
   return Checklist()
     .select('c.date')
     .sum('cs.score as score')
     .from('checklists as c')
     .innerJoin('checklist_scores as cs', 'cs.checklistId', 'c.id')
     .where({ 'c.userId': userId })
+    .andWhere(k => k.whereBetween('c.date', formatBetweenFilter(dates)))
     .groupBy('c.date')
     .orderBy('c.date', 'desc')
     .then(result => {
@@ -300,8 +312,8 @@ const fetchScoresByDate = (userId) => {
     });
 };
 
-const fetchScoresByDayOfWeek = (userId) => {
-  return fetchScoresByDate(userId)
+const fetchScoresByDayOfWeek = (userId, dates = {}) => {
+  return fetchScoresByDate(userId, dates)
     .then(result => {
       return result.reduce((map, { date, score }) => {
         const day = moment(date).format('dddd');
@@ -324,10 +336,10 @@ const calculateAverage = (nums = []) => {
   return sum / count;
 };
 
-const fetchScoresByTask = (userId) => {
+const fetchScoresByTask = (userId, dates = {}) => {
   return Promise.all([
-    fetchScoresByDate(userId),
-    ScorecardSelectedTask.fetchWithDates(userId)
+    fetchScoresByDate(userId, dates),
+    ScorecardSelectedTask.fetchWithDates(userId, dates)
   ])
     .then(([scoresByDate, tasksByDate]) => {
       const mappings = scoresByDate.reduce((map, { date, score }) => {
@@ -376,7 +388,7 @@ const getDepressionLevelByScore = (score) => {
   }
 };
 
-const fetchScoreRangeFrequency = (userId) => {
+const fetchScoreRangeFrequency = (userId, dates = {}) => {
   const init = {
     [levels.NONE]: 0,
     [levels.NORMAL]: 0,
@@ -386,7 +398,7 @@ const fetchScoreRangeFrequency = (userId) => {
     [levels.EXTREME]: 0
   };
 
-  return fetchScoresByDate(userId)
+  return fetchScoresByDate(userId, dates)
     .then(results => {
       return results.reduce((map, { score }) => {
         const s = Number(score);
@@ -399,20 +411,20 @@ const fetchScoreRangeFrequency = (userId) => {
     });
 };
 
-const fetchQuestionStats = (userId) => {
-  return ChecklistScore.fetchScoresByQuestion(userId)
+const fetchQuestionStats = (userId, dates = {}) => {
+  return ChecklistScore.fetchScoresByQuestion(userId, dates)
     .then(statsPerQuestion => {
       // TODO: figure out a use for this data
       return statsPerQuestion;
     });
 };
 
-const fetchStatsPerQuestion = (userId) => {
-  return ChecklistScore.fetchStatsPerQuestion(userId);
+const fetchStatsPerQuestion = (userId, dates = {}) => {
+  return ChecklistScore.fetchStatsPerQuestion(userId, dates);
 };
 
-const fetchStats = (userId) => {
-  return fetch({}, userId)
+const fetchStats = (userId, dates = {}) => {
+  return fetchBetween(userId, dates)
     .then(checklists => {
       const promises = checklists.map(checklist => {
         const { id } = checklist;
@@ -518,9 +530,10 @@ const fetchMonthStats = (userId, date = moment().format(DATE_FORMAT)) => {
     });
 };
 
-const destroy = (id, userId) =>
-  findById(id, userId) // FIXME (this does not return a knex object)
+const destroy = (id, userId) => {
+  return findById(id, userId) // FIXME (this does not return a knex object)
     .delete();
+};
 
 module.exports = {
   fetch,
