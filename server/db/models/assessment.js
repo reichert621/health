@@ -400,6 +400,10 @@ const fetchQuestionStats = (type, userId, dates = {}) => {
   return UserAssessmentScore.fetchScoresByQuestion(type, userId, dates);
 };
 
+const fetchStatsPerQuestion = (userId, dates = {}) => {
+  return UserAssessmentScore.fetchStatsPerQuestion(userId, dates);
+};
+
 const fetchScoresByDate = (userId, where = {}, dates = {}) => {
   return Assessment()
     .select('a.type', 'ua.date')
@@ -590,6 +594,7 @@ module.exports = {
   fetchCompletedDays,
   fetchCompletedDaysByType,
   fetchQuestionStats,
+  fetchStatsPerQuestion,
   fetchScoresByDate,
   fetchScoresByDayOfWeek,
   getDepressionLevelByScore,
