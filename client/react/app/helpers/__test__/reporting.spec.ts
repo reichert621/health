@@ -7,12 +7,12 @@ describe('reporting', () => {
         { date: '2017-01-30', count: 1 },
         { date: '2017-01-29', count: 1 },
         { date: '2017-01-28', count: 1 },
-        { date: '2017-01-27', count: 1 },
+        { date: '2017-01-27', count: 1 }
       ];
       const scorecards = [
         { date: '2017-01-30', count: 1 },
         { date: '2017-01-28', count: 1 },
-        { date: '2017-01-27', count: 1 },
+        { date: '2017-01-27', count: 1 }
       ];
       const streak = reporting.getTotalStreak(checklists, scorecards);
 
@@ -24,13 +24,13 @@ describe('reporting', () => {
         { date: '2017-01-30', count: 1 },
         { date: '2017-01-29', count: 1 },
         { date: '2017-01-28', count: 1 },
-        { date: '2017-01-27', count: 1 },
+        { date: '2017-01-27', count: 1 }
       ];
       const scorecards = [
         { date: '2017-01-30', count: 1 },
         { date: '2017-01-29', count: 1 },
         { date: '2017-01-28', count: 1 },
-        { date: '2017-01-27', count: 1 },
+        { date: '2017-01-27', count: 1 }
       ];
       const streak = reporting.getTotalStreak(checklists, scorecards);
 
@@ -42,7 +42,7 @@ describe('reporting', () => {
         { date: '2017-01-30', count: 1 },
         { date: '2017-01-29', count: 1 },
         { date: '2017-01-28', count: 1 },
-        { date: '2017-01-27', count: 1 },
+        { date: '2017-01-27', count: 1 }
       ];
       const scorecards: reporting.ReportingDatedItem[] = [];
       const streak = reporting.getTotalStreak(checklists, scorecards);
@@ -110,24 +110,70 @@ describe('reporting', () => {
         { task: 'Write', count: 2, points: 8 }
       ];
 
-      const checklistScoresByTask: reporting.TaskImpactStats[] = [
-        { task: 'Exercise', data: { average: 0.4 } },
-        { task: 'Read', data: { average: 1.6 } },
-        { task: 'Write', data: { average: 0.8 } }
+      const depressionScoresByTask: reporting.TaskImpactStats[] = [
+        { task: 'Exercise', data: { average: 1 } },
+        { task: 'Read', data: { average: 3 } },
+        { task: 'Write', data: { average: 2 } }
       ];
 
-      const actual = reporting.mergeTaskStats(topTasks, checklistScoresByTask);
+      const anxietyScoresByTask: reporting.TaskImpactStats[] = [
+        { task: 'Exercise', data: { average: 4 } },
+        { task: 'Read', data: { average: 7 } },
+        { task: 'Write', data: { average: 3 } }
+      ];
+
+      const wellnessScoresByTask: reporting.TaskImpactStats[] = [
+        { task: 'Exercise', data: { average: 60 } },
+        { task: 'Read', data: { average: 58 } },
+        { task: 'Write', data: { average: 66 } }
+      ];
+
+      const actual = reporting.mergeTaskStats(topTasks, {
+        depressionScoresByTask,
+        anxietyScoresByTask,
+        wellnessScoresByTask
+      });
+
       const expected: reporting.ReportingTask[] = [
-        { task: 'Exercise', count: 3, points: 12, happiness: 99.6 },
-        { task: 'Read', count: 4, points: 8, happiness: 98.4 },
-        { task: 'Write', count: 2, points: 16, happiness: 99.2 }
+        {
+          task: 'Exercise',
+          count: 3,
+          points: 12,
+          depression: 1,
+          anxiety: 4,
+          wellness: 75,
+          happiness: 90
+        },
+        {
+          task: 'Read',
+          count: 4,
+          points: 8,
+          depression: 3,
+          anxiety: 7,
+          wellness: 72.5,
+          happiness: 87.5
+        },
+        {
+          task: 'Write',
+          count: 2,
+          points: 16,
+          depression: 2,
+          anxiety: 3,
+          wellness: 82.5,
+          happiness: 92.5
+        }
       ];
 
       expect(actual).toEqual(expected);
     });
 
     it('handles empty stats', () => {
-      const actual = reporting.mergeTaskStats([], []);
+      const actual = reporting.mergeTaskStats([], {
+        depressionScoresByTask: [],
+        anxietyScoresByTask: [],
+        wellnessScoresByTask: []
+      });
+
       const expected: reporting.ReportingTask[] = [];
 
       expect(actual).toEqual(expected);

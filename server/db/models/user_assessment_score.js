@@ -1,6 +1,11 @@
-const { first, map, groupBy } = require('lodash');
+const { first, map, groupBy, isNumber, mapValues } = require('lodash');
 const knex = require('../knex');
-const { isValidAssessmentType, formatBetweenFilter } = require('./utils');
+const {
+  isValidAssessmentType,
+  formatBetweenFilter,
+  getDateRange,
+  getDaysBetween
+} = require('./utils');
 
 const UserAssessmentScore = () => knex('user_assessment_scores');
 
@@ -98,6 +103,53 @@ const fetchScoresByQuestion = (type, userId, dates = {}) => {
     });
 };
 
+const formatStatsPerQuestion = (scores) => {
+  const dates = scores.map(r => r.date);
+  const [start, end] = getDateRange(dates);
+  const days = getDaysBetween(start, end);
+  const scoresByQuestion = groupBy(scores, 'text');
+
+  return Object.keys(scoresByQuestion)
+    .map(question => {
+      const stats = scoresByQuestion[question];
+      const totals = stats.reduce((acc, { date, score }) => {
+        const timestamp = Number(date);
+
+        return {
+          ...acc,
+          [timestamp]: (acc[timestamp] || 0) + score
+        };
+      }, {});
+
+      return {
+        question,
+        data: days.map(day => {
+          const timestamp = Number(day); // TODO: format date instead of unix?
+          const score = isNumber(totals[timestamp]) ? totals[timestamp] : null;
+
+          return [timestamp, score];
+        })
+      };
+    });
+};
+
+// Fetches mood chart stats
+const fetchStatsPerQuestion = (userId, dates = {}) => {
+  return UserAssessmentScore()
+    .select('ua.date', 'aq.text', 'uas.score', 'ua.userId', 'a.type')
+    .from('user_assessment_scores as uas')
+    .innerJoin('user_assessments as ua', 'uas.userAssessmentId', 'ua.id')
+    .innerJoin('assessments as a', 'ua.assessmentId', 'a.id')
+    .innerJoin('assessment_questions as aq', 'uas.assessmentQuestionId', 'aq.id')
+    .where({ 'uas.userId': userId })
+    .andWhere(k => k.whereBetween('ua.date', formatBetweenFilter(dates)))
+    .then(results => {
+      const scoresByType = groupBy(results, 'type');
+
+      return mapValues(scoresByType, formatStatsPerQuestion);
+    });
+};
+
 module.exports = {
   fetch,
   findById,
@@ -106,5 +158,6 @@ module.exports = {
   update,
   createOrUpdate,
   destroy,
-  fetchScoresByQuestion
+  fetchScoresByQuestion,
+  fetchStatsPerQuestion
 };
