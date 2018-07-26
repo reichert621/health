@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import * as moment from 'moment';
 import { all } from 'bluebird';
+import * as qs from 'query-string';
 import NavBar from '../navbar';
 import ReportingChart from './ReportingChart';
 import ReportingAverages from './ReportingAverages';
@@ -15,7 +16,7 @@ import TopMoods from './TopMoods';
 import HighImpactTasks from './HighImpactTasks';
 import ThisWeek from './ThisWeek';
 import { ReportingStats } from '../../helpers/reporting';
-import { DATE_FORMAT, AppState } from '../../helpers/utils';
+import { DATE_FORMAT, AppState, isValidDateFormat } from '../../helpers/utils';
 import { getAllStats, getWeekStats } from '../../reducers/stats';
 import './Reporting.less';
 
@@ -39,9 +40,15 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
   constructor(props: ReportingProps) {
     super(props);
 
-    this.state = {
+    const { from, to } = qs.parse(props.location.search);
+    const defaults = {
       startDate: moment().subtract(3, 'months').format(DATE_FORMAT),
       endDate: moment().format(DATE_FORMAT)
+    };
+
+    this.state = {
+      startDate: isValidDateFormat(from) ? from : defaults.startDate,
+      endDate: isValidDateFormat(to) ? to : defaults.endDate,
     };
   }
 

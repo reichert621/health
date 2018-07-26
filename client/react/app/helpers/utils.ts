@@ -77,6 +77,10 @@ export const DAYS_OF_WEEK = [
 
 export const DATE_FORMAT = 'YYYY-MM-DD';
 
+export const isValidDateFormat = (str: string) => {
+  return moment(str, DATE_FORMAT, true).isValid();
+};
+
 export const pluralize = (str: string, n?: number, customPlural?: string): string => {
   const simplePlural = `${str}s`;
 
