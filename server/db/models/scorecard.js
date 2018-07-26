@@ -4,7 +4,7 @@ const moment = require('moment');
 const Task = require('./task');
 const ScoreCardSelectedTask = require('./scorecard_selected_task');
 const User = require('./user');
-const { DATE_FORMAT, calculateAverage } = require('./utils');
+const { DATE_FORMAT, calculateAverage, formatBetweenFilter } = require('./utils');
 
 const ScoreCard = () => knex('scorecards');
 
@@ -17,20 +17,18 @@ const fetch = (where = {}, userId) => {
 };
 
 const fetchBetween = (userId, dates = {}) => {
-  const {
-    startDate = -Infinity,
-    endDate = Infinity
-  } = dates;
+  const range = formatBetweenFilter(dates);
 
   return ScoreCard()
     .select()
-    .whereBetween('date', [startDate, endDate])
+    .whereBetween('date', range)
     .andWhere({ userId });
 };
 
-const findOne = (where, userId) =>
-  fetch(where, userId)
+const findOne = (where, userId) => {
+  return fetch(where, userId)
     .first();
+};
 
 const fetchTasks = async (scorecardId, userId) => {
   const selectedTasks = await ScoreCardSelectedTask.fetchByScorecardId(scorecardId, userId);
@@ -59,9 +57,9 @@ const findById = async (id, userId, where = {}) => {
   });
 };
 
-const fetchWithPoints = (where = {}, userId) => {
+const fetchWithPoints = (userId, dates = {}) => {
   return Promise.all([
-    fetch(where, userId),
+    fetchBetween(userId, dates),
     Task.fetch({}, userId)
   ])
     .then(([scorecards, tasks]) => {
@@ -89,8 +87,8 @@ const fetchWithPoints = (where = {}, userId) => {
     });
 };
 
-const fetchProgressToday = (where = {}, userId) => {
-  return fetchWithPoints(where, userId)
+const fetchProgressToday = (userId) => {
+  return fetchWithPoints(userId)
     .then(scorecards => {
       const date = moment().format('YYYY-MM-DD');
       const today = scorecards.find(s => s.date === date);
@@ -104,13 +102,14 @@ const fetchProgressToday = (where = {}, userId) => {
     });
 };
 
-const fetchCompletedDays = (userId) => {
+const fetchCompletedDays = (userId, dates = {}) => {
   return ScoreCard()
     .select('s.date')
     .count('sst.*')
     .from('scorecards as s')
     .innerJoin('scorecard_selected_tasks as sst', 'sst.scorecardId', 's.id')
     .where({ 's.userId': userId })
+    .andWhere(k => k.whereBetween('s.date', formatBetweenFilter(dates)))
     .groupBy('s.date')
     .orderBy('s.date', 'desc')
     .then(result => {
@@ -122,7 +121,7 @@ const fetchCompletedDays = (userId) => {
     });
 };
 
-const fetchAllCompleted = (userIds = []) => {
+const fetchAllCompleted = (userIds = [], dates = {}) => {
   return ScoreCard()
     .select('s.date', 'u.username')
     .count('sst.*')
@@ -130,6 +129,7 @@ const fetchAllCompleted = (userIds = []) => {
     .innerJoin('scorecard_selected_tasks as sst', 'sst.scorecardId', 's.id')
     .innerJoin('users as u', 'u.id', 's.userId')
     .whereIn('u.id', userIds)
+    .andWhere(k => k.whereBetween('s.date', formatBetweenFilter(dates)))
     .groupBy('s.date', 'u.username')
     .orderBy('s.date', 'desc')
     .then(result => {
@@ -141,16 +141,16 @@ const fetchAllCompleted = (userIds = []) => {
     });
 };
 
-const fetchFriendsCompleted = (userId) => {
+const fetchFriendsCompleted = (userId, dates = {}) => {
   return User.fetchFriends(userId)
     .then(friends => {
       const friendIds = friends.map(friend => friend.id);
 
-      return fetchAllCompleted(friendIds);
+      return fetchAllCompleted(friendIds, dates);
     });
 };
 
-const fetchScoresByDate = (userId) => {
+const fetchScoresByDate = (userId, dates = {}) => {
   return ScoreCard()
     .select('s.date')
     .sum('t.points as score')
@@ -159,6 +159,7 @@ const fetchScoresByDate = (userId) => {
     .innerJoin('scorecard_selected_tasks as sst', 'sst.scorecardId', 's.id')
     .innerJoin('tasks as t', 'sst.taskId', 't.id')
     .where({ 's.userId': userId })
+    .andWhere(k => k.whereBetween('s.date', formatBetweenFilter(dates)))
     .groupBy('s.date')
     .orderBy('s.date', 'desc')
     .then(result => {
@@ -172,8 +173,8 @@ const fetchScoresByDate = (userId) => {
     });
 };
 
-const fetchScoresByDayOfWeek = (userId) => {
-  return fetchScoresByDate(userId)
+const fetchScoresByDayOfWeek = (userId, dates = {}) => {
+  return fetchScoresByDate(userId, dates)
     .then(result => {
       return result.reduce((map, { date, score }) => {
         const day = moment(date).format('dddd');
@@ -186,8 +187,8 @@ const fetchScoresByDayOfWeek = (userId) => {
     });
 };
 
-const fetchTotalScoreOverTime = (userId) => {
-  return fetchScoresByDate(userId)
+const fetchTotalScoreOverTime = (userId, dates = {}) => {
+  return fetchScoresByDate(userId, dates)
     .then(result => {
       return result
         .sort((x, y) => Number(new Date(x.date)) - Number(new Date(y.date)))
@@ -212,8 +213,8 @@ const fetchTotalScoreOverTime = (userId) => {
     });
 };
 
-const fetchCategoryStats = (userId) => {
-  return ScoreCardSelectedTask.fetchSelectedTasksByCategory(userId)
+const fetchCategoryStats = (userId, dates = {}) => {
+  return ScoreCardSelectedTask.fetchSelectedTasksByCategory(userId, dates)
     .then(mappings => {
       return Object.keys(mappings)
         .reduce((result, category) => {
@@ -228,8 +229,8 @@ const fetchCategoryStats = (userId) => {
     });
 };
 
-const fetchAbilityStats = (userId) => {
-  return ScoreCardSelectedTask.fetchSelectedTasksByAbility(userId)
+const fetchAbilityStats = (userId, dates = {}) => {
+  return ScoreCardSelectedTask.fetchSelectedTasksByAbility(userId, dates)
     .then(mappings => {
       return Object.keys(mappings)
         .reduce((result, category) => {
@@ -244,9 +245,9 @@ const fetchAbilityStats = (userId) => {
     });
 };
 
-const fetchStats = (userId) => {
+const fetchStats = (userId, dates = {}) => {
   return Promise.all([
-    fetch({}, userId),
+    fetchBetween(userId, dates),
     Task.fetch({}, userId)
   ])
     .then(([scorecards, tasks]) => {
@@ -284,8 +285,8 @@ const fetchStats = (userId) => {
     });
 };
 
-const fetchStatsPerCategory = (userId) => {
-  return ScoreCardSelectedTask.fetchTaskStatsPerCategory(userId);
+const fetchStatsPerCategory = (userId, dates = {}) => {
+  return ScoreCardSelectedTask.fetchTaskStatsPerCategory(userId, dates);
 };
 
 const create = (params, userId) => {

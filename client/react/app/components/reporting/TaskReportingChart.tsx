@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as ReactHighcharts from 'react-highcharts';
-import { get, noop, includes } from 'lodash';
 import * as moment from 'moment';
 import { fetchTaskStats } from '../../helpers/reporting';
 import './Reporting.less';
@@ -23,6 +22,9 @@ interface ChartProps {}
 interface ChartState {
   stats: Item[];
   checklistStats: number[][];
+  depressionStats: number[][];
+  anxietyStats: number[][];
+  wellBeingStats: number[][];
 }
 
 class TaskReportingChart extends React.Component<ChartProps, ChartState> {
@@ -31,22 +33,37 @@ class TaskReportingChart extends React.Component<ChartProps, ChartState> {
 
     this.state = {
       stats: [] as Item[],
-      checklistStats: []
+      checklistStats: [],
+      depressionStats: [],
+      anxietyStats: [],
+      wellBeingStats: [],
     };
   }
 
   componentDidMount() {
     return fetchTaskStats()
-      .then(([stats, checklistStats]) => {
-        return this.setState({ stats, checklistStats });
+      .then(([stats, checklistStats, assessmentStats]) => {
+        const { depression, anxiety, wellbeing } = assessmentStats;
+
+        return this.setState({
+          stats,
+          checklistStats,
+          depressionStats: depression,
+          anxietyStats: anxiety,
+          wellBeingStats: wellbeing
+        });
       })
       .catch(err => console.log('Error!', err));
   }
 
   getChartConfig(series: Series[]) {
-    const { checklistStats = [] } = this.state;
-    const selected = ['Exercise', 'Eat Healthy'];
-    const filtered = series.filter(s => includes(selected, s.name));
+    const {
+      depressionStats = [],
+      anxietyStats = [],
+      wellBeingStats = []
+    } = this.state;
+    // const selected = ['Exercise', 'Eat Healthy'];
+    // const filtered = series.filter(s => includes(selected, s.name));
 
     return {
       title: { text: '' },
@@ -89,13 +106,29 @@ class TaskReportingChart extends React.Component<ChartProps, ChartState> {
         opposite: true
       },
       credits: false,
-      series: series.concat({
-        id: 'checklists',
-        name: 'Depression',
-        color: '#eaeaea',
-        zIndex: -1,
-        data: checklistStats
-      })
+      series: series.concat([
+        {
+          id: 'depression',
+          name: 'Depression',
+          color: '#eaeaea',
+          zIndex: -1,
+          data: depressionStats
+        },
+        {
+          id: 'anxiety',
+          name: 'Anxiety',
+          color: '#2b2b2b',
+          zIndex: -1,
+          data: anxietyStats
+        },
+        // {
+        //   id: 'wellbeing',
+        //   name: 'Well-Being',
+        //   color: '#33A2CC',
+        //   zIndex: -1,
+        //   data: wellBeingStats
+        // },
+      ])
     };
   }
 
@@ -105,7 +138,7 @@ class TaskReportingChart extends React.Component<ChartProps, ChartState> {
     const series = stats.map(({ category: name, data }) => {
       return {
         name,
-        color: '#33A2CC',
+        color: '#91cde4',
         data: data.map(([t, n]) => {
           return n === 0 ? [t, null] : [t, n];
         }),

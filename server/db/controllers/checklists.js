@@ -3,7 +3,7 @@ const { handleError } = require('./utils');
 
 module.exports = {
   fetch: (req, res) => {
-    return Checklist.fetchWithPoints({}, req.user.id)
+    return Checklist.fetchWithPoints(req.user.id)
       .then(checklists => res.json({ checklists }))
       .catch(err => handleError(res, err));
   },

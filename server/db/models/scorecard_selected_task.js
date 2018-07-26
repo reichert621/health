@@ -1,6 +1,10 @@
 const knex = require('../knex.js');
 const { first, isObject, isEmpty } = require('lodash');
-const { getDateRange, getDaysBetween } = require('./utils');
+const {
+  getDateRange,
+  getDaysBetween,
+  formatBetweenFilter
+} = require('./utils');
 
 const ScoreCardSelectedTask = () => knex('scorecard_selected_tasks');
 
@@ -11,13 +15,15 @@ const fetch = (where = {}, userId) =>
     .select()
     .where(merge(where, { userId }));
 
-const fetchSelectedTasksByCategory = (userId) => {
+const fetchSelectedTasksByCategory = (userId, dates = {}) => {
   return ScoreCardSelectedTask()
-    .select('c.name as category', 't.description', 't.points')
+    .select('c.name as category', 't.description', 't.points', 's.date')
     .from('scorecard_selected_tasks as sst')
+    .innerJoin('scorecards as s', 'sst.scorecardId', 's.id')
     .innerJoin('tasks as t', 'sst.taskId', 't.id')
     .innerJoin('categories as c', 't.categoryId', 'c.id')
     .where({ 'sst.userId': userId })
+    .andWhere(k => k.whereBetween('s.date', formatBetweenFilter(dates)))
     .then(results => {
       return results.reduce((map, { category, description, points }) => {
         return merge(map, {
@@ -28,7 +34,7 @@ const fetchSelectedTasksByCategory = (userId) => {
 };
 
 // Fetches task chart stats
-const fetchTaskStatsPerCategory = (userId) => {
+const fetchTaskStatsPerCategory = (userId, dates = {}) => {
   return ScoreCardSelectedTask()
     .select('c.name as category', 't.description', 't.points', 's.date')
     .from('scorecard_selected_tasks as sst')
@@ -36,6 +42,7 @@ const fetchTaskStatsPerCategory = (userId) => {
     .innerJoin('tasks as t', 'sst.taskId', 't.id')
     .innerJoin('categories as c', 't.categoryId', 'c.id')
     .where({ 'sst.userId': userId })
+    .andWhere(k => k.whereBetween('s.date', formatBetweenFilter(dates)))
     .then(results => {
       const dates = results.map(r => r.date);
       const [start, end] = getDateRange(dates);
@@ -70,14 +77,16 @@ const fetchTaskStatsPerCategory = (userId) => {
     });
 };
 
-const fetchSelectedTasksByAbility = (userId) => {
+const fetchSelectedTasksByAbility = (userId, dates = {}) => {
   return ScoreCardSelectedTask()
-    .select('a.name as ability', 't.description', 't.points')
+    .select('a.name as ability', 't.description', 't.points', 's.date')
     .from('scorecard_selected_tasks as sst')
+    .innerJoin('scorecards as s', 'sst.scorecardId', 's.id')
     .innerJoin('tasks as t', 'sst.taskId', 't.id')
     .innerJoin('categories as c', 't.categoryId', 'c.id')
     .innerJoin('abilities as a', 'c.abilityId', 'a.id')
     .where({ 'sst.userId': userId })
+    .andWhere(k => k.whereBetween('s.date', formatBetweenFilter(dates)))
     .then(results => {
       return results.reduce((map, { ability, description, points }) => {
         return merge(map, {
@@ -87,7 +96,7 @@ const fetchSelectedTasksByAbility = (userId) => {
     });
 };
 
-const fetchWithDates = (userId) => {
+const fetchWithDates = (userId, dates = {}) => {
   return ScoreCardSelectedTask()
     .select('c.name', 't.description', 's.date')
     .from('scorecard_selected_tasks as sst')
@@ -95,6 +104,7 @@ const fetchWithDates = (userId) => {
     .innerJoin('tasks as t', 'sst.taskId', 't.id')
     .innerJoin('categories as c', 't.categoryId', 'c.id')
     .where({ 'sst.userId': userId })
+    .andWhere(k => k.whereBetween('s.date', formatBetweenFilter(dates)))
     .then(results => {
       return results.reduce((map, { name, description, date }) => {
         const key = `${name}: ${description}`;

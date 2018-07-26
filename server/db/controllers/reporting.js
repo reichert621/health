@@ -1,5 +1,6 @@
 const { ScoreCard, Checklist, Task, Assessment } = require('../index');
 const { handleError } = require('./utils');
+const { isValidDateFormat } = require('../models/utils');
 
 const { DEPRESSION, ANXIETY, WELL_BEING } = Assessment.AssessmentTypes;
 
@@ -40,39 +41,45 @@ module.exports = {
 
   // TODO: maybe this is doing too much?
   fetchAllStats: (req, res) => {
-    const userId = req.user.id;
+    const { user, query } = req;
+    const { id: userId } = user;
+    const { startDate, endDate } = query;
+    const dates = {
+      startDate: isValidDateFormat(startDate) ? startDate : -Infinity,
+      endDate: isValidDateFormat(endDate) ? endDate : Infinity
+    };
 
     return Promise.all([
       // Checklists
-      Checklist.fetchStats(userId),
+      Checklist.fetchStats(userId, dates),
       // Scorecards
-      ScoreCard.fetchStats(userId),
-      ScoreCard.fetchCompletedDays(userId),
-      ScoreCard.fetchScoresByDayOfWeek(userId),
-      ScoreCard.fetchTotalScoreOverTime(userId),
-      ScoreCard.fetchAbilityStats(userId),
+      ScoreCard.fetchStats(userId, dates),
+      ScoreCard.fetchCompletedDays(userId, dates),
+      ScoreCard.fetchScoresByDayOfWeek(userId, dates),
+      ScoreCard.fetchTotalScoreOverTime(userId, dates),
+      ScoreCard.fetchAbilityStats(userId, dates),
       // Tasks
-      Task.fetchTopSelected(userId),
+      Task.fetchTopSelected(userId, dates),
       // Assessments
-      Assessment.fetchStats(userId),
+      Assessment.fetchStats(userId, dates),
       // Assessments - Depression
-      Assessment.fetchCompletedDaysByType(DEPRESSION, userId),
-      Assessment.fetchScoresByDayOfWeek(DEPRESSION, userId),
-      Assessment.fetchScoreRangeFrequency(DEPRESSION, userId),
-      Assessment.fetchQuestionStats(DEPRESSION, userId),
-      Assessment.fetchScoresByTask(DEPRESSION, userId),
+      Assessment.fetchCompletedDaysByType(DEPRESSION, userId, dates),
+      Assessment.fetchScoresByDayOfWeek(DEPRESSION, userId, dates),
+      Assessment.fetchScoreRangeFrequency(DEPRESSION, userId, dates),
+      Assessment.fetchQuestionStats(DEPRESSION, userId, dates),
+      Assessment.fetchScoresByTask(DEPRESSION, userId, dates),
       // Assessments - Anxiety
-      Assessment.fetchCompletedDaysByType(ANXIETY, userId),
-      Assessment.fetchScoresByDayOfWeek(ANXIETY, userId),
-      Assessment.fetchScoreRangeFrequency(ANXIETY, userId),
-      Assessment.fetchQuestionStats(ANXIETY, userId),
-      Assessment.fetchScoresByTask(ANXIETY, userId),
+      Assessment.fetchCompletedDaysByType(ANXIETY, userId, dates),
+      Assessment.fetchScoresByDayOfWeek(ANXIETY, userId, dates),
+      Assessment.fetchScoreRangeFrequency(ANXIETY, userId, dates),
+      Assessment.fetchQuestionStats(ANXIETY, userId, dates),
+      Assessment.fetchScoresByTask(ANXIETY, userId, dates),
       // Assessments - Wellness
-      Assessment.fetchCompletedDaysByType(WELL_BEING, userId),
-      Assessment.fetchScoresByDayOfWeek(WELL_BEING, userId),
-      Assessment.fetchScoreRangeFrequency(WELL_BEING, userId),
-      Assessment.fetchQuestionStats(WELL_BEING, userId),
-      Assessment.fetchScoresByTask(WELL_BEING, userId)
+      Assessment.fetchCompletedDaysByType(WELL_BEING, userId, dates),
+      Assessment.fetchScoresByDayOfWeek(WELL_BEING, userId, dates),
+      Assessment.fetchScoreRangeFrequency(WELL_BEING, userId, dates),
+      Assessment.fetchQuestionStats(WELL_BEING, userId, dates),
+      Assessment.fetchScoresByTask(WELL_BEING, userId, dates)
 
     ])
       .then(result => {

@@ -9,6 +9,10 @@ const AssessmentTypes = {
   WELL_BEING: 'wellbeing'
 };
 
+const isValidDateFormat = (str) => {
+  return moment(str, DATE_FORMAT, true).isValid();
+};
+
 const calculateAverage = (nums = []) => {
   if (!nums || !nums.length) return 0;
 
@@ -30,6 +34,15 @@ const getDaysBetween = (start, end) => {
   return times(diff).map(n => {
     return moment(start).add(n, 'days');
   });
+};
+
+const formatBetweenFilter = (dates = {}) => {
+  const {
+    startDate = -Infinity,
+    endDate = Infinity
+  } = dates;
+
+  return [startDate, endDate];
 };
 
 const getCombinations = (arr) => {
@@ -56,9 +69,11 @@ const isValidAssessmentType = (type) => {
 module.exports = {
   DATE_FORMAT,
   AssessmentTypes,
+  isValidDateFormat,
   calculateAverage,
   getDateRange,
   getDaysBetween,
+  formatBetweenFilter,
   getCombinations,
   isValidAssessmentType
 };

@@ -75,6 +75,8 @@ export const DAYS_OF_WEEK = [
   'Sunday'
 ];
 
+export const DATE_FORMAT = 'YYYY-MM-DD';
+
 export const pluralize = (str: string, n?: number, customPlural?: string): string => {
   const simplePlural = `${str}s`;
 
@@ -147,7 +149,7 @@ export const mapByDate = (list: DatedItem[] = []): { [date: string]: any; } => {
 
 export const getPastDates = (days: number = 10): moment.Moment[] => {
   return times(days).map(n => {
-    const formatted = moment().subtract(n, 'days').format('YYYY-MM-DD');
+    const formatted = moment().subtract(n, 'days').format(DATE_FORMAT);
 
     return moment(formatted);
   });

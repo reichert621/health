@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { isNumber } from 'lodash';
 import { ReportingTask } from '../../helpers/reporting';
 
 interface TaskReportingTableProps {
@@ -8,8 +9,8 @@ interface TaskReportingTableProps {
 const TaskReportingTable = ({ stats }: TaskReportingTableProps) => {
   const styles = {
     container: { marginTop: 24, marginBottom: 24 },
-    lg: { width: '40%' },
-    sm: { width: '20%' },
+    lg: { width: '25%' },
+    sm: { width: '15%' },
   };
 
   return (
@@ -17,25 +18,47 @@ const TaskReportingTable = ({ stats }: TaskReportingTableProps) => {
       <thead>
         <tr>
           <th style={styles.lg}>Task</th>
-          <th style={styles.sm}>Total Count</th>
-          <th style={styles.sm}>Total Points</th>
-          <th style={styles.sm}>Average Mood</th>
+          <th style={styles.sm}>Count</th>
+          {/* <th style={styles.sm}>Points</th> */}
+          <th style={styles.sm}>Depression</th>
+          <th style={styles.sm}>Anxiety</th>
+          <th style={styles.sm}>Wellness</th>
+          <th style={styles.sm}>Happiness</th>
         </tr>
       </thead>
       <tbody>
         {
           stats
-            .sort((x, y) => y.happiness - x.happiness)
+            .sort((x, y) => y.wellness - x.wellness)
             .map((stat, key) => {
-              const { task, count, points, happiness } = stat;
+              const {
+                task,
+                count,
+                points,
+                depression,
+                anxiety,
+                wellness,
+                happiness
+              } = stat;
 
               return (
                 <tr key={key}
                   className='dashboard-list-row'>
                   <td style={styles.lg}>{task}</td>
                   <td style={styles.sm}>{count} times</td>
-                  <td style={styles.sm}>{points} points</td>
-                  <td style={styles.sm}>{happiness.toFixed(1)}% happy</td>
+                  {/* <td style={styles.sm}>{points} points</td> */}
+                  <td style={styles.sm}>
+                    {isNumber(depression) ? `${depression.toFixed(1)}%` : 'N/A'}
+                  </td>
+                  <td style={styles.sm}>
+                    {isNumber(anxiety) ? `${anxiety.toFixed(1)}%` : 'N/A'}
+                  </td>
+                  <td style={styles.sm}>
+                    {isNumber(wellness) ? `${wellness.toFixed(1)}%` : 'N/A'}
+                  </td>
+                  <td style={styles.sm}>
+                    {isNumber(happiness) ? `${happiness.toFixed(1)}%` : 'N/A'}
+                  </td>
                 </tr>
               );
             })

@@ -8,7 +8,12 @@ const {
   flatten,
   uniq
 } = require('lodash');
-const { getDateRange, getDaysBetween, getCombinations } = require('./utils');
+const {
+  getDateRange,
+  getDaysBetween,
+  getCombinations,
+  formatBetweenFilter
+} = require('./utils');
 
 const ChecklistScore = () => knex('checklist_scores');
 
@@ -35,13 +40,14 @@ const fetchScoresByCategory = (userId) => {
     });
 };
 
-const fetchScoresByQuestion = (userId) => {
+const fetchScoresByQuestion = (userId, dates = {}) => {
   return ChecklistScore()
     .select('c.date', 'cq.text', 'cs.score', 'cs.userId')
     .from('checklist_scores as cs')
     .innerJoin('checklists as c', 'cs.checklistId', 'c.id')
     .innerJoin('checklist_questions as cq', 'cs.checklistQuestionId', 'cq.id')
     .where({ 'cs.userId': userId })
+    .andWhere(k => k.whereBetween('c.date', formatBetweenFilter(dates)))
     .then(results => {
       const scoresByQuestion = groupBy(results, 'text');
 
@@ -59,13 +65,14 @@ const fetchScoresByQuestion = (userId) => {
 };
 
 // Fetches mood chart stats
-const fetchStatsPerQuestion = (userId) => {
+const fetchStatsPerQuestion = (userId, dates = {}) => {
   return ChecklistScore()
     .select('c.date', 'cq.text', 'cs.score', 'cs.userId')
     .from('checklist_scores as cs')
     .innerJoin('checklists as c', 'cs.checklistId', 'c.id')
     .innerJoin('checklist_questions as cq', 'cs.checklistQuestionId', 'cq.id')
     .where({ 'cs.userId': userId })
+    .andWhere(k => k.whereBetween('c.date', formatBetweenFilter(dates)))
     .then(results => {
       const dates = results.map(r => r.date);
       const [start, end] = getDateRange(dates);

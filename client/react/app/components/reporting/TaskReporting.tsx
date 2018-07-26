@@ -50,10 +50,19 @@ class TaskReporting extends React.Component<RouteComponentProps<{}>, ReportingSt
       totalScoreOverTime = [],
       taskAbilityStats = {},
       // Task stats
-      topTasks = []
+      topTasks = [],
+      // Anxiety stats
+      depressionScoresByTask = [],
+      anxietyScoresByTask = [],
+      wellnessScoresByTask = []
     } = stats;
 
-    const taskStats = mergeTaskStats(topTasks, checklistScoresByTask);
+    const taskStats = mergeTaskStats(topTasks, {
+      depressionScoresByTask,
+      anxietyScoresByTask,
+      wellnessScoresByTask
+    });
+
     console.log('taskStats!', taskStats);
 
     return (

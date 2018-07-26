@@ -2,6 +2,7 @@ node_modules
 build
 target/
 .DS_Store
+.vscode
 
 # Ignore boilerplate for react native starter kit for now
 client/mobile/

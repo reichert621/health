@@ -1,9 +1,8 @@
 import * as Bluebird from 'bluebird';
 import * as moment from 'moment';
-import { keys, groupBy, extend, uniq } from 'lodash';
+import { keys, groupBy, extend, uniq, isNumber } from 'lodash';
 import { HttpResponse, get } from './http';
-import { fetchScorecard } from './scorecard';
-import { DatedItem, getStreakStats } from './utils';
+import { DatedItem, getStreakStats, calculateAverage } from './utils';
 
 export interface ScoreByDay {
   [key: string]: number[];
@@ -21,6 +20,9 @@ export interface ReportingTask extends TaskStat {
   count: number;
   points: number;
   taskId?: number;
+  depression?: number;
+  anxiety?: number;
+  wellness?: number;
   happiness?: number;
   category?: string;
   description?: string;
@@ -43,7 +45,7 @@ export interface TaskImpactStats extends TaskStat {
   data: {
     average: number;
     scores?: number[];
-    dates?: moment.Moment|Date|string[]
+    dates?: moment.Moment | Date | string[]
   };
 }
 
@@ -52,6 +54,12 @@ export interface AbilityStats {
     count: number;
     score: number;
   };
+}
+
+export interface DateRange {
+  [key: string]: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface ReportingStats {
@@ -137,18 +145,72 @@ const groupByTask = (map: TaskStatMap<TaskStat>, stat: TaskStat) => {
   return extend(map, { [stat.task]: stat });
 };
 
-export const mergeTaskStats = (
-  topTasks: ReportingTask[],
-  checklistScoresByTask: TaskImpactStats[]
-): ReportingTask[] => {
-  const t: TaskStatMap<ReportingTask> = topTasks.reduce(groupByTask, {});
-  const c: TaskStatMap<TaskImpactStats> = checklistScoresByTask.reduce(groupByTask, {});
-  const tasks = uniq(keys(t).concat(keys(c)));
+const mapTasksToScores = (
+  stats: TaskImpactStats[]
+): TaskStatMap<TaskImpactStats> => {
+  return stats.reduce(groupByTask, {});
+};
+
+const mapTasksByName = (stats: ReportingTask[]): TaskStatMap<ReportingTask> => {
+  return stats.reduce(groupByTask, {});
+};
+
+// TODO: this is a temporary hack, should probably be handled in API
+const normalizeWellnessScore = (score: number) => {
+  return (score / 80) * 100;
+};
+
+// TODO: should each field be required?
+const calculateHappiness = ({ depression, anxiety, wellness }: {
+  depression?: number,
+  anxiety?: number,
+  wellness?: number
+}) => {
+  const scores = [
+    isNumber(depression) ? (100 - depression) : null,
+    isNumber(anxiety) ? (100 - anxiety) : null,
+    isNumber(wellness) ? wellness : null
+  ].filter(isNumber);
+
+  return calculateAverage(scores);
+};
+
+// TODO: clean this up
+const extractAverageField = (stats?: TaskImpactStats) => {
+  if (!stats || !stats.data) return null;
+
+  const average = stats.data && stats.data.average;
+
+  return isNumber(average) ? average : null;
+};
+
+// TODO: clean this up
+export const mergeTaskStats = (topTasks: ReportingTask[], {
+  depressionScoresByTask,
+  anxietyScoresByTask,
+  wellnessScoresByTask
+}: {
+  depressionScoresByTask: TaskImpactStats[],
+  anxietyScoresByTask: TaskImpactStats[],
+  wellnessScoresByTask: TaskImpactStats[]
+}): ReportingTask[] => {
+  const t = mapTasksByName(topTasks);
+  const d = mapTasksToScores(depressionScoresByTask);
+  const a = mapTasksToScores(anxietyScoresByTask);
+  const w = mapTasksToScores(wellnessScoresByTask);
+  const tasks = uniq(
+    keys(t).concat(keys(d)).concat(keys(a)).concat(keys(w))
+  );
 
   return tasks.map(task => {
     const { taskId, count, points, category, description } = t[task];
-    const { data: checklistStats } = c[task];
-    const { average: averageDepressionScore } = checklistStats;
+    const averageDepressionScore = extractAverageField(d[task]);
+    const averageAnxietyScore = extractAverageField(a[task]);
+    const averageWellnessScore = extractAverageField(w[task]);
+    // TODO: clean this up
+    const normalizedWellnessScore = isNumber(averageWellnessScore)
+      ? normalizeWellnessScore(averageWellnessScore)
+      : null;
 
     return {
       task,
@@ -157,13 +219,27 @@ export const mergeTaskStats = (
       category,
       description,
       points: count * points,
-      happiness: 100 - averageDepressionScore
+      depression: averageDepressionScore,
+      anxiety: averageAnxietyScore,
+      wellness: normalizedWellnessScore,
+      happiness: calculateHappiness({
+        depression: averageDepressionScore,
+        anxiety: averageAnxietyScore,
+        wellness: normalizedWellnessScore
+      })
     };
   });
 };
 
 export const fetchChecklistStats = (): Promise<number[][]> => {
   return get(`/api/stats/checklists`)
+    .then((res: HttpResponse) => res.stats);
+};
+
+export const fetchAssessmentStats = (): Promise<
+  { [key: string]: number[][] }
+> => {
+  return get(`/api/stats/assessments`)
     .then((res: HttpResponse) => res.stats);
 };
 
@@ -217,10 +293,13 @@ export const fetchChecklistQuestionStats = (): Promise<any[]> => {
     .then((res: HttpResponse) => res.stats);
 };
 
-export const fetchTaskStats = (): Bluebird<[any[], number[][]]> => {
+export const fetchTaskStats = (): Bluebird<
+  [any[], number[][], { [key: string]: number[][] }]
+> => {
   return Bluebird.all([
     fetchTaskCategoryStats(),
-    fetchChecklistStats()
+    fetchChecklistStats(),
+    fetchAssessmentStats()
   ]);
 };
 
@@ -236,8 +315,13 @@ export const fetchWeekStats = (date: string): Promise<any> => {
     .then((res: HttpResponse) => res.stats);
 };
 
-export const fetchAllStats = (): Promise<ReportingStats> => {
-  return get('/api/stats/all')
+export const fetchAllStats = (range = {} as DateRange): Promise<ReportingStats> => {
+  const qs = Object.keys(range)
+    .filter(key => range[key])
+    .map(key => `${key}=${range[key]}`)
+    .join('&');
+
+  return get(`/api/stats/all?${qs}`)
     .then((res: HttpResponse) => res.stats)
     .then(stats => {
       const { checklistStats, scorecardStats } = stats;

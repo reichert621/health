@@ -136,6 +136,6 @@ api.get('/stats/task-category-totals', isAuthenticated, scorecards.fetchCategory
 api.get('/stats/checklist-scores-by-task', isAuthenticated, checklists.fetchScoresByTask);
 // TODO: name better?
 api.get('/stats/categories', isAuthenticated, scorecards.fetchStatsPerCategory);
-api.get('/stats/questions', isAuthenticated, checklists.fetchStatsPerQuestion);
+api.get('/stats/questions', isAuthenticated, assessments.fetchStatsPerQuestion);
 
 module.exports = api;

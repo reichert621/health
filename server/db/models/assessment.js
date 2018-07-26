@@ -8,7 +8,8 @@ const {
   DATE_FORMAT,
   AssessmentTypes,
   calculateAverage,
-  isValidAssessmentType
+  isValidAssessmentType,
+  formatBetweenFilter
 } = require('./utils');
 
 const levels = {
@@ -103,21 +104,22 @@ const fetchWellBeingQuestions = () => {
   return fetchQuestionsByType(AssessmentTypes.WELL_BEING);
 };
 
-const fetchUserAssessmentScores = (userId, where = {}) => {
+const fetchUserAssessmentScores = (userId, where = {}, dates = {}) => {
   return Assessment()
     .select('a.type', 'a.title', 'ua.date', 'uas.*')
     .from('assessments as a')
     .innerJoin('user_assessments as ua', 'ua.assessmentId', 'a.id')
     .innerJoin('user_assessment_scores as uas', 'uas.userAssessmentId', 'ua.id')
-    .where({ 'ua.userId': userId, ...where });
+    .where({ 'ua.userId': userId, ...where })
+    .andWhere(k => k.whereBetween('ua.date', formatBetweenFilter(dates)));
 };
 
-const fetchUserAssessmentScoresByType = (type, userId) => {
-  return fetchUserAssessmentScores(userId, { 'a.type': type });
+const fetchUserAssessmentScoresByType = (type, userId, dates = {}) => {
+  return fetchUserAssessmentScores(userId, { 'a.type': type }, dates);
 };
 
-const fetchUserAssessmentScoresById = (userAssessmentId, userId) => {
-  return fetchUserAssessmentScores(userId, { 'ua.id': userAssessmentId });
+const fetchUserAssessmentScoresById = (userAssessmentId, userId, dates = {}) => {
+  return fetchUserAssessmentScores(userId, { 'ua.id': userAssessmentId }, dates);
 };
 
 const formatAssessment = (assessment, questions, scores = []) => {
@@ -153,11 +155,11 @@ const formatAssessment = (assessment, questions, scores = []) => {
   };
 };
 
-const fetchUserAssessmentsByType = (userId, type, where = {}) => {
+const fetchUserAssessmentsByType = (userId, type, dates = {}) => {
   return Promise.all([
-    UserAssessment.fetchByType(type, userId),
+    UserAssessment.fetchByType(type, userId, dates),
     fetchQuestionsByType(type),
-    fetchUserAssessmentScoresByType(type, userId)
+    fetchUserAssessmentScoresByType(type, userId, dates)
   ])
     .then(([assessments, questions, scores]) => {
       const scoresByDate = groupBy(scores, ({ date }) => {
@@ -174,13 +176,13 @@ const fetchUserAssessmentsByType = (userId, type, where = {}) => {
     });
 };
 
-const fetchUserAssessments = (userId, where = {}) => {
+const fetchUserAssessments = (userId, dates = {}) => {
   const { DEPRESSION, ANXIETY, WELL_BEING } = AssessmentTypes;
 
   return Promise.all([
-    fetchUserAssessmentsByType(userId, DEPRESSION, where),
-    fetchUserAssessmentsByType(userId, ANXIETY, where),
-    fetchUserAssessmentsByType(userId, WELL_BEING, where)
+    fetchUserAssessmentsByType(userId, DEPRESSION, dates),
+    fetchUserAssessmentsByType(userId, ANXIETY, dates),
+    fetchUserAssessmentsByType(userId, WELL_BEING, dates)
   ])
     .then(([depression, anxiety, wellbeing]) => {
       return { depression, anxiety, wellbeing };
@@ -292,8 +294,8 @@ const formatStats = (assessments = []) => {
     });
 };
 
-const fetchStats = (userId) => {
-  return fetchUserAssessments(userId)
+const fetchStats = (userId, dates = {}) => {
+  return fetchUserAssessments(userId, dates)
     .then(({ wellbeing = [], anxiety = [], depression = [] }) => {
       return {
         wellbeing: formatStats(wellbeing),
@@ -368,7 +370,7 @@ const fetchMonthStats = (userId, date = moment().format(DATE_FORMAT)) => {
     });
 };
 
-const fetchCompletedDays = (userId, where = {}) => {
+const fetchCompletedDays = (userId, where = {}, dates = {}) => {
   return Assessment()
     .select('a.type', 'ua.date')
     .count('uas.*')
@@ -376,6 +378,7 @@ const fetchCompletedDays = (userId, where = {}) => {
     .innerJoin('user_assessments as ua', 'ua.assessmentId', 'a.id')
     .innerJoin('user_assessment_scores as uas', 'uas.userAssessmentId', 'ua.id')
     .where({ ...where, 'ua.userId': userId })
+    .andWhere(k => k.whereBetween('ua.date', formatBetweenFilter(dates)))
     .groupBy('ua.date', 'a.type')
     .orderBy('ua.date', 'desc')
     .then(result => {
@@ -387,17 +390,21 @@ const fetchCompletedDays = (userId, where = {}) => {
     });
 };
 
-const fetchCompletedDaysByType = (type, userId) => {
+const fetchCompletedDaysByType = (type, userId, dates = {}) => {
   const where = isValidAssessmentType(type) ? { 'a.type': type } : {};
 
-  return fetchCompletedDays(userId, where);
+  return fetchCompletedDays(userId, where, dates);
 };
 
-const fetchQuestionStats = (type, userId) => {
-  return UserAssessmentScore.fetchScoresByQuestion(type, userId);
+const fetchQuestionStats = (type, userId, dates = {}) => {
+  return UserAssessmentScore.fetchScoresByQuestion(type, userId, dates);
 };
 
-const fetchScoresByDate = (userId, where = {}) => {
+const fetchStatsPerQuestion = (userId, dates = {}) => {
+  return UserAssessmentScore.fetchStatsPerQuestion(userId, dates);
+};
+
+const fetchScoresByDate = (userId, where = {}, dates = {}) => {
   return Assessment()
     .select('a.type', 'ua.date')
     .sum('uas.score as score')
@@ -405,6 +412,7 @@ const fetchScoresByDate = (userId, where = {}) => {
     .innerJoin('user_assessments as ua', 'ua.assessmentId', 'a.id')
     .innerJoin('user_assessment_scores as uas', 'uas.userAssessmentId', 'ua.id')
     .where({ ...where, 'ua.userId': userId })
+    .andWhere(k => k.whereBetween('ua.date', formatBetweenFilter(dates)))
     .groupBy('ua.date', 'a.type')
     .orderBy('ua.date', 'desc')
     .then(result => {
@@ -414,10 +422,10 @@ const fetchScoresByDate = (userId, where = {}) => {
     });
 };
 
-const fetchScoresByDayOfWeek = (type, userId, where = {}) => {
-  const filter = isValidAssessmentType(type) ? { ...where, 'a.type': type } : where;
+const fetchScoresByDayOfWeek = (type, userId, dates = {}) => {
+  const filter = isValidAssessmentType(type) ? { 'a.type': type } : {};
 
-  return fetchScoresByDate(userId, filter)
+  return fetchScoresByDate(userId, filter, dates)
     .then(result => {
       return result.reduce((map, { date, score }) => {
         const day = moment(date).format('dddd');
@@ -496,18 +504,18 @@ const getLevelByScore = (type, score) => {
   }
 };
 
-const fetchScoreRangeFrequency = (type, userId, where = {}) => {
+const fetchScoreRangeFrequency = (type, userId, dates = {}) => {
   if (!isValidAssessmentType(type)) {
     return Promise.reject(new Error(`Invalid type ${type}!`));
   }
 
-  const filter = { ...where, 'a.type': type };
+  const filter = { 'a.type': type };
   const l = levels[type];
   const init = Object.values(l).reduce((acc, key) => {
     return { ...acc, [key]: 0 };
   }, {});
 
-  return fetchScoresByDate(userId, filter)
+  return fetchScoresByDate(userId, filter, dates)
     .then(results => {
       return results.reduce((map, { score }) => {
         const s = Number(score);
@@ -521,16 +529,16 @@ const fetchScoreRangeFrequency = (type, userId, where = {}) => {
     });
 };
 
-const fetchScoresByTask = (type, userId, where = {}) => {
+const fetchScoresByTask = (type, userId, dates = {}) => {
   if (!isValidAssessmentType(type)) {
     return Promise.reject(new Error(`Invalid type ${type}!`));
   }
 
-  const filter = { ...where, 'a.type': type };
+  const filter = { 'a.type': type };
 
   return Promise.all([
-    fetchScoresByDate(userId, filter),
-    ScorecardSelectedTask.fetchWithDates(userId)
+    fetchScoresByDate(userId, filter, dates),
+    ScorecardSelectedTask.fetchWithDates(userId, dates)
   ])
     .then(([scoresByDate, tasksByDate]) => {
       const mappings = scoresByDate.reduce((acc, { date, score }) => {
@@ -586,6 +594,7 @@ module.exports = {
   fetchCompletedDays,
   fetchCompletedDaysByType,
   fetchQuestionStats,
+  fetchStatsPerQuestion,
   fetchScoresByDate,
   fetchScoresByDayOfWeek,
   getDepressionLevelByScore,

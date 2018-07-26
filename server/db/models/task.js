@@ -2,6 +2,7 @@ const { first } = require('lodash');
 const knex = require('../knex.js');
 const DefaultTasks = require('./default_tasks');
 const Categories = require('./category');
+const { formatBetweenFilter } = require('./utils');
 
 const Tasks = () => knex('tasks');
 
@@ -23,19 +24,22 @@ const fetchActive = (userId, taskIds = []) =>
   fetch({ 'tasks.isActive': true }, userId)
     .orWhereIn('tasks.id', taskIds);
 
-const fetchTopSelected = (userId) => {
+const fetchTopSelected = (userId, dates = {}) => {
   return Tasks()
     .select(
       't.id as taskId',
       't.description',
       't.points',
       't.isActive',
-      'c.name as category'
+      'c.name as category',
+      's.date'
     )
     .from('tasks as t')
     .innerJoin('scorecard_selected_tasks as sst', 'sst.taskId', 't.id')
+    .innerJoin('scorecards as s', 'sst.scorecardId', 's.id')
     .innerJoin('categories as c', 't.categoryId', 'c.id')
     .where({ 'sst.userId': userId })
+    .andWhere(k => k.whereBetween('s.date', formatBetweenFilter(dates)))
     .then(results => {
       return results
         .reduce((stats, result) => {
