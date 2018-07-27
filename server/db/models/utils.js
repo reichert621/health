@@ -13,6 +13,10 @@ const isValidDateFormat = (str) => {
   return moment(str, DATE_FORMAT, true).isValid();
 };
 
+const includesDateInDates = (date, dates = []) => {
+  return dates.some(d => moment(d).isSame(date));
+};
+
 const calculateAverage = (nums = []) => {
   if (!nums || !nums.length) return 0;
 
@@ -70,6 +74,7 @@ module.exports = {
   DATE_FORMAT,
   AssessmentTypes,
   isValidDateFormat,
+  includesDateInDates,
   calculateAverage,
   getDateRange,
   getDaysBetween,

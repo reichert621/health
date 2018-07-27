@@ -81,5 +81,30 @@ module.exports = {
     } catch (err) {
       return handleError(res, err);
     }
+  },
+
+  async fetchStats(req, res) {
+    try {
+      const { user } = req;
+      const { id: userId } = user;
+      const result = await Task.fetchStats(userId);
+
+      return res.json({ result });
+    } catch (err) {
+      return handleError(res, err);
+    }
+  },
+
+  async fetchStatsById(req, res) {
+    try {
+      const { params, user } = req;
+      const { id: taskId } = params;
+      const { id: userId } = user;
+      const result = await Task.fetchStatsById(taskId, userId);
+
+      return res.json({ result });
+    } catch (err) {
+      return handleError(res, err);
+    }
   }
 };

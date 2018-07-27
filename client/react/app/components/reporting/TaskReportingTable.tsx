@@ -1,10 +1,19 @@
 import * as React from 'react';
 import { isNumber } from 'lodash';
-import { ReportingTask } from '../../helpers/reporting';
+import {
+  ReportingTask,
+  calculateHappiness,
+  normalizeWellnessScore
+} from '../../helpers/reporting';
+import { TaskAssessmentStats } from '../../helpers/tasks';
 
 interface TaskReportingTableProps {
-  stats: ReportingTask[];
+  stats: TaskAssessmentStats[];
 }
+
+const getDeltaSymbol = (n: number) => {
+  return n > 0 ? '+' : '';
+};
 
 const TaskReportingTable = ({ stats }: TaskReportingTableProps) => {
   const styles = {
@@ -29,32 +38,55 @@ const TaskReportingTable = ({ stats }: TaskReportingTableProps) => {
       <tbody>
         {
           stats
-            .sort((x, y) => y.wellness - x.wellness)
+            .sort((x, y) => {
+              return y.stats.wellbeing.included - x.stats.wellbeing.included;
+            })
             .map((stat, key) => {
               const {
                 task,
                 count,
-                points,
-                depression,
-                anxiety,
-                wellness,
-                happiness
+                stats
               } = stat;
+              const { description, category } = task;
+              const name = `${category}: ${description}`;
+              const { depression, anxiety, wellbeing } = stats;
+              const { included: dIncluded, delta: dDelta } = depression;
+              const { included: aIncluded, delta: aDelta } = anxiety;
+              const { included: _wIncluded, delta: _wDelta } = wellbeing;
+              const wIncluded = normalizeWellnessScore(_wIncluded);
+              const wDelta = normalizeWellnessScore(_wDelta);
+
+              const happiness = calculateHappiness({
+                depression: dIncluded,
+                anxiety: aIncluded,
+                wellness: wIncluded
+              });
 
               return (
                 <tr key={key}
                   className='dashboard-list-row'>
-                  <td style={styles.lg}>{task}</td>
+                  <td style={styles.lg}>{name}</td>
                   <td style={styles.sm}>{count} times</td>
-                  {/* <td style={styles.sm}>{points} points</td> */}
                   <td style={styles.sm}>
-                    {isNumber(depression) ? `${depression.toFixed(1)}%` : 'N/A'}
+                    {isNumber(dIncluded) ? `${dIncluded.toFixed(1)}%` : 'N/A'}
+                    {' '}
+                    {isNumber(dDelta)
+                      ? `(${getDeltaSymbol(dDelta)}${dDelta.toFixed(1)}%)`
+                      : ''}
                   </td>
                   <td style={styles.sm}>
-                    {isNumber(anxiety) ? `${anxiety.toFixed(1)}%` : 'N/A'}
+                    {isNumber(aIncluded) ? `${aIncluded.toFixed(1)}%` : 'N/A'}
+                    {' '}
+                    {isNumber(aDelta)
+                      ? `(${getDeltaSymbol(aDelta)}${aDelta.toFixed(1)}%)`
+                      : ''}
                   </td>
                   <td style={styles.sm}>
-                    {isNumber(wellness) ? `${wellness.toFixed(1)}%` : 'N/A'}
+                    {isNumber(wIncluded) ? `${wIncluded.toFixed(1)}%` : 'N/A'}
+                    {' '}
+                    {isNumber(wDelta)
+                      ? `(${getDeltaSymbol(wDelta)}${wDelta.toFixed(1)}%)`
+                      : ''}
                   </td>
                   <td style={styles.sm}>
                     {isNumber(happiness) ? `${happiness.toFixed(1)}%` : 'N/A'}

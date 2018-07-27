@@ -67,6 +67,7 @@ api.post('/categories', isAuthenticated, categories.create);
 api.get('/tasks', isAuthenticated, tasks.fetch);
 api.post('/tasks', isAuthenticated, tasks.create);
 api.put('/tasks/:id', isAuthenticated, tasks.update);
+api.get('/tasks/:id/stats', isAuthenticated, tasks.fetchStatsById);
 api.get('/tasks/suggestions', isAuthenticated, tasks.fetchSuggestions);
 api.get('/tasks/defaults', tasks.fetchDefaults);
 api.post('/tasks/suggestions', isAuthenticated, tasks.createSuggestedTask);
@@ -137,5 +138,6 @@ api.get('/stats/checklist-scores-by-task', isAuthenticated, checklists.fetchScor
 // TODO: name better?
 api.get('/stats/categories', isAuthenticated, scorecards.fetchStatsPerCategory);
 api.get('/stats/questions', isAuthenticated, assessments.fetchStatsPerQuestion);
+api.get('/stats/tasks', isAuthenticated, tasks.fetchStats);
 
 module.exports = api;
