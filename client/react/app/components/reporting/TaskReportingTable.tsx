@@ -11,6 +11,10 @@ interface TaskReportingTableProps {
   stats: TaskAssessmentStats[];
 }
 
+const getDeltaSymbol = (n: number) => {
+  return n > 0 ? '+' : '';
+};
+
 const TaskReportingTable = ({ stats }: TaskReportingTableProps) => {
   const styles = {
     container: { marginTop: 24, marginBottom: 24 },
@@ -66,17 +70,23 @@ const TaskReportingTable = ({ stats }: TaskReportingTableProps) => {
                   <td style={styles.sm}>
                     {isNumber(dIncluded) ? `${dIncluded.toFixed(1)}%` : 'N/A'}
                     {' '}
-                    {isNumber(dDelta) ? `(${dDelta.toFixed(1)}%)` : ''}
+                    {isNumber(dDelta)
+                      ? `(${getDeltaSymbol(dDelta)}${dDelta.toFixed(1)}%)`
+                      : ''}
                   </td>
                   <td style={styles.sm}>
                     {isNumber(aIncluded) ? `${aIncluded.toFixed(1)}%` : 'N/A'}
                     {' '}
-                    {isNumber(aDelta) ? `(${aDelta.toFixed(1)}%)` : ''}
+                    {isNumber(aDelta)
+                      ? `(${getDeltaSymbol(aDelta)}${aDelta.toFixed(1)}%)`
+                      : ''}
                   </td>
                   <td style={styles.sm}>
                     {isNumber(wIncluded) ? `${wIncluded.toFixed(1)}%` : 'N/A'}
                     {' '}
-                    {isNumber(wDelta) ? `(${wDelta.toFixed(1)}%)` : ''}
+                    {isNumber(wDelta)
+                      ? `(${getDeltaSymbol(wDelta)}${wDelta.toFixed(1)}%)`
+                      : ''}
                   </td>
                   <td style={styles.sm}>
                     {isNumber(happiness) ? `${happiness.toFixed(1)}%` : 'N/A'}
