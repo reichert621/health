@@ -303,7 +303,7 @@ export const fetchTaskStats = (): Bluebird<
   ]);
 };
 
-export const fetchMoodStats = (): Bluebird<[any[], number[][]]> => {
+export const fetchMoodStats = (): Bluebird<[any, number[][]]> => {
   return Bluebird.all([
     fetchChecklistQuestionStats(),
     fetchScorecardStats()
