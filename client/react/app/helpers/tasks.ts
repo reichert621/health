@@ -1,5 +1,6 @@
 import { HttpResponse, get, post, put } from './http';
 import { IDropdownOption } from './utils';
+import { IAssessmentStats } from './assessment';
 
 export interface Task {
   id?: number;
@@ -22,6 +23,12 @@ export interface NewTask {
 
 export interface PointOption extends IDropdownOption {
   points: number;
+}
+
+export interface TaskAssessmentStats {
+  task: Task;
+  count: number;
+  stats: IAssessmentStats;
 }
 
 export const getPointOptions = (): PointOption[] => {
@@ -72,6 +79,11 @@ export const createTask = (params: object): Promise<Task> => {
 export const updateTask = (id: number, params: object): Promise<Task> => {
   return put(`/api/tasks/${id}`, params)
     .then((res: HttpResponse) => res.task);
+};
+
+export const fetchStats = (): Promise<TaskAssessmentStats[]> => {
+  return get('/api/stats/tasks')
+    .then((res: HttpResponse) => res.result);
 };
 
 export interface Category {

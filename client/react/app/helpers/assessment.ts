@@ -33,6 +33,18 @@ export interface IAssessmentsByType {
   [type: string]: IAssessment[];
 }
 
+export interface IAssessmentStat {
+  included: number;
+  excluded: number;
+  delta: number;
+}
+
+export interface IAssessmentStats {
+  depression: IAssessmentStat;
+  anxiety: IAssessmentStat;
+  wellbeing: IAssessmentStat;
+}
+
 export enum DepressionLevel {
   NONE = 'No depression',
   NORMAL = 'Normal but unhappy',

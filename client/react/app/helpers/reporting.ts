@@ -156,12 +156,12 @@ const mapTasksByName = (stats: ReportingTask[]): TaskStatMap<ReportingTask> => {
 };
 
 // TODO: this is a temporary hack, should probably be handled in API
-const normalizeWellnessScore = (score: number) => {
+export const normalizeWellnessScore = (score: number) => {
   return (score / 80) * 100;
 };
 
 // TODO: should each field be required?
-const calculateHappiness = ({ depression, anxiety, wellness }: {
+export const calculateHappiness = ({ depression, anxiety, wellness }: {
   depression?: number,
   anxiety?: number,
   wellness?: number

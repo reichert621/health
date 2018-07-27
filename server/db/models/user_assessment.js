@@ -67,6 +67,19 @@ const update = (id, params, userId) => {
     .then(success => findById(id, userId));
 };
 
+const fetchWithScores = (userId, dates = {}) => {
+  return UserAssessment()
+    .select('a.type', 'a.title', 'ua.id', 'ua.date', 'ua.userId')
+    .sum('uas.score as score')
+    .from('user_assessments as ua')
+    .innerJoin('assessments as a', 'ua.assessmentId', 'a.id')
+    .innerJoin('user_assessment_scores as uas', 'uas.userAssessmentId', 'ua.id')
+    .where({ 'ua.userId': userId })
+    .andWhere(k => k.whereBetween('ua.date', formatBetweenFilter(dates)))
+    .groupBy('a.type', 'a.title', 'ua.id', 'ua.date', 'ua.userId')
+    .orderBy('ua.date', 'desc');
+};
+
 module.exports = {
   fetch,
   fetchByType,
@@ -74,5 +87,6 @@ module.exports = {
   findById,
   create,
   findOrCreate,
-  update
+  update,
+  fetchWithScores
 };

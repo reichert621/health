@@ -8,10 +8,14 @@ import {
   fetchAllStats,
   mergeTaskStats
 } from '../../helpers/reporting';
+import {
+  TaskAssessmentStats,
+  fetchStats as fetchTaskStats
+} from '../../helpers/tasks';
 import './Reporting.less';
 
 interface ReportingState {
-  stats: ReportingStats;
+  stats: TaskAssessmentStats[];
 }
 
 class TaskReporting extends React.Component<RouteComponentProps<{}>, ReportingState> {
@@ -19,13 +23,12 @@ class TaskReporting extends React.Component<RouteComponentProps<{}>, ReportingSt
     super(props);
 
     this.state = {
-      stats: {} as ReportingStats
+      stats: []
     };
   }
 
   componentDidMount() {
-    // TODO: only fetch required stats
-    return fetchAllStats()
+    return fetchTaskStats()
       .then(stats => this.setState({ stats }))
       .catch(err => {
         console.log('Error fetching stats!', err);
@@ -35,35 +38,7 @@ class TaskReporting extends React.Component<RouteComponentProps<{}>, ReportingSt
   render() {
     const { history } = this.props;
     const { stats } = this.state;
-    const {
-      // Checklist stats
-      checklistStats = [],
-      completedChecklists = [],
-      checklistScoresByDay = {},
-      depressionLevelFrequency = {},
-      checklistQuestionStats = [],
-      checklistScoresByTask = [],
-      // Scorecard stats
-      scorecardStats = [],
-      completedScorecards = [],
-      scorecardScoresByDay = {},
-      totalScoreOverTime = [],
-      taskAbilityStats = {},
-      // Task stats
-      topTasks = [],
-      // Anxiety stats
-      depressionScoresByTask = [],
-      anxietyScoresByTask = [],
-      wellnessScoresByTask = []
-    } = stats;
-
-    const taskStats = mergeTaskStats(topTasks, {
-      depressionScoresByTask,
-      anxietyScoresByTask,
-      wellnessScoresByTask
-    });
-
-    console.log('taskStats!', taskStats);
+    console.log('stats!', stats);
 
     return (
       <div>
@@ -75,7 +50,7 @@ class TaskReporting extends React.Component<RouteComponentProps<{}>, ReportingSt
         <div className='default-container'>
           {/* TODO: format this better */}
           <TaskReportingChart />
-          <TaskReportingTable stats={taskStats} />
+          <TaskReportingTable stats={stats} />
         </div>
       </div>
     );
