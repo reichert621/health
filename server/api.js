@@ -16,7 +16,8 @@ const {
   tasks,
   challenges,
   moods,
-  assessments
+  assessments,
+  assessmentQuestions
 } = require('./db/controllers');
 
 const api = Router();
@@ -80,6 +81,7 @@ api.get('/assessments/:id', isAuthenticated, assessments.findById);
 api.get('/assessments/date/:date', isAuthenticated, assessments.fetchByDate);
 api.post('/assessments', isAuthenticated, assessments.findOrCreate);
 api.post('/assessments/:id/questions/:questionId/score', isAuthenticated, assessments.updateScore);
+api.get('/assessment-questions/:id/stats', isAuthenticated, assessmentQuestions.fetchStatsById);
 // Checklists
 api.get('/checklists', isAuthenticated, checklists.fetch);
 api.get('/checklists/:id', isAuthenticated, checklists.findById);

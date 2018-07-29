@@ -1,5 +1,5 @@
 const knex = require('../knex.js');
-const { first, isNumber, max, times } = require('lodash');
+const { first, isNumber, max, times, groupBy } = require('lodash');
 const moment = require('moment');
 const Task = require('./task');
 const ScoreCardSelectedTask = require('./scorecard_selected_task');
@@ -118,6 +118,26 @@ const fetchCompletedDays = (userId, dates = {}) => {
           return merge(r, { count: Number(r.count) });
         })
         .filter(r => r.count > 0);
+    });
+};
+
+const fetchSelectedTasksByDates = (userId, dates = []) => {
+  return ScoreCard()
+    .select(
+      's.date',
+      't.description',
+      't.points',
+      't.id as taskId',
+      'c.name as category'
+    )
+    .from('scorecards as s')
+    .innerJoin('scorecard_selected_tasks as sst', 'sst.scorecardId', 's.id')
+    .innerJoin('tasks as t', 'sst.taskId', 't.id')
+    .innerJoin('categories as c', 't.categoryId', 'c.id')
+    .where({ 's.userId': userId })
+    .andWhere(k => k.whereIn('s.date', dates))
+    .then(results => {
+      return groupBy(results, 'date');
     });
 };
 
@@ -482,6 +502,7 @@ module.exports = {
   fetchProgressToday,
   fetchCompletedDays,
   fetchFriendsCompleted,
+  fetchSelectedTasksByDates,
   fetchScoresByDate,
   fetchScoresByDayOfWeek,
   fetchTotalScoreOverTime,
