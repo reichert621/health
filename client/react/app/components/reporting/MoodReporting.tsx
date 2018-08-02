@@ -32,21 +32,9 @@ class MoodReporting extends React.Component<RouteComponentProps<{}>, ReportingSt
     const { history } = this.props;
     const { stats } = this.state;
     const {
-      // Checklist stats
-      checklistStats = [],
-      completedChecklists = [],
-      checklistScoresByDay = {},
-      depressionLevelFrequency = {},
-      checklistQuestionStats = [],
-      checklistScoresByTask = [],
-      // Scorecard stats
-      scorecardStats = [],
-      completedScorecards = [],
-      scorecardScoresByDay = {},
-      totalScoreOverTime = [],
-      taskAbilityStats = {},
-      // Task stats
-      topTasks = []
+      depressionQuestionStats = [],
+      anxietyQuestionStats = [],
+      wellnessQuestionStats = []
     } = stats;
 
     return (
@@ -58,8 +46,15 @@ class MoodReporting extends React.Component<RouteComponentProps<{}>, ReportingSt
 
         <div className='default-container'>
           {/* TODO: format this better */}
-          <MoodReportingChart />
-          <MoodReportingTable stats={checklistQuestionStats} />
+          {/* <MoodReportingChart /> */}
+          <h1>Depression Questions</h1>
+          <MoodReportingTable stats={depressionQuestionStats} />
+
+          <h1>Anxiety Questions</h1>
+          <MoodReportingTable stats={anxietyQuestionStats} />
+
+          <h1>Well-being Questions</h1>
+          <MoodReportingTable stats={wellnessQuestionStats} />
         </div>
       </div>
     );
