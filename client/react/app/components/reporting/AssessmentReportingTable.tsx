@@ -114,10 +114,10 @@ const AssessmentReportingTable = ({
                         const { task, delta } = suggestion;
 
                         return (
-                        <li key={key}>
-                          {task} (+{(delta * 100).toFixed(2)}%)
-                        </li>
-                      );
+                          <li key={key}>
+                            {task} (+{(delta * 100).toFixed(2)}%)
+                          </li>
+                        );
                       })
                     }
                   </ol>

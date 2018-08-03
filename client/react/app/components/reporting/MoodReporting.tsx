@@ -38,7 +38,7 @@ class MoodReporting extends React.Component<
   render() {
     const { history } = this.props;
     const { stats } = this.state;
-    const grouped = groupBy(stats, (stat) => stat.question.type);
+    const grouped = groupBy(stats, stat => stat.question.type);
     const { depression = [], anxiety = [], wellbeing = [] } = grouped;
 
     return (
