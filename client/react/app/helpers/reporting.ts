@@ -102,6 +102,12 @@ export interface ReportingStats {
   };
   wellnessQuestionStats: ChecklistQuestionStats[];
   wellnessScoresByTask: TaskImpactStats[];
+  correlationStats: {
+    labels: string[];
+    stats: {
+      [key: string]: number;
+    };
+  };
 }
 
 export const getTotalStreak = (
