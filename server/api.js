@@ -140,6 +140,7 @@ api.get('/stats/checklist-scores-by-task', isAuthenticated, checklists.fetchScor
 // TODO: name better?
 api.get('/stats/categories', isAuthenticated, scorecards.fetchStatsPerCategory);
 api.get('/stats/questions', isAuthenticated, assessments.fetchStatsPerQuestion);
+api.get('/stats/assessment-questions', isAuthenticated, assessmentQuestions.fetchStats);
 api.get('/stats/tasks', isAuthenticated, tasks.fetchStats);
 
 module.exports = api;

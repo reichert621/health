@@ -10,5 +10,13 @@ module.exports = {
     return AssessmentQuestion.fetchStatsById(questionId, userId)
       .then(stats => res.json({ stats }))
       .catch(err => handleError(res, err));
+  },
+
+  fetchStats: (req, res) => {
+    const { id: userId } = req.user;
+
+    return AssessmentQuestion.fetchStats(userId)
+      .then(stats => res.json({ stats }))
+      .catch(err => handleError(res, err));
   }
 };

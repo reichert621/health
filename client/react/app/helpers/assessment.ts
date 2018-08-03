@@ -45,6 +45,33 @@ export interface IAssessmentStats {
   wellbeing: IAssessmentStat;
 }
 
+export interface IAssessmentScoreFrequencies {
+  [score: string]: number;
+}
+
+export interface IUniqueAssessmentScoreTask {
+  [score: string]: string[];
+}
+
+export interface IAssessmentTaskStats {
+  [score: string]: {
+    task: string;
+    count: number;
+    percentage: number;
+    deltas: {
+      next?: number;
+      prev?: number;
+    }
+  }[];
+}
+
+export interface IAssessmentQuestionStat {
+  question: IAssessmentQuestion;
+  frequencies: IAssessmentScoreFrequencies;
+  uniqs: IUniqueAssessmentScoreTask;
+  stats: IAssessmentTaskStats;
+}
+
 export enum DepressionLevel {
   NONE = 'No depression',
   NORMAL = 'Normal but unhappy',

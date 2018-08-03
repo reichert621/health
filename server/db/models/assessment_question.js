@@ -1,4 +1,4 @@
-const { first } = require('lodash');
+const { first, groupBy, mapValues } = require('lodash');
 const knex = require('../knex');
 const Scorecard = require('./scorecard');
 const { calculateAverage } = require('./utils');
@@ -52,8 +52,16 @@ const getScoreDescription = score => {
 
 const fetchQuestionScores = userId => {
   return AssessmentQuestion()
-    .select('aq.text', 'uas.score', 'ua.date', 'aq.id as questionId')
+    .select(
+      'aq.text',
+      'aq.category',
+      'a.type',
+      'uas.score',
+      'ua.date',
+      'aq.id as questionId'
+    )
     .from('assessment_questions as aq')
+    .innerJoin('assessments as a', 'aq.assessmentId', 'a.id')
     .innerJoin(
       'user_assessment_scores as uas',
       'uas.assessmentQuestionId',
@@ -158,10 +166,7 @@ const getQuestionScoreFrequencies = (questionScores = []) => {
 
 // Fetch how often each task occurs within each score
 // e.g. { '1': { 'Exercise': 7 }, '2': { 'Code': 4 } }
-const fetchTaskCountByScore = async (userId, questionScores = []) => {
-  const dates = questionScores.map(s => s.date);
-  const tasksByDate = await Scorecard.fetchSelectedTasksByDates(userId, dates);
-
+const fetchTaskCountByScore = (questionScores = [], tasksByDate = {}) => {
   return questionScores.reduce((acc, { date, score }) => {
     const tasks = tasksByDate[date];
     const bucket = acc[score] || {};
@@ -186,6 +191,7 @@ const formatQuestionScoreTaskStats = (stats, frequencies = {}) => {
         return {
           task,
           count: mappings[task],
+          // percentage of the time this task is performed for the given score
           percentage: mappings[task] / total
         };
       })
@@ -198,18 +204,76 @@ const formatQuestionScoreTaskStats = (stats, frequencies = {}) => {
   }, {});
 };
 
+const calculatePercentageDeltas = (stats = {}) => {
+  const scores = Object.keys(stats);
+  const mappings = mapValues(stats, list => {
+    return list.reduce((acc, { task, percentage }) => {
+      return { ...acc, [task]: percentage };
+    }, {});
+  });
+
+  return scores.reduce((result, score, index) => {
+    const current = stats[score];
+    const next = mappings[scores[index + 1]];
+    const prev = mappings[scores[index - 1]];
+
+    return {
+      ...result,
+      [score]: current.map(item => {
+        const { task, percentage } = item;
+        const nextPercentage = (next && next[task]);
+        const prevPercentage = (prev && prev[task]);
+
+        return {
+          ...item,
+          deltas: {
+            next: nextPercentage ? percentage - nextPercentage : null,
+            prev: prevPercentage ? percentage - prevPercentage : null
+          }
+        };
+      })
+    };
+  }, {});
+};
+
 const fetchStatsById = async (id, userId) => {
   const question = await findById(id);
   const questionScores = await fetchScoresById(id, userId);
+  const dates = questionScores.map(s => s.date);
+  const tasksByDate = await Scorecard.fetchSelectedTasksByDates(userId, dates);
   const frequencies = getQuestionScoreFrequencies(questionScores);
-  const stats = await fetchTaskCountByScore(userId, questionScores);
+  const stats = fetchTaskCountByScore(questionScores, tasksByDate);
+  const formatted = formatQuestionScoreTaskStats(stats, frequencies);
 
   return {
     question,
     frequencies,
-    stats: formatQuestionScoreTaskStats(stats, frequencies),
+    stats: calculatePercentageDeltas(formatted),
     uniqs: getUniqueTasksByScore(stats)
   };
+};
+
+const fetchStats = async (userId) => {
+  const questionScores = await fetchQuestionScores(userId);
+  const scoresByQuestionId = groupBy(questionScores, 'questionId');
+  const dates = questionScores.map(s => s.date);
+  const tasksByDate = await Scorecard.fetchSelectedTasksByDates(userId, dates);
+
+  return Object.keys(scoresByQuestionId).map(questionId => {
+    const scores = scoresByQuestionId[questionId];
+    const [{ questionId: id, text, type, category }] = scores;
+    const question = { id, text, type, category };
+    const frequencies = getQuestionScoreFrequencies(scores);
+    const stats = fetchTaskCountByScore(scores, tasksByDate);
+    const formatted = formatQuestionScoreTaskStats(stats, frequencies);
+
+    return {
+      question,
+      frequencies,
+      stats: calculatePercentageDeltas(formatted),
+      uniqs: getUniqueTasksByScore(stats)
+    };
+  });
 };
 
 module.exports = {
@@ -218,5 +282,7 @@ module.exports = {
   create,
   update,
   destroy,
-  fetchStatsById
+  fetchScoreStatsById,
+  fetchStatsById,
+  fetchStats
 };

@@ -1,27 +1,34 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import { groupBy } from 'lodash';
 import NavBar from '../navbar';
-import MoodReportingChart from './MoodReportingChart';
-import MoodReportingTable from './MoodReportingTable';
-import { ReportingStats, fetchAllStats } from '../../helpers/reporting';
+import AssessmentReportingTable from './AssessmentReportingTable';
+import { IAssessmentQuestionStat } from '../../helpers/assessment';
+import { fetchAssessmentQuestionStats } from '../../helpers/reporting';
 import './Reporting.less';
 
+const POSITIVE = 1;
+const NEGATIVE = -1;
+
 interface ReportingState {
-  stats: ReportingStats;
+  stats: IAssessmentQuestionStat[];
 }
 
-class MoodReporting extends React.Component<RouteComponentProps<{}>, ReportingState> {
+class MoodReporting extends React.Component<
+  RouteComponentProps<{}>,
+  ReportingState
+> {
   constructor(props: RouteComponentProps<{}>) {
     super(props);
 
     this.state = {
-      stats: {} as ReportingStats
+      stats: []
     };
   }
 
   componentDidMount() {
     // TODO: only fetch required stats
-    return fetchAllStats()
+    return fetchAssessmentQuestionStats()
       .then(stats => this.setState({ stats }))
       .catch(err => {
         console.log('Error fetching stats!', err);
@@ -31,11 +38,8 @@ class MoodReporting extends React.Component<RouteComponentProps<{}>, ReportingSt
   render() {
     const { history } = this.props;
     const { stats } = this.state;
-    const {
-      depressionQuestionStats = [],
-      anxietyQuestionStats = [],
-      wellnessQuestionStats = []
-    } = stats;
+    const grouped = groupBy(stats, stat => stat.question.type);
+    const { depression = [], anxiety = [], wellbeing = [] } = grouped;
 
     return (
       <div>
@@ -47,14 +51,21 @@ class MoodReporting extends React.Component<RouteComponentProps<{}>, ReportingSt
         <div className='default-container'>
           {/* TODO: format this better */}
           {/* <MoodReportingChart /> */}
+
           <h1>Depression Questions</h1>
-          <MoodReportingTable stats={depressionQuestionStats} />
+          <AssessmentReportingTable
+            stats={depression}
+            direction={NEGATIVE} />
 
           <h1>Anxiety Questions</h1>
-          <MoodReportingTable stats={anxietyQuestionStats} />
+          <AssessmentReportingTable
+            stats={anxiety}
+            direction={NEGATIVE} />
 
           <h1>Well-being Questions</h1>
-          <MoodReportingTable stats={wellnessQuestionStats} />
+          <AssessmentReportingTable
+            stats={wellbeing}
+            direction={POSITIVE} />
         </div>
       </div>
     );
