@@ -23,6 +23,8 @@ const calculateAverageFromFrequencies = (
     { n: 0, d: 0 }
   );
 
+  // Divide by 4 since average score represents number from 1 - 4,
+  // and we want to display this as a percentage (e.g. 1.2 -> 30%)
   return n / d / 4;
 };
 
