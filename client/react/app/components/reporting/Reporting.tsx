@@ -99,7 +99,9 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
       wellnessQuestionStats = [],
       wellnessScoresByTask = [],
       // Week stats
-      weekStats = {}
+      weekStats = {},
+      // Correlation coefficients
+      correlationStats = {}
     } = stats;
 
     const wellBeingIssues = wellnessQuestionStats.slice().reverse();

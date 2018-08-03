@@ -135,9 +135,9 @@ export const getWellnessLevelByScore = (score: number): string => {
     return WellnessLevel.VERY_LOW;
   } else if (score > 15 && score <= 35) {
     return WellnessLevel.LOW;
-  } else if (score > 35 && score <= 55) {
+  } else if (score > 35 && score <= 50) {
     return WellnessLevel.MODERATE;
-  } else if (score > 55 && score <= 70) {
+  } else if (score > 50 && score <= 65) {
     return WellnessLevel.HIGH;
   } else {
     return WellnessLevel.VERY_HIGH;
