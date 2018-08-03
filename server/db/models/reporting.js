@@ -54,7 +54,7 @@ const calculateCoefficientStats = ({
   const datasets = generateDatasetsByScoreType(scoresByDate);
   const labels = Object.values(scoreTypes);
   const pairs = getPairs(labels);
-  const stats = pairs.reduce((acc, pair) => {
+  const coefficients = pairs.reduce((acc, pair) => {
     const key = pair.join(':');
 
     return {
@@ -63,7 +63,7 @@ const calculateCoefficientStats = ({
     };
   }, {});
 
-  return { labels, stats };
+  return { labels, coefficients };
 };
 
 module.exports = {
