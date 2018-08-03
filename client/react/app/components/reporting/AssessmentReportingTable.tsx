@@ -55,7 +55,6 @@ const generateSuggestedTasks = (
 
       return b - a;
     });
-    // .map(item => item.task);
 };
 
 interface AssessmentReportingTableProps {
@@ -113,7 +112,6 @@ const AssessmentReportingTable = ({
                     {
                       suggestions.map((suggestion, key: number) => {
                         const { task, delta } = suggestion;
-
 
                         return (
                         <li key={key}>
