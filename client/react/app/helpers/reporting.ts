@@ -288,8 +288,13 @@ export const fetchTaskCategoryStats = (): Promise<any[]> => {
     .then((res: HttpResponse) => res.stats);
 };
 
-export const fetchAssessmentQuestionStats = (): Promise<any[]> => {
+export const fetchQuestionStats = (): Promise<any[]> => {
   return get('/api/stats/questions')
+    .then((res: HttpResponse) => res.stats);
+};
+
+export const fetchAssessmentQuestionStats = (): Promise<any[]> => {
+  return get('/api/stats/assessment-questions')
     .then((res: HttpResponse) => res.stats);
 };
 
@@ -305,7 +310,7 @@ export const fetchTaskStats = (): Bluebird<
 
 export const fetchMoodStats = (): Bluebird<[any, number[][]]> => {
   return Bluebird.all([
-    fetchAssessmentQuestionStats(),
+    fetchQuestionStats(),
     fetchScorecardStats()
   ]);
 };
