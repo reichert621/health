@@ -2,7 +2,7 @@ import * as React from 'react';
 import { keys } from 'lodash';
 import { CorrelationStats } from '../../helpers/reporting';
 
-const formatLabel = (label: string): string => {
+const formatLabel = (label: string) => {
   const mappings: { [key: string]: string } = {
     depression: 'Depression',
     anxiety: 'Anxiety',
@@ -62,7 +62,7 @@ const CorrelationCoefficients = ({ stats }: CorrelationProps) => {
 
             return (
               <div key={key}>
-                <div className=''>
+                <div>
                   <span className='text-active' style={style.score}>
                     {formatScore(score)}
                   </span>
