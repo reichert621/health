@@ -9,13 +9,14 @@ import NavBar from '../navbar';
 import ReportingChart from './ReportingChart';
 import ReportingAverages from './ReportingAverages';
 import ReportingStreaks from './ReportingStreaks';
+import CorrelationCoefficients from './CorrelationCoefficients';
 import TopTasks from './TopTasks';
 import MoodFrequency from './MoodFrequency';
 import ScoresByDay from './ScoresByDay';
 import TopMoods from './TopMoods';
 import HighImpactTasks from './HighImpactTasks';
 import ThisWeek from './ThisWeek';
-import { ReportingStats } from '../../helpers/reporting';
+import { ReportingStats, CorrelationStats } from '../../helpers/reporting';
 import { DATE_FORMAT, AppState, isValidDateFormat } from '../../helpers/utils';
 import { getAllStats, getWeekStats } from '../../reducers/stats';
 import './Reporting.less';
@@ -101,7 +102,7 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
       // Week stats
       weekStats = {},
       // Correlation coefficients
-      correlationStats = {}
+      correlationStats = {} as CorrelationStats
     } = stats;
 
     const wellBeingIssues = wellnessQuestionStats.slice().reverse();
@@ -167,13 +168,9 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
             </div>
 
             <div className='reporting-component-container reporting-component pull-left'>
-              <h4>Streaks</h4>
+              <h4>Correlation Coefficients</h4>
 
-              <ReportingStreaks
-                completedScorecards={completedScorecards}
-                completedDepressionAssessments={completedDepressionAssessments}
-                completedAnxietyAssessments={completedAnxietyAssessments}
-                completedWellnessAssessments={completedWellnessAssessments} />
+              <CorrelationCoefficients stats={correlationStats} />
             </div>
           </div>
 
