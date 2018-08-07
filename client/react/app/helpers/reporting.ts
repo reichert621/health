@@ -62,6 +62,13 @@ export interface DateRange {
   endDate?: string;
 }
 
+export interface CorrelationStats {
+  labels: string[];
+  coefficients: {
+    [key: string]: number;
+  };
+}
+
 export interface ReportingStats {
   checklist: number[][];
   checklistStats: number[][];
@@ -102,12 +109,7 @@ export interface ReportingStats {
   };
   wellnessQuestionStats: ChecklistQuestionStats[];
   wellnessScoresByTask: TaskImpactStats[];
-  correlationStats: {
-    labels: string[];
-    stats: {
-      [key: string]: number;
-    };
-  };
+  correlationStats: CorrelationStats;
 }
 
 export const getTotalStreak = (
