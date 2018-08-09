@@ -52,17 +52,17 @@ class MoodReporting extends React.Component<
           {/* TODO: format this better */}
           {/* <MoodReportingChart /> */}
 
-          <h1>Depression Questions</h1>
+          <h1>Depression</h1>
           <AssessmentReportingTable
             stats={depression}
             direction={NEGATIVE} />
 
-          <h1>Anxiety Questions</h1>
+          <h1>Anxiety</h1>
           <AssessmentReportingTable
             stats={anxiety}
             direction={NEGATIVE} />
 
-          <h1>Well-being Questions</h1>
+          <h1>Well-being</h1>
           <AssessmentReportingTable
             stats={wellbeing}
             direction={POSITIVE} />

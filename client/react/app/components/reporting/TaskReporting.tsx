@@ -49,7 +49,6 @@ class TaskReporting extends React.Component<RouteComponentProps<{}>, ReportingSt
 
         <div className='default-container'>
           {/* TODO: format this better */}
-          <TaskReportingChart />
           <TaskReportingTable stats={stats} />
         </div>
       </div>
