@@ -106,6 +106,7 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
     } = stats;
 
     const wellBeingIssues = wellnessQuestionStats.slice().reverse();
+    // TODO: check that the data with these stats is accurate...
     const highImpactTasksAnxiety = anxietyScoresByTask.slice(0, 5);
     const highImpactTasksDepression = depressionScoresByTask.slice(0, 5);
     // TODO: this is getting hacky, handle it somewhere else!

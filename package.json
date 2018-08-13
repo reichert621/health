@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/reichert621/blog.git"
+    "url": "git+https://github.com/reichert621/health.git"
   },
   "keywords": [
     "blog"
@@ -11,9 +11,9 @@
   "author": "reichert621",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/reichert621/blog/issues"
+    "url": "https://github.com/reichert621/health/issues"
   },
-  "homepage": "https://github.com/reichert621/blog#readme",
+  "homepage": "https://github.com/reichert621/health#readme",
   "dependencies": {
     "bluebird": "^3.5.1",
     "body-parser": "^1.15.2",
