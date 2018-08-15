@@ -143,5 +143,6 @@ api.get('/stats/questions', isAuthenticated, assessments.fetchStatsPerQuestion);
 api.get('/stats/assessment-questions', isAuthenticated, assessmentQuestions.fetchStats);
 api.get('/stats/tasks', isAuthenticated, tasks.fetchStats);
 api.get('/stats/correlations', isAuthenticated, reporting.fetchCorrelationStats);
+api.get('/stats/monthly-averages', isAuthenticated, reporting.fetchMonthlyAverages);
 
 module.exports = api;

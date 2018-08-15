@@ -193,6 +193,23 @@ const fetchScoresByDate = (userId, dates = {}) => {
     });
 };
 
+const fetchAveragesByMonth = (userId) => {
+  return fetchScoresByDate(userId)
+    .then(results => {
+      const byMonth = groupBy(results, r => moment(r.date).format('MMMM'));
+
+      return Object.keys(byMonth).map(month => {
+        const values = byMonth[month];
+        const total = values.reduce((acc, s) => acc + s.score, 0);
+
+        return {
+          month,
+          average: (total / values.length)
+        };
+      });
+    });
+};
+
 const fetchScoresByDayOfWeek = (userId, dates = {}) => {
   return fetchScoresByDate(userId, dates)
     .then(result => {
@@ -504,6 +521,7 @@ module.exports = {
   fetchFriendsCompleted,
   fetchSelectedTasksByDates,
   fetchScoresByDate,
+  fetchAveragesByMonth,
   fetchScoresByDayOfWeek,
   fetchTotalScoreOverTime,
   fetchCategoryStats,

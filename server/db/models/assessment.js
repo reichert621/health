@@ -1,4 +1,4 @@
-const { first, groupBy, isNumber, sortBy, times } = require('lodash');
+const { first, groupBy, isNumber, sortBy, times, mapValues } = require('lodash');
 const moment = require('moment');
 const knex = require('../knex');
 const UserAssessment = require('./user_assessment');
@@ -422,6 +422,27 @@ const fetchScoresByDate = (userId, where = {}, dates = {}) => {
     });
 };
 
+const fetchAveragesByMonth = (userId) => {
+  return fetchScoresByDate(userId)
+    .then(results => {
+      const byType = groupBy(results, 'type');
+
+      return mapValues(byType, scores => {
+        const byMonth = groupBy(scores, s => moment(s.date).format('MMMM'));
+
+        return Object.keys(byMonth).map(month => {
+          const values = byMonth[month];
+          const total = values.reduce((acc, s) => acc + s.score, 0);
+
+          return {
+            month,
+            average: (total / values.length)
+          };
+        });
+      });
+    });
+};
+
 const fetchScoresByDayOfWeek = (type, userId, dates = {}) => {
   const filter = isValidAssessmentType(type) ? { 'a.type': type } : {};
 
@@ -596,6 +617,7 @@ module.exports = {
   fetchQuestionStats,
   fetchStatsPerQuestion,
   fetchScoresByDate,
+  fetchAveragesByMonth,
   fetchScoresByDayOfWeek,
   getDepressionLevelByScore,
   getAnxietyLevelByScore,
