@@ -47,6 +47,25 @@ module.exports = {
       .catch(err => handleError(res, err));
   },
 
+  fetchMonthlyAverages(req, res) {
+    const { user } = req;
+    const { id: userId } = user;
+
+    return Promise.all([
+      ScoreCard.fetchAveragesByMonth(userId),
+      Assessment.fetchAveragesByMonth(userId)
+    ])
+      .then(([scorecardStats, assessmentStats]) => {
+        const stats = {
+          ...assessmentStats,
+          productivity: scorecardStats
+        };
+
+        return res.json({ stats });
+      })
+      .catch(err => handleError(res, err));
+  },
+
   fetchCorrelationStats(req, res) {
     const { user, query } = req;
     const { id: userId } = user;
