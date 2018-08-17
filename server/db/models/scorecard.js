@@ -196,6 +196,7 @@ const fetchScoresByDate = (userId, dates = {}) => {
 const fetchAveragesByMonth = (userId) => {
   return fetchScoresByDate(userId)
     .then(results => {
+      // FIXME: group by year as well
       const byMonth = groupBy(results, r => moment(r.date).format('MMMM'));
 
       return Object.keys(byMonth).map(month => {
