@@ -3,6 +3,22 @@ import * as moment from 'moment';
 import { times, isNumber } from 'lodash';
 import { MonthlyAverageStats, MonthlyAverage } from '../../helpers/reporting';
 
+const styles = {
+  container: { marginTop: 16, marginBottom: 24 },
+  cell: { fontSize: 12, width: '7%' },
+};
+
+const getPastTwelveMonths = (today = moment()) => {
+  const current = moment(today).month();
+
+  return times(12, n => {
+    const next = current - n;
+    const m = next < 0 ? 12 + next : next;
+
+    return moment().month(m).format('MMMM');
+  }).reverse();
+};
+
 const mapMonthToAverage = (stats: MonthlyAverage[] = []) => {
   return stats.reduce((result, s) => {
     const { month, average } = s;
@@ -11,23 +27,38 @@ const mapMonthToAverage = (stats: MonthlyAverage[] = []) => {
   }, {} as { [month: string]: number; });
 };
 
-const MonthlyAveragesTable = ({ stats }: { stats: MonthlyAverageStats }) => {
-  const current = moment().month();
-  const months = times(12, n => {
-    const next = current - n;
-    const m = next < 0 ? 12 + next : next;
+interface RowProps {
+  label: string;
+  months: string[];
+  averages: { [month: string]: number; };
+}
 
-    return moment().month(m).format('MMMM');
-  }).reverse();
+const MonthlyAverageRow = ({ label, months, averages }: RowProps) => {
+  return (
+    <tr>
+      <td className='text-blue'>{label}</td>
+      {
+        months.map(month => {
+          const score = averages[month];
+
+          return (
+            <td key={month} style={styles.cell}>
+              {isNumber(score) ? score.toFixed(1) : '--'}
+            </td>
+          );
+        })
+      }
+    </tr>
+  );
+};
+
+const MonthlyAveragesTable = ({ stats }: { stats: MonthlyAverageStats }) => {
+  const months = getPastTwelveMonths();
   const { productivity, depression, anxiety, wellbeing } = stats;
   const p = mapMonthToAverage(productivity);
   const d = mapMonthToAverage(depression);
   const a = mapMonthToAverage(anxiety);
   const w = mapMonthToAverage(wellbeing);
-  const styles = {
-    container: { marginTop: 16, marginBottom: 24 },
-    cell: { fontSize: 12, width: '7%' },
-  };
 
   return (
     <table className='dashboard-list-table' style={styles.container}>
@@ -44,62 +75,25 @@ const MonthlyAveragesTable = ({ stats }: { stats: MonthlyAverageStats }) => {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td className='text-blue'>Productivity</td>
-          {
-            months.map(month => {
-              const score = p[month];
+        <MonthlyAverageRow
+          label='Productivity'
+          months={months}
+          averages={p} />
 
-              return (
-                <td key={month} style={styles.cell}>
-                  {isNumber(score) ? score.toFixed(1) : '--'}
-                </td>
-              );
-            })
-          }
-        </tr>
-        <tr>
-          <td className='text-blue'>Depression</td>
-          {
-            months.map(month => {
-              const score = d[month];
+        <MonthlyAverageRow
+          label='Depression'
+          months={months}
+          averages={d} />
 
-              return (
-                <td key={month} style={styles.cell}>
-                  {isNumber(score) ? score.toFixed(1) : '--'}
-                </td>
-              );
-            })
-          }
-        </tr>
-        <tr>
-          <td className='text-blue'>Anxiety</td>
-          {
-            months.map(month => {
-              const score = a[month];
+        <MonthlyAverageRow
+          label='Anxiety'
+          months={months}
+          averages={a} />
 
-              return (
-                <td key={month} style={styles.cell}>
-                  {isNumber(score) ? score.toFixed(1) : '--'}
-                </td>
-              );
-            })
-          }
-        </tr>
-        <tr>
-          <td className='text-blue'>Well-being</td>
-          {
-            months.map(month => {
-              const score = w[month];
-
-              return (
-                <td key={month} style={styles.cell}>
-                  {isNumber(score) ? score.toFixed(1) : '--'}
-                </td>
-              );
-            })
-          }
-        </tr>
+        <MonthlyAverageRow
+          label='Well-being'
+          months={months}
+          averages={w} />
       </tbody>
     </table>
   );
