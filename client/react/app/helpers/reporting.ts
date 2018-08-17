@@ -338,7 +338,7 @@ export const fetchWeekStats = (date: string): Promise<any> => {
     .then((res: HttpResponse) => res.stats);
 };
 
-export const fetchMonthlyAverages = (): Promise<any> => {
+export const fetchMonthlyAverages = (): Promise<MonthlyAverageStats> => {
   return get('/api/stats/monthly-averages')
     .then((res: HttpResponse) => res.stats);
 };
