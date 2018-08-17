@@ -428,6 +428,7 @@ const fetchAveragesByMonth = (userId) => {
       const byType = groupBy(results, 'type');
 
       return mapValues(byType, scores => {
+        // FIXME: group by year as well
         const byMonth = groupBy(scores, s => moment(s.date).format('MMMM'));
 
         return Object.keys(byMonth).map(month => {

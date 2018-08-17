@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import * as moment from 'moment';
+import { times, isNumber } from 'lodash';
 import { all } from 'bluebird';
 import * as qs from 'query-string';
 import NavBar from '../navbar';
@@ -16,9 +17,14 @@ import ScoresByDay from './ScoresByDay';
 import TopMoods from './TopMoods';
 import HighImpactTasks from './HighImpactTasks';
 import ThisWeek from './ThisWeek';
+import MonthlyAveragesTable from './MonthlyAveragesTable';
 import { ReportingStats, CorrelationStats } from '../../helpers/reporting';
 import { DATE_FORMAT, AppState, isValidDateFormat } from '../../helpers/utils';
-import { getAllStats, getWeekStats } from '../../reducers/stats';
+import {
+  getAllStats,
+  getWeekStats,
+  getMonthlyAverages
+} from '../../reducers/stats';
 import './Reporting.less';
 
 const mapStateToProps = (state: AppState) => {
@@ -58,7 +64,8 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
 
     return all([
       this.props.dispatch(getAllStats({ startDate, endDate })),
-      this.props.dispatch(getWeekStats())
+      this.props.dispatch(getWeekStats()),
+      this.props.dispatch(getMonthlyAverages())
     ]);
   }
 
@@ -101,6 +108,7 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
       wellnessScoresByTask = [],
       // Week stats
       weekStats = {},
+      monthlyAverages = {},
       // Correlation coefficients
       correlationStats = {} as CorrelationStats
     } = stats;
@@ -151,6 +159,12 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
                 scorecardStats={scorecardStats}
                 assessmentStats={assessmentStats} />
             </div>
+          </div>
+
+          <div className='reporting-header-container reporting-component'>
+            <h4>Monthly Averages</h4>
+
+            <MonthlyAveragesTable stats={monthlyAverages} />
           </div>
 
           <div className='clearfix'>

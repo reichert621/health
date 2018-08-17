@@ -69,6 +69,15 @@ export interface CorrelationStats {
   };
 }
 
+export interface MonthlyAverage {
+  month: string;
+  average: number;
+}
+
+export interface MonthlyAverageStats {
+  [type: string]: MonthlyAverage[];
+}
+
 export interface ReportingStats {
   checklist: number[][];
   checklistStats: number[][];
@@ -85,6 +94,7 @@ export interface ReportingStats {
   checklistScoresByTask: TaskImpactStats[];
   taskAbilityStats: AbilityStats;
   weekStats: any; // FIXME
+  monthlyAverages: MonthlyAverageStats;
   // Assessments - Depression
   completedDepressionAssessments: ReportingDatedItem[];
   depressionScoresByDay: ScoreByDay;
@@ -325,6 +335,11 @@ export const fetchMoodStats = (): Bluebird<[any, number[][]]> => {
 
 export const fetchWeekStats = (date: string): Promise<any> => {
   return get(`/api/stats/week/${date}`)
+    .then((res: HttpResponse) => res.stats);
+};
+
+export const fetchMonthlyAverages = (): Promise<MonthlyAverageStats> => {
+  return get('/api/stats/monthly-averages')
     .then((res: HttpResponse) => res.stats);
 };
 
