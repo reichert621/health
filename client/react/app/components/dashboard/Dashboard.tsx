@@ -255,7 +255,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
   }
 
   render() {
-    const dates = getPastDates();
+    const dates = getPastDates(14);
     const { isLoading } = this.state;
     const {
       history,
