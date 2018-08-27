@@ -2,14 +2,10 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import * as moment from 'moment';
-import { times, isNumber } from 'lodash';
 import { all } from 'bluebird';
-import * as qs from 'query-string';
 import NavBar from '../navbar';
 import ReportingChart from './ReportingChart';
 import ReportingAverages from './ReportingAverages';
-import ReportingStreaks from './ReportingStreaks';
 import CorrelationCoefficients from './CorrelationCoefficients';
 import TopTasks from './TopTasks';
 import MoodFrequency from './MoodFrequency';
@@ -19,7 +15,7 @@ import HighImpactTasks from './HighImpactTasks';
 import ThisWeek from './ThisWeek';
 import MonthlyAveragesTable from './MonthlyAveragesTable';
 import { ReportingStats, CorrelationStats } from '../../helpers/reporting';
-import { DATE_FORMAT, AppState, isValidDateFormat } from '../../helpers/utils';
+import { AppState, getDefaultDateRange } from '../../helpers/utils';
 import {
   getAllStats,
   getWeekStats,
@@ -47,15 +43,12 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
   constructor(props: ReportingProps) {
     super(props);
 
-    const { from, to } = qs.parse(props.location.search);
-    const defaults = {
-      startDate: moment().subtract(3, 'months').format(DATE_FORMAT),
-      endDate: moment().format(DATE_FORMAT)
-    };
+    const query = props.location.search;
+    const { startDate, endDate } = getDefaultDateRange(query);
 
     this.state = {
-      startDate: isValidDateFormat(from) ? from : defaults.startDate,
-      endDate: isValidDateFormat(to) ? to : defaults.endDate,
+      startDate,
+      endDate,
     };
   }
 

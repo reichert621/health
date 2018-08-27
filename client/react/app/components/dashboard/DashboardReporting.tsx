@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import * as moment from 'moment';
 import ReportingChart from '../reporting/ReportingChart';
-import { ReportingStats, fetchAllStats } from '../../helpers/reporting';
+import { ReportingStats } from '../../helpers/reporting';
 import { DATE_FORMAT, AppState } from '../../helpers/utils';
 import { getAllStats } from '../../reducers/stats';
 import '../reporting/Reporting.less';

@@ -5,12 +5,15 @@ import NavBar from '../navbar';
 import AssessmentReportingTable from './AssessmentReportingTable';
 import { IAssessmentQuestionStat } from '../../helpers/assessment';
 import { fetchAssessmentQuestionStats } from '../../helpers/reporting';
+import { getDefaultDateRange } from '../../helpers/utils';
 import './Reporting.less';
 
 const POSITIVE = 1;
 const NEGATIVE = -1;
 
 interface ReportingState {
+  startDate: string;
+  endDate: string;
   stats: IAssessmentQuestionStat[];
 }
 
@@ -21,14 +24,20 @@ class MoodReporting extends React.Component<
   constructor(props: RouteComponentProps<{}>) {
     super(props);
 
+    const query = props.location.search;
+    const { startDate, endDate } = getDefaultDateRange(query);
+
     this.state = {
+      startDate,
+      endDate,
       stats: []
     };
   }
 
   componentDidMount() {
-    // TODO: only fetch required stats
-    return fetchAssessmentQuestionStats()
+    const { startDate, endDate } = this.state;
+
+    return fetchAssessmentQuestionStats({ startDate, endDate })
       .then(stats => this.setState({ stats }))
       .catch(err => {
         console.log('Error fetching stats!', err);

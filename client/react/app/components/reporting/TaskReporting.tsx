@@ -1,20 +1,17 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import NavBar from '../navbar';
-import TaskReportingChart from './TaskReportingChart';
 import TaskReportingTable from './TaskReportingTable';
-import {
-  ReportingStats,
-  fetchAllStats,
-  mergeTaskStats
-} from '../../helpers/reporting';
 import {
   TaskAssessmentStats,
   fetchStats as fetchTaskStats
 } from '../../helpers/tasks';
+import { getDefaultDateRange } from '../../helpers/utils';
 import './Reporting.less';
 
 interface ReportingState {
+  startDate: string;
+  endDate: string;
   stats: TaskAssessmentStats[];
 }
 
@@ -22,13 +19,20 @@ class TaskReporting extends React.Component<RouteComponentProps<{}>, ReportingSt
   constructor(props: RouteComponentProps<{}>) {
     super(props);
 
+    const query = props.location.search;
+    const { startDate, endDate } = getDefaultDateRange(query);
+
     this.state = {
+      startDate,
+      endDate,
       stats: []
     };
   }
 
   componentDidMount() {
-    return fetchTaskStats()
+    const { startDate, endDate } = this.state;
+
+    return fetchTaskStats({ startDate, endDate })
       .then(stats => this.setState({ stats }))
       .catch(err => {
         console.log('Error fetching stats!', err);

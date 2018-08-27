@@ -1,5 +1,6 @@
 const { AssessmentQuestion } = require('../index');
 const { handleError } = require('./utils');
+const { isValidDateFormat } = require('../models/utils');
 
 module.exports = {
   fetchStatsById: (req, res) => {
@@ -13,9 +14,15 @@ module.exports = {
   },
 
   fetchStats: (req, res) => {
-    const { id: userId } = req.user;
+    const { user, query } = req;
+    const { id: userId } = user;
+    const { startDate, endDate } = query;
+    const dates = {
+      startDate: isValidDateFormat(startDate) ? startDate : -Infinity,
+      endDate: isValidDateFormat(endDate) ? endDate : Infinity
+    };
 
-    return AssessmentQuestion.fetchStats(userId)
+    return AssessmentQuestion.fetchStats(userId, dates)
       .then(stats => res.json({ stats }))
       .catch(err => handleError(res, err));
   }
