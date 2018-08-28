@@ -1,7 +1,7 @@
 const { first, groupBy, mapValues } = require('lodash');
 const knex = require('../knex');
 const Scorecard = require('./scorecard');
-const { calculateAverage } = require('./utils');
+const { calculateAverage, formatBetweenFilter } = require('./utils');
 
 const AssessmentQuestion = () => knex('assessment_questions');
 
@@ -50,7 +50,7 @@ const getScoreDescription = score => {
   );
 };
 
-const fetchQuestionScores = userId => {
+const fetchQuestionScores = (userId, dates = {}) => {
   return AssessmentQuestion()
     .select(
       'aq.text',
@@ -68,7 +68,8 @@ const fetchQuestionScores = userId => {
       'aq.id'
     )
     .innerJoin('user_assessments as ua', 'uas.userAssessmentId', 'ua.id')
-    .where({ 'uas.userId': userId });
+    .where({ 'uas.userId': userId })
+    .andWhere(k => k.whereBetween('ua.date', formatBetweenFilter(dates)));
 };
 
 const fetchScoresById = (id, userId) => {
@@ -253,11 +254,11 @@ const fetchStatsById = async (id, userId) => {
   };
 };
 
-const fetchStats = async (userId) => {
-  const questionScores = await fetchQuestionScores(userId);
+const fetchStats = async (userId, dates = {}) => {
+  const questionScores = await fetchQuestionScores(userId, dates);
   const scoresByQuestionId = groupBy(questionScores, 'questionId');
-  const dates = questionScores.map(s => s.date);
-  const tasksByDate = await Scorecard.fetchSelectedTasksByDates(userId, dates);
+  const ds = questionScores.map(s => s.date);
+  const tasksByDate = await Scorecard.fetchSelectedTasksByDates(userId, ds);
 
   return Object.keys(scoresByQuestionId).map(questionId => {
     const scores = scoresByQuestionId[questionId];

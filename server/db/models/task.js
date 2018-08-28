@@ -206,16 +206,16 @@ const fetchDatesByTask = (userId, dates = {}) => {
     .then(mapped => Object.values(mapped));
 };
 
-const fetchStats = async (userId) => {
-  const datesByTask = await fetchDatesByTask(userId);
+const fetchStats = async (userId, dates = {}) => {
+  const datesByTask = await fetchDatesByTask(userId, dates);
   const assessments = await UserAssessments.fetchWithScores(userId);
   const grouped = groupBy(assessments, 'type');
 
-  return datesByTask.map(({ task, dates = [] }) => {
+  return datesByTask.map(({ task, dates: ds = [] }) => {
     return {
       task,
-      count: dates.length,
-      stats: generateAssessmentStatsByDates(grouped, dates)
+      count: ds.length,
+      stats: generateAssessmentStatsByDates(grouped, ds)
     };
   });
 };

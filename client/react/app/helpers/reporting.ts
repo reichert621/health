@@ -311,8 +311,15 @@ export const fetchQuestionStats = (): Promise<any[]> => {
     .then((res: HttpResponse) => res.stats);
 };
 
-export const fetchAssessmentQuestionStats = (): Promise<any[]> => {
-  return get('/api/stats/assessment-questions')
+export const fetchAssessmentQuestionStats = (
+  range = {} as DateRange
+): Promise<any[]> => {
+  const qs = Object.keys(range)
+    .filter(key => range[key])
+    .map(key => `${key}=${range[key]}`)
+    .join('&');
+
+  return get(`/api/stats/assessment-questions?${qs}`)
     .then((res: HttpResponse) => res.stats);
 };
 

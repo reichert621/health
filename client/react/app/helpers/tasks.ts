@@ -1,6 +1,7 @@
 import { HttpResponse, get, post, put } from './http';
 import { IDropdownOption } from './utils';
 import { IAssessmentStats } from './assessment';
+import { DateRange } from './reporting';
 
 export interface Task {
   id?: number;
@@ -81,8 +82,15 @@ export const updateTask = (id: number, params: object): Promise<Task> => {
     .then((res: HttpResponse) => res.task);
 };
 
-export const fetchStats = (): Promise<TaskAssessmentStats[]> => {
-  return get('/api/stats/tasks')
+export const fetchStats = (
+  range = {} as DateRange
+): Promise<TaskAssessmentStats[]> => {
+  const qs = Object.keys(range)
+    .filter(key => range[key])
+    .map(key => `${key}=${range[key]}`)
+    .join('&');
+
+  return get(`/api/stats/tasks?${qs}`)
     .then((res: HttpResponse) => res.result);
 };
 
