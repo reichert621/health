@@ -63,16 +63,19 @@ class MoodReporting extends React.Component<
 
           <h1>Depression</h1>
           <AssessmentReportingTable
+            title='Depression'
             stats={depression}
             direction={NEGATIVE} />
 
           <h1>Anxiety</h1>
           <AssessmentReportingTable
+            title='Anxiety'
             stats={anxiety}
             direction={NEGATIVE} />
 
           <h1>Well-being</h1>
           <AssessmentReportingTable
+            title='Well-being'
             stats={wellbeing}
             direction={POSITIVE} />
         </div>
