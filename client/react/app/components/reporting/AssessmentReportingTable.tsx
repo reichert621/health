@@ -67,21 +67,29 @@ const getSuggestedUniqueTasks = (
 
   if (uniqs[best].length > 15) return null;
 
-  const countsByTask = stats[best].reduce((acc, { task, count }) => {
-    return { ...acc, [task]: count };
-  }, {} as { [key: string]: number });
+  const countsByTask = stats[best].reduce(
+    (acc, { task, count }) => {
+      return { ...acc, [task]: count };
+    },
+    {} as { [key: string]: number }
+  );
 
   return uniqs[best]
     .filter(task => countsByTask[task] > 0)
-    .sort((x, y) => countsByTask[y] - countsByTask[x]);
+    .map(task => {
+      return { task, count: countsByTask[task] };
+    })
+    .sort((x, y) => y.count - x.count);
 };
 
 interface AssessmentReportingTableProps {
+  title?: string;
   stats: IAssessmentQuestionStat[];
   direction: number;
 }
 
 const AssessmentReportingTable = ({
+  title,
   stats,
   direction
 }: AssessmentReportingTableProps) => {
@@ -95,6 +103,48 @@ const AssessmentReportingTable = ({
     }
   };
 
+  const sorted = stats
+    .map(stat => {
+      const { question, frequencies, uniqs, stats: s } = stat;
+      const { text } = question;
+      const average = calculateAverageFromFrequencies(frequencies);
+      const suggestions = generateSuggestedTasks(s, uniqs, direction);
+      const beta = getSuggestedUniqueTasks(s, uniqs, direction);
+
+      return {
+        average,
+        suggestions: suggestions ? suggestions.slice(0, 5) : [],
+        beta: beta ? beta.slice(0, 5) : [],
+        question: text
+      };
+    })
+    .sort((x, y) => direction * (x.average - y.average));
+
+  // TODO: should more of this be handled on the server?
+  const top = sorted.slice(0, 5).reduce(
+    (counts, stat) => {
+      const { suggestions, beta } = stat;
+      const tasks = suggestions.map(s => s.task).concat(beta.map(b => b.task));
+
+      return tasks.reduce((acc, task) => {
+        return {
+          ...acc,
+          [task]: (acc[task] || 0) + 1
+        };
+      }, counts);
+    },
+    {} as { [key: string]: number }
+  );
+
+  const best = keys(top)
+    .map(task => {
+      return { task, count: top[task] };
+    })
+    .sort((x, y) => y.count - x.count);
+
+
+  console.log(`Top tasks for ${title}:`, best.slice(0, 10));
+
   return (
     <table className='dashboard-list-table' style={styles.container}>
       <thead>
@@ -106,60 +156,46 @@ const AssessmentReportingTable = ({
         </tr>
       </thead>
       <tbody>
-        {stats
-          .map(stat => {
-            const { question, frequencies, uniqs, stats: s } = stat;
-            const { text } = question;
-            const average = calculateAverageFromFrequencies(frequencies);
-            const suggestions = generateSuggestedTasks(s, uniqs, direction);
-            const beta = getSuggestedUniqueTasks(s, uniqs, direction);
+        {sorted.map((stat, key) => {
+          const { average, question, suggestions, beta } = stat;
 
-            return {
-              average,
-              suggestions: suggestions ? suggestions.slice(0, 5) : [],
-              beta: beta ? beta.slice(0, 5) : [],
-              question: text
-            };
-          })
-          .sort((x, y) => direction * (x.average - y.average))
-          .map((stat, key) => {
-            const { average, question, suggestions, beta } = stat;
+          return (
+            <tr key={key} className='dashboard-list-row'>
+              <td style={styles.cell.md}>{question}</td>
+              <td style={styles.cell.sm}>{(average * 100).toFixed(2)}%</td>
+              <td style={styles.cell.lg}>
+                {!suggestions || !suggestions.length ? 'N/A' : ''}
+                <ol style={styles.list}>
+                  {suggestions.map((suggestion, key: number) => {
+                    const { task, delta } = suggestion;
 
-            return (
-              <tr key={key} className='dashboard-list-row'>
-                <td style={styles.cell.md}>{question}</td>
-                <td style={styles.cell.sm}>{(average * 100).toFixed(2)}%</td>
-                <td style={styles.cell.lg}>
-                  {!suggestions || !suggestions.length ? 'N/A' : ''}
-                  <ol style={styles.list}>
-                    {
-                      suggestions.map((suggestion, key: number) => {
-                        const { task, delta } = suggestion;
+                    return (
+                      <li key={key}>
+                        {task} (+
+                        {(delta * 100).toFixed(2)}
+                        %)
+                      </li>
+                    );
+                  })}
+                </ol>
+              </td>
+              <td style={styles.cell.lg}>
+                {!beta || !beta.length ? 'N/A' : ''}
+                <ol style={styles.list}>
+                  {beta.map((suggestion, key: number) => {
+                    const { task, count } = suggestion;
 
-                        return (
-                          <li key={key}>
-                            {task} (+{(delta * 100).toFixed(2)}%)
-                          </li>
-                        );
-                      })
-                    }
-                  </ol>
-                </td>
-                <td style={styles.cell.lg}>
-                  {!beta || !beta.length ? 'N/A' : ''}
-                  <ol style={styles.list}>
-                    {
-                      beta.map((task, key: number) => {
-                        return (
-                          <li key={key}>{task}</li>
-                        );
-                      })
-                    }
-                  </ol>
-                </td>
-              </tr>
-            );
-          })}
+                    return (
+                      <li key={key}>
+                        {task} ({count} times)
+                      </li>
+                    );
+                  })}
+                </ol>
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
