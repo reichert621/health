@@ -87,6 +87,7 @@ const AssessmentReportingTable = ({
 }: AssessmentReportingTableProps) => {
   const styles = {
     container: { marginTop: 24, marginBottom: 24 },
+    list: { paddingLeft: 16 },
     cell: {
       lg: { width: '35%' },
       md: { width: '20%' },
@@ -130,7 +131,7 @@ const AssessmentReportingTable = ({
                 <td style={styles.cell.sm}>{(average * 100).toFixed(2)}%</td>
                 <td style={styles.cell.lg}>
                   {!suggestions || !suggestions.length ? 'N/A' : ''}
-                  <ol>
+                  <ol style={styles.list}>
                     {
                       suggestions.map((suggestion, key: number) => {
                         const { task, delta } = suggestion;
@@ -146,7 +147,7 @@ const AssessmentReportingTable = ({
                 </td>
                 <td style={styles.cell.lg}>
                   {!beta || !beta.length ? 'N/A' : ''}
-                  <ol>
+                  <ol style={styles.list}>
                     {
                       beta.map((task, key: number) => {
                         return (
