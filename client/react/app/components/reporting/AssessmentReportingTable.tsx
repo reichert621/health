@@ -57,6 +57,25 @@ const generateSuggestedTasks = (
     });
 };
 
+const getSuggestedUniqueTasks = (
+  stats: IAssessmentTaskStats,
+  uniqs: IUniqueAssessmentScoreTask,
+  direction: number
+) => {
+  const scores = keys(uniqs);
+  const best = direction > 0 ? last(scores) : first(scores);
+
+  if (uniqs[best].length > 15) return null;
+
+  const countsByTask = stats[best].reduce((acc, { task, count }) => {
+    return { ...acc, [task]: count };
+  }, {} as { [key: string]: number });
+
+  return uniqs[best]
+    .filter(task => countsByTask[task] > 0)
+    .sort((x, y) => countsByTask[y] - countsByTask[x]);
+};
+
 interface AssessmentReportingTableProps {
   stats: IAssessmentQuestionStat[];
   direction: number;
@@ -69,9 +88,9 @@ const AssessmentReportingTable = ({
   const styles = {
     container: { marginTop: 24, marginBottom: 24 },
     cell: {
-      lg: { width: '50%' },
-      md: { width: '25%' },
-      sm: { width: '15%' }
+      lg: { width: '35%' },
+      md: { width: '20%' },
+      sm: { width: '10%' }
     }
   };
 
@@ -80,8 +99,9 @@ const AssessmentReportingTable = ({
       <thead>
         <tr>
           <th style={styles.cell.md}>Question</th>
-          <th style={styles.cell.md}>Average</th>
+          <th style={styles.cell.sm}>Average</th>
           <th style={styles.cell.lg}>Suggestions</th>
+          <th style={styles.cell.lg}>Unique to Top Score (beta)</th>
         </tr>
       </thead>
       <tbody>
@@ -91,21 +111,23 @@ const AssessmentReportingTable = ({
             const { text } = question;
             const average = calculateAverageFromFrequencies(frequencies);
             const suggestions = generateSuggestedTasks(s, uniqs, direction);
+            const beta = getSuggestedUniqueTasks(s, uniqs, direction);
 
             return {
               average,
               suggestions: suggestions ? suggestions.slice(0, 5) : [],
+              beta: beta ? beta.slice(0, 5) : [],
               question: text
             };
           })
           .sort((x, y) => direction * (x.average - y.average))
           .map((stat, key) => {
-            const { average, question, suggestions } = stat;
+            const { average, question, suggestions, beta } = stat;
 
             return (
               <tr key={key} className='dashboard-list-row'>
                 <td style={styles.cell.md}>{question}</td>
-                <td style={styles.cell.md}>{(average * 100).toFixed(2)}%</td>
+                <td style={styles.cell.sm}>{(average * 100).toFixed(2)}%</td>
                 <td style={styles.cell.lg}>
                   {!suggestions || !suggestions.length ? 'N/A' : ''}
                   <ol>
@@ -117,6 +139,18 @@ const AssessmentReportingTable = ({
                           <li key={key}>
                             {task} (+{(delta * 100).toFixed(2)}%)
                           </li>
+                        );
+                      })
+                    }
+                  </ol>
+                </td>
+                <td style={styles.cell.lg}>
+                  {!beta || !beta.length ? 'N/A' : ''}
+                  <ol>
+                    {
+                      beta.map((task, key: number) => {
+                        return (
+                          <li key={key}>{task}</li>
                         );
                       })
                     }
