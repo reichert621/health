@@ -12,6 +12,7 @@ const reporting = require('./reporting');
 const challenges = require('./challenges');
 const moods = require('./moods');
 const assessments = require('./assessments');
+const assessmentQuestions = require('./assessment_questions');
 
 module.exports = {
   users,
@@ -27,5 +28,6 @@ module.exports = {
   reporting,
   challenges,
   moods,
-  assessments
+  assessments,
+  assessmentQuestions
 };

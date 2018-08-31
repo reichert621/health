@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import { has, extend, times, first, isNumber } from 'lodash';
+import * as qs from 'query-string';
 import { IUser } from './auth';
 import { IChecklist, IQuestion } from './checklist';
 import { IScorecard } from './scorecard';
@@ -76,6 +77,10 @@ export const DAYS_OF_WEEK = [
 ];
 
 export const DATE_FORMAT = 'YYYY-MM-DD';
+
+export const isValidDateFormat = (str: string) => {
+  return moment(str, DATE_FORMAT, true).isValid();
+};
 
 export const pluralize = (str: string, n?: number, customPlural?: string): string => {
   const simplePlural = `${str}s`;
@@ -175,4 +180,17 @@ export const getStreakStats = (stats: DatedItem[]): number[] => {
 
       return streaks;
     }, []);
+};
+
+export const getDefaultDateRange = (query = '') => {
+  const { from, to } = qs.parse(query);
+  const defaults = {
+    startDate: moment().subtract(3, 'months').format(DATE_FORMAT),
+    endDate: moment().format(DATE_FORMAT)
+  };
+
+  return {
+    startDate: isValidDateFormat(from) ? from : defaults.startDate,
+    endDate: isValidDateFormat(to) ? to : defaults.endDate
+  };
 };

@@ -17,10 +17,16 @@ interface Series {
   data: number[][];
 }
 
+interface MoodStats {
+  depression: Item[];
+  anxiety: Item[];
+  wellbeing: Item[];
+}
+
 interface ChartProps {}
 
 interface ChartState {
-  stats: Item[];
+  stats: MoodStats;
   scorecardStats: number[][];
 }
 
@@ -29,7 +35,7 @@ class MoodReportingChart extends React.Component<ChartProps, ChartState> {
     super(props);
 
     this.state = {
-      stats: [] as Item[],
+      stats: {} as MoodStats,
       scorecardStats: []
     };
   }
@@ -95,8 +101,9 @@ class MoodReportingChart extends React.Component<ChartProps, ChartState> {
 
   render() {
     // TODO clean up
-    const { stats } = this.state;
-    const series = stats
+    const { stats = {} as MoodStats } = this.state;
+    const { depression = [] } = stats;
+    const series = depression
       .filter(({ data }) => {
         return data.some(([t, score]) => score > 0);
       })

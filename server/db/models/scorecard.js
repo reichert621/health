@@ -1,5 +1,5 @@
 const knex = require('../knex.js');
-const { first, isNumber, max, times } = require('lodash');
+const { first, isNumber, max, times, groupBy } = require('lodash');
 const moment = require('moment');
 const Task = require('./task');
 const ScoreCardSelectedTask = require('./scorecard_selected_task');
@@ -121,6 +121,26 @@ const fetchCompletedDays = (userId, dates = {}) => {
     });
 };
 
+const fetchSelectedTasksByDates = (userId, dates = []) => {
+  return ScoreCard()
+    .select(
+      's.date',
+      't.description',
+      't.points',
+      't.id as taskId',
+      'c.name as category'
+    )
+    .from('scorecards as s')
+    .innerJoin('scorecard_selected_tasks as sst', 'sst.scorecardId', 's.id')
+    .innerJoin('tasks as t', 'sst.taskId', 't.id')
+    .innerJoin('categories as c', 't.categoryId', 'c.id')
+    .where({ 's.userId': userId })
+    .andWhere(k => k.whereIn('s.date', dates))
+    .then(results => {
+      return groupBy(results, 'date');
+    });
+};
+
 const fetchAllCompleted = (userIds = [], dates = {}) => {
   return ScoreCard()
     .select('s.date', 'u.username')
@@ -168,6 +188,24 @@ const fetchScoresByDate = (userId, dates = {}) => {
           date,
           completedTasks: Number(completedTasks),
           score: Number(score)
+        };
+      });
+    });
+};
+
+const fetchAveragesByMonth = (userId) => {
+  return fetchScoresByDate(userId)
+    .then(results => {
+      // FIXME: group by year as well
+      const byMonth = groupBy(results, r => moment(r.date).format('MMMM'));
+
+      return Object.keys(byMonth).map(month => {
+        const values = byMonth[month];
+        const total = values.reduce((acc, s) => acc + s.score, 0);
+
+        return {
+          month,
+          average: (total / values.length)
         };
       });
     });
@@ -482,7 +520,9 @@ module.exports = {
   fetchProgressToday,
   fetchCompletedDays,
   fetchFriendsCompleted,
+  fetchSelectedTasksByDates,
   fetchScoresByDate,
+  fetchAveragesByMonth,
   fetchScoresByDayOfWeek,
   fetchTotalScoreOverTime,
   fetchCategoryStats,

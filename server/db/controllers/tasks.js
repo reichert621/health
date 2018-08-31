@@ -1,5 +1,6 @@
 const { Task, DefaultTasks } = require('../index');
 const { handleError } = require('./utils');
+const { isValidDateFormat } = require('../models/utils');
 
 module.exports = {
   async fetch(req, res) {
@@ -78,6 +79,37 @@ module.exports = {
       const task = await Task.update(taskId, userId, updates);
 
       return res.json({ task });
+    } catch (err) {
+      return handleError(res, err);
+    }
+  },
+
+  async fetchStats(req, res) {
+    try {
+      const { user, query } = req;
+      const { id: userId } = user;
+      const { startDate, endDate } = query;
+      const dates = {
+        startDate: isValidDateFormat(startDate) ? startDate : -Infinity,
+        endDate: isValidDateFormat(endDate) ? endDate : Infinity
+      };
+
+      const result = await Task.fetchStats(userId, dates);
+
+      return res.json({ result });
+    } catch (err) {
+      return handleError(res, err);
+    }
+  },
+
+  async fetchStatsById(req, res) {
+    try {
+      const { params, user } = req;
+      const { id: taskId } = params;
+      const { id: userId } = user;
+      const result = await Task.fetchStatsById(taskId, userId);
+
+      return res.json({ result });
     } catch (err) {
       return handleError(res, err);
     }

@@ -9,7 +9,7 @@ module.exports = {
       host: 'ec2-52-15-152-55.us-east-2.compute.amazonaws.com',
       key: '~/.ssh/tutorial.pem',
       ref: 'origin/master',
-      repo: 'https://github.com/reichert621/blog.git',
+      repo: 'https://github.com/reichert621/health.git',
       path: '/home/ubuntu/blog',
       'post-deploy': 'npm install && npm run build && pm2 startOrRestart ecosystem.config.js'
     }

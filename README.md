@@ -20,7 +20,7 @@
   - Or in SQL, with `psql -c CREATE DATABASE [insert_dev_db_name_here];`
   - This can either be done with `createdb [insert_dev_db_name_here]`
 - Optional: Test your database credentials by connecting to the newly created database in your Postgres client
-- Using these credentials, add your database environment variables to your `~/.bash_profile`, or wherever you store them. This is required for the [`knexfile.js`](https://github.com/reichert621/blog/blob/master/server/javascript/db/knexfile.js)
+- Using these credentials, add your database environment variables to your `~/.bash_profile`, or wherever you store them. This is required for the [`knexfile.js`](https://github.com/reichert621/health/blob/master/server/db/knexfile.js)
 - Set your `$NODE_ENV` environment variable to `dev`, so that the `knexfile` knows which configuration to use
 
 For reference, my local environment variables look like this in my `~/.bash_profile` file:

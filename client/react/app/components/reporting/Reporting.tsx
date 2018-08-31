@@ -2,21 +2,25 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import * as moment from 'moment';
 import { all } from 'bluebird';
 import NavBar from '../navbar';
 import ReportingChart from './ReportingChart';
 import ReportingAverages from './ReportingAverages';
-import ReportingStreaks from './ReportingStreaks';
+import CorrelationCoefficients from './CorrelationCoefficients';
 import TopTasks from './TopTasks';
 import MoodFrequency from './MoodFrequency';
 import ScoresByDay from './ScoresByDay';
 import TopMoods from './TopMoods';
 import HighImpactTasks from './HighImpactTasks';
 import ThisWeek from './ThisWeek';
-import { ReportingStats } from '../../helpers/reporting';
-import { DATE_FORMAT, AppState } from '../../helpers/utils';
-import { getAllStats, getWeekStats } from '../../reducers/stats';
+import MonthlyAveragesTable from './MonthlyAveragesTable';
+import { ReportingStats, CorrelationStats } from '../../helpers/reporting';
+import { AppState, getDefaultDateRange } from '../../helpers/utils';
+import {
+  getAllStats,
+  getWeekStats,
+  getMonthlyAverages
+} from '../../reducers/stats';
 import './Reporting.less';
 
 const mapStateToProps = (state: AppState) => {
@@ -39,9 +43,12 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
   constructor(props: ReportingProps) {
     super(props);
 
+    const query = props.location.search;
+    const { startDate, endDate } = getDefaultDateRange(query);
+
     this.state = {
-      startDate: moment().subtract(3, 'months').format(DATE_FORMAT),
-      endDate: moment().format(DATE_FORMAT)
+      startDate,
+      endDate,
     };
   }
 
@@ -50,7 +57,8 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
 
     return all([
       this.props.dispatch(getAllStats({ startDate, endDate })),
-      this.props.dispatch(getWeekStats())
+      this.props.dispatch(getWeekStats()),
+      this.props.dispatch(getMonthlyAverages())
     ]);
   }
 
@@ -92,10 +100,14 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
       wellnessQuestionStats = [],
       wellnessScoresByTask = [],
       // Week stats
-      weekStats = {}
+      weekStats = {},
+      monthlyAverages = {},
+      // Correlation coefficients
+      correlationStats = {} as CorrelationStats
     } = stats;
 
     const wellBeingIssues = wellnessQuestionStats.slice().reverse();
+    // TODO: check that the data with these stats is accurate...
     const highImpactTasksAnxiety = anxietyScoresByTask.slice(0, 5);
     const highImpactTasksDepression = depressionScoresByTask.slice(0, 5);
     // TODO: this is getting hacky, handle it somewhere else!
@@ -142,6 +154,12 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
             </div>
           </div>
 
+          <div className='reporting-header-container reporting-component'>
+            <h4>Monthly Averages</h4>
+
+            <MonthlyAveragesTable stats={monthlyAverages} />
+          </div>
+
           <div className='clearfix'>
             <div className='reporting-component-container reporting-component pull-left'>
               <h4>Overall</h4>
@@ -158,13 +176,9 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
             </div>
 
             <div className='reporting-component-container reporting-component pull-left'>
-              <h4>Streaks</h4>
+              <h4>Correlation Coefficients</h4>
 
-              <ReportingStreaks
-                completedScorecards={completedScorecards}
-                completedDepressionAssessments={completedDepressionAssessments}
-                completedAnxietyAssessments={completedAnxietyAssessments}
-                completedWellnessAssessments={completedWellnessAssessments} />
+              <CorrelationCoefficients stats={correlationStats} />
             </div>
           </div>
 

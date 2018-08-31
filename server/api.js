@@ -16,7 +16,8 @@ const {
   tasks,
   challenges,
   moods,
-  assessments
+  assessments,
+  assessmentQuestions
 } = require('./db/controllers');
 
 const api = Router();
@@ -67,6 +68,7 @@ api.post('/categories', isAuthenticated, categories.create);
 api.get('/tasks', isAuthenticated, tasks.fetch);
 api.post('/tasks', isAuthenticated, tasks.create);
 api.put('/tasks/:id', isAuthenticated, tasks.update);
+api.get('/tasks/:id/stats', isAuthenticated, tasks.fetchStatsById);
 api.get('/tasks/suggestions', isAuthenticated, tasks.fetchSuggestions);
 api.get('/tasks/defaults', tasks.fetchDefaults);
 api.post('/tasks/suggestions', isAuthenticated, tasks.createSuggestedTask);
@@ -79,6 +81,7 @@ api.get('/assessments/:id', isAuthenticated, assessments.findById);
 api.get('/assessments/date/:date', isAuthenticated, assessments.fetchByDate);
 api.post('/assessments', isAuthenticated, assessments.findOrCreate);
 api.post('/assessments/:id/questions/:questionId/score', isAuthenticated, assessments.updateScore);
+api.get('/assessment-questions/:id/stats', isAuthenticated, assessmentQuestions.fetchStatsById);
 // Checklists
 api.get('/checklists', isAuthenticated, checklists.fetch);
 api.get('/checklists/:id', isAuthenticated, checklists.findById);
@@ -137,5 +140,9 @@ api.get('/stats/checklist-scores-by-task', isAuthenticated, checklists.fetchScor
 // TODO: name better?
 api.get('/stats/categories', isAuthenticated, scorecards.fetchStatsPerCategory);
 api.get('/stats/questions', isAuthenticated, assessments.fetchStatsPerQuestion);
+api.get('/stats/assessment-questions', isAuthenticated, assessmentQuestions.fetchStats);
+api.get('/stats/tasks', isAuthenticated, tasks.fetchStats);
+api.get('/stats/correlations', isAuthenticated, reporting.fetchCorrelationStats);
+api.get('/stats/monthly-averages', isAuthenticated, reporting.fetchMonthlyAverages);
 
 module.exports = api;

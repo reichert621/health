@@ -1,4 +1,4 @@
-const { first, groupBy, isNumber, sortBy, times } = require('lodash');
+const { first, groupBy, isNumber, sortBy, times, mapValues } = require('lodash');
 const moment = require('moment');
 const knex = require('../knex');
 const UserAssessment = require('./user_assessment');
@@ -422,6 +422,28 @@ const fetchScoresByDate = (userId, where = {}, dates = {}) => {
     });
 };
 
+const fetchAveragesByMonth = (userId) => {
+  return fetchScoresByDate(userId)
+    .then(results => {
+      const byType = groupBy(results, 'type');
+
+      return mapValues(byType, scores => {
+        // FIXME: group by year as well
+        const byMonth = groupBy(scores, s => moment(s.date).format('MMMM'));
+
+        return Object.keys(byMonth).map(month => {
+          const values = byMonth[month];
+          const total = values.reduce((acc, s) => acc + s.score, 0);
+
+          return {
+            month,
+            average: (total / values.length)
+          };
+        });
+      });
+    });
+};
+
 const fetchScoresByDayOfWeek = (type, userId, dates = {}) => {
   const filter = isValidAssessmentType(type) ? { 'a.type': type } : {};
 
@@ -444,13 +466,13 @@ const getDepressionLevelByScore = (score) => {
 
   if (score <= 5) {
     return l.NONE;
-  } else if (score >= 6 && score <= 10) {
+  } else if (score > 5 && score <= 10) {
     return l.NORMAL;
-  } else if (score >= 11 && score <= 25) {
+  } else if (score > 10 && score <= 25) {
     return l.MILD;
-  } else if (score >= 26 && score <= 50) {
+  } else if (score > 25 && score <= 50) {
     return l.MODERATE;
-  } else if (score >= 51 && score <= 75) {
+  } else if (score > 50 && score <= 75) {
     return l.SEVERE;
   } else {
     return l.EXTREME;
@@ -462,13 +484,13 @@ const getAnxietyLevelByScore = (score) => {
 
   if (score <= 5) {
     return l.NONE;
-  } else if (score >= 6 && score <= 10) {
+  } else if (score > 5 && score <= 10) {
     return l.NORMAL;
-  } else if (score >= 11 && score <= 25) {
+  } else if (score > 10 && score <= 25) {
     return l.MILD;
-  } else if (score >= 26 && score <= 50) {
+  } else if (score > 25 && score <= 50) {
     return l.MODERATE;
-  } else if (score >= 51 && score <= 75) {
+  } else if (score > 50 && score <= 75) {
     return l.SEVERE;
   } else {
     return l.EXTREME;
@@ -480,11 +502,11 @@ const getWellnessLevelByScore = (score) => {
 
   if (score <= 15) {
     return l.VERY_LOW;
-  } else if (score >= 16 && score <= 35) {
+  } else if (score > 15 && score <= 35) {
     return l.LOW;
-  } else if (score >= 36 && score <= 55) {
+  } else if (score > 35 && score <= 50) {
     return l.MODERATE;
-  } else if (score >= 56 && score <= 70) {
+  } else if (score > 50 && score <= 65) {
     return l.HIGH;
   } else {
     return l.VERY_HIGH;
@@ -596,6 +618,7 @@ module.exports = {
   fetchQuestionStats,
   fetchStatsPerQuestion,
   fetchScoresByDate,
+  fetchAveragesByMonth,
   fetchScoresByDayOfWeek,
   getDepressionLevelByScore,
   getAnxietyLevelByScore,

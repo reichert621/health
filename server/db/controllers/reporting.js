@@ -1,11 +1,17 @@
-const { ScoreCard, Checklist, Task, Assessment } = require('../index');
+const {
+  ScoreCard,
+  Checklist,
+  Task,
+  Assessment,
+  Reporting
+} = require('../index');
 const { handleError } = require('./utils');
 const { isValidDateFormat } = require('../models/utils');
 
 const { DEPRESSION, ANXIETY, WELL_BEING } = Assessment.AssessmentTypes;
 
 module.exports = {
-  fetchWeekStats: (req, res) => {
+  fetchWeekStats(req, res) {
     const { params, user } = req;
     const { date } = params;
     const { id: userId } = user;
@@ -19,10 +25,11 @@ module.exports = {
         const stats = { scorecardStats, checklistStats, assessmentStats };
 
         return res.json({ stats });
-      });
+      })
+      .catch(err => handleError(res, err));
   },
 
-  fetchMonthStats: (req, res) => {
+  fetchMonthStats(req, res) {
     const { params, user } = req;
     const { date } = params;
     const { id: userId } = user;
@@ -36,11 +43,63 @@ module.exports = {
         const stats = { scorecardStats, checklistStats, assessmentStats };
 
         return res.json({ stats });
-      });
+      })
+      .catch(err => handleError(res, err));
+  },
+
+  fetchMonthlyAverages(req, res) {
+    const { user } = req;
+    const { id: userId } = user;
+
+    return Promise.all([
+      ScoreCard.fetchAveragesByMonth(userId),
+      Assessment.fetchAveragesByMonth(userId)
+    ])
+      .then(([scorecardStats, assessmentStats]) => {
+        const stats = {
+          ...assessmentStats,
+          productivity: scorecardStats
+        };
+
+        return res.json({ stats });
+      })
+      .catch(err => handleError(res, err));
+  },
+
+  fetchCorrelationStats(req, res) {
+    const { user, query } = req;
+    const { id: userId } = user;
+    const { startDate, endDate } = query;
+    const dates = {
+      startDate: isValidDateFormat(startDate) ? startDate : -Infinity,
+      endDate: isValidDateFormat(endDate) ? endDate : Infinity
+    };
+
+    return Promise.all([
+      ScoreCard.fetchStats(userId, dates),
+      Assessment.fetchStats(userId, dates)
+    ])
+      .then(([scorecardStats, assessmentStats]) => {
+        const {
+          anxiety: anxietyStats = [],
+          depression: depressionStats = [],
+          wellbeing: wellBeingStats = []
+        } = assessmentStats;
+
+        const results = Reporting.calculateCoefficientStats({
+          scorecardStats,
+          anxietyStats,
+          depressionStats,
+          wellBeingStats
+        });
+
+        return res.json({ results });
+      })
+      .catch(err => handleError(res, err));
   },
 
   // TODO: maybe this is doing too much?
-  fetchAllStats: (req, res) => {
+  fetchAllStats(req, res) {
     const { user, query } = req;
     const { id: userId } = user;
     const { startDate, endDate } = query;
@@ -80,7 +139,6 @@ module.exports = {
       Assessment.fetchScoreRangeFrequency(WELL_BEING, userId, dates),
       Assessment.fetchQuestionStats(WELL_BEING, userId, dates),
       Assessment.fetchScoresByTask(WELL_BEING, userId, dates)
-
     ])
       .then(result => {
         const [
@@ -115,6 +173,19 @@ module.exports = {
           wellnessQuestionStats,
           wellnessScoresByTask
         ] = result;
+
+        const {
+          anxiety: anxietyStats = [],
+          depression: depressionStats = [],
+          wellbeing: wellBeingStats = []
+        } = assessmentStats;
+
+        const correlationStats = Reporting.calculateCoefficientStats({
+          scorecardStats,
+          anxietyStats,
+          depressionStats,
+          wellBeingStats
+        });
 
         const stats = {
           // Checklist stats // TODO: deprecate!
@@ -151,7 +222,9 @@ module.exports = {
           wellnessScoresByDay,
           wellnessLevelFrequency,
           wellnessQuestionStats,
-          wellnessScoresByTask
+          wellnessScoresByTask,
+          // Correlation Coefficients
+          correlationStats
         };
 
         return res.json({ stats });

@@ -1,27 +1,43 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import { groupBy } from 'lodash';
 import NavBar from '../navbar';
-import MoodReportingChart from './MoodReportingChart';
-import MoodReportingTable from './MoodReportingTable';
-import { ReportingStats, fetchAllStats } from '../../helpers/reporting';
+import AssessmentReportingTable from './AssessmentReportingTable';
+import { IAssessmentQuestionStat } from '../../helpers/assessment';
+import { fetchAssessmentQuestionStats } from '../../helpers/reporting';
+import { getDefaultDateRange } from '../../helpers/utils';
 import './Reporting.less';
 
+const POSITIVE = 1;
+const NEGATIVE = -1;
+
 interface ReportingState {
-  stats: ReportingStats;
+  startDate: string;
+  endDate: string;
+  stats: IAssessmentQuestionStat[];
 }
 
-class MoodReporting extends React.Component<RouteComponentProps<{}>, ReportingState> {
+class MoodReporting extends React.Component<
+  RouteComponentProps<{}>,
+  ReportingState
+> {
   constructor(props: RouteComponentProps<{}>) {
     super(props);
 
+    const query = props.location.search;
+    const { startDate, endDate } = getDefaultDateRange(query);
+
     this.state = {
-      stats: {} as ReportingStats
+      startDate,
+      endDate,
+      stats: []
     };
   }
 
   componentDidMount() {
-    // TODO: only fetch required stats
-    return fetchAllStats()
+    const { startDate, endDate } = this.state;
+
+    return fetchAssessmentQuestionStats({ startDate, endDate })
       .then(stats => this.setState({ stats }))
       .catch(err => {
         console.log('Error fetching stats!', err);
@@ -31,23 +47,8 @@ class MoodReporting extends React.Component<RouteComponentProps<{}>, ReportingSt
   render() {
     const { history } = this.props;
     const { stats } = this.state;
-    const {
-      // Checklist stats
-      checklistStats = [],
-      completedChecklists = [],
-      checklistScoresByDay = {},
-      depressionLevelFrequency = {},
-      checklistQuestionStats = [],
-      checklistScoresByTask = [],
-      // Scorecard stats
-      scorecardStats = [],
-      completedScorecards = [],
-      scorecardScoresByDay = {},
-      totalScoreOverTime = [],
-      taskAbilityStats = {},
-      // Task stats
-      topTasks = []
-    } = stats;
+    const grouped = groupBy(stats, stat => stat.question.type);
+    const { depression = [], anxiety = [], wellbeing = [] } = grouped;
 
     return (
       <div>
@@ -58,8 +59,25 @@ class MoodReporting extends React.Component<RouteComponentProps<{}>, ReportingSt
 
         <div className='default-container'>
           {/* TODO: format this better */}
-          <MoodReportingChart />
-          <MoodReportingTable stats={checklistQuestionStats} />
+          {/* <MoodReportingChart /> */}
+
+          <h1>Depression</h1>
+          <AssessmentReportingTable
+            title='Depression'
+            stats={depression}
+            direction={NEGATIVE} />
+
+          <h1>Anxiety</h1>
+          <AssessmentReportingTable
+            title='Anxiety'
+            stats={anxiety}
+            direction={NEGATIVE} />
+
+          <h1>Well-being</h1>
+          <AssessmentReportingTable
+            title='Well-being'
+            stats={wellbeing}
+            direction={POSITIVE} />
         </div>
       </div>
     );

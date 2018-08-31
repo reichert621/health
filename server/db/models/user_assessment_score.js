@@ -97,7 +97,7 @@ const fetchScoresByQuestion = (type, userId, dates = {}) => {
           const total = scores.reduce((sum, n) => sum + n, 0);
           const average = (total / count);
 
-          return { question, category, count, total, average };
+          return { question, category, count, total, scores, average };
         })
         .sort((x, y) => y.total - x.total);
     });

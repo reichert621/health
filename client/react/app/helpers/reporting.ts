@@ -62,6 +62,22 @@ export interface DateRange {
   endDate?: string;
 }
 
+export interface CorrelationStats {
+  labels: string[];
+  coefficients: {
+    [key: string]: number;
+  };
+}
+
+export interface MonthlyAverage {
+  month: string;
+  average: number;
+}
+
+export interface MonthlyAverageStats {
+  [type: string]: MonthlyAverage[];
+}
+
 export interface ReportingStats {
   checklist: number[][];
   checklistStats: number[][];
@@ -78,6 +94,7 @@ export interface ReportingStats {
   checklistScoresByTask: TaskImpactStats[];
   taskAbilityStats: AbilityStats;
   weekStats: any; // FIXME
+  monthlyAverages: MonthlyAverageStats;
   // Assessments - Depression
   completedDepressionAssessments: ReportingDatedItem[];
   depressionScoresByDay: ScoreByDay;
@@ -102,6 +119,7 @@ export interface ReportingStats {
   };
   wellnessQuestionStats: ChecklistQuestionStats[];
   wellnessScoresByTask: TaskImpactStats[];
+  correlationStats: CorrelationStats;
 }
 
 export const getTotalStreak = (
@@ -156,12 +174,12 @@ const mapTasksByName = (stats: ReportingTask[]): TaskStatMap<ReportingTask> => {
 };
 
 // TODO: this is a temporary hack, should probably be handled in API
-const normalizeWellnessScore = (score: number) => {
+export const normalizeWellnessScore = (score: number) => {
   return (score / 80) * 100;
 };
 
 // TODO: should each field be required?
-const calculateHappiness = ({ depression, anxiety, wellness }: {
+export const calculateHappiness = ({ depression, anxiety, wellness }: {
   depression?: number,
   anxiety?: number,
   wellness?: number
@@ -288,8 +306,20 @@ export const fetchTaskCategoryStats = (): Promise<any[]> => {
     .then((res: HttpResponse) => res.stats);
 };
 
-export const fetchChecklistQuestionStats = (): Promise<any[]> => {
+export const fetchQuestionStats = (): Promise<any[]> => {
   return get('/api/stats/questions')
+    .then((res: HttpResponse) => res.stats);
+};
+
+export const fetchAssessmentQuestionStats = (
+  range = {} as DateRange
+): Promise<any[]> => {
+  const qs = Object.keys(range)
+    .filter(key => range[key])
+    .map(key => `${key}=${range[key]}`)
+    .join('&');
+
+  return get(`/api/stats/assessment-questions?${qs}`)
     .then((res: HttpResponse) => res.stats);
 };
 
@@ -303,15 +333,20 @@ export const fetchTaskStats = (): Bluebird<
   ]);
 };
 
-export const fetchMoodStats = (): Bluebird<[any[], number[][]]> => {
+export const fetchMoodStats = (): Bluebird<[any, number[][]]> => {
   return Bluebird.all([
-    fetchChecklistQuestionStats(),
+    fetchQuestionStats(),
     fetchScorecardStats()
   ]);
 };
 
 export const fetchWeekStats = (date: string): Promise<any> => {
   return get(`/api/stats/week/${date}`)
+    .then((res: HttpResponse) => res.stats);
+};
+
+export const fetchMonthlyAverages = (): Promise<MonthlyAverageStats> => {
+  return get('/api/stats/monthly-averages')
     .then((res: HttpResponse) => res.stats);
 };
 

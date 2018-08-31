@@ -33,6 +33,45 @@ export interface IAssessmentsByType {
   [type: string]: IAssessment[];
 }
 
+export interface IAssessmentStat {
+  included: number;
+  excluded: number;
+  delta: number;
+}
+
+export interface IAssessmentStats {
+  depression: IAssessmentStat;
+  anxiety: IAssessmentStat;
+  wellbeing: IAssessmentStat;
+}
+
+export interface IAssessmentScoreFrequencies {
+  [score: string]: number;
+}
+
+export interface IUniqueAssessmentScoreTask {
+  [score: string]: string[];
+}
+
+export interface IAssessmentTaskStats {
+  [score: string]: {
+    task: string;
+    count: number;
+    percentage: number;
+    deltas: {
+      next?: number;
+      prev?: number;
+    }
+  }[];
+}
+
+export interface IAssessmentQuestionStat {
+  question: IAssessmentQuestion;
+  frequencies: IAssessmentScoreFrequencies;
+  uniqs: IUniqueAssessmentScoreTask;
+  stats: IAssessmentTaskStats;
+}
+
 export enum DepressionLevel {
   NONE = 'No depression',
   NORMAL = 'Normal but unhappy',
@@ -45,13 +84,13 @@ export enum DepressionLevel {
 export const getDepressionLevelByScore = (score: number): string => {
   if (score <= 5) {
     return DepressionLevel.NONE;
-  } else if (score >= 6 && score <= 10) {
+  } else if (score > 5 && score <= 10) {
     return DepressionLevel.NORMAL;
-  } else if (score >= 11 && score <= 25) {
+  } else if (score > 10 && score <= 25) {
     return DepressionLevel.MILD;
-  } else if (score >= 26 && score <= 50) {
+  } else if (score > 25 && score <= 50) {
     return DepressionLevel.MODERATE;
-  } else if (score >= 51 && score <= 75) {
+  } else if (score > 50 && score <= 75) {
     return DepressionLevel.SEVERE;
   } else {
     return DepressionLevel.EXTREME;
@@ -70,13 +109,13 @@ export enum AnxietyLevel {
 export const getAnxietyLevelByScore = (score: number): string => {
   if (score <= 5) {
     return AnxietyLevel.NONE;
-  } else if (score >= 6 && score <= 10) {
+  } else if (score > 5 && score <= 10) {
     return AnxietyLevel.NORMAL;
-  } else if (score >= 11 && score <= 25) {
+  } else if (score > 10 && score <= 25) {
     return AnxietyLevel.MILD;
-  } else if (score >= 26 && score <= 50) {
+  } else if (score > 25 && score <= 50) {
     return AnxietyLevel.MODERATE;
-  } else if (score >= 51 && score <= 75) {
+  } else if (score > 50 && score <= 75) {
     return AnxietyLevel.SEVERE;
   } else {
     return AnxietyLevel.EXTREME;
@@ -94,11 +133,11 @@ export enum WellnessLevel {
 export const getWellnessLevelByScore = (score: number): string => {
   if (score <= 15) {
     return WellnessLevel.VERY_LOW;
-  } else if (score >= 16 && score <= 35) {
+  } else if (score > 15 && score <= 35) {
     return WellnessLevel.LOW;
-  } else if (score >= 36 && score <= 55) {
+  } else if (score > 35 && score <= 50) {
     return WellnessLevel.MODERATE;
-  } else if (score >= 56 && score <= 70) {
+  } else if (score > 50 && score <= 65) {
     return WellnessLevel.HIGH;
   } else {
     return WellnessLevel.VERY_HIGH;

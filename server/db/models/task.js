@@ -1,8 +1,13 @@
-const { first } = require('lodash');
+const { first, groupBy, mapValues } = require('lodash');
 const knex = require('../knex.js');
 const DefaultTasks = require('./default_tasks');
 const Categories = require('./category');
-const { formatBetweenFilter } = require('./utils');
+const UserAssessments = require('./user_assessment');
+const {
+  includesDateInDates,
+  formatBetweenFilter,
+  calculateAverage
+} = require('./utils');
 
 const Tasks = () => knex('tasks');
 
@@ -152,8 +157,99 @@ const update = (id, userId, params = {}) => {
     .then(success => findById(id, userId));
 };
 
-const destroy = (id, userId) =>
-  findById(id, userId).delete();
+const destroy = (id, userId) => {
+  return findById(id, userId).delete();
+};
+
+// TODO: maybe this logic should be in an assessment model?
+const generateAssessmentStatsByDates = (assessmentsByType, dates = []) => {
+  return mapValues(assessmentsByType, items => {
+    const included = items.filter(a => includesDateInDates(a.date, dates));
+    const excluded = items.filter(a => !includesDateInDates(a.date, dates));
+    const result = {
+      included: calculateAverage(included.map(a => Number(a.score))),
+      excluded: calculateAverage(excluded.map(a => Number(a.score)))
+    };
+
+    return {
+      ...result,
+      delta: result.included - result.excluded
+    };
+  });
+};
+
+const fetchDatesByTask = (userId, dates = {}) => {
+  return Tasks()
+    .select('t.id', 't.description', 't.points', 's.date', 'c.name as category')
+    .from('tasks as t')
+    .innerJoin('scorecard_selected_tasks as sst', 'sst.taskId', 't.id')
+    .innerJoin('scorecards as s', 'sst.scorecardId', 's.id')
+    .innerJoin('categories as c', 't.categoryId', 'c.id')
+    .where({ 'sst.userId': userId })
+    .andWhere(k => k.whereBetween('s.date', formatBetweenFilter(dates)))
+    .then(results => {
+      return results.reduce((acc, r) => {
+        const { id, description, points, category, date } = r;
+        const { task = {}, dates = [] } = acc[id] || {};
+
+        return {
+          ...acc,
+          [id]: {
+            task: {
+              ...task, id, description, points, category
+            },
+            dates: dates.concat(date)
+          }
+        };
+      }, {});
+    })
+    .then(mapped => Object.values(mapped));
+};
+
+const fetchStats = async (userId, dates = {}) => {
+  const datesByTask = await fetchDatesByTask(userId, dates);
+  const assessments = await UserAssessments.fetchWithScores(userId);
+  const grouped = groupBy(assessments, 'type');
+
+  return datesByTask.map(({ task, dates: ds = [] }) => {
+    return {
+      task,
+      count: ds.length,
+      stats: generateAssessmentStatsByDates(grouped, ds)
+    };
+  });
+};
+
+const fetchDatesAccomplished = (id, userId, dates = {}) => {
+  return Tasks()
+    .select('t.id', 't.description', 't.points', 's.date', 'c.name as category')
+    .from('tasks as t')
+    .innerJoin('scorecard_selected_tasks as sst', 'sst.taskId', 't.id')
+    .innerJoin('scorecards as s', 'sst.scorecardId', 's.id')
+    .innerJoin('categories as c', 't.categoryId', 'c.id')
+    .where({ 'sst.userId': userId, 't.id': id })
+    .andWhere(k => k.whereBetween('s.date', formatBetweenFilter(dates)))
+    .then(results => {
+      const [{ description, points, category }] = results;
+
+      return {
+        task: { id, description, points, category },
+        dates: results.map(r => r.date)
+      };
+    });
+};
+
+const fetchStatsById = async (id, userId) => {
+  const { task, dates = [] } = await fetchDatesAccomplished(id, userId);
+  const assessments = await UserAssessments.fetchWithScores(userId);
+  const grouped = groupBy(assessments, 'type');
+
+  return {
+    task,
+    count: dates.length,
+    stats: generateAssessmentStatsByDates(grouped, dates)
+  };
+};
 
 module.exports = {
   fetch,
@@ -166,5 +262,7 @@ module.exports = {
   findOrCreate,
   createSuggestedTask,
   update,
-  destroy
+  destroy,
+  fetchStats,
+  fetchStatsById
 };

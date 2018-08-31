@@ -1,31 +1,38 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import NavBar from '../navbar';
-import TaskReportingChart from './TaskReportingChart';
 import TaskReportingTable from './TaskReportingTable';
 import {
-  ReportingStats,
-  fetchAllStats,
-  mergeTaskStats
-} from '../../helpers/reporting';
+  TaskAssessmentStats,
+  fetchStats as fetchTaskStats
+} from '../../helpers/tasks';
+import { getDefaultDateRange } from '../../helpers/utils';
 import './Reporting.less';
 
 interface ReportingState {
-  stats: ReportingStats;
+  startDate: string;
+  endDate: string;
+  stats: TaskAssessmentStats[];
 }
 
 class TaskReporting extends React.Component<RouteComponentProps<{}>, ReportingState> {
   constructor(props: RouteComponentProps<{}>) {
     super(props);
 
+    const query = props.location.search;
+    const { startDate, endDate } = getDefaultDateRange(query);
+
     this.state = {
-      stats: {} as ReportingStats
+      startDate,
+      endDate,
+      stats: []
     };
   }
 
   componentDidMount() {
-    // TODO: only fetch required stats
-    return fetchAllStats()
+    const { startDate, endDate } = this.state;
+
+    return fetchTaskStats({ startDate, endDate })
       .then(stats => this.setState({ stats }))
       .catch(err => {
         console.log('Error fetching stats!', err);
@@ -35,35 +42,7 @@ class TaskReporting extends React.Component<RouteComponentProps<{}>, ReportingSt
   render() {
     const { history } = this.props;
     const { stats } = this.state;
-    const {
-      // Checklist stats
-      checklistStats = [],
-      completedChecklists = [],
-      checklistScoresByDay = {},
-      depressionLevelFrequency = {},
-      checklistQuestionStats = [],
-      checklistScoresByTask = [],
-      // Scorecard stats
-      scorecardStats = [],
-      completedScorecards = [],
-      scorecardScoresByDay = {},
-      totalScoreOverTime = [],
-      taskAbilityStats = {},
-      // Task stats
-      topTasks = [],
-      // Anxiety stats
-      depressionScoresByTask = [],
-      anxietyScoresByTask = [],
-      wellnessScoresByTask = []
-    } = stats;
-
-    const taskStats = mergeTaskStats(topTasks, {
-      depressionScoresByTask,
-      anxietyScoresByTask,
-      wellnessScoresByTask
-    });
-
-    console.log('taskStats!', taskStats);
+    console.log('stats!', stats);
 
     return (
       <div>
@@ -74,8 +53,7 @@ class TaskReporting extends React.Component<RouteComponentProps<{}>, ReportingSt
 
         <div className='default-container'>
           {/* TODO: format this better */}
-          <TaskReportingChart />
-          <TaskReportingTable stats={taskStats} />
+          <TaskReportingTable stats={stats} />
         </div>
       </div>
     );
