@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import * as moment from 'moment';
+import { groupBy, keys } from 'lodash';
 import { all, resolve } from 'bluebird';
 import { IScorecard } from '../../helpers/scorecard';
 import { Task, calculateScore } from '../../helpers/tasks';
@@ -10,13 +11,15 @@ import { IMood } from '../../helpers/mood';
 import {
   IAssessment,
   AssessmentType,
-  createAssessment,
+  createAssessment
 } from '../../helpers/assessment';
 import { AppState, SelectedState, keyifyDate } from '../../helpers/utils';
 import { selectDate } from '../../reducers/selected';
 import { getScorecardByDate, toggleTask } from '../../reducers/scorecards';
 import NavBar from '../navbar';
 import ActivityCard from './ActivityCard';
+import ActivityCardSimple from './ActivityCardSimple';
+import ActivityDetails from './ActivityDetails';
 import './Activity.less';
 
 const mapStateToProps = (state: AppState) => {
@@ -31,7 +34,7 @@ const mapStateToProps = (state: AppState) => {
 
 interface ActivitiesContainerProps extends RouteComponentProps<{}> {
   scorecard: IScorecard;
-  dispatch: Dispatch<any|Promise<any>>;
+  dispatch: Dispatch<any | Promise<any>>;
 }
 
 interface ActivitiesContainerState {
@@ -59,14 +62,13 @@ class ActivitiesContainer extends React.Component<
     const date = moment();
     const today = date.format('YYYY-MM-DD');
 
-    return dispatch(getScorecardByDate(today))
-      .catch(err => {
-        if (err.status === 401) {
-          return history.push('/login');
-        }
+    return dispatch(getScorecardByDate(today)).catch(err => {
+      if (err.status === 401) {
+        return history.push('/login');
+      }
 
-        return console.log('Error fetching dashboard!', err);
-      });
+      return console.log('Error fetching dashboard!', err);
+    });
   }
 
   handleTaskUpdate(task: Task) {
@@ -77,11 +79,9 @@ class ActivitiesContainer extends React.Component<
 
   render() {
     const { isLoading } = this.state;
-    const {
-      history,
-      scorecard = {} as IScorecard
-    } = this.props;
+    const { history, scorecard = {} as IScorecard } = this.props;
     const { tasks = [] } = scorecard;
+    const grouped = groupBy(tasks, 'category');
 
     if (isLoading) {
       // TODO: handle loading state better
@@ -89,12 +89,26 @@ class ActivitiesContainer extends React.Component<
 
     return (
       <div>
-        <NavBar
-          title='Activities'
-          history={history} />
+        <div className='default-container simple'>
+          <div className='activities-container-simple' style={{}}>
+            {keys(grouped).map(category => {
+              const tasks = grouped[category];
 
-        <div className='default-container'>
-          <div className='activities-container'>
+              return (
+                <div key={category}>
+                  <div className='activities-label'>{category}</div>
+
+                  {tasks.map((task, key) => {
+                    return <ActivityCardSimple key={key} task={task} />;
+                  })}
+                </div>
+              );
+            })}
+          </div>
+
+          <ActivityDetails />
+
+          <div className='activities-container' style={{ display: 'none' }}>
             {
               tasks.map((task, key) => {
                 return (
