@@ -14,7 +14,7 @@
 @gray-2: #bbbbbb;
 @toggle-gray: #9B9B9B;
 @dark-gray: #5E5E5E;
-@black: #2b2b2b;
+@black: #382210;
 @bright-blue: #33A2CC;
 @light-blue-hover: #F6FCFF;
 @red: #da2a54;
@@ -26,12 +26,16 @@
 /* Base CSS */
 * {
   box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html,
 body,
+#app,
 .app {
   height: 100%;
+  color: @black;
   font-family: @font-san-serif;
   font-size: 18px;
   font-weight: 300;

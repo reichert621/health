@@ -94,6 +94,11 @@ export const fetchStats = (
     .then((res: HttpResponse) => res.result);
 };
 
+export const fetchStatsById = (id: number) => {
+  return get(`/api/tasks/${id}/stats`)
+    .then(res => res.result);
+};
+
 export interface Category {
   id: number;
   userId: number;

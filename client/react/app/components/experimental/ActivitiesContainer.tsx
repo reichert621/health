@@ -13,13 +13,11 @@ import {
   AssessmentType,
   createAssessment
 } from '../../helpers/assessment';
-import { AppState, SelectedState, keyifyDate } from '../../helpers/utils';
-import { selectDate } from '../../reducers/selected';
+import { AppState, keyifyDate } from '../../helpers/utils';
 import { getScorecardByDate, toggleTask } from '../../reducers/scorecards';
-import NavBar from '../navbar';
-import ActivityCard from './ActivityCard';
 import ActivityCardSimple from './ActivityCardSimple';
 import ActivityDetails from './ActivityDetails';
+import ActivityOverview from './ActivityOverview';
 import './Activity.less';
 
 const mapStateToProps = (state: AppState) => {
@@ -38,6 +36,7 @@ interface ActivitiesContainerProps extends RouteComponentProps<{}> {
 }
 
 interface ActivitiesContainerState {
+  selectedTaskId: number;
   isLoading: boolean;
 }
 
@@ -49,6 +48,7 @@ class ActivitiesContainer extends React.Component<
     super(props);
 
     this.state = {
+      selectedTaskId: null,
       isLoading: true
     };
   }
@@ -71,15 +71,29 @@ class ActivitiesContainer extends React.Component<
     });
   }
 
-  handleTaskUpdate(task: Task) {
+  handleTaskToggled(task: Task) {
     const { scorecard = {} as IScorecard, dispatch } = this.props;
 
     return dispatch(toggleTask(scorecard, task));
   }
 
+  handleTaskViewed(task: Task) {
+    const { id: taskId } = task;
+
+    return this.setState({ selectedTaskId: taskId });
+  }
+
+  renderSidePanel() {
+    const { selectedTaskId } = this.state;
+
+    return selectedTaskId
+      ? <ActivityDetails taskId={selectedTaskId} />
+      : <ActivityOverview />;
+  }
+
   render() {
     const { isLoading } = this.state;
-    const { history, scorecard = {} as IScorecard } = this.props;
+    const { scorecard = {} as IScorecard } = this.props;
     const { tasks = [] } = scorecard;
     const grouped = groupBy(tasks, 'category');
 
@@ -88,37 +102,33 @@ class ActivitiesContainer extends React.Component<
     }
 
     return (
-      <div>
+      <div className='default-wrapper simple'>
         <div className='default-container simple'>
-          <div className='activities-container-simple' style={{}}>
+          <div className='activities-container-simple'>
             {keys(grouped).map(category => {
               const tasks = grouped[category];
 
               return (
                 <div key={category}>
-                  <div className='activities-label'>{category}</div>
+                  <div className='activities-label'>
+                    {category}
+                  </div>
 
                   {tasks.map((task, key) => {
-                    return <ActivityCardSimple key={key} task={task} />;
+                    return (
+                      <ActivityCardSimple
+                        key={key}
+                        task={task}
+                        onToggle={this.handleTaskToggled.bind(this, task)}
+                        onView={this.handleTaskViewed.bind(this, task)} />
+                    );
                   })}
                 </div>
               );
             })}
           </div>
 
-          <ActivityDetails />
-
-          <div className='activities-container' style={{ display: 'none' }}>
-            {
-              tasks.map((task, key) => {
-                return (
-                  <ActivityCard
-                    key={key}
-                    task={task} />
-                );
-              })
-            }
-          </div>
+          {this.renderSidePanel()}
         </div>
       </div>
     );

@@ -222,18 +222,26 @@ const fetchStats = async (userId, dates = {}) => {
 
 const fetchDatesAccomplished = (id, userId, dates = {}) => {
   return Tasks()
-    .select('t.id', 't.description', 't.points', 's.date', 'c.name as category')
+    .select(
+      't.id',
+      't.description',
+      't.points',
+      's.date',
+      'c.name as category',
+      'a.name as ability'
+    )
     .from('tasks as t')
     .innerJoin('scorecard_selected_tasks as sst', 'sst.taskId', 't.id')
     .innerJoin('scorecards as s', 'sst.scorecardId', 's.id')
     .innerJoin('categories as c', 't.categoryId', 'c.id')
+    .innerJoin('abilities as a', 'c.abilityId', 'a.id')
     .where({ 'sst.userId': userId, 't.id': id })
     .andWhere(k => k.whereBetween('s.date', formatBetweenFilter(dates)))
     .then(results => {
-      const [{ description, points, category }] = results;
+      const [{ description, points, category, ability }] = results;
 
       return {
-        task: { id, description, points, category },
+        task: { id, description, points, category, ability },
         dates: results.map(r => r.date)
       };
     });
@@ -246,6 +254,7 @@ const fetchStatsById = async (id, userId) => {
 
   return {
     task,
+    dates,
     count: dates.length,
     stats: generateAssessmentStatsByDates(grouped, dates)
   };

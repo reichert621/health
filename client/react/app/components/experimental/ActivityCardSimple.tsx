@@ -4,17 +4,25 @@ import './Activity.less';
 
 interface Props {
   task: Task;
+  onToggle: () => void;
+  onView: () => void;
 }
 
-const ActivityCardSimple = ({ task }: Props) => {
-  const { description, points, category, isFavorite } = task;
+const ActivityCardSimple = ({ task, onToggle, onView }: Props) => {
+  const { description, isComplete } = task;
 
   return (
-    <div className={`activity-card-container simple ${isFavorite ? 'checked' : ''}`}>
+    <div className={`activity-card-container simple ${isComplete ? 'checked' : ''}`}>
       <div className='activity-description-container simple'>
-        <div className={`activity-checkbox simple ${isFavorite ? 'checked' : ''}`}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div
+            className={`activity-checkbox simple ${isComplete ? 'checked' : ''}`}
+            onClick={onToggle}>
+          </div>
+          <div className='activity-description'>{description}</div>
         </div>
-        <div className='activity-description'>{description}</div>
+
+        <div className='activity-expand' onClick={onView}>View</div>
       </div>
     </div>
   );

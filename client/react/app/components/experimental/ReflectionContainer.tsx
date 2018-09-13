@@ -36,21 +36,42 @@ class Reflection extends React.Component<ReflectionProps, ReflectionState> {
     }
 
     return (
-      <div>
-        <NavBar
-          title='Reflections'
-          history={history} />
-
-        <div className='default-container'>
+      <div className='default-wrapper simple'>
+        <div className='default-container simple'>
           <div className='reflections-container'>
             <div className='reflection-menu-item'>
-              <div className='reflection-title'>Assessment</div>
+              <div className='reflection-title'>Depression Assessment</div>
               <div>
                 <div className='reflection-progress-container'>
-                  <div className='reflection-progress-bar'></div>
+                  <div className='reflection-progress-bar' style={{ width: '20%' }}>
+                  </div>
                 </div>
                 {/* TODO: use real data */}
                 <div className='reflection-action'>2 / 10 Questions</div>
+              </div>
+            </div>
+
+            <div className='reflection-menu-item'>
+              <div className='reflection-title'>Anxiety Assessment</div>
+              <div>
+                <div className='reflection-progress-container'>
+                <div className='reflection-progress-bar' style={{ width: '70%' }}>
+                  </div>
+                </div>
+                {/* TODO: use real data */}
+                <div className='reflection-action'>7 / 10 Questions</div>
+              </div>
+            </div>
+
+            <div className='reflection-menu-item'>
+              <div className='reflection-title'>Well-Being Assessment</div>
+              <div>
+                <div className='reflection-progress-container'>
+                <div className='reflection-progress-bar' style={{ width: '60%' }}>
+                  </div>
+                </div>
+                {/* TODO: use real data */}
+                <div className='reflection-action'>6 / 10 Questions</div>
               </div>
             </div>
 

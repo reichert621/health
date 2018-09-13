@@ -20,6 +20,7 @@ const ReportingOverview = ({
   tasks
 }: ReportingOverviewProps) => {
   const checklistStreak = getStreakStats(checklists);
+  console.log({ checklists, checklistStreak });
   const scorecardStreak = getStreakStats(scorecards);
   const totalStreak = getTotalStreak(checklists, scorecards);
   const earnings = calculateEarnings(totalStreak);
