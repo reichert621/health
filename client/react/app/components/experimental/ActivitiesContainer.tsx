@@ -18,6 +18,7 @@ import { getScorecardByDate, toggleTask } from '../../reducers/scorecards';
 import ActivityCardSimple from './ActivityCardSimple';
 import ActivityDetails from './ActivityDetails';
 import ActivityOverview from './ActivityOverview';
+import NavBar from '../navbar';
 import './Activity.less';
 
 const mapStateToProps = (state: AppState) => {
@@ -62,13 +63,15 @@ class ActivitiesContainer extends React.Component<
     const date = moment();
     const today = date.format('YYYY-MM-DD');
 
-    return dispatch(getScorecardByDate(today)).catch(err => {
-      if (err.status === 401) {
-        return history.push('/login');
-      }
+    return dispatch(getScorecardByDate(today))
+      .then(() => this.setState({ isLoading: false }))
+      .catch(err => {
+        if (err.status === 401) {
+          return history.push('/login');
+        }
 
-      return console.log('Error fetching dashboard!', err);
-    });
+        return console.log('Error fetching dashboard!', err);
+      });
   }
 
   handleTaskToggled(task: Task) {
@@ -87,7 +90,9 @@ class ActivitiesContainer extends React.Component<
     const { selectedTaskId } = this.state;
 
     return selectedTaskId
-      ? <ActivityDetails taskId={selectedTaskId} />
+      ? <ActivityDetails
+          taskId={selectedTaskId}
+          onClose={() => this.setState({ selectedTaskId: null })} />
       : <ActivityOverview />;
   }
 
@@ -103,6 +108,8 @@ class ActivitiesContainer extends React.Component<
 
     return (
       <div className='default-wrapper simple'>
+        <NavBar active={'activities'} />
+
         <div className='default-container simple'>
           <div className='activities-container-simple'>
             {keys(grouped).map(category => {

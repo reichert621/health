@@ -17,6 +17,7 @@ import {
 import './Assessment.less';
 
 interface AssessmentProps {
+  title?: string;
   cacheKey: string;
   fetchQuestions: () => Promise<IQuestion[]>;
 }
@@ -125,22 +126,21 @@ class AssessmentSample extends React.Component<
 
   render() {
     const { isLoading, date, questions = [] } = this.state;
-    const { history } = this.props;
+    const { title } = this.props;
 
     if (isLoading || !questions.length) return null;
 
     return (
       <div>
-        <NavBar
-          title='Experimental'
-          history={history} />
+        <NavBar active={'reflections'} />
 
-          <Assessment
-            date={date}
-            questions={questions}
-            onToggleDisplay={() => this.setState({ forceDisplayList: false })}
-            onScoreChange={this.handleScoreChange.bind(this)}
-            onSubmit={this.submit.bind(this)} />
+        <Assessment
+          title={title}
+          date={date}
+          questions={questions}
+          onToggleDisplay={() => this.setState({ forceDisplayList: false })}
+          onScoreChange={this.handleScoreChange.bind(this)}
+          onSubmit={this.submit.bind(this)} />
       </div>
     );
   }
@@ -153,6 +153,7 @@ export class DepressionSample extends React.Component<RouteComponentProps<{}>> {
 
     return <AssessmentSample
       {...this.props}
+      title='Depression'
       cacheKey={cacheKey}
       fetchQuestions={fetchDepressionQuestions} />;
   }
@@ -164,6 +165,7 @@ export class AnxietySample extends React.Component<RouteComponentProps<{}>> {
 
     return <AssessmentSample
       {...this.props}
+      title='Anxiety'
       cacheKey={cacheKey}
       fetchQuestions={fetchAnxietyQuestions} />;
   }
@@ -175,6 +177,7 @@ export class WellBeingSample extends React.Component<RouteComponentProps<{}>> {
 
     return <AssessmentSample
       {...this.props}
+      title='Well-Being'
       cacheKey={cacheKey}
       fetchQuestions={fetchWellBeingQuestions} />;
   }

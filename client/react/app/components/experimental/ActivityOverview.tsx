@@ -5,6 +5,7 @@ import {
   times,
   chunk,
   keys,
+  includes,
   isEqual,
   isEmpty,
   first,
@@ -55,6 +56,7 @@ const ProductivityProgress = ({ score }: { score: number; }) => {
       height: '100%',
       width: `${percentage}%`,
       transition: 'width linear 1s',
+      opacity: isComplete ? 0.8 : 1,
       // backgroundColor: colors.ORANGE,
       backgroundColor: isComplete ? colors.BLUE : colors.ORANGE
     }
@@ -63,13 +65,12 @@ const ProductivityProgress = ({ score }: { score: number; }) => {
   return (
     <div style={styles.wrapper}>
       <div className='activity-labels-container'>
-        <div className='activity-details-label text-heavy'
-          style={isComplete ? { color: colors.BLUE } : {}}>
+        <div className='activity-details-label text-heavy'>
           Today's Progress
         </div>
 
         <div className='activity-details-label'
-          style={isComplete ? { color: colors.BLUE } : {}}>
+          style={isComplete ? { fontWeight: 'bold', color: colors.BLUE } : {}}>
           {percentage.toFixed(0)}% Daily Goal
         </div>
       </div>
@@ -86,10 +87,15 @@ const HeatMap = ({ stats }: { stats: number[][] }) => {
   const days = weeks * 7;
   const scores = stats.map(([ts, score]) => score).sort((x, y) => x - y);
   const count = scores.filter(s => s > 0).length;
-  const formatted = stats.map(([ts, score]) => {
-    return { date: moment(ts).format(DATE_FORMAT), score };
-  }).reverse();
+  const formatted = stats
+    .filter(([ts, score]) => score > 0)
+    .map(([ts, score]) => {
+      return { date: moment(ts).format(DATE_FORMAT), score };
+    })
+    .reverse();
+
   const streaks = getStreakStats(formatted);
+  const currentStreak = first(streaks);
   const min = first(scores);
   const max = last(scores);
   const mappedScores = stats.reduce((mappings, s) => {
@@ -99,9 +105,8 @@ const HeatMap = ({ stats }: { stats: number[][] }) => {
     return { ...mappings, [date]: score };
   }, {} as { [date: string]: number; });
 
-  const today = '2018-08-01'; // FIXME (hardcoded for testing)
   const scoresByDay = times(days, n => {
-    const date = moment(today).subtract(n, 'days').format(DATE_FORMAT);
+    const date = moment().subtract(n, 'days').format(DATE_FORMAT);
     const score = mappedScores[date] || 0;
 
     return { date, score };
@@ -128,12 +133,16 @@ const HeatMap = ({ stats }: { stats: number[][] }) => {
       <div className='activity-labels-container'>
         <div className='activity-details-label'>
           <span>Streak &mdash; </span>
-          <span className='text-heavy'>{first(streaks)} days</span>
+          <span className='text-heavy'>
+            {currentStreak} day{currentStreak === 1 ? '' : 's'}
+          </span>
         </div>
 
         <div className='activity-details-label'>
           <span>Total Completed &mdash; </span>
-          <span className='text-heavy'>{count} days</span>
+          <span className='text-heavy'>
+            {count} day{count === 1 ? '' : 's'}
+          </span>
         </div>
       </div>
 
@@ -184,7 +193,7 @@ const PastWeek = ({ stats }: { stats: number[][] }) => {
         {
           completed.map(({ day, score }, key) => {
             const label = day.slice(0, 1).toUpperCase();
-            const completed = score > 35 ? 'completed' : '';
+            const completed = score > 15 ? 'completed' : '';
 
             return (
               <div key={key}
@@ -212,7 +221,11 @@ const PastWeekTable = ({
   wellbeing
 }: PastWeekTableProps) => {
   // TODO: make sure dates line up with data
-  const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  // const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  const days = times(7, n => {
+    return moment().subtract(n, 'days').format('dd'); // .slice(0, 1);
+  }).reverse();
+
   const styles = {
     cell: { width: `${100 / 7}%` }
   };
@@ -237,7 +250,7 @@ const PastWeekTable = ({
                 const normalized = normalizeWellnessScore(score);
 
                 return <td key={ts} style={styles.cell}>
-                  {Math.round(score)}%
+                  {score ? `${Math.round(score)}%` : '--'}
                 </td>;
               })
             }
@@ -246,7 +259,11 @@ const PastWeekTable = ({
           <tr className='activity-overview-row' style={{ color: colors.RED }}>
             {
               anxiety.map(([ts, score]) => {
-                return <td key={ts} style={styles.cell}>{score}%</td>;
+                return (
+                  <td key={ts} style={styles.cell}>
+                    {score ? `${Math.round(score)}%` : '--'}
+                  </td>
+                );
               })
             }
           </tr>
@@ -254,7 +271,11 @@ const PastWeekTable = ({
           <tr className='activity-overview-row' style={{ color: colors.BLACK }}>
             {
               depression.map(([ts, score]) => {
-                return <td key={ts} style={styles.cell}>{score}%</td>;
+                return (
+                  <td key={ts} style={styles.cell}>
+                    {score ? `${Math.round(score)}%` : '--'}
+                  </td>
+                );
               })
             }
           </tr>
@@ -603,7 +624,9 @@ const SectionAverages = ({ averages }: SectionAverageProps) => {
         <div style={{ width: '40%' }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div className='vertical-bar-container'>
-              <div className='vertical-bar' style={{ height: `${today.toFixed(3)}%` }}></div>
+              <div className='vertical-bar'
+                style={{ height: `${(today || 0).toFixed(3)}%` }}>
+              </div>
             </div>
 
             <div style={{ fontSize: 54, fontWeight: 500 }}>
@@ -814,8 +837,11 @@ class AnalyticsPreviewContainer extends React.Component<
   }
 
   componentDidMount() {
-    const today = '2018-08-01'; // FIXME
-    const range = { startDate: '2018-01-01', endDate: today };
+    const today = moment().format(DATE_FORMAT);
+    const range = {
+      startDate: moment().subtract(6, 'months').format(DATE_FORMAT),
+      endDate: today
+    };
 
     return all([
       fetchAllStats(range),
@@ -899,6 +925,25 @@ class AnalyticsPreviewContainer extends React.Component<
     };
   }
 
+  getPastWeekStats(stats: number[][]) {
+    const pastWeekDates = times(7, n => {
+      return moment().subtract(n, 'days').format(DATE_FORMAT);
+    }).reverse();
+
+    const mappings = stats.slice(-7).reduce((acc, [ts, score]) => {
+      const date = moment.utc(ts).format(DATE_FORMAT);
+
+      return { ...acc, [date]: score };
+    }, {} as { [date: string]: number });
+
+    return pastWeekDates.map(date => {
+      const ts = moment(date).valueOf();
+      const score = mappings[date] || null;
+
+      return [ts, score];
+    });
+  }
+
   render() {
     const { stats } = this.state;
     const {
@@ -926,6 +971,8 @@ class AnalyticsPreviewContainer extends React.Component<
     const averages = this.mergeWeekAndMonthStats(weekStats, monthStats);
     const { today = 0 } = averages.productivity; // FIXME
 
+    // FIXME! (See AnalyticsContainer)
+
     // TODO: create better algorithm to determine suggested tasks
     const highImpactTasksAnxiety = anxietyScoresByTask.slice(0, 3);
     const highImpactTasksDepression = depressionScoresByTask.slice(0, 3);
@@ -950,20 +997,23 @@ class AnalyticsPreviewContainer extends React.Component<
 
         <HeatMap stats={scorecardStats} />
 
-        {/* TODO: instead of just taking the last 7 items, make sure the dates match */}
-        <PastWeek stats={scorecardStats.slice(-7)} />
+        {/*
+          TODO: instead of just taking the last 7 items,
+          make sure the dates match!
+        */}
+        <PastWeek stats={this.getPastWeekStats(scorecardStats)} />
 
         <AnalyticsChartPreview
-          activity={scorecardStats.slice(-7)}
-          depression={depression.slice(-7)}
-          anxiety={anxiety.slice(-7)}
-          wellbeing={wellbeing.slice(-7)} />
+          activity={this.getPastWeekStats(scorecardStats)}
+          depression={this.getPastWeekStats(depression)}
+          anxiety={this.getPastWeekStats(anxiety)}
+          wellbeing={this.getPastWeekStats(wellbeing)} />
 
         {/* TODO: might be better to just remove this */}
-        {/* <PastWeekTable
-          depression={depression.slice(-7)}
-          anxiety={anxiety.slice(-7)}
-          wellbeing={wellbeing.slice(-7)} /> */}
+        <PastWeekTable
+          depression={this.getPastWeekStats(depression)}
+          anxiety={this.getPastWeekStats(anxiety)}
+          wellbeing={this.getPastWeekStats(wellbeing)} />
 
         <AnalyticsSectionPreview
           title='Well-being'

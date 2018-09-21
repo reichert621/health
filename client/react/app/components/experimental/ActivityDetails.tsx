@@ -81,9 +81,8 @@ const HeatMap = ({ stats }: { stats: number[][] }) => {
     return { ...mappings, [date]: score };
   }, {} as { [date: string]: number; });
 
-  const today = '2018-08-01'; // FIXME (hardcoded for testing)
   const scoresByDay = times(days, n => {
-    const date = moment(today).subtract(n, 'days').format(DATE_FORMAT);
+    const date = moment().subtract(n, 'days').format(DATE_FORMAT);
     const score = mappedScores[date] || 0;
 
     return { date, score };
@@ -147,7 +146,6 @@ const HeatMap = ({ stats }: { stats: number[][] }) => {
 
 const PastWeek = ({ dates }: { dates: string[] }) => {
   const days = ['sun', 'mon', 'tues', 'wed', 'thurs', 'fri', 'sat'];
-  const today = '2018-08-01'; // TODO: hardcoded for testing
   const completedDates = dates.reduce((acc, date) => {
     const key = moment(date).format(DATE_FORMAT);
 
@@ -155,7 +153,7 @@ const PastWeek = ({ dates }: { dates: string[] }) => {
   }, {} as { [date: string]: boolean });
 
   const pastWeekDates = times(7, n => {
-    const date = moment(today).subtract(n, 'days');
+    const date = moment().subtract(n, 'days');
     const day = days[date.day()];
     const formatted = moment(date).format(DATE_FORMAT);
     const label = day.slice(0, 1).toUpperCase();
@@ -290,7 +288,6 @@ const MoodScoreChart = ({ title, score, delta, mini }: {
 
 const ActivityMoodScores = ({ scores }: { scores: any }) => {
   const { depression, anxiety, wellbeing } = scores;
-  console.log({ depression, anxiety, wellbeing });
 
   // TODO
   return (
@@ -356,6 +353,7 @@ const ActivityMoodScores = ({ scores }: { scores: any }) => {
 
 interface ActivityDetailProps {
   taskId?: number;
+  onClose: () => void;
 }
 
 interface ActivityDetailState {
@@ -392,6 +390,7 @@ class ActivityDetails extends React.Component<
 
   render() {
     const { stats } = this.state;
+    const { onClose } = this.props;
 
     if (!stats) {
       return null; // Loading?
@@ -406,9 +405,20 @@ class ActivityDetails extends React.Component<
 
     return (
       <div className='activity-details-container'>
-        <h2 className='activity-name' style={{ marginBottom: 16 }}>
-          {category}: {description}
-        </h2>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start'
+        }}>
+          <h2 className='activity-name' style={{ marginBottom: 16 }}>
+            {category}: {description}
+          </h2>
+          {/* TODO: replace with an 'X' icon? */}
+          <div className='close-activity-details'
+            onClick={onClose}>
+            Close
+          </div>
+        </div>
 
         <div className='tags-container' style={{ marginBottom: 24 }}>
           <span className='tag-box purple'>{ability}</span>

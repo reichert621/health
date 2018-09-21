@@ -22,7 +22,7 @@ const TaskReportingTable = ({ stats }: TaskReportingTableProps) => {
   };
 
   return (
-    <table className='dashboard-list-table' style={styles.container}>
+    <table className='analytics-table' style={styles.container}>
       <thead>
         <tr>
           <th style={styles.lg}>Task</th>
@@ -105,7 +105,7 @@ const TaskReportingTable = ({ stats }: TaskReportingTableProps) => {
             } = deltas;
 
             return (
-              <tr key={key} className='dashboard-list-row'>
+              <tr key={key} className='analytics-row'>
                 <td style={styles.lg}>{name}</td>
                 <td style={styles.sm}>{count} time(s)</td>
                 <td style={styles.sm}>

@@ -110,7 +110,7 @@ class NavDropdown extends React.Component<NavDropdownProps> {
   }
 }
 
-interface NavBarProps {
+interface OldNavBarProps {
   title: string;
   history?: any;
   linkTo?: string;
@@ -118,7 +118,7 @@ interface NavBarProps {
   dispatch: Dispatch<any>;
 }
 
-interface NavBarState {
+interface OldNavBarState {
   isDropdownOpen: boolean;
 }
 
@@ -126,8 +126,8 @@ const mapStateToProps = (state: AppState) => {
   return { currentUser: state.currentUser };
 };
 
-class NavBar extends React.Component<NavBarProps, NavBarState> {
-  constructor(props: NavBarProps) {
+class OldNavBar extends React.Component<OldNavBarProps, OldNavBarState> {
+  constructor(props: OldNavBarProps) {
     super(props);
 
     this.state = {
@@ -216,4 +216,48 @@ class NavBar extends React.Component<NavBarProps, NavBarState> {
   }
 }
 
-export default connect(mapStateToProps)(NavBar);
+enum NavBarMenu {
+  ACTIVITIES,
+  REFLECTIONS,
+  REPORTS
+}
+
+class NavBar extends React.Component<any, any> {
+  constructor(props: any) {
+    super(props);
+
+    this.state = {};
+  }
+
+  render() {
+    const { active } = this.props;
+
+    return (
+      <nav className='navbar-wrapper'>
+        <div className='navbar-container'>
+          <Link to='/activities' className='navbar-logo-container'>
+            <div className='navbar-logo'></div>
+            <div className='navbar-title'>Helio</div>
+          </Link>
+
+          <div className='navbar-menu'>
+            <Link to='/activities'
+              className={`navbar-item ${active === 'activities' ? 'active' : ''}`}>
+              Activities
+            </Link>
+            <Link to='/reflect'
+              className={`navbar-item ${active === 'reflections' ? 'active' : ''}`}>
+              Reflections
+            </Link>
+            <Link to='/analytics'
+              className={`navbar-item ${active === 'reports' ? 'active' : ''}`}>
+              Reports
+            </Link>
+          </div>
+        </div>
+      </nav>
+    );
+  }
+}
+
+export default NavBar;

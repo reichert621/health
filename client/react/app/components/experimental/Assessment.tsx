@@ -6,6 +6,7 @@ import { IQuestion } from '../../helpers/checklist';
 import './Assessment.less';
 
 interface AssessmentProps {
+  title: string;
   date: moment.Moment;
   questions: IQuestion[];
   onToggleDisplay?: () => void;
@@ -14,6 +15,7 @@ interface AssessmentProps {
 }
 
 const Assessment = ({
+  title,
   questions,
   date,
   onToggleDisplay,
@@ -29,8 +31,9 @@ const Assessment = ({
 
   return (
     <div className='default-container'>
-      <div className='assessment-header-container clearfix'>
-        <div className='assessment-header pull-left'>
+      <div className='assessment-header-container'>
+        <h2>{title}</h2>
+        <div className='assessment-header'>
           <h3 className='text-light'>
             {date.format('dddd MMMM DD, YYYY')}
           </h3>

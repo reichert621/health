@@ -1,5 +1,7 @@
 import ActivitiesContainer from './ActivitiesContainer';
 import ReflectionContainer from './ReflectionContainer';
+import AssessmentContainer from './AssessmentContainer';
+import AnalyticsContainer from './AnalyticsContainer';
 import {
   DepressionSample,
   AnxietySample,
@@ -9,5 +11,7 @@ import {
 export {
   ActivitiesContainer,
   ReflectionContainer,
+  AssessmentContainer,
+  AnalyticsContainer,
   WellBeingSample
 };

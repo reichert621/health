@@ -3,8 +3,12 @@
 @light-brown: #B88C5A;
 
 .reflections-container {
-  margin-top: 80px;
+  margin-bottom: 80px;
   width: 100%;
+}
+
+.reflections-header {
+  margin-bottom: 40px;
 }
 
 .reflection-progress-container {
@@ -36,8 +40,14 @@
   align-items: center;
   justify-content: space-between;
 
+  position: relative;
+  top: 0px;
+  transition: all ease 0.2s;
+  -webkit-transition: all ease 0.2s;
+
   &:hover {
-    background: linear-gradient(0deg, rgba(251, 246, 240, 0.4), rgba(251, 246, 240, 0.4)), @white;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.24);
+    top: -4px;
   }
 
   .reflection-title {

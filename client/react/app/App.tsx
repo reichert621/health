@@ -57,7 +57,9 @@ import {
 import {
   ActivitiesContainer,
   ReflectionContainer,
-  WellBeingSample as ExperimentalAssessment
+  AssessmentContainer as NewAssessmentContainer,
+  WellBeingSample as ExperimentalAssessment,
+  AnalyticsContainer
 } from './components/experimental';
 // import 'normalize.css'; // TODO: figure out if necessary
 import './App.less';
@@ -110,10 +112,11 @@ ReactDOM.render(
             <Route path='/entry/:id' component={EntryContainer} />
             <Route path='/scorecard/:id' component={ScorecardContainer} />
             <Route path='/checklist/:id' component={ChecklistContainer} />
-            <Route path='/assessment/:id' component={AssessmentContainer} />
+            <Route path='/assessment/:id' component={NewAssessmentContainer} />
             <Route path='/reporting/tasks' component={TaskReporting} />
             <Route path='/reporting/moods' component={MoodReporting} />
             <Route path='/reporting' component={Reporting} />
+            <Route path='/analytics' component={AnalyticsContainer} />
             <Route path='/components' component={Library} />
           </Switch>
         </div>

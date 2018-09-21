@@ -3,6 +3,7 @@ import * as moment from 'moment';
 import { keys, groupBy, extend, uniq, isNumber } from 'lodash';
 import { HttpResponse, get } from './http';
 import { DatedItem, getStreakStats, calculateAverage } from './utils';
+import { TaskAssessmentStats } from './tasks';
 
 export interface ScoreByDay {
   [key: string]: number[];
@@ -121,6 +122,7 @@ export interface ReportingStats {
   wellnessQuestionStats: ChecklistQuestionStats[];
   wellnessScoresByTask: TaskImpactStats[];
   correlationStats: CorrelationStats;
+  taskStats: TaskAssessmentStats[];
 }
 
 export const getTotalStreak = (

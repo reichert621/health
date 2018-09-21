@@ -150,6 +150,7 @@ const formatAssessment = (assessment, questions, scores = []) => {
     points,
     score: (points / (questions.length * 4)) * 100,
     date: moment.utc(date).format(DATE_FORMAT),
+    _date: date,
     questions: questionsWithScores,
     isComplete: questionsWithScores.every(q => isNumber(q.score))
   };
