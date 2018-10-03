@@ -5,7 +5,7 @@ import * as moment from 'moment';
 import './Reporting.less';
 
 interface ChartProps {
-  checklistStats: number[][];
+  checklistStats?: number[][];
   scorecardStats: number[][];
   assessmentStats?: { [type: string]: number[][]; };
   onClickPoint?: (timestamp: number) => void;

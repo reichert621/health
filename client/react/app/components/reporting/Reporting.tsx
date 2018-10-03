@@ -145,7 +145,6 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
 
             <div className='reporting-graph-container reporting-component pull-right'>
               <ReportingChart
-                checklistStats={checklistStats}
                 scorecardStats={scorecardStats}
                 assessmentStats={assessmentStats} />
             </div>

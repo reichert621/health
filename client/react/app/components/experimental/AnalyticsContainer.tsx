@@ -1231,6 +1231,7 @@ class AnalyticsContainer extends React.Component<
       startDate: moment().subtract(6, 'months').format(DATE_FORMAT),
       endDate: today
     };
+    console.time('Fetch');
 
     return all([
       fetchAllStats(range),
@@ -1240,6 +1241,7 @@ class AnalyticsContainer extends React.Component<
       fetchMonthlyAverages()
     ])
       .then(([allStats, weekStats, monthStats, taskStats, monthlyAverages]) => {
+        console.timeEnd('Fetch');
         const stats = {
           ...allStats,
           weekStats,

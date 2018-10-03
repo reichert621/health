@@ -108,6 +108,7 @@ module.exports = {
       endDate: isValidDateFormat(endDate) ? endDate : Infinity
     };
 
+    // TODO: benchmark all these queries
     return Promise.all([
       // Checklists
       Checklist.fetchStats(userId, dates),

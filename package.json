@@ -129,6 +129,7 @@
     "build": "./node_modules/.bin/webpack --config webpack.prod.config.js -p",
     "watch": "./node_modules/.bin/webpack --config webpack.dev.config.js -w",
     "test": "jest",
+    "benchmarks": "./node_modules/.bin/mocha server/db/models/benchmarks.js",
     "restart": "pm2 startOrRestart ecosystem.config.js",
     "deploy": "pm2 deploy ecosystem.config.js production"
   }
