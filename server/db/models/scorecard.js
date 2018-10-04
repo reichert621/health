@@ -455,7 +455,6 @@ const getAverageScore = (scorecards = []) => {
 };
 
 const fetchWeekStats = (userId, date = moment().format(DATE_FORMAT)) => {
-  console.log('Fetching scorecard week stats for:', moment(date).format(DATE_FORMAT));
   const today = moment(date);
   const day = today.day();
   const thisSunday = moment(today).subtract(day === 0 ? 7 : day, 'days');
@@ -484,8 +483,16 @@ const fetchMonthStats = (userId, date = moment().format(DATE_FORMAT)) => {
   const today = moment(date);
   const current = moment(today).startOf('month');
   const previous = moment(current).subtract(1, 'month');
-  const thisMonth = [current.format(DATE_FORMAT), today.format(DATE_FORMAT)];
-  const lastMonth = [previous.format(DATE_FORMAT), current.format(DATE_FORMAT)];
+  // const thisMonth = [current.format(DATE_FORMAT), today.format(DATE_FORMAT)];
+  // const lastMonth = [previous.format(DATE_FORMAT), current.format(DATE_FORMAT)];
+  const thisMonth = [
+    moment(today).subtract(1, 'month').format(DATE_FORMAT),
+    today.format(DATE_FORMAT)
+  ];
+  const lastMonth = [
+    moment(today).subtract(2, 'month').format(DATE_FORMAT),
+    moment(today).subtract(1, 'month').format(DATE_FORMAT)
+  ];
 
   return Promise.all([
     fetchByDateRange(...thisMonth, userId),

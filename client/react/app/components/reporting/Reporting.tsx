@@ -125,10 +125,7 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
 
     return (
       <div>
-        <NavBar
-          title='Analytics'
-          linkTo='/today'
-          history={history} />
+        <NavBar active={'reports'} />
 
         <div className='default-container'>
           <div className='reporting-header-container reporting-component'>
@@ -148,7 +145,6 @@ class Reporting extends React.Component<ReportingProps, ReportingState> {
 
             <div className='reporting-graph-container reporting-component pull-right'>
               <ReportingChart
-                checklistStats={checklistStats}
                 scorecardStats={scorecardStats}
                 assessmentStats={assessmentStats} />
             </div>

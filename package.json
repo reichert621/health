@@ -71,6 +71,7 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.11.0",
     "eslint-plugin-react": "^7.7.0",
+    "file-loader": "^1.1.11",
     "jest": "^22.4.3",
     "less": "^3.0.2",
     "less-loader": "^4.1.0",
@@ -128,6 +129,7 @@
     "build": "./node_modules/.bin/webpack --config webpack.prod.config.js -p",
     "watch": "./node_modules/.bin/webpack --config webpack.dev.config.js -w",
     "test": "jest",
+    "benchmarks": "./node_modules/.bin/mocha server/db/models/benchmarks.js",
     "restart": "pm2 startOrRestart ecosystem.config.js",
     "deploy": "pm2 deploy ecosystem.config.js production"
   }

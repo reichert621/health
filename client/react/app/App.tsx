@@ -54,6 +54,13 @@ import {
   DisarmingTechnique,
   CountWhatCounts
 } from './components/self-activation';
+import {
+  ActivitiesContainer,
+  ReflectionContainer,
+  AssessmentContainer as NewAssessmentContainer,
+  WellBeingSample as ExperimentalAssessment,
+  AnalyticsContainer
+} from './components/experimental';
 // import 'normalize.css'; // TODO: figure out if necessary
 import './App.less';
 
@@ -71,9 +78,12 @@ ReactDOM.render(
             <Route path='/example/scorecard' component={ScorecardSample} />
             <Route path='/example/depression' component={DepressionSample} />
             <Route path='/example/anxiety' component={AnxietySample} />
+            <Route path='/example/experimental' component={ExperimentalAssessment} />
             <Route path='/example/well-being' component={WellBeingSample} />
             <Route path='/signup-complete' component={SignUpComplete} />
             <Route path='/blog' component={Home} />
+            <Route path='/activities' component={ActivitiesContainer} />
+            <Route path='/reflect' component={ReflectionContainer} />
             <Route path='/@:username/entry/:id' component={UserEntryContainer} />
             <Route path='/@:username' component={Profile} />
             <Route path='/dashboard' component={Dashboard} />
@@ -102,10 +112,11 @@ ReactDOM.render(
             <Route path='/entry/:id' component={EntryContainer} />
             <Route path='/scorecard/:id' component={ScorecardContainer} />
             <Route path='/checklist/:id' component={ChecklistContainer} />
-            <Route path='/assessment/:id' component={AssessmentContainer} />
+            <Route path='/assessment/:id' component={NewAssessmentContainer} />
             <Route path='/reporting/tasks' component={TaskReporting} />
             <Route path='/reporting/moods' component={MoodReporting} />
             <Route path='/reporting' component={Reporting} />
+            <Route path='/analytics' component={AnalyticsContainer} />
             <Route path='/components' component={Library} />
           </Switch>
         </div>

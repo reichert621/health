@@ -16,7 +16,7 @@ declare module 'react-highcharts' {
       id?: string;
       name?: string;
       color?: string;
-      data?: number[][] | {
+      data?: any[][] | {
         id?: string;
         name?: string;
         color?: string;
@@ -46,6 +46,7 @@ declare module 'react-highcharts' {
 
     interface Props {
       config: Config;
+      neverReflow?: boolean;
     }
   }
 

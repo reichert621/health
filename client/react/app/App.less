@@ -1,11 +1,11 @@
-@import (css) url('https://fonts.googleapis.com/css?family=Covered+By+Your+Grace');
+@import (css) url('https://fonts.googleapis.com/css?family=Bellefair|Quicksand:300,400,500');
 /* Fonts */
-@font-serif: 'Tinos', serif;
-@font-san-serif: 'Helvetica Neue', Arial, san-serif;
+@font-serif: 'Bellefair', serif;
+@font-san-serif: 'Quicksand', 'Helvetica Neue', Arial, san-serif;
 @font-handwritten: 'Covered By Your Grace', cursive;
 
 /* Colors */
-@border-gray: #b4b4b4;
+@border-gray: #d3d3d3;
 @light-gray: #eee;
 @light-gray-2: #D8D8D8;
 @light-gray-3: #eaeaea;
@@ -14,10 +14,10 @@
 @gray-2: #bbbbbb;
 @toggle-gray: #9B9B9B;
 @dark-gray: #5E5E5E;
-@black: #2b2b2b;
+@black: #382210;
 @bright-blue: #33A2CC;
 @light-blue-hover: #F6FCFF;
-@red: #da2a54;
+@red: #C76666;
 @white: #fff;
 
 /* Spacing */
@@ -26,12 +26,16 @@
 /* Base CSS */
 * {
   box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html,
 body,
+#app,
 .app {
   height: 100%;
+  color: @black;
   font-family: @font-san-serif;
   font-size: 18px;
   font-weight: 300;
@@ -52,33 +56,37 @@ h2,
 h3,
 h4,
 h5 {
-  font-family: @font-san-serif;
   letter-spacing: 0.4px;
   margin-top: 8px;
   margin-bottom: @margin-default;
 }
 
 h1 {
+  font-family: @font-serif;
   font-size: 44px;
   font-weight: 100;
 }
 
 h2 {
+  font-family: @font-serif;
   font-size: 36px;
   font-weight: 300;
 }
 
 h3 {
+  font-family: @font-san-serif;
   font-size: 28px;
   font-weight: 400;
 }
 
 h4 {
+  font-family: @font-san-serif;
   font-size: 24px;
   font-weight: 500;
 }
 
 h5 {
+  font-family: @font-san-serif;
   font-size: 16px;
   font-weight: 400;
 }
@@ -144,7 +152,13 @@ a {
   color: @gray-2;
 
   &.-primary {
-    color: @bright-blue;
+    font-weight: bold;
+    font-size: 24px;
+    letter-spacing: 1.6px;
+    color: #E6AF70;
+    border-bottom: 4px solid #E6AF70;
+    border-radius: 0px;
+    padding: 8px 0px;
   }
 }
 
@@ -193,8 +207,9 @@ a {
 }
 
 .input-default {
-  border: 1px solid @gray;
-  border-radius: 4px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.16);
   display: block;
   font-size: 18px;
   font-weight: 300;
@@ -212,10 +227,11 @@ a {
 
   &.-lg {
     font-size: 24px;
+    padding: 16px 24px;
   }
 
   &:focus {
-    border-color: @black;
+    border: 1px solid @border-gray;
     outline: 0;
   }
 }
@@ -313,11 +329,19 @@ a {
 }
 
 .text-handwritten {
-  font-family: @font-handwritten;
+  font-family: @font-san-serif;
 }
 
 .text-light {
   font-weight: 100;
+}
+
+.text-med {
+  font-weight: 500;
+}
+
+.text-heavy {
+  font-weight: 800;
 }
 
 .text-red {
@@ -339,6 +363,14 @@ a {
 
 .text-inactive {
   color: @gray-2;
+}
+
+.text-left {
+  text-align: left !important;
+}
+
+.text-right {
+  text-align: right !important;
 }
 
 .text-ellipsis {

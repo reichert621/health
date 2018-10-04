@@ -150,6 +150,7 @@ const formatAssessment = (assessment, questions, scores = []) => {
     points,
     score: (points / (questions.length * 4)) * 100,
     date: moment.utc(date).format(DATE_FORMAT),
+    _date: date,
     questions: questionsWithScores,
     isComplete: questionsWithScores.every(q => isNumber(q.score))
   };
@@ -348,8 +349,16 @@ const fetchMonthStats = (userId, date = moment().format(DATE_FORMAT)) => {
   const today = moment(date);
   const start = moment(today).startOf('month');
   const previous = moment(start).subtract(1, 'month');
-  const thisMonth = [start.format(DATE_FORMAT), today.format(DATE_FORMAT)];
-  const lastMonth = [previous.format(DATE_FORMAT), start.format(DATE_FORMAT)];
+  // const thisMonth = [start.format(DATE_FORMAT), today.format(DATE_FORMAT)];
+  // const lastMonth = [previous.format(DATE_FORMAT), start.format(DATE_FORMAT)];
+  const thisMonth = [
+    moment(today).subtract(1, 'month').format(DATE_FORMAT),
+    today.format(DATE_FORMAT)
+  ];
+  const lastMonth = [
+    moment(today).subtract(2, 'month').format(DATE_FORMAT),
+    moment(today).subtract(1, 'month').format(DATE_FORMAT)
+  ];
 
   return Promise.all([
     fetchUserAssessmentsByDateRange(...thisMonth, userId),

@@ -165,10 +165,7 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
 
     return (
       <div>
-        <NavBar
-          title='Journal'
-          linkTo={isToday ? '/today' : '/dashboard'}
-          history={history} />
+        <NavBar active={'reflections'} />
 
         <div className={`default-container ${isEditing ? 'edit-mode' : 'view-mode'}`}>
           <div className='clearfix'>

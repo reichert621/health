@@ -1,0 +1,70 @@
+@white: #fff;
+@dark-gray: #595557;
+@light-brown: #B88C5A;
+
+.reflections-container {
+  margin-bottom: 80px;
+  width: 100%;
+}
+
+.reflections-header {
+  margin-bottom: 40px;
+}
+
+.reflection-progress-container {
+  background: @white;
+  box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.24);
+  border-radius: 4px;
+  height: 24px;
+  margin-bottom: 16px;
+  width: 208px;
+
+  .reflection-progress-bar {
+    background-color: @light-brown;
+    border-radius: 4px 0px 0px 4px;
+    height: 100%;
+    width: 20%; // TODO: should be dynamic
+  }
+}
+
+.reflection-menu-item {
+  background: @white;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 24px;
+  padding: 24px;
+
+  // Flexbox
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  position: relative;
+  top: 0px;
+  transition: all ease 0.2s;
+  -webkit-transition: all ease 0.2s;
+
+  &:hover {
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.24);
+    top: -4px;
+  }
+
+  .reflection-title {
+    color: @dark-gray;
+    font-weight: bold;
+    line-height: normal;
+    font-size: 24px;
+    letter-spacing: 1.6px;
+    text-align: left;
+  }
+
+  .reflection-action {
+    color: @light-brown;
+    font-weight: 300;
+    line-height: normal;
+    font-size: 18px;
+    text-align: right;
+    letter-spacing: 1.2px;
+  }
+}

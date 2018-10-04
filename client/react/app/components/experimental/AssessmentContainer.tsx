@@ -1,20 +1,19 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { isNumber, isObject } from 'lodash';
+import { isNumber } from 'lodash';
 import { resolve } from 'bluebird';
 import * as moment from 'moment';
 import NavBar from '../navbar';
-import ChecklistOverview from '../checklist/Checklist';
-import ChecklistFlow from '../checklist/ChecklistFlow';
+import Assessment from './Assessment';
 import { IQuestion } from '../../helpers/checklist';
 import { isAuthenticated } from '../../helpers/auth';
-import { keyifyDate, isDateToday } from '../../helpers/utils';
+import { isDateToday } from '../../helpers/utils';
 import {
   IAssessment,
   fetchAssessment,
   updateAssessmentScore
 } from '../../helpers/assessment';
-import '../checklist/Checklist.less';
+import './Assessment.less';
 
 interface AssessmentProps {}
 
@@ -43,7 +42,7 @@ class AssessmentContainer extends React.Component<
   }
 
   componentDidMount() {
-    const { match, history } = this.props;
+    const { match } = this.props;
     const { id: assessmentId } = match.params;
 
     return fetchAssessment(assessmentId)
@@ -71,7 +70,7 @@ class AssessmentContainer extends React.Component<
     });
 
     return updateAssessmentScore(assessmentId, questionId, score)
-      .then(res => {
+      .then(() => {
         return this.setState({ questions: updates });
       })
       .catch(err => {
@@ -81,25 +80,20 @@ class AssessmentContainer extends React.Component<
 
   submit() {
     const { history } = this.props;
-    const { date } = this.state;
-    const isToday = isDateToday(date);
-    const url = isToday ? '/today' : '/dashboard';
 
-    return history.push(url);
+    return history.push('/reflect');
   }
+
 
   render() {
     const {
       isLoading,
-      forceDisplayList,
       assessment,
       date,
       questions = []
     } = this.state;
     const { history } = this.props;
     const isComplete = questions.every(q => isNumber(q.score));
-    const isToday = isDateToday(date);
-    const url = isToday ? '/today' : '/dashboard';
 
     if (isLoading || !assessment || !questions.length) {
       return null;
@@ -109,25 +103,14 @@ class AssessmentContainer extends React.Component<
 
     return (
       <div>
-        <NavBar
+        <NavBar active={'reflections'} />
+
+        <Assessment
           title={title}
-          history={history}
-          linkTo={url} />
-        {
-          (isComplete || forceDisplayList) ?
-            <ChecklistOverview
-              date={date}
-              questions={questions}
-              onToggleDisplay={() => this.setState({ forceDisplayList: false })}
-              onScoreChange={this.handleScoreChange.bind(this)}
-              onSubmit={this.submit.bind(this)} /> :
-            <ChecklistFlow
-              date={date}
-              questions={questions}
-              onToggleDisplay={() => this.setState({ forceDisplayList: true })}
-              onScoreChange={this.handleScoreChange.bind(this)}
-              onSubmit={this.submit.bind(this)} />
-        }
+          date={date}
+          questions={questions}
+          onScoreChange={this.handleScoreChange.bind(this)}
+          onSubmit={this.submit.bind(this)} />
       </div>
     );
   }

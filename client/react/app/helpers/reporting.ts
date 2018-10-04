@@ -3,6 +3,7 @@ import * as moment from 'moment';
 import { keys, groupBy, extend, uniq, isNumber } from 'lodash';
 import { HttpResponse, get } from './http';
 import { DatedItem, getStreakStats, calculateAverage } from './utils';
+import { TaskAssessmentStats } from './tasks';
 
 export interface ScoreByDay {
   [key: string]: number[];
@@ -94,6 +95,7 @@ export interface ReportingStats {
   checklistScoresByTask: TaskImpactStats[];
   taskAbilityStats: AbilityStats;
   weekStats: any; // FIXME
+  monthStats: any; // FIXME
   monthlyAverages: MonthlyAverageStats;
   // Assessments - Depression
   completedDepressionAssessments: ReportingDatedItem[];
@@ -120,6 +122,7 @@ export interface ReportingStats {
   wellnessQuestionStats: ChecklistQuestionStats[];
   wellnessScoresByTask: TaskImpactStats[];
   correlationStats: CorrelationStats;
+  taskStats: TaskAssessmentStats[];
 }
 
 export const getTotalStreak = (
@@ -342,6 +345,11 @@ export const fetchMoodStats = (): Bluebird<[any, number[][]]> => {
 
 export const fetchWeekStats = (date: string): Promise<any> => {
   return get(`/api/stats/week/${date}`)
+    .then((res: HttpResponse) => res.stats);
+};
+
+export const fetchMonthStats = (date: string): Promise<any> => {
+  return get(`/api/stats/month/${date}`)
     .then((res: HttpResponse) => res.stats);
 };
 

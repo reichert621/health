@@ -169,7 +169,7 @@ const getQuestionScoreFrequencies = (questionScores = []) => {
 // e.g. { '1': { 'Exercise': 7 }, '2': { 'Code': 4 } }
 const fetchTaskCountByScore = (questionScores = [], tasksByDate = {}) => {
   return questionScores.reduce((acc, { date, score }) => {
-    const tasks = tasksByDate[date];
+    const tasks = tasksByDate[date] || [];
     const bucket = acc[score] || {};
     const updated = tasks.reduce((mappings, task) => {
       const { description, category } = task;
