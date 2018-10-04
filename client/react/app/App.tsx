@@ -70,10 +70,9 @@ ReactDOM.render(
       <Router>
         <div className='app'>
           <Switch>
-            <Route exact path='/' component={Today} />
+            <Route exact path='/' component={ActivitiesContainer} />
             <Route path='/login' component={Login} />
             <Route path='/signup' component={SignUp} />
-            <Route path='/about' component={About} />
             <Route path='/example/checklist' component={ChecklistSample} />
             <Route path='/example/scorecard' component={ScorecardSample} />
             <Route path='/example/depression' component={DepressionSample} />

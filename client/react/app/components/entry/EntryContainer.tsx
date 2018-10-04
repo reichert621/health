@@ -65,7 +65,7 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
     this.state = {
       date: moment(),
       entry: {},
-      isFullView: false,
+      isFullView: true,
       isEditing: false,
       isSaving: false
     };
@@ -168,12 +168,16 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
         <NavBar active={'reflections'} />
 
         <div className={`default-container ${isEditing ? 'edit-mode' : 'view-mode'}`}>
-          <div className='clearfix'>
-            <h3 className='text-light pull-left'>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <h2>
               {date.format('dddd MMMM DD, YYYY')}
-            </h3>
+            </h2>
 
-            <button className='btn-default btn-saving pull-right'>
+            <button className='btn-default btn-saving'>
               {isSaving ? 'Saving...' : 'Saved'}
               <img
                 className={`saving-icon ${isSaving ? 'hidden' : ''}`}
@@ -181,8 +185,8 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
             </button>
 
             <button
-              style={{ marginRight: 8 }}
-              className={`pull-right ${
+              style={{ marginRight: 8, display: 'none' }}
+              className={`${
                 isPrivate ? 'btn-default' : 'btn-primary'
               }`}
               onClick={this.togglePrivateEntry.bind(this)}>
@@ -211,7 +215,7 @@ class EntryContainer extends React.Component<EntryProps, EntryState> {
                   </textarea> :
                   <div className='entry-content'
                     dangerouslySetInnerHTML={
-                      formatHTML(content || 'Click here to start typing!')
+                      formatHTML(content || 'Click here to start typing')
                     }
                     onClick={() => this.setState({ isEditing: true })}>
                   </div>
