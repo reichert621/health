@@ -7,14 +7,14 @@ import { groupBy, keys } from 'lodash';
 import { all, resolve } from 'bluebird';
 import { IScorecard } from '../../helpers/scorecard';
 import { Task, calculateScore } from '../../helpers/tasks';
-import { IMood } from '../../helpers/mood';
 import {
   IAssessment,
   AssessmentType,
   createAssessment
 } from '../../helpers/assessment';
-import { AppState, keyifyDate } from '../../helpers/utils';
+import { AppState, keyifyDate, getDefaultDate } from '../../helpers/utils';
 import { getScorecardByDate, toggleTask } from '../../reducers/scorecards';
+import { selectDate } from '../../reducers/selected';
 import ActivityCardSimple from './ActivityCardSimple';
 import ActivityDetails from './ActivityDetails';
 import ActivityOverview from './ActivityOverview';
@@ -22,12 +22,13 @@ import NavBar from '../navbar';
 import './Activity.less';
 
 const mapStateToProps = (state: AppState) => {
-  const today = keyifyDate(moment());
-  const { scorecards } = state;
+  const { scorecards, selected } = state;
+  const { date } = selected;
   const { byDate: scorecardsByDate } = scorecards;
+  const key = keyifyDate(date);
 
   return {
-    scorecard: scorecardsByDate[today]
+    scorecard: scorecardsByDate[key]
   };
 };
 
@@ -37,6 +38,7 @@ interface ActivitiesContainerProps extends RouteComponentProps<{}> {
 }
 
 interface ActivitiesContainerState {
+  date: string;
   selectedTaskId: number;
   isLoading: boolean;
 }
@@ -48,7 +50,11 @@ class ActivitiesContainer extends React.Component<
   constructor(props: ActivitiesContainerProps) {
     super(props);
 
+    const query = props.location.search;
+    const date = getDefaultDate(query);
+
     this.state = {
+      date,
       selectedTaskId: null,
       isLoading: true
     };
@@ -60,10 +66,11 @@ class ActivitiesContainer extends React.Component<
     window.scrollTo(0, 0);
 
     const { history, dispatch } = this.props;
-    const date = moment();
-    const today = date.format('YYYY-MM-DD');
+    const { date } = this.state;
 
-    return dispatch(getScorecardByDate(today))
+    dispatch(selectDate({ date: moment(date) }));
+
+    return dispatch(getScorecardByDate(date))
       .then(() => this.setState({ isLoading: false }))
       .catch(err => {
         if (err.status === 401) {
@@ -87,13 +94,13 @@ class ActivitiesContainer extends React.Component<
   }
 
   renderSidePanel() {
-    const { selectedTaskId } = this.state;
+    const { selectedTaskId, date } = this.state;
 
     return selectedTaskId
       ? <ActivityDetails
           taskId={selectedTaskId}
           onClose={() => this.setState({ selectedTaskId: null })} />
-      : <ActivityOverview />;
+      : <ActivityOverview date={date} />;
   }
 
   render() {

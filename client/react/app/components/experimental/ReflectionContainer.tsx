@@ -9,7 +9,7 @@ import {
   createAssessment
 } from '../../helpers/assessment';
 import { Entry, findOrCreateByDate, createEntry } from '../../helpers/entries';
-import { DATE_FORMAT } from '../../helpers/utils';
+import { DATE_FORMAT, getDefaultDate } from '../../helpers/utils';
 import NavBar from '../navbar';
 import './Reflect.less';
 import { isNumber } from 'util';
@@ -88,9 +88,12 @@ class Reflection extends React.Component<ReflectionProps, ReflectionState> {
   constructor(props: ReflectionProps) {
     super(props);
 
+    const query = props.location.search;
+    const date = getDefaultDate(query);
+
     this.state = {
+      date: moment(date),
       isLoading: true,
-      date: moment(),
       assessments: {},
       entry: null
     };

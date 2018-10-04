@@ -82,7 +82,7 @@ const ProductivityProgress = ({ score }: { score: number; }) => {
   );
 };
 
-const HeatMap = ({ stats }: { stats: number[][] }) => {
+const HeatMap = ({ date, stats }: { date: string; stats: number[][] }) => {
   const weeks = 30;
   const days = weeks * 7;
   const scores = stats.map(([ts, score]) => score).sort((x, y) => x - y);
@@ -106,10 +106,10 @@ const HeatMap = ({ stats }: { stats: number[][] }) => {
   }, {} as { [date: string]: number; });
 
   const scoresByDay = times(days, n => {
-    const date = moment().subtract(n, 'days').format(DATE_FORMAT);
-    const score = mappedScores[date] || 0;
+    const _date = moment(date).subtract(n, 'days').format(DATE_FORMAT);
+    const score = mappedScores[_date] || 0;
 
-    return { date, score };
+    return { score, date: _date };
   }).reverse();
 
   const scoresByWeek = chunk(scoresByDay, 7);
@@ -818,7 +818,9 @@ const AnalyticsSectionPreview = ({
   );
 };
 
-interface ContainerProps {}
+interface ContainerProps {
+  date: string;
+}
 
 interface ContainerState {
   stats: ReportingStats;
@@ -837,16 +839,17 @@ class AnalyticsPreviewContainer extends React.Component<
   }
 
   componentDidMount() {
-    const today = moment().format(DATE_FORMAT);
+    const { date } = this.props;
+    const endDate = moment(date).format(DATE_FORMAT);
     const range = {
-      startDate: moment().subtract(6, 'months').format(DATE_FORMAT),
-      endDate: today
+      endDate,
+      startDate: moment(date).subtract(6, 'months').format(DATE_FORMAT)
     };
 
     return all([
       fetchAllStats(range),
-      fetchWeekStats(today),
-      fetchMonthStats(today)
+      fetchWeekStats(endDate),
+      fetchMonthStats(endDate)
     ])
       .then(([allStats, weekStats, monthStats]) => {
         const stats = { ...allStats, weekStats, monthStats };
@@ -926,8 +929,9 @@ class AnalyticsPreviewContainer extends React.Component<
   }
 
   getPastWeekStats(stats: number[][]) {
+    const { date } = this.props;
     const pastWeekDates = times(7, n => {
-      return moment().subtract(n, 'days').format(DATE_FORMAT);
+      return moment(date).subtract(n, 'days').format(DATE_FORMAT);
     }).reverse();
 
     const mappings = stats.slice(-7).reduce((acc, [ts, score]) => {
@@ -946,6 +950,7 @@ class AnalyticsPreviewContainer extends React.Component<
 
   render() {
     const { stats } = this.state;
+    const { date } = this.props;
     const {
       scorecardStats = [],
       assessmentStats = {},
@@ -995,7 +1000,7 @@ class AnalyticsPreviewContainer extends React.Component<
 
         <ProductivityProgress score={today} />
 
-        <HeatMap stats={scorecardStats} />
+        <HeatMap date={date} stats={scorecardStats} />
 
         {/*
           TODO: instead of just taking the last 7 items,

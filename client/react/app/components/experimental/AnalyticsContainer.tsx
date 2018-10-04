@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as ReactHighcharts from 'react-highcharts';
+import { RouteComponentProps } from 'react-router';
 import * as moment from 'moment';
 import {
   times,
@@ -13,7 +14,12 @@ import {
   last
 } from 'lodash';
 import { all } from 'bluebird';
-import { DATE_FORMAT, getStreakStats, calculateAverage } from '../../helpers/utils';
+import {
+  DATE_FORMAT,
+  getStreakStats,
+  calculateAverage,
+  getDefaultDateRange
+} from '../../helpers/utils';
 import {
   ReportingStats,
   CorrelationStats,
@@ -1207,9 +1213,11 @@ const MonthlyAveragesTable = ({ stats }: { stats: MonthlyAverageStats }) => {
   );
 };
 
-interface ContainerProps {}
+interface ContainerProps extends RouteComponentProps<{}> {}
 
 interface ContainerState {
+  startDate: string;
+  endDate: string;
   stats: ReportingStats;
 }
 
@@ -1220,28 +1228,28 @@ class AnalyticsContainer extends React.Component<
   constructor(props: ContainerProps) {
     super(props);
 
+    const query = props.location.search;
+    const { startDate, endDate } = getDefaultDateRange(query);
+
     this.state = {
+      startDate,
+      endDate,
       stats: {} as ReportingStats
     };
   }
 
   componentDidMount() {
-    const today = moment().format(DATE_FORMAT);
-    const range = {
-      startDate: moment().subtract(6, 'months').format(DATE_FORMAT),
-      endDate: today
-    };
-    console.time('Fetch');
-
+    const { startDate, endDate } = this.state;
+    console.time('Fetch analytics stats');
     return all([
-      fetchAllStats(range),
-      fetchWeekStats(today),
-      fetchMonthStats(today),
-      fetchTaskStats(range),
+      fetchAllStats({ startDate, endDate }),
+      fetchWeekStats(endDate),
+      fetchMonthStats(endDate),
+      fetchTaskStats({ startDate, endDate }),
       fetchMonthlyAverages()
     ])
       .then(([allStats, weekStats, monthStats, taskStats, monthlyAverages]) => {
-        console.timeEnd('Fetch');
+        console.timeEnd('Fetch analytics stats');
         const stats = {
           ...allStats,
           weekStats,

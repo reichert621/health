@@ -13,11 +13,11 @@ import { IAssessment } from './assessment';
 
 export interface SelectedState {
   date?: moment.Moment;
-  checklist: IChecklist;
-  scorecard: IScorecard;
-  assessments: { [type: string]: IAssessment };
-  entry: Entry;
-  mood: IMood;
+  checklist?: IChecklist;
+  scorecard?: IScorecard;
+  assessments?: { [type: string]: IAssessment };
+  entry?: Entry;
+  mood?: IMood;
 }
 
 export interface MappedItems<T> {
@@ -193,4 +193,10 @@ export const getDefaultDateRange = (query = '') => {
     startDate: isValidDateFormat(from) ? from : defaults.startDate,
     endDate: isValidDateFormat(to) ? to : defaults.endDate
   };
+};
+
+export const getDefaultDate = (query = ''): string => {
+  const { date } = qs.parse(query);
+
+  return isValidDateFormat(date) ? date : moment().format(DATE_FORMAT);
 };
