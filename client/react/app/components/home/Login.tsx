@@ -40,7 +40,7 @@ class Login extends React.Component<LoginProps & RouteComponentProps<{}>, LoginS
     };
 
     return login(credentials)
-      .then(() => history.push('/today'))
+      .then(() => history.push('/activities'))
       .catch(err => {
         console.log('Error logging in!', err);
         this.setState({ error: 'Invalid credentials' });
@@ -49,45 +49,44 @@ class Login extends React.Component<LoginProps & RouteComponentProps<{}>, LoginS
 
   render() {
     return (
-      <div>
-        <NavBar title='Log in' />
+      <div className='default-wrapper simple'>
+        <NavBar active='login' isLoggedOut={true} />
 
-        <div className='default-container'>
-          <form onSubmit={this.handleSubmit.bind(this)}>
-            <input
-              type='text'
-              className='input-default -large'
-              placeholder='Username'
-              name='username'
-              value={this.state.username}
-              onChange={this.onUpdateInput.bind(this)} />
+        <form className='login-form'
+          onSubmit={this.handleSubmit.bind(this)}>
+          <input
+            type='text'
+            className='input-default -lg'
+            placeholder='Username'
+            name='username'
+            value={this.state.username}
+            onChange={this.onUpdateInput.bind(this)} />
 
-            <input
-              type='password'
-              className='input-default -large'
-              placeholder='Password'
-              name='password'
-              value={this.state.password}
-              onChange={this.onUpdateInput.bind(this)} />
+          <input
+            type='password'
+            className='input-default -lg'
+            placeholder='Password'
+            name='password'
+            value={this.state.password}
+            onChange={this.onUpdateInput.bind(this)} />
+
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Link to='signup' className='btn-link -primary btn-signup'>
+              Sign up
+            </Link>
 
             <button
-              className='btn-default btn-sm'
+              className='btn-link -primary btn-login'
               type='submit'>
               Log in
             </button>
+          </div>
 
-            <small className='text-red'
-              style={{ marginLeft: 16 }}>
-              {this.state.error || ''}
-            </small>
-
-            <div style={{ marginTop: 16 }}>
-              <small>
-                Or click <Link to='signup'>here</Link> to sign up!
-              </small>
-            </div>
-          </form>
-        </div>
+          <small className='text-red'
+            style={{ marginLeft: 16 }}>
+            {this.state.error || ''}
+          </small>
+        </form>
       </div>
     );
   }

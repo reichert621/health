@@ -229,8 +229,46 @@ class NavBar extends React.Component<any, any> {
     this.state = {};
   }
 
-  render() {
+  renderLoggedOutMenu() {
     const { active } = this.props;
+
+    return (
+      <div className='navbar-menu'>
+        <Link to='/signup'
+          className={`navbar-item ${active === 'signup' ? 'active' : ''}`}>
+          Sign Up
+        </Link>
+        <Link to='/login'
+          className={`navbar-item ${active === 'login' ? 'active' : ''}`}>
+          Log In
+        </Link>
+      </div>
+    );
+  }
+
+  renderLoggedInMenu() {
+    const { active } = this.props;
+
+    return (
+      <div className='navbar-menu'>
+        <Link to='/activities'
+          className={`navbar-item ${active === 'activities' ? 'active' : ''}`}>
+          Activities
+        </Link>
+        <Link to='/reflect'
+          className={`navbar-item ${active === 'reflections' ? 'active' : ''}`}>
+          Reflections
+        </Link>
+        <Link to='/analytics'
+          className={`navbar-item ${active === 'reports' ? 'active' : ''}`}>
+          Reports
+        </Link>
+      </div>
+    );
+  }
+
+  render() {
+    const { isLoggedOut = false } = this.props;
 
     return (
       <nav className='navbar-wrapper'>
@@ -240,20 +278,10 @@ class NavBar extends React.Component<any, any> {
             <div className='navbar-title'>Helio</div>
           </Link>
 
-          <div className='navbar-menu'>
-            <Link to='/activities'
-              className={`navbar-item ${active === 'activities' ? 'active' : ''}`}>
-              Activities
-            </Link>
-            <Link to='/reflect'
-              className={`navbar-item ${active === 'reflections' ? 'active' : ''}`}>
-              Reflections
-            </Link>
-            <Link to='/analytics'
-              className={`navbar-item ${active === 'reports' ? 'active' : ''}`}>
-              Reports
-            </Link>
-          </div>
+          {isLoggedOut
+            ? this.renderLoggedOutMenu()
+            : this.renderLoggedInMenu()
+          }
         </div>
       </nav>
     );

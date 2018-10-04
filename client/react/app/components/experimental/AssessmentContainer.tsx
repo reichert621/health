@@ -49,8 +49,6 @@ class AssessmentContainer extends React.Component<
       .then(assessment => {
         const { questions, date } = assessment;
 
-        console.log(date, moment(date));
-
         return this.setState({
           assessment,
           questions,

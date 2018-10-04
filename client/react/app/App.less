@@ -5,7 +5,7 @@
 @font-handwritten: 'Covered By Your Grace', cursive;
 
 /* Colors */
-@border-gray: #b4b4b4;
+@border-gray: #d3d3d3;
 @light-gray: #eee;
 @light-gray-2: #D8D8D8;
 @light-gray-3: #eaeaea;
@@ -17,7 +17,7 @@
 @black: #382210;
 @bright-blue: #33A2CC;
 @light-blue-hover: #F6FCFF;
-@red: #da2a54;
+@red: #C76666;
 @white: #fff;
 
 /* Spacing */
@@ -152,7 +152,13 @@ a {
   color: @gray-2;
 
   &.-primary {
-    color: @bright-blue;
+    font-weight: bold;
+    font-size: 24px;
+    letter-spacing: 1.6px;
+    color: #E6AF70;
+    border-bottom: 4px solid #E6AF70;
+    border-radius: 0px;
+    padding: 8px 0px;
   }
 }
 
@@ -201,8 +207,9 @@ a {
 }
 
 .input-default {
-  border: 1px solid @gray;
-  border-radius: 4px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.16);
   display: block;
   font-size: 18px;
   font-weight: 300;
@@ -220,10 +227,11 @@ a {
 
   &.-lg {
     font-size: 24px;
+    padding: 16px 24px;
   }
 
   &:focus {
-    border-color: @black;
+    border: 1px solid @border-gray;
     outline: 0;
   }
 }
