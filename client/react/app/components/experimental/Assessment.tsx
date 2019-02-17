@@ -30,36 +30,34 @@ const Assessment = ({
   const current = questions.find(q => !isNumber(q.score)); // TODO
 
   return (
-    <div className='default-container'>
-      <div className='assessment-header-container'>
+    <div className="default-container">
+      <div className="assessment-header-container">
         <h2>{title}</h2>
-        <div className='assessment-header'>
-          <h3 className='text-light'>
-            {date.format('dddd MMMM DD, YYYY')}
-          </h3>
+        <div className="assessment-header">
+          <h3 className="text-light">{date.format('dddd MMMM DD, YYYY')}</h3>
         </div>
       </div>
 
-      <div className='assessment-container'>
-        {
-          questions.map((question, key) => {
-            const isCurrent = current && (question.id === current.id);
+      <div className="assessment-container">
+        {questions.map((question, key) => {
+          const isCurrent = current && question.id === current.id;
 
-            return (
-              <AssessmentQuestion
-                key={key}
-                question={question}
-                isCurrent={isCurrent}
-                onSelect={score => onScoreChange(question, score)} />
-            );
-          })
-        }
+          return (
+            <AssessmentQuestion
+              key={key}
+              question={question}
+              isCurrent={isCurrent}
+              onSelect={score => onScoreChange(question, score)}
+            />
+          );
+        })}
       </div>
 
-      <div className='clearfix'>
+      <div className="clearfix">
         <button
-          className='btn-link assessment-btn-link pull-right'
-          onClick={onSubmit}>
+          className="btn-link assessment-btn-link pull-right"
+          onClick={onSubmit}
+        >
           I'm done
         </button>
       </div>

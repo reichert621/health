@@ -16,8 +16,6 @@ module.exports = {
     new BundleAnalyzerPlugin({
       openAnalyzer: false
     }),
-    new CopyWebpackPlugin([
-      { from: './client/assets', to: 'assets' }
-    ])
+    new CopyWebpackPlugin([{ from: './client/assets', to: 'assets' }])
   ]
 };

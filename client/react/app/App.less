@@ -1,4 +1,5 @@
-@import (css) url('https://fonts.googleapis.com/css?family=Bellefair|Quicksand:300,400,500');
+@import (css)
+  url('https://fonts.googleapis.com/css?family=Bellefair|Quicksand:300,400,500');
 /* Fonts */
 @font-serif: 'Bellefair', serif;
 @font-san-serif: 'Quicksand', 'Helvetica Neue', Arial, san-serif;
@@ -7,17 +8,17 @@
 /* Colors */
 @border-gray: #d3d3d3;
 @light-gray: #eee;
-@light-gray-2: #D8D8D8;
+@light-gray-2: #d8d8d8;
 @light-gray-3: #eaeaea;
-@inactive-gray: #D2D2D2;
+@inactive-gray: #d2d2d2;
 @gray: #979797;
 @gray-2: #bbbbbb;
-@toggle-gray: #9B9B9B;
-@dark-gray: #5E5E5E;
+@toggle-gray: #9b9b9b;
+@dark-gray: #5e5e5e;
 @black: #382210;
-@bright-blue: #33A2CC;
-@light-blue-hover: #F6FCFF;
-@red: #C76666;
+@bright-blue: #33a2cc;
+@light-blue-hover: #f6fcff;
+@red: #c76666;
 @white: #fff;
 
 /* Spacing */
@@ -155,8 +156,8 @@ a {
     font-weight: bold;
     font-size: 24px;
     letter-spacing: 1.6px;
-    color: #E6AF70;
-    border-bottom: 4px solid #E6AF70;
+    color: #e6af70;
+    border-bottom: 4px solid #e6af70;
     border-radius: 0px;
     padding: 8px 0px;
   }
@@ -246,7 +247,7 @@ a {
   padding-left: 32px;
   position: relative;
 
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     opacity: 0;
     position: absolute;
     z-index: -1;
@@ -304,7 +305,7 @@ a {
 .clearfix {
   &::after {
     display: block;
-    content: "";
+    content: '';
     clear: both;
   }
 }
@@ -438,7 +439,8 @@ a {
     float: right;
   }
 
-  .dropdown-menu, .nav-dropdown-menu {
+  .dropdown-menu,
+  .nav-dropdown-menu {
     background-color: @white;
     border: 1px solid @border-gray;
     border-radius: 2px;
@@ -492,7 +494,8 @@ a {
   }
 
   &.open {
-    .dropdown-menu, .nav-dropdown-menu {
+    .dropdown-menu,
+    .nav-dropdown-menu {
       display: block;
     }
   }

@@ -1,0 +1,86 @@
+// TODO: DRY up variables!
+@font-serif: 'Bellefair', serif;
+@font-san-serif: 'Quicksand', 'Helvetica Neue', Arial, san-serif;
+
+@matte-blue: #80A0C0;
+@light-beige: #FBF6F0;
+@beige: #F4E6DB;
+@white: #fff;
+@black: #382210;
+@red: #C76666;
+@orange: #E5AF70;
+@orange-brown: #E6AF70;
+@light-green: #C7D99A;
+@dark-green: #708045;
+@light-brown: #B88C5A;
+@purple: #A68AC1;
+
+.datepicker-wrapper {
+  // color: pink;
+}
+
+.calendar-datepicker-wrapper {
+  font-family: @font-san-serif;
+  color: @black;
+  border: 1px solid @light-brown;
+
+  .react-datepicker {
+    &__header {
+      background-color: @light-beige;
+      border-bottom: 1px solid @beige;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      font-weight: 500;
+    }
+
+    &__navigation--previous {
+      border-right-color: @orange;
+    }
+
+    &__navigation--next {
+      border-left-color: @orange;
+    }
+
+    &__current-month {
+      color: @light-brown;
+    }
+
+    &__day-name {
+      color: @light-brown;
+    }
+
+    &__day {
+      color: @black;
+    }
+
+    &__day--selected {
+      background-color: @orange;
+      color: @white;
+      border-radius: 4px;
+    }
+
+    &__day--today {
+      font-weight: 500;
+    }
+  }
+}
+
+.react-datepicker-popper[data-placement^="bottom"] {
+  .react-datepicker__triangle {
+    border-bottom-color: @light-beige;
+  }
+
+  .react-datepicker__triangle::before {
+    border-bottom-color: @light-brown;
+  }
+}
+
+.react-datepicker-popper[data-placement^="top"] {
+  .react-datepicker__triangle {
+    border-top-color: @white;
+  }
+
+  .react-datepicker__triangle::before {
+    border-top-color: @light-brown;
+  }
+}

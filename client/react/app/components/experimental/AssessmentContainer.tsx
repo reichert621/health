@@ -1,13 +1,10 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { isNumber } from 'lodash';
-import { resolve } from 'bluebird';
 import * as moment from 'moment';
 import NavBar from '../navbar';
 import Assessment from './Assessment';
 import { IQuestion } from '../../helpers/checklist';
-import { isAuthenticated } from '../../helpers/auth';
-import { isDateToday } from '../../helpers/utils';
 import {
   IAssessment,
   fetchAssessment,
@@ -84,14 +81,8 @@ class AssessmentContainer extends React.Component<
     return history.push('/reflect');
   }
 
-
   render() {
-    const {
-      isLoading,
-      assessment,
-      date,
-      questions = []
-    } = this.state;
+    const { isLoading, assessment, date, questions = [] } = this.state;
     const { history } = this.props;
     const isComplete = questions.every(q => isNumber(q.score));
 
@@ -110,7 +101,8 @@ class AssessmentContainer extends React.Component<
           date={date}
           questions={questions}
           onScoreChange={this.handleScoreChange.bind(this)}
-          onSubmit={this.submit.bind(this)} />
+          onSubmit={this.submit.bind(this)}
+        />
       </div>
     );
   }

@@ -13,8 +13,7 @@ exports.up = (knex, Promise) => {
     knex.schema.table('checklist_scores', table => {
       table.foreign('userId').references('users.id');
       // table.foreign('checklistId').references('checklists.id');
-      table.foreign('checklistQuestionId')
-        .references('checklist_questions.id');
+      table.foreign('checklistQuestionId').references('checklist_questions.id');
       table.index('userId');
       table.index('checklistQuestionId');
       table.index('checklistId');
@@ -55,9 +54,9 @@ exports.up = (knex, Promise) => {
     }),
     knex.schema.table('user_assessment_scores', table => {
       table.foreign('userId').references('users.id');
-      table.foreign('userAssessmentId')
-        .references('user_assessments.id');
-      table.foreign('assessmentQuestionId')
+      table.foreign('userAssessmentId').references('user_assessments.id');
+      table
+        .foreign('assessmentQuestionId')
         .references('assessment_questions.id');
       table.index('userId');
       table.index('userAssessmentId');

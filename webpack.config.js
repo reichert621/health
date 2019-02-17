@@ -24,10 +24,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          { loader: 'style-loader' },
-          { loader: 'css-loader' }
-        ]
+        use: [{ loader: 'style-loader' }, { loader: 'css-loader' }]
       },
       {
         test: /\.less$/,
@@ -50,8 +47,6 @@ module.exports = {
   },
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new CopyWebpackPlugin([
-      { from: './client/assets', to: 'assets' }
-    ])
+    new CopyWebpackPlugin([{ from: './client/assets', to: 'assets' }])
   ]
 };

@@ -1,7 +1,11 @@
 import { HttpResponse, get, post, put } from './http';
 import { IDropdownOption } from './utils';
 import { IAssessmentStats } from './assessment';
-import { DateRange } from './reporting';
+import {
+  DateRange,
+  normalizeWellnessScore,
+  calculateHappiness
+} from './reporting';
 
 export interface Task {
   id?: number;
@@ -46,40 +50,37 @@ export const getPointOptions = (): PointOption[] => {
 };
 
 export const fetchTasks = (): Promise<Task[]> => {
-  return get('/api/tasks')
-    .then((res: HttpResponse) => res.tasks);
+  return get('/api/tasks').then((res: HttpResponse) => res.tasks);
 };
 
 export const fetchTopTasks = (): Promise<any[]> => {
-  return get('/api/stats/top-tasks')
-    .then((res: HttpResponse) => res.stats);
+  return get('/api/stats/top-tasks').then((res: HttpResponse) => res.stats);
 };
 
 export const fetchTaskSuggestions = (): Promise<any> => {
-  return get('/api/tasks/suggestions')
-    .then((res: HttpResponse) => res.suggestions);
+  return get('/api/tasks/suggestions').then(
+    (res: HttpResponse) => res.suggestions
+  );
 };
 
 export const fetchDefaultTasks = (): Promise<NewTask[]> => {
-  return get('/api/tasks/defaults')
-    .then((res: HttpResponse) => res.tasks);
+  return get('/api/tasks/defaults').then((res: HttpResponse) => res.tasks);
 };
 
 export const createSuggestedTask = (suggestion: NewTask): Promise<Task> => {
   const { category, description, points } = suggestion;
 
-  return post('/api/tasks/suggestions', { category, description, points })
-    .then((res: HttpResponse) => res.task);
+  return post('/api/tasks/suggestions', { category, description, points }).then(
+    (res: HttpResponse) => res.task
+  );
 };
 
 export const createTask = (params: object): Promise<Task> => {
-  return post('/api/tasks', params)
-    .then((res: HttpResponse) => res.task);
+  return post('/api/tasks', params).then((res: HttpResponse) => res.task);
 };
 
 export const updateTask = (id: number, params: object): Promise<Task> => {
-  return put(`/api/tasks/${id}`, params)
-    .then((res: HttpResponse) => res.task);
+  return put(`/api/tasks/${id}`, params).then((res: HttpResponse) => res.task);
 };
 
 export const fetchStats = (
@@ -90,13 +91,11 @@ export const fetchStats = (
     .map(key => `${key}=${range[key]}`)
     .join('&');
 
-  return get(`/api/stats/tasks?${qs}`)
-    .then((res: HttpResponse) => res.result);
+  return get(`/api/stats/tasks?${qs}`).then((res: HttpResponse) => res.result);
 };
 
 export const fetchStatsById = (id: number) => {
-  return get(`/api/tasks/${id}/stats`)
-    .then(res => res.result);
+  return get(`/api/tasks/${id}/stats`).then(res => res.result);
 };
 
 export interface Category {
@@ -106,19 +105,73 @@ export interface Category {
 }
 
 export const fetchCategories = (): Promise<Category[]> => {
-  return get('/api/categories')
-    .then((res: HttpResponse) => res.categories);
+  return get('/api/categories').then((res: HttpResponse) => res.categories);
 };
 
 export const createCategory = (params: object): Promise<Category> => {
-  return post('/api/categories', params)
-    .then((res: HttpResponse) => res.category);
+  return post('/api/categories', params).then(
+    (res: HttpResponse) => res.category
+  );
 };
 
 export const calculateScore = (tasks: Task[]): number => {
   return tasks.reduce((score, task) => {
     const { isComplete, points } = task;
 
-    return isComplete ? (score + points) : score;
+    return isComplete ? score + points : score;
   }, 0);
+};
+
+export const formatTaskStats = (stats: TaskAssessmentStats[]) => {
+  return stats.map(stat => {
+    const { task, count, stats } = stat;
+    const { description, category } = task;
+    const name = `${category}: ${description}`;
+    const { depression, anxiety, wellbeing } = stats;
+    const {
+      included: dIncluded,
+      excluded: dExcluded,
+      delta: dDelta
+    } = depression;
+    const { included: aIncluded, excluded: aExcluded, delta: aDelta } = anxiety;
+    const {
+      included: _wIncluded,
+      excluded: _wExcluded,
+      delta: _wDelta
+    } = wellbeing;
+    const wIncluded = normalizeWellnessScore(_wIncluded);
+    const wExcluded = normalizeWellnessScore(_wExcluded);
+    const wDelta = normalizeWellnessScore(_wDelta);
+
+    const happiness = calculateHappiness({
+      depression: dIncluded,
+      anxiety: aIncluded,
+      wellness: wIncluded
+    });
+
+    const exHappiness = calculateHappiness({
+      depression: dExcluded,
+      anxiety: aExcluded,
+      wellness: wExcluded
+    });
+
+    const hDelta = happiness - exHappiness;
+
+    return {
+      name,
+      count,
+      percentages: {
+        happiness,
+        depression: dIncluded,
+        anxiety: aIncluded,
+        wellness: wIncluded
+      },
+      deltas: {
+        depression: dDelta,
+        anxiety: aDelta,
+        wellness: wDelta,
+        happiness: hDelta
+      }
+    };
+  });
 };

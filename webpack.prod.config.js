@@ -12,8 +12,6 @@ module.exports = {
       root: path.join(__dirname, 'client/react')
     }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new CopyWebpackPlugin([
-      { from: './client/assets', to: 'assets' }
-    ])
+    new CopyWebpackPlugin([{ from: './client/assets', to: 'assets' }])
   ]
 };

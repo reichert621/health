@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { isNumber, isObject } from 'lodash';
+import { isObject } from 'lodash';
 import { resolve } from 'bluebird';
 import * as moment from 'moment';
 import NavBar from '../navbar';
@@ -49,7 +49,7 @@ class AssessmentSample extends React.Component<
 
     const { date, questions } = obj;
 
-    return questions && (questions.length >= 20) && isDateToday(date);
+    return questions && questions.length >= 20 && isDateToday(date);
   }
 
   getCachedState() {
@@ -140,7 +140,8 @@ class AssessmentSample extends React.Component<
           questions={questions}
           onToggleDisplay={() => this.setState({ forceDisplayList: false })}
           onScoreChange={this.handleScoreChange.bind(this)}
-          onSubmit={this.submit.bind(this)} />
+          onSubmit={this.submit.bind(this)}
+        />
       </div>
     );
   }
@@ -151,11 +152,14 @@ export class DepressionSample extends React.Component<RouteComponentProps<{}>> {
   render() {
     const cacheKey = 'assessments:depression';
 
-    return <AssessmentSample
-      {...this.props}
-      title='Depression'
-      cacheKey={cacheKey}
-      fetchQuestions={fetchDepressionQuestions} />;
+    return (
+      <AssessmentSample
+        {...this.props}
+        title="Depression"
+        cacheKey={cacheKey}
+        fetchQuestions={fetchDepressionQuestions}
+      />
+    );
   }
 }
 
@@ -163,11 +167,14 @@ export class AnxietySample extends React.Component<RouteComponentProps<{}>> {
   render() {
     const cacheKey = 'assessments:anxiety';
 
-    return <AssessmentSample
-      {...this.props}
-      title='Anxiety'
-      cacheKey={cacheKey}
-      fetchQuestions={fetchAnxietyQuestions} />;
+    return (
+      <AssessmentSample
+        {...this.props}
+        title="Anxiety"
+        cacheKey={cacheKey}
+        fetchQuestions={fetchAnxietyQuestions}
+      />
+    );
   }
 }
 
@@ -175,10 +182,13 @@ export class WellBeingSample extends React.Component<RouteComponentProps<{}>> {
   render() {
     const cacheKey = 'assessments:wellbeing';
 
-    return <AssessmentSample
-      {...this.props}
-      title='Well-Being'
-      cacheKey={cacheKey}
-      fetchQuestions={fetchWellBeingQuestions} />;
+    return (
+      <AssessmentSample
+        {...this.props}
+        title="Well-Being"
+        cacheKey={cacheKey}
+        fetchQuestions={fetchWellBeingQuestions}
+      />
+    );
   }
 }

@@ -3,19 +3,12 @@ import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import * as moment from 'moment';
-import { groupBy, keys } from 'lodash';
-import { all, resolve } from 'bluebird';
 import { IScorecard } from '../../helpers/scorecard';
-import { Task, calculateScore } from '../../helpers/tasks';
-import {
-  IAssessment,
-  AssessmentType,
-  createAssessment
-} from '../../helpers/assessment';
+import { Task } from '../../helpers/tasks';
 import { AppState, keyifyDate, getDefaultDate } from '../../helpers/utils';
 import { getScorecardByDate, toggleTask } from '../../reducers/scorecards';
 import { selectDate } from '../../reducers/selected';
-import ActivityCardSimple from './ActivityCardSimple';
+import ActivityList from './ActivityList';
 import ActivityDetails from './ActivityDetails';
 import ActivityOverview from './ActivityOverview';
 import NavBar from '../navbar';
@@ -81,66 +74,50 @@ class ActivitiesContainer extends React.Component<
       });
   }
 
-  handleTaskToggled(task: Task) {
+  handleTaskToggled = (task: Task) => {
     const { scorecard = {} as IScorecard, dispatch } = this.props;
 
     return dispatch(toggleTask(scorecard, task));
-  }
+  };
 
-  handleTaskViewed(task: Task) {
+  handleTaskViewed = (task: Task) => {
     const { id: taskId } = task;
 
     return this.setState({ selectedTaskId: taskId });
-  }
+  };
 
   renderSidePanel() {
     const { selectedTaskId, date } = this.state;
 
-    return selectedTaskId
-      ? <ActivityDetails
-          taskId={selectedTaskId}
-          onClose={() => this.setState({ selectedTaskId: null })} />
-      : <ActivityOverview date={date} />;
+    return selectedTaskId ? (
+      <ActivityDetails
+        taskId={selectedTaskId}
+        onClose={() => this.setState({ selectedTaskId: null })}
+      />
+    ) : (
+      <ActivityOverview date={date} />
+    );
   }
 
   render() {
     const { isLoading } = this.state;
     const { scorecard = {} as IScorecard } = this.props;
     const { tasks = [] } = scorecard;
-    const grouped = groupBy(tasks, 'category');
 
     if (isLoading) {
       // TODO: handle loading state better
     }
 
     return (
-      <div className='default-wrapper simple'>
+      <div className="default-wrapper simple">
         <NavBar active={'activities'} />
 
-        <div className='default-container simple'>
-          <div className='activities-container-simple'>
-            {keys(grouped).map(category => {
-              const tasks = grouped[category];
-
-              return (
-                <div key={category}>
-                  <div className='activities-label'>
-                    {category}
-                  </div>
-
-                  {tasks.map((task, key) => {
-                    return (
-                      <ActivityCardSimple
-                        key={key}
-                        task={task}
-                        onToggle={this.handleTaskToggled.bind(this, task)}
-                        onView={this.handleTaskViewed.bind(this, task)} />
-                    );
-                  })}
-                </div>
-              );
-            })}
-          </div>
+        <div className="default-container simple">
+          <ActivityList
+            tasks={tasks}
+            onToggleTask={this.handleTaskToggled}
+            onViewTask={this.handleTaskViewed}
+          />
 
           {this.renderSidePanel()}
         </div>

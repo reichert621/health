@@ -3,13 +3,15 @@ import { times, isNumber } from 'lodash';
 import { IQuestion } from '../../helpers/checklist';
 
 const getScoreDescription = (score: number): string => {
-  return [
-    'disagree',
-    'somewhat agree',
-    'agree',
-    'strongly agree',
-    'very strongly agree'
-  ][score] || 'unanswered';
+  return (
+    [
+      'disagree',
+      'somewhat agree',
+      'agree',
+      'strongly agree',
+      'very strongly agree'
+    ][score] || 'unanswered'
+  );
 };
 
 interface AssessmentSelectorState {
@@ -39,36 +41,33 @@ class AssessmentSelector extends React.Component<
   render() {
     const { hovered } = this.state;
     const { selected, handleSelect } = this.props;
-    const score = (hovered !== -1) ? hovered : selected;
+    const score = hovered !== -1 ? hovered : selected;
 
     return (
       <div>
-        <div className='assessment-selector'>
-          {
-            times(5).map(n => {
-              const isHovered = hovered >= n;
-              const isSelected = selected >= n;
+        <div className="assessment-selector">
+          {times(5).map(n => {
+            const isHovered = hovered >= n;
+            const isSelected = selected >= n;
 
-              return (
-                <div
-                  key={n}
-                  className={`assessment-selector-item ${
-                    isSelected ? 'selected' : ''
-                  } ${
-                    isHovered ? 'hovered' : ''
-                  }`}
-                  onClick={() => handleSelect(n)}
-                  onMouseEnter={() => this.handleHover(n)}
-                  onMouseLeave={() => this.handleHover(-1)}>
-                </div>
-              );
-            })
-          }
+            return (
+              <div
+                key={n}
+                className={`assessment-selector-item ${
+                  isSelected ? 'selected' : ''
+                } ${isHovered ? 'hovered' : ''}`}
+                onClick={() => handleSelect(n)}
+                onMouseEnter={() => this.handleHover(n)}
+                onMouseLeave={() => this.handleHover(-1)}
+              />
+            );
+          })}
         </div>
         <div
           className={`assessment-answer ${
-            (isNumber(selected) && (hovered === -1)) ? 'selected' : ''
-          }`}>
+            isNumber(selected) && hovered === -1 ? 'selected' : ''
+          }`}
+        >
           {getScoreDescription(score)}
         </div>
       </div>
@@ -90,12 +89,14 @@ const AssessmentQuestion = ({
   const { text, score } = question;
 
   return (
-    <div className={`assessment-question-container clearfix ${isCurrent ? 'current' : ''}`}>
-      <div className='assessment-question pull-left'>{text}</div>
-      <div className='assessment-selector-container pull-right'>
-        <AssessmentSelector
-          selected={score}
-          handleSelect={onSelect}/>
+    <div
+      className={`assessment-question-container clearfix ${
+        isCurrent ? 'current' : ''
+      }`}
+    >
+      <div className="assessment-question pull-left">{text}</div>
+      <div className="assessment-selector-container pull-right">
+        <AssessmentSelector selected={score} handleSelect={onSelect} />
       </div>
     </div>
   );

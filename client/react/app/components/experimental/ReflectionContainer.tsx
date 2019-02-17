@@ -35,26 +35,25 @@ const AssessmentMenuItem = ({
   const percentage = total > 0 ? (completed / total) * 100 : 0;
 
   return (
-    <div className='reflection-menu-item' onClick={handleClick}>
-      <div className='reflection-title'>{title}</div>
+    <div className="reflection-menu-item" onClick={handleClick}>
+      <div className="reflection-title">{title}</div>
 
-      {
-        (assessment && assessment.id) ?
+      {assessment && assessment.id ? (
         <div>
-          <div className='reflection-progress-container'>
-            <div className='reflection-progress-bar'
-              style={{ width: `${percentage}%` }}>
-            </div>
+          <div className="reflection-progress-container">
+            <div
+              className="reflection-progress-bar"
+              style={{ width: `${percentage}%` }}
+            />
           </div>
 
-          <div className='reflection-action'>
+          <div className="reflection-action">
             {completed} / {total} Questions
           </div>
-        </div> :
-        <div className='reflection-action'>
-          Start
         </div>
-      }
+      ) : (
+        <div className="reflection-action">Start</div>
+      )}
     </div>
   );
 };
@@ -66,16 +65,14 @@ interface JournalMenuItemProps {
 
 const JournalMenuItem = ({ entry, handleClick }: JournalMenuItemProps) => {
   return (
-    <div className='reflection-menu-item' onClick={handleClick}>
-      <div className='reflection-title'>Journal</div>
-      <div className='reflection-action'>Write</div>
+    <div className="reflection-menu-item" onClick={handleClick}>
+      <div className="reflection-title">Journal</div>
+      <div className="reflection-action">Write</div>
     </div>
   );
 };
 
-interface ReflectionProps extends RouteComponentProps<{}> {
-
-}
+interface ReflectionProps extends RouteComponentProps<{}> {}
 
 interface ReflectionState {
   isLoading: boolean;
@@ -162,10 +159,9 @@ class Reflection extends React.Component<ReflectionProps, ReflectionState> {
       isPrivate: true
     };
 
-    return createEntry(params)
-      .then(({ id: entryId }) => {
-        return history.push(`/entry/${entryId}`);
-      });
+    return createEntry(params).then(({ id: entryId }) => {
+      return history.push(`/entry/${entryId}`);
+    });
   }
 
   render() {
@@ -182,33 +178,32 @@ class Reflection extends React.Component<ReflectionProps, ReflectionState> {
     ];
 
     return (
-      <div className='default-wrapper simple'>
+      <div className="default-wrapper simple">
         <NavBar active={'reflections'} />
 
-        <div className='default-container simple'>
-          <div className='reflections-container'>
-            <h1 className='reflections-header'>Reflections</h1>
+        <div className="default-container simple">
+          <div className="reflections-container">
+            <h1 className="reflections-header">Reflections</h1>
 
-            {
-              types.map(type => {
-                const assessment = assessments[type] || {} as IAssessment;
+            {types.map(type => {
+              const assessment = assessments[type] || ({} as IAssessment);
 
-                return (
-                  <AssessmentMenuItem
-                    key={type}
-                    title={this.getAssessmentTitle(type)}
-                    assessment={assessment}
-                    handleClick={
-                      () => this.findOrCreateAssessment(assessment, date, type)
-                    } />
-                );
-              })
-            }
+              return (
+                <AssessmentMenuItem
+                  key={type}
+                  title={this.getAssessmentTitle(type)}
+                  assessment={assessment}
+                  handleClick={() =>
+                    this.findOrCreateAssessment(assessment, date, type)
+                  }
+                />
+              );
+            })}
 
             <JournalMenuItem
               entry={entry}
-              handleClick={() => this.findOrCreateEntry(entry, date)} />
-
+              handleClick={() => this.findOrCreateEntry(entry, date)}
+            />
           </div>
         </div>
       </div>
